@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LXLYLZL — 平面设计师 / Graphic Designer</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@300;400;500;700;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0c0c0c;--card:#151515;--card-border:rgba(255,255,255,.06);
+  --cream:#f0ece4;--dim:rgba(255,255,255,.45);--faint:rgba(255,255,255,.12);
+  --accent:#FF3A5C;--accent2:#00E0FF;--accent3:#B8FF57;
+  --display:'Syne','Noto Sans SC',sans-serif;
+  --body:'Space Grotesk','Noto Sans SC',sans-serif;
+}
+html,body{height:100%;overflow:hidden;font-family:var(--body);background:var(--bg);color:var(--cream)}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+
+/* ══════ FIXED BACKGROUND ══════ */
+.bg-fixed{position:fixed;inset:0;z-index:0;overflow:hidden}
+.bg-fixed .grain{position:absolute;inset:0;opacity:.03;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:128px}
+.bg-fixed .glow{position:absolute;border-radius:50%;filter:blur(120px);opacity:.15;transition:all 1.5s cubic-bezier(.16,1,.3,1)}
+.bg-fixed .g1{width:600px;height:600px;background:var(--accent);top:-15%;right:-10%}
+.bg-fixed .g2{width:500px;height:500px;background:var(--accent2);bottom:-10%;left:-8%}
+.bg-fixed .g3{width:400px;height:400px;background:var(--accent3);top:40%;left:50%;transform:translateX(-50%)}
+/* glow colors change per section */
+body[data-section="0"] .g1{opacity:.2}body[data-section="0"] .g2{opacity:.1}body[data-section="0"] .g3{opacity:.05}
+body[data-section="1"] .g1{opacity:.08}body[data-section="1"] .g2{opacity:.18}body[data-section="1"] .g3{opacity:.1}
+body[data-section="2"] .g1{opacity:.05}body[data-section="2"] .g2{opacity:.08}body[data-section="2"] .g3{opacity:.2}
+body[data-section="3"] .g1{opacity:.15}body[data-section="3"] .g2{opacity:.05}body[data-section="3"] .g3{opacity:.12}
+body[data-section="4"] .g1{opacity:.08}body[data-section="4"] .g2{opacity:.12}body[data-section="4"] .g3{opacity:.08}
+
+/* ══════ NAV ══════ */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1.5rem 2.5rem;display:flex;justify-content:space-between;align-items:center}
+.nav-logo{font-family:var(--display);font-weight:800;font-size:1.3rem;letter-spacing:.05em;text-transform:uppercase}
+.nav-right{display:flex;align-items:center;gap:1.8rem}
+.nav-links{display:flex;gap:1.3rem;list-style:none}
+.nav-links a{font-size:.72rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);transition:color .3s;position:relative}
+.nav-links a.active{color:var(--cream)}
+.nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1.5px;background:var(--accent);transition:width .3s}
+.nav-links a.active::after{width:100%}
+.lang-toggle{display:flex;align-items:center;gap:.4rem;background:rgba(255,255,255,.04);border:1px solid var(--card-border);border-radius:999px;padding:.35rem .9rem;cursor:pointer;font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;transition:all .3s;user-select:none}
+.lang-toggle:hover{border-color:var(--accent2);background:rgba(0,224,255,.05)}
+
+/* ══════ SECTION INDICATOR ══════ */
+.side-dots{position:fixed;right:2rem;top:50%;transform:translateY(-50%);z-index:100;display:flex;flex-direction:column;gap:.8rem}
+.side-dots .dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.15);cursor:pointer;transition:all .4s;position:relative}
+.side-dots .dot.active{background:var(--accent);transform:scale(1.3)}
+.side-dots .dot::before{content:attr(data-label);position:absolute;right:20px;top:50%;transform:translateY(-50%);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);white-space:nowrap;opacity:0;transition:opacity .3s;pointer-events:none}
+.side-dots .dot:hover::before{opacity:1}
+
+/* ══════ PAGES (CARDS) ══════ */
+.pages-wrapper{position:relative;z-index:1;width:100%;height:100vh}
+.page{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  padding:4rem 1.2rem 1.5rem;
+  opacity:0;
+  transform:translateY(60px) scale(.97);
+  transition:opacity .6s cubic-bezier(.16,1,.3,1), transform .6s cubic-bezier(.16,1,.3,1);
+  pointer-events:none;
+  visibility:hidden;
+}
+.page.active{
+  opacity:1;transform:translateY(0) scale(1);
+  pointer-events:auto;visibility:visible;
+}
+.page.exit-up{
+  opacity:0;transform:translateY(-60px) scale(.97);
+  visibility:hidden;
+}
+
+/* Card wrapper */
+.card{
+  width:calc(100vw - 2.4rem);
+  background:var(--card);
+  border:1px solid var(--card-border);
+  border-radius:24px;
+  padding:3.5rem;
+  position:relative;
+  overflow:hidden;
+  height:calc(100vh - 6.5rem);
+  overflow-y:auto;
+}
+.card::-webkit-scrollbar{width:4px}
+.card::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px}
+
+/* Card glow */
+.card::before{
+  content:'';position:absolute;top:-1px;left:20%;right:20%;height:1px;
+  background:linear-gradient(90deg,transparent,var(--accent),transparent);
+  opacity:.3;
+}
+
+/* ══════ PAGE 0: HERO ══════ */
+.hero-card{text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh}
+.hero-tag{font-size:.72rem;font-weight:600;letter-spacing:.35em;text-transform:uppercase;color:var(--accent2);margin-bottom:2rem}
+.hero-name{font-family:var(--display);font-weight:800;font-size:clamp(3rem,8vw,6rem);line-height:.95;letter-spacing:-.03em;margin-bottom:1.5rem}
+.hero-name .outline{-webkit-text-stroke:1.5px var(--cream);-webkit-text-fill-color:transparent}
+.hero-role{font-size:1rem;color:var(--dim);margin-bottom:.6rem;font-weight:300;letter-spacing:.05em}
+.hero-email{font-size:.9rem;color:var(--accent2);margin-bottom:2.5rem;transition:color .3s}
+.hero-email:hover{color:var(--accent)}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center}
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.9rem 2rem;border-radius:999px;font-family:var(--body);font-size:.75rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;border:none;cursor:pointer;transition:all .4s cubic-bezier(.16,1,.3,1)}
+.btn-fill{background:var(--accent);color:#fff}
+.btn-fill:hover{transform:scale(1.05);box-shadow:0 0 30px rgba(255,58,92,.35)}
+.btn-ghost{background:transparent;color:var(--cream);border:1px solid rgba(255,255,255,.15)}
+.btn-ghost:hover{border-color:var(--accent2);color:var(--accent2)}
+
+/* ══════ PAGE 1: ABOUT ══════ */
+.about-grid{display:grid;grid-template-columns:1fr 1.8fr;gap:3.5rem;align-items:start}
+.about-photo{aspect-ratio:3/4;border-radius:16px;background:linear-gradient(135deg,#1a1a2e,#16213e);overflow:hidden;position:relative;border:1px solid var(--card-border);max-height:500px}
+.about-photo .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:700;font-size:3rem;opacity:.06;color:var(--cream)}
+.about-label{font-size:.68rem;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem}
+.about-text h2{font-family:var(--display);font-weight:700;font-size:clamp(1.8rem,3.5vw,2.8rem);line-height:1.1;margin-bottom:1.5rem}
+.about-text h2 .it{color:var(--accent2);font-style:italic}
+.about-text p{font-size:.9rem;line-height:1.85;color:var(--dim);margin-bottom:1rem}
+.about-stats{display:flex;gap:2.5rem;margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--card-border)}
+.about-stats .s .n{font-family:var(--display);font-weight:800;font-size:1.8rem;line-height:1}
+.about-stats .s:first-child .n{color:var(--accent)}
+.about-stats .s:nth-child(2) .n{color:var(--accent2)}
+.about-stats .s:nth-child(3) .n{color:var(--accent3)}
+.about-stats .s .l{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--dim);margin-top:.2rem}
+
+/* ══════ PAGE 2: SERVICES ══════ */
+.services-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:2.5rem}
+.services-header h2{font-family:var(--display);font-weight:700;font-size:clamp(1.8rem,3.5vw,2.8rem)}
+.services-header .num{font-family:var(--display);font-size:3.5rem;font-weight:800;color:rgba(255,255,255,.04)}
+.services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+.svc{padding:2rem;border-radius:16px;background:rgba(255,255,255,.02);border:1px solid var(--card-border);transition:all .4s}
+.svc:hover{border-color:rgba(255,255,255,.1);transform:translateY(-4px);background:rgba(255,255,255,.04)}
+.svc .ic{font-size:1.5rem;margin-bottom:1rem;display:block}
+.svc h3{font-family:var(--display);font-weight:700;font-size:1.05rem;margin-bottom:.5rem}
+.svc p{font-size:.8rem;line-height:1.7;color:rgba(255,255,255,.35)}
+
+/* ══════ PAGE 3: WORKS ══════ */
+.works-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:2.5rem}
+.works-header h2{font-family:var(--display);font-weight:700;font-size:clamp(1.8rem,3.5vw,2.8rem)}
+.works-header .num{font-family:var(--display);font-size:3.5rem;font-weight:800;color:rgba(255,255,255,.04)}
+.works-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.2rem}
+.work-card{border-radius:16px;overflow:hidden;position:relative;aspect-ratio:16/10;background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid var(--card-border);cursor:pointer;transition:border-color .4s}
+.work-card:hover{border-color:rgba(255,255,255,.12)}
+.work-card.wide{grid-column:1/-1;aspect-ratio:21/8}
+.work-ph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8rem;opacity:.08}
+.work-ph .sh{width:60px;height:60px;border:2px solid currentColor;border-radius:14px;transform:rotate(45deg)}
+.work-ph span{font-family:var(--display);font-weight:700;font-size:.9rem;letter-spacing:.08em}
+.work-card:nth-child(1) .work-ph{color:var(--accent)}
+.work-card:nth-child(2) .work-ph{color:var(--accent2)}
+.work-card:nth-child(3) .work-ph{color:var(--accent3)}
+.work-card:nth-child(4) .work-ph{color:var(--purple)}
+.work-info{position:absolute;bottom:0;left:0;right:0;padding:1.5rem;background:linear-gradient(to top,rgba(12,12,12,.9),transparent);opacity:0;transition:opacity .4s}
+.work-card:hover .work-info{opacity:1}
+.work-info .wn{font-family:var(--display);font-weight:700;font-size:1.1rem}
+.work-info .wt{font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-top:.2rem}
+
+/* ══════ PAGE 4: CONTACT ══════ */
+.contact-card{text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:50vh}
+.contact-label{font-size:.68rem;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--accent3);margin-bottom:1.5rem}
+.contact-card h2{font-family:var(--display);font-weight:800;font-size:clamp(2rem,5vw,3.5rem);line-height:1.05;margin-bottom:1rem}
+.contact-card h2 .outline{-webkit-text-stroke:1.5px var(--cream);-webkit-text-fill-color:transparent}
+.contact-card>p{font-size:.95rem;color:var(--dim);margin-bottom:2.5rem;max-width:420px;line-height:1.8}
+.contact-email{font-family:var(--display);font-weight:700;font-size:clamp(1.2rem,2.5vw,1.8rem);color:var(--accent2);position:relative;padding-bottom:.4rem;transition:color .3s;display:inline-block;margin-bottom:2.5rem}
+.contact-email:hover{color:var(--accent)}
+.contact-email::after{content:'';position:absolute;bottom:0;left:0;width:100%;height:1.5px;background:linear-gradient(90deg,var(--accent2),var(--accent))}
+.contact-socials{display:flex;gap:.8rem}
+.soc{width:44px;height:44px;border-radius:50%;border:1px solid var(--card-border);display:flex;align-items:center;justify-content:center;font-size:1rem;transition:all .4s}
+.soc:hover{border-color:var(--accent);background:rgba(255,58,92,.06);transform:translateY(-3px)}
+
+/* ══════ RESPONSIVE ══════ */
+@media(max-width:900px){
+  .card{padding:2rem 1.5rem;border-radius:20px;height:calc(100vh - 5rem)}
+  .page{padding:5rem 1rem 1.5rem}
+  .nav-links{display:none}
+  .side-dots{display:none}
+  .about-grid{grid-template-columns:1fr;gap:2rem}
+  .about-photo{aspect-ratio:4/3;max-height:200px}
+  .services-grid{grid-template-columns:repeat(2,1fr)}
+  .works-grid{grid-template-columns:1fr}
+  .work-card.wide{aspect-ratio:16/9}
+  .about-stats{gap:1.5rem}
+}
+@media(max-width:520px){
+  .services-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body data-section="0">
+
+<!-- FIXED BACKGROUND -->
+<div class="bg-fixed">
+  <div class="grain"></div>
+  <div class="glow g1"></div>
+  <div class="glow g2"></div>
+  <div class="glow g3"></div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">LXLYLZL</div>
+  <div class="nav-right">
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#" data-i="0" data-zh="首页" data-en="Home" class="active">首页</a></li>
+      <li><a href="#" data-i="1" data-zh="关于" data-en="About">关于</a></li>
+      <li><a href="#" data-i="2" data-zh="服务" data-en="Services">服务</a></li>
+      <li><a href="#" data-i="3" data-zh="作品" data-en="Works">作品</a></li>
+      <li><a href="#" data-i="4" data-zh="联系" data-en="Contact">联系</a></li>
+    </ul>
+    <div class="lang-toggle" id="langToggle" role="button" tabindex="0">
+      <span>🌐</span><span id="langLabel">EN</span>
+    </div>
+  </div>
+</nav>
+
+<!-- SIDE DOTS -->
+<div class="side-dots" id="sideDots">
+  <div class="dot active" data-i="0" data-label-zh="首页" data-label-en="Home"></div>
+  <div class="dot" data-i="1" data-label-zh="关于" data-label-en="About"></div>
+  <div class="dot" data-i="2" data-label-zh="服务" data-label-en="Services"></div>
+  <div class="dot" data-i="3" data-label-zh="作品" data-label-en="Works"></div>
+  <div class="dot" data-i="4" data-label-zh="联系" data-label-en="Contact"></div>
+</div>
+
+<!-- PAGES -->
+<div class="pages-wrapper" id="pagesWrapper">
+
+  <!-- PAGE 0: HERO -->
+  <div class="page active" data-index="0">
+    <div class="card hero-card">
+      <div class="hero-tag" data-zh="平面设计师 · 品牌设计 · 视觉传达" data-en="Graphic Designer · Branding · Visual Communication">平面设计师 · 品牌设计 · 视觉传达</div>
+      <h1 class="hero-name">LXLYLZL</h1>
+      <p class="hero-role" data-zh="设计创造价值，视觉传递故事" data-en="Design creates value, visuals tell stories">设计创造价值，视觉传递故事</p>
+      <a href="mailto:757497092@qq.com" class="hero-email">757497092@qq.com</a>
+      <div class="hero-btns">
+        <a href="#" class="btn btn-fill" onclick="goTo(3)" data-zh="查看作品" data-en="View Works">查看作品</a>
+        <a href="#" class="btn btn-ghost" onclick="goTo(4)" data-zh="联系我" data-en="Contact">联系我</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 1: ABOUT -->
+  <div class="page" data-index="1">
+    <div class="card">
+      <div class="about-grid">
+        <div class="about-photo"><div class="ph">PHOTO</div></div>
+        <div class="about-text">
+          <div class="about-label" data-zh="关于我" data-en="About Me">关于我</div>
+          <h2>
+            <span data-zh="以设计为" data-en="Design as">以设计为</span><br>
+            <span class="it" data-zh="语言" data-en="Language">语言</span><span data-zh="，创造视觉叙事" data-en=", Creating Visual Narratives">，创造视觉叙事</span>
+          </h2>
+          <p data-zh="我是 lxlylzl，一名热爱用设计解决问题的平面设计师。我相信好的设计不仅仅是好看的表面，更是一种能打动人心、传递价值的视觉语言。" data-en="I'm lxlylzl, a graphic designer passionate about solving problems through design. Great design isn't just beautiful — it's a visual language that moves people.">我是 lxlylzl，一名热爱用设计解决问题的平面设计师。我相信好的设计不仅仅是好看的表面，更是一种能打动人心、传递价值的视觉语言。</p>
+          <p data-zh="从品牌视觉识别到平面创意，我始终追求在美学与功能之间找到完美平衡。每一个项目都是一次深入探索。" data-en="From brand identity to creative design, I pursue the perfect balance of aesthetics and function. Every project is a deep exploration.">从品牌视觉识别到平面创意，我始终追求在美学与功能之间找到完美平衡。每一个项目都是一次深入探索。</p>
+          <div class="about-stats">
+            <div class="s"><div class="n">3+</div><div class="l" data-zh="年经验" data-en="Years">年经验</div></div>
+            <div class="s"><div class="n">50+</div><div class="l" data-zh="完成项目" data-en="Projects">完成项目</div></div>
+            <div class="s"><div class="n">30+</div><div class="l" data-zh="合作品牌" data-en="Clients">合作品牌</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 2: SERVICES -->
+  <div class="page" data-index="2">
+    <div class="card">
+      <div class="services-header">
+        <h2><span data-zh="我能做什么" data-en="What I Do">我能做什么</span></h2>
+        <div class="num">02</div>
+      </div>
+      <div class="services-grid">
+        <div class="svc"><span class="ic">🎨</span>
+          <h3 data-zh="品牌视觉识别" data-en="Brand Identity">品牌视觉识别</h3>
+          <p data-zh="从 Logo 到完整视觉系统，打造独一无二的品牌形象。" data-en="From logo to complete visual systems, creating unique brand images.">从 Logo 到完整视觉系统，打造独一无二的品牌形象。</p>
+        </div>
+        <div class="svc"><span class="ic">📐</span>
+          <h3 data-zh="平面设计" data-en="Graphic Design">平面设计</h3>
+          <p data-zh="海报、画册、宣传物料，让每份作品充满视觉冲击力。" data-en="Posters, brochures, marketing materials — visually impactful.">海报、画册、宣传物料，让每份作品充满视觉冲击力。</p>
+        </div>
+        <div class="svc"><span class="ic">📦</span>
+          <h3 data-zh="包装设计" data-en="Packaging">包装设计</h3>
+          <p data-zh="为产品赋予设计质感，兼顾美学与商业价值。" data-en="Tangible design quality, balancing aesthetics and commerce.">为产品赋予设计质感，兼顾美学与商业价值。</p>
+        </div>
+        <div class="svc"><span class="ic">✏️</span>
+          <h3 data-zh="字体与插画" data-en="Type & Illustration">字体与插画</h3>
+          <p data-zh="定制字体与创意插画，注入独特的艺术气质。" data-en="Custom typefaces and illustration for unique brand personality.">定制字体与创意插画，注入独特的艺术气质。</p>
+        </div>
+        <div class="svc"><span class="ic">📱</span>
+          <h3 data-zh="UI/UX 设计" data-en="UI/UX Design">UI/UX 设计</h3>
+          <p data-zh="以用户为中心，打造直觉流畅的数字体验。" data-en="User-centered, intuitive, smooth digital experiences.">以用户为中心，打造直觉流畅的数字体验。</p>
+        </div>
+        <div class="svc"><span class="ic">🎬</span>
+          <h3 data-zh="视觉动效" data-en="Motion Graphics">视觉动效</h3>
+          <p data-zh="让设计「活」起来——动态 Logo、品牌宣传片、社交媒体动效。" data-en="Animated logos, brand videos, social media motion.">让设计「活」起来——动态 Logo、品牌宣传片、社交媒体动效。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 3: WORKS -->
+  <div class="page" data-index="3">
+    <div class="card">
+      <div class="works-header">
+        <h2><span data-zh="精选作品" data-en="Selected Works">精选作品</span></h2>
+        <div class="num">03</div>
+      </div>
+      <div class="works-grid">
+        <div class="work-card">
+          <div class="work-ph"><div class="sh"></div><span data-zh="品牌项目 A" data-en="Brand A">品牌项目 A</span></div>
+          <div class="work-info"><div class="wn" data-zh="品牌视觉重塑" data-en="Brand Redesign">品牌视觉重塑</div><div class="wt" data-zh="品牌设计 · 视觉识别" data-en="Branding · Identity">品牌设计 · 视觉识别</div></div>
+        </div>
+        <div class="work-card">
+          <div class="work-ph"><div class="sh"></div><span data-zh="海报项目 B" data-en="Poster B">海报项目 B</span></div>
+          <div class="work-info"><div class="wn" data-zh="创意海报系列" data-en="Poster Series">创意海报系列</div><div class="wt" data-zh="平面设计 · 海报" data-en="Graphic · Poster">平面设计 · 海报</div></div>
+        </div>
+        <div class="work-card wide">
+          <div class="work-ph"><div class="sh"></div><span data-zh="包装项目 C" data-en="Packaging C">包装项目 C</span></div>
+          <div class="work-info"><div class="wn" data-zh="产品包装设计" data-en="Product Packaging">产品包装设计</div><div class="wt" data-zh="包装设计 · 品牌" data-en="Packaging · Branding">包装设计 · 品牌</div></div>
+        </div>
+        <div class="work-card">
+          <div class="work-ph"><div class="sh"></div><span data-zh="UI 项目 D" data-en="UI Project D">UI 项目 D</span></div>
+          <div class="work-info"><div class="wn" data-zh="APP 界面设计" data-en="APP Interface">APP 界面设计</div><div class="wt" data-zh="UI/UX · 移动端" data-en="UI/UX · Mobile">UI/UX · 移动端</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 4: CONTACT -->
+  <div class="page" data-index="4">
+    <div class="card contact-card">
+      <div class="contact-label" data-zh="联系我" data-en="Get in Touch">联系我</div>
+      <h2><span data-zh="有项目想法？" data-en="Got a Project?">有项目想法？</span><br><span class="outline" data-zh="聊聊吧" data-en="Let's Talk">聊聊吧</span></h2>
+      <p data-zh="无论是品牌升级、平面设计还是创意合作，都欢迎与我联系。" data-en="Brand upgrades, graphic design, or creative collaboration — let's connect.">无论是品牌升级、平面设计还是创意合作，都欢迎与我联系。</p>
+      <a href="mailto:757497092@qq.com" class="contact-email">757497092@qq.com</a>
+      <div class="contact-socials">
+        <a href="#" class="soc" title="WeChat">💬</a>
+        <a href="#" class="soc" title="Behance">🅱️</a>
+        <a href="#" class="soc" title="Dribbble">🏀</a>
+        <a href="#" class="soc" title="Instagram">📷</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER (fixed bottom) -->
+<div style="position:fixed;bottom:0;left:0;right:0;z-index:100;padding:1rem 2.5rem;display:flex;justify-content:space-between;font-size:.65rem;color:rgba(255,255,255,.2)">
+  <span>© 2025 LXLYLZL</span>
+  <span data-zh="用热爱设计" data-en="Designed with passion">用热爱设计</span>
+</div>
+
+<script>
+// ══════ PAGE SWITCHING ══════
+const pages = document.querySelectorAll('.page');
+const dots = document.querySelectorAll('.side-dots .dot');
+const navAs = document.querySelectorAll('#navLinks a');
+const total = pages.length;
+let current = 0;
+let isAnimating = false;
+
+function goTo(i) {
+  if (i < 0 || i >= total || i === current || isAnimating) return;
+  isAnimating = true;
+  const dir = i > current ? 1 : -1;
+
+  // Exit current
+  pages[current].classList.remove('active');
+  pages[current].classList.add(dir > 0 ? 'exit-up' : '');
+  pages[current].style.transform = dir > 0
+    ? 'translateY(-60px) scale(.97)'
+    : 'translateY(60px) scale(.97)';
+  pages[current].style.opacity = '0';
+
+  // Enter new
+  setTimeout(() => {
+    pages[current].classList.remove('exit-up');
+    pages[current].style.transform = '';
+    pages[current].style.opacity = '';
+    current = i;
+    pages[current].style.transform = dir > 0
+      ? 'translateY(60px) scale(.97)'
+      : 'translateY(-60px) scale(.97)';
+    pages[current].style.opacity = '0';
+    void pages[current].offsetHeight;
+    pages[current].classList.add('active');
+    pages[current].style.transform = '';
+    pages[current].style.opacity = '';
+
+    // Update dots
+    dots.forEach((d, idx) => d.classList.toggle('active', idx === i));
+    // Update nav
+    navAs.forEach((a, idx) => a.classList.toggle('active', idx === i));
+    // Update bg
+    document.body.setAttribute('data-section', i);
+
+    setTimeout(() => { isAnimating = false; }, 350);
+  }, 250);
+}
+
+// Wheel
+let wheelCooldown = false;
+window.addEventListener('wheel', e => {
+  if (wheelCooldown) return;
+  const delta = Math.abs(e.deltaY);
+  if (delta < 15) return; // ignore micro-scrolls
+  wheelCooldown = true;
+  setTimeout(() => wheelCooldown = false, 800);
+  if (e.deltaY > 0) goTo(current + 1);
+  else goTo(current - 1);
+}, { passive: true });
+
+// Touch
+let touchY = 0;
+window.addEventListener('touchstart', e => { touchY = e.touches[0].clientY; }, { passive: true });
+window.addEventListener('touchend', e => {
+  const diff = touchY - e.changedTouches[0].clientY;
+  if (Math.abs(diff) > 50) goTo(diff > 0 ? current + 1 : current - 1);
+}, { passive: true });
+
+// Keyboard
+window.addEventListener('keydown', e => {
+  if (e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); goTo(current + 1); }
+  if (e.key === 'ArrowUp') { e.preventDefault(); goTo(current - 1); }
+});
+
+// Dots click
+dots.forEach(d => d.addEventListener('click', () => goTo(+d.dataset.i)));
+
+// Nav click
+navAs.forEach(a => {
+  a.addEventListener('click', e => { e.preventDefault(); goTo(+a.dataset.i); });
+});
+
+// Dot labels
+function updateDotLabels() {
+  const lang = document.documentElement.lang === 'en' ? 'en' : 'zh';
+  dots.forEach(d => {
+    d.setAttribute('data-label', d.getAttribute('data-label-' + lang));
+  });
+}
+
+// ══════ LANGUAGE TOGGLE ══════
+let currentLang = 'zh';
+const langToggle = document.getElementById('langToggle');
+const langLabel = document.getElementById('langLabel');
+
+function setLang(lang) {
+  currentLang = lang;
+  langLabel.textContent = lang === 'zh' ? 'EN' : '中文';
+  document.documentElement.lang = lang === 'zh' ? 'zh' : 'en';
+  document.querySelectorAll('[data-zh][data-en]').forEach(el => {
+    const text = el.getAttribute('data-' + lang);
+    if (text) el.textContent = text;
+  });
+  updateDotLabels();
+}
+
+langToggle.addEventListener('click', () => setLang(currentLang === 'zh' ? 'en' : 'zh'));
+langToggle.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLang(currentLang === 'zh' ? 'en' : 'zh'); }});
+updateDotLabels();
+</script>
+</body>
+</html>
