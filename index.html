@@ -846,11 +846,34 @@ function updateDesktopNav(forcedIndex) {
 
 
 
-// Desktop wheel - convert vertical scroll to horizontal scroll
+// Desktop wheel - convert vertical scroll to horizontal scroll with infinite loop
+let lastWheelTime = 0;
 window.addEventListener('wheel', e => {
   if (window.innerWidth > 900) {
     const wrapper = document.querySelector('.pages-wrapper');
     if (wrapper) {
+      const maxScroll = wrapper.scrollWidth - wrapper.clientWidth;
+      const pageWidth = getDesktopPageWidth();
+      const threshold = pageWidth * 0.3; // 30% threshold for loop trigger
+      
+      // Detect scroll direction
+      const scrollingDown = e.deltaY > 0;
+      
+      // At last page and scrolling down -> go to first page
+      if (scrollingDown && wrapper.scrollLeft >= maxScroll - threshold) {
+        wrapper.scrollTo({ left: 0, behavior: 'smooth' });
+        e.preventDefault();
+        return;
+      }
+      
+      // At first page and scrolling up -> go to last page
+      if (!scrollingDown && wrapper.scrollLeft <= threshold) {
+        wrapper.scrollTo({ left: maxScroll, behavior: 'smooth' });
+        e.preventDefault();
+        return;
+      }
+      
+      // Normal scroll
       wrapper.scrollLeft += e.deltaY;
       e.preventDefault();
     }
