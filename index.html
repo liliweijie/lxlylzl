@@ -145,7 +145,7 @@ img{max-width:100%;display:block}
 /* ══════ PAGE ══════ */
 .page{
   width:100%;height:100%;
-  display:flex;align-items:center;justify-content:center;
+  display:flex;align-items:stretch;justify-content:center;
   flex-shrink:0;
   background:rgba(255,255,255,0.02);
   border:1px solid rgba(255,255,255,0.05);
@@ -189,18 +189,104 @@ img{max-width:100%;display:block}
 .btn-ghost:hover{border-color:var(--accent2);color:var(--accent2)}
 
 /* ══════ WORKS PAGE ══════ */
-/* ══════ SCROLL FRAME ══════ */
-.scroll-frame{
+.works-card{
+  width:100%;max-width:1400px;
+  height:100%;
+  padding:0;
+  position:relative;
+  overflow:visible;
+  display:flex;
+  flex-direction:column;
+}
+
+/* ══════ WORKS LAYOUT (Desktop) ══════ */
+.works-layout{
+  display:flex;
+  width:100%;height:100%;
+  gap:1.5rem;
+  padding:2rem;
+}
+
+/* Left Filter Nav */
+.works-filter-nav{
+  width:180px;
+  flex-shrink:0;
+  display:flex;
+  flex-direction:column;
+}
+.works-filter-header{
+  font-family:var(--display);
+  font-weight:600;
+  font-size:.85rem;
+  color:var(--dim);
+  text-transform:uppercase;
+  letter-spacing:.1em;
+  margin-bottom:1rem;
+  padding-bottom:.5rem;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.works-filter-list{
+  display:flex;
+  flex-direction:column;
+  gap:.25rem;
+}
+.works-filter-item{
+  display:flex;
+  align-items:center;
+  gap:.75rem;
+  padding:.6rem .8rem;
+  border:none;
+  background:transparent;
+  color:var(--dim);
+  font-family:var(--body);
+  font-size:.9rem;
+  text-align:left;
+  border-radius:8px;
+  cursor:pointer;
+  transition:all .2s;
+}
+.works-filter-item:hover{
+  background:rgba(255,255,255,.05);
+  color:var(--cream);
+}
+.works-filter-item.active{
+  background:rgba(255,58,92,.12);
+  color:var(--accent);
+}
+.filter-dot{
+  width:6px;height:6px;
+  border-radius:50%;
+  background:currentColor;
+  opacity:.4;
+  transition:opacity .2s;
+}
+.works-filter-item.active .filter-dot{opacity:1}
+.filter-text{flex:1}
+.filter-count{
+  font-size:.75rem;
+  opacity:.5;
+  background:rgba(255,255,255,.08);
+  padding:.1rem .4rem;
+  border-radius:4px;
+}
+
+/* Scrollable Works Container */
+.scrollable-works{
+  flex:1;
+  display:flex;
+  min-width:0;
+  min-height:0;
+}
+
+/* Right Main Grid */
+.works-main{
   flex:1;
   display:flex;
   flex-direction:column;
+  min-width:0;
+  min-height:0;
   overflow:hidden;
-  border:1px solid rgba(255,255,255,0.05);
-  border-radius:12px;
-  background:rgba(0,0,0,0.2);
 }
-
-/* ══════ WORKS ══════ */
 .works-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:1.5rem;flex-shrink:0}
 .works-header h2{font-family:var(--display);font-weight:700;font-size:clamp(1.8rem,3.5vw,2.8rem)}
 .works-header .num{font-family:var(--display);font-size:3.5rem;font-weight:800;color:rgba(255,255,255,.04)}
@@ -215,18 +301,65 @@ img{max-width:100%;display:block}
 }
 .works-grid::-webkit-scrollbar{width:4px}
 .works-grid::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px}
-.works-header h2{font-family:var(--display);font-weight:700;font-size:clamp(1.8rem,3.5vw,2.8rem)}
-.works-header .num{font-family:var(--display);font-size:3.5rem;font-weight:800;color:rgba(255,255,255,.04)}
-.works-grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:1.2rem;
-  max-height:calc(100% - 180px);
-  overflow-y:auto;
-  padding-right:.5rem;
+
+/* ══════ MOBILE WORKS LAYOUT ══════ */
+.works-mobile-layout{
+  display:none;
+  flex-direction:column;
+  width:100%;height:100%;
+  padding:1rem;
 }
-.works-grid::-webkit-scrollbar{width:4px}
-.works-grid::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px}
+.works-mobile-header{
+  margin-bottom:1rem;
+}
+.works-mobile-header h2{
+  font-family:var(--display);
+  font-weight:700;
+  font-size:1.5rem;
+}
+.works-mobile-tabs{
+  display:flex;
+  gap:.5rem;
+  overflow-x:auto;
+  padding-bottom:.75rem;
+  margin-bottom:1rem;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+}
+.works-mobile-tabs::-webkit-scrollbar{display:none}
+.works-mobile-tab{
+  flex-shrink:0;
+  padding:.5rem 1rem;
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:20px;
+  background:transparent;
+  color:var(--dim);
+  font-family:var(--body);
+  font-size:.85rem;
+  cursor:pointer;
+  transition:all .2s;
+  white-space:nowrap;
+}
+.works-mobile-tab.active{
+  background:var(--accent);
+  border-color:var(--accent);
+  color:#fff;
+}
+.works-mobile-grid{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  gap:1rem;
+  overflow-y:auto;
+  min-height:0;
+}
+
+@media(max-width:900px){
+  .works-layout{display:none!important}
+  .works-mobile-layout{display:flex!important}
+  .works-card{padding:0;width:100%;max-width:none;height:100%}
+  .page .card{padding:0!important}
+}
 .work-card{
   border-radius:16px;position:relative;
   background:var(--card);border:1px solid var(--card-border);
@@ -663,13 +796,40 @@ img{max-width:100%;display:block}
 
         <!-- PAGE 1: WORKS -->
         <section class="page" data-index="1">
-          <div class="card">
-            <div class="scroll-frame" data-scrollable="works">
-              <div class="works-header">
-                <h2><span data-zh="作品集" data-en="Portfolio">作品集</span></h2>
-                <div class="num">01</div>
+          <div class="card works-card">
+            <!-- Desktop: Left filter + Right grid -->
+            <div class="works-layout">
+              <!-- Left Filter Nav -->
+              <div class="works-filter-nav">
+                <div class="works-filter-header">
+                  <span data-zh="分类" data-en="Category">分类</span>
+                </div>
+                <div class="works-filter-list" id="worksFilterList">
+                  <button class="works-filter-item active" data-filter="all">
+                    <span class="filter-dot"></span>
+                    <span class="filter-text" data-zh="全部" data-en="All">全部</span>
+                    <span class="filter-count" id="filterCountAll">0</span>
+                  </button>
+                </div>
               </div>
-              <div class="works-grid" id="desktopWorksGrid"></div>
+              <!-- Right Grid -->
+              <div class="scrollable-works" data-scrollable="works">
+                <div class="works-main">
+                  <div class="works-header">
+                    <h2><span data-zh="作品集" data-en="Portfolio">作品集</span></h2>
+                    <div class="num">01</div>
+                  </div>
+                  <div class="works-grid" id="desktopWorksGrid"></div>
+                </div>
+              </div>
+            </div>
+            <!-- Mobile: Top tabs + Grid -->
+            <div class="works-mobile-layout">
+              <div class="works-mobile-header">
+                <h2><span data-zh="作品集" data-en="Portfolio">作品集</span></h2>
+              </div>
+              <div class="works-mobile-tabs" id="worksMobileTabs"></div>
+              <div class="works-mobile-grid" id="mobileWorksGrid"></div>
             </div>
           </div>
         </section>
@@ -866,7 +1026,14 @@ const DEFAULT_WORKS = [
   { id:'001', titleZh:'详情页设计', titleEn:'Product Detail Page', aboutZh:'电商店铺产品详情页设计，突出产品卖点与使用场景，提升转化率。', aboutEn:'E-commerce product detail pages that highlight features.', tags:['详情页','电商','视觉'] },
   { id:'002', titleZh:'海报设计', titleEn:'Poster Design', aboutZh:'品牌活动、文化艺术节及商业推广海报，通过视觉语言传递信息与情感。', aboutEn:'Brand events, cultural posters communicating through visual language.', tags:['海报','视觉','排版'] },
   { id:'003', titleZh:'LOGO 设计', titleEn:'Logo Design', aboutZh:'品牌标识从概念构思到矢量输出，打造具有辨识度的品牌符号。', aboutEn:'Brand logo from concept to vector output.', tags:['LOGO','品牌','矢量'] },
-  { id:'004', titleZh:'商业插画', titleEn:'Commercial Illustration', aboutZh:'品牌插画与原创图形，为品牌注入独特艺术气质。', aboutEn:'Brand illustration adding artistic character.', tags:['插画','图形','原创'] }
+  { id:'004', titleZh:'商业插画', titleEn:'Commercial Illustration', aboutZh:'品牌插画与原创图形，为品牌注入独特艺术气质。', aboutEn:'Brand illustration adding artistic character.', tags:['插画','图形','原创'] },
+  { id:'005', titleZh:'品牌视觉系统', titleEn:'Brand Identity System', aboutZh:'完整品牌视觉识别系统设计，包括标准色彩、字体、应用规范等。', aboutEn:'Complete brand visual identity system design.', tags:['品牌','VI','系统'] },
+  { id:'006', titleZh:'包装设计', titleEn:'Packaging Design', aboutZh:'产品包装从概念到落地的全流程设计，打造独特货架吸引力。', aboutEn:'Product packaging design from concept to production.', tags:['包装','产品','货架'] },
+  { id:'007', titleZh:'UI 界面设计', titleEn:'UI Interface Design', aboutZh:'移动端及 Web 界面设计，注重用户体验与视觉美感的平衡。', aboutEn:'Mobile and web interface design balancing UX and aesthetics.', tags:['UI','界面','体验'] },
+  { id:'008', titleZh:'书籍装帧设计', titleEn:'Book Cover Design', aboutZh:'书籍、杂志及出版物的封面与版式设计。', aboutEn:'Book, magazine and publication cover and layout design.', tags:['书籍','版式','出版'] },
+  { id:'009', titleZh:'活动主视觉', titleEn:'Event Visual Identity', aboutZh:'展览、发布会、演出等大型活动的整体视觉形象设计。', aboutEn:'Exhibition, launch events and large-scale event visual design.', tags:['活动','展览','主视觉'] },
+  { id:'010', titleZh:'字体设计', titleEn:'Typography Design', aboutZh:'定制字体设计与字形优化，提升品牌专属感。', aboutEn:'Custom typography and glyph optimization.', tags:['字体','字形','定制'] },
+  { id:'011', titleZh:'广告创意设计', titleEn:'Advertising Creative', aboutZh:'社交媒体、户外广告及数字营销视觉内容的创意设计。', aboutEn:'Social media, OOH and digital marketing creative design.', tags:['广告','创意','营销'] }
 ];
 
 const DEFAULT_WENCHUANG = [
@@ -910,14 +1077,33 @@ function updateDesktopNav(forcedIndex) {
 let lastWheelTime = 0;
 window.addEventListener('wheel', e => {
   if (window.innerWidth > 900) {
+    // Check if mouse is over a scrollable-works area (works page)
+    const worksAreas = document.querySelectorAll('.scrollable-works');
+    for (const area of worksAreas) {
+      const rect = area.getBoundingClientRect();
+      if (e.clientX >= rect.left && e.clientX <= rect.right &&
+          e.clientY >= rect.top && e.clientY <= rect.bottom) {
+        // Mouse is over works area - scroll the works-grid
+        const grid = area.querySelector('.works-grid');
+        if (grid) {
+          grid.scrollTop += e.deltaY;
+        }
+        e.preventDefault();
+        return;
+      }
+    }
+    
     // Check if mouse is over a scroll-frame
     const frames = document.querySelectorAll('.scroll-frame');
     for (const frame of frames) {
       const rect = frame.getBoundingClientRect();
       if (e.clientX >= rect.left && e.clientX <= rect.right &&
           e.clientY >= rect.top && e.clientY <= rect.bottom) {
-        // Mouse is over this frame - scroll the frame's content vertically
-        frame.scrollTop += e.deltaY;
+        // Mouse is over this frame - scroll the inner scrollable element (works-grid, blog-list, wc-grid)
+        const scrollTarget = frame.querySelector('.works-grid, .blog-list, .wc-grid');
+        if (scrollTarget) {
+          scrollTarget.scrollTop += e.deltaY;
+        }
         e.preventDefault();
         return;
       }
@@ -1076,6 +1262,12 @@ function toggleMobileLang() {
 }
 
 // ═══════════════════════════════════════════════════════════
+// WORKS FILTER STATE
+// ═══════════════════════════════════════════════════════════
+let currentWorksFilter = 'all';
+let allWorks = [];
+
+// ═══════════════════════════════════════════════════════════
 // RENDER WORKS
 // ═══════════════════════════════════════════════════════════
 function renderWorks() {
@@ -1084,58 +1276,133 @@ function renderWorks() {
     works = DEFAULT_WORKS;
     localStorage.setItem(WORKS_KEY, JSON.stringify(works));
   }
+  allWorks = works;
   
   const tagColors = ['accent','accent2','accent3','purple'];
   
-  // Desktop grid
-  const desktopGrid = document.getElementById('desktopWorksGrid');
-  if (desktopGrid) {
-    if (works.length === 0) {
-      desktopGrid.innerHTML = '<div style="text-align:center;padding:3rem;color:var(--dim)">暂无作品</div>';
-    } else {
-      desktopGrid.innerHTML = works.map((w, i) => `
-        <div class="work-card">
-          <div class="work-cover">
-            <div class="cover-ph"><div class="sh"></div><span>${String(i + 1).padStart(2,'0')}</span></div>
-          </div>
-          <div class="work-body">
-            <div class="work-top">
-              <div class="work-id">SERIAL NO.${w.id || String(i + 1).padStart(3,'0')}</div>
-              <div class="work-arrow">↗</div>
-            </div>
-            <div class="work-title" data-zh="${w.titleZh}" data-en="${w.titleEn}">${currentLang === 'en' ? w.titleEn : w.titleZh}</div>
-            <div class="work-about" data-zh="${w.aboutZh}" data-en="${w.aboutEn}">${currentLang === 'en' ? w.aboutEn : w.aboutZh}</div>
-            <div class="work-tags">
-              ${(w.tags || []).map((t,ti) => `<span class="work-tag ${tagColors[ti % tagColors.length]}">${t}</span>`).join('')}
-            </div>
-          </div>
-        </div>
-      `).join('');
-    }
+  // Extract all unique tags from works
+  const allTags = [...new Set(works.flatMap(w => w.tags || []))];
+  
+  // Render Desktop Filter Nav
+  const filterList = document.getElementById('worksFilterList');
+  if (filterList) {
+    const totalCount = works.length;
+    filterList.innerHTML = `
+      <button class="works-filter-item ${currentWorksFilter === 'all' ? 'active' : ''}" data-filter="all">
+        <span class="filter-dot"></span>
+        <span class="filter-text" data-zh="全部" data-en="All">全部</span>
+        <span class="filter-count">${totalCount}</span>
+      </button>
+      ${allTags.map(tag => {
+        const count = works.filter(w => (w.tags || []).includes(tag)).length;
+        return `
+          <button class="works-filter-item ${currentWorksFilter === tag ? 'active' : ''}" data-filter="${tag}">
+            <span class="filter-dot"></span>
+            <span class="filter-text">${tag}</span>
+            <span class="filter-count">${count}</span>
+          </button>
+        `;
+      }).join('')}
+    `;
+    
+    // Add click handlers
+    filterList.querySelectorAll('.works-filter-item').forEach(btn => {
+      btn.addEventListener('click', () => {
+        currentWorksFilter = btn.dataset.filter;
+        // Update active state
+        filterList.querySelectorAll('.works-filter-item').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderWorksGrid();
+      });
+    });
   }
   
-  // Mobile list
-  const mobileList = document.getElementById('mobileWorksList');
-  if (mobileList) {
-    if (works.length === 0) {
-      mobileList.innerHTML = '<div class="blog-empty">暂无作品</div>';
-    } else {
-      mobileList.innerHTML = works.map((w, i) => `
-        <div class="mobile-card">
-          <div class="mobile-card-cover">
-            <span class="mobile-cover-num">${String(i + 1).padStart(2,'0')}</span>
+  // Render Mobile Tabs
+  const mobileTabs = document.getElementById('worksMobileTabs');
+  if (mobileTabs) {
+    mobileTabs.innerHTML = `
+      <button class="works-mobile-tab ${currentWorksFilter === 'all' ? 'active' : ''}" data-filter="all">全部</button>
+      ${allTags.map(tag => `
+        <button class="works-mobile-tab ${currentWorksFilter === tag ? 'active' : ''}" data-filter="${tag}">${tag}</button>
+      `).join('')}
+    `;
+    
+    // Add click handlers
+    mobileTabs.querySelectorAll('.works-mobile-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        currentWorksFilter = btn.dataset.filter;
+        mobileTabs.querySelectorAll('.works-mobile-tab').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderWorksMobileGrid();
+      });
+    });
+  }
+  
+  // Render grids
+  renderWorksGrid();
+  renderWorksMobileGrid();
+}
+
+function renderWorksGrid() {
+  const desktopGrid = document.getElementById('desktopWorksGrid');
+  if (!desktopGrid) return;
+  
+  const tagColors = ['accent','accent2','accent3','purple'];
+  const filteredWorks = currentWorksFilter === 'all' 
+    ? allWorks 
+    : allWorks.filter(w => (w.tags || []).includes(currentWorksFilter));
+  
+  if (filteredWorks.length === 0) {
+    desktopGrid.innerHTML = '<div style="text-align:center;padding:3rem;color:var(--dim)">暂无作品</div>';
+  } else {
+    desktopGrid.innerHTML = filteredWorks.map((w, i) => `
+      <div class="work-card">
+        <div class="work-cover">
+          <div class="cover-ph"><div class="sh"></div><span>${String(i + 1).padStart(2,'0')}</span></div>
+        </div>
+        <div class="work-body">
+          <div class="work-top">
+            <div class="work-id">SERIAL NO.${w.id || String(i + 1).padStart(3,'0')}</div>
+            <div class="work-arrow">↗</div>
           </div>
-          <div class="mobile-card-body">
-            <div class="mobile-card-id">SERIAL NO.${w.id || String(i + 1).padStart(3,'0')}</div>
-            <div class="mobile-card-title" data-zh="${w.titleZh}" data-en="${w.titleEn}">${currentLang === 'en' ? w.titleEn : w.titleZh}</div>
-            <div class="mobile-card-about" data-zh="${w.aboutZh}" data-en="${w.aboutEn}">${currentLang === 'en' ? w.aboutEn : w.aboutZh}</div>
-            <div class="mobile-tags">
-              ${(w.tags || []).slice(0,3).map((t,ti) => `<span class="mobile-tag ${tagColors[ti]}">${t}</span>`).join('')}
-            </div>
+          <div class="work-title" data-zh="${w.titleZh}" data-en="${w.titleEn}">${currentLang === 'en' ? w.titleEn : w.titleZh}</div>
+          <div class="work-about" data-zh="${w.aboutZh}" data-en="${w.aboutEn}">${currentLang === 'en' ? w.aboutEn : w.aboutZh}</div>
+          <div class="work-tags">
+            ${(w.tags || []).map((t,ti) => `<span class="work-tag ${tagColors[ti % tagColors.length]}">${t}</span>`).join('')}
           </div>
         </div>
-      `).join('');
-    }
+      </div>
+    `).join('');
+  }
+}
+
+function renderWorksMobileGrid() {
+  const mobileGrid = document.getElementById('mobileWorksGrid');
+  if (!mobileGrid) return;
+  
+  const tagColors = ['accent','accent2','accent3','purple'];
+  const filteredWorks = currentWorksFilter === 'all' 
+    ? allWorks 
+    : allWorks.filter(w => (w.tags || []).includes(currentWorksFilter));
+  
+  if (filteredWorks.length === 0) {
+    mobileGrid.innerHTML = '<div style="text-align:center;padding:3rem;color:var(--dim)">暂无作品</div>';
+  } else {
+    mobileGrid.innerHTML = filteredWorks.map((w, i) => `
+      <div class="mobile-card">
+        <div class="mobile-card-cover">
+          <span class="mobile-cover-num">${String(i + 1).padStart(2,'0')}</span>
+        </div>
+        <div class="mobile-card-body">
+          <div class="mobile-card-id">SERIAL NO.${w.id || String(i + 1).padStart(3,'0')}</div>
+          <div class="mobile-card-title" data-zh="${w.titleZh}" data-en="${w.titleEn}">${currentLang === 'en' ? w.titleEn : w.titleZh}</div>
+          <div class="mobile-card-about" data-zh="${w.aboutZh}" data-en="${w.aboutEn}">${currentLang === 'en' ? w.aboutEn : w.aboutZh}</div>
+          <div class="mobile-tags">
+            ${(w.tags || []).slice(0,3).map((t,ti) => `<span class="mobile-tag ${tagColors[ti]}">${t}</span>`).join('')}
+          </div>
+        </div>
+      </div>
+    `).join('');
   }
 }
 
