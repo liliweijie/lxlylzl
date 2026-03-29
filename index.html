@@ -846,53 +846,32 @@ function updateDesktopNav(forcedIndex) {
   }
 }
 
-// Desktop wheel scroll
+// Desktop wheel - free scroll, no snap
 window.addEventListener('wheel', e => {
-  if (window.innerWidth > 900) {
-    e.preventDefault();
-    const pageWidth = getDesktopPageWidth();
-    let targetIndex;
-    if (e.deltaY > 0) {
-      targetIndex = desktopCurrent + 1;
-      if (targetIndex >= desktopPages.length) targetIndex = 0;
-    } else {
-      targetIndex = desktopCurrent - 1;
-      if (targetIndex < 0) targetIndex = desktopPages.length - 1;
-    }
-    desktopCurrent = targetIndex;
-    desktopPagesWrapper.scrollTo({ left: targetIndex * pageWidth, behavior: 'smooth' });
-    updateDesktopNav(targetIndex);
-  }
-}, { passive: false });
+  // Let browser handle native scrolling naturally
+  // No preventDefault - allow free horizontal scrolling
+}, { passive: true });
 
-// Desktop keyboard
+// Desktop keyboard - no arrow key navigation (free scroll)
 window.addEventListener('keydown', e => {
-  if (window.innerWidth > 900) {
-    const pageWidth = getDesktopPageWidth();
-    let targetIndex;
-    if (e.key === 'ArrowRight') {
-      e.preventDefault();
-      targetIndex = desktopCurrent + 1;
-      if (targetIndex >= desktopPages.length) targetIndex = 0;
-    } else if (e.key === 'ArrowLeft') {
-      e.preventDefault();
-      targetIndex = desktopCurrent - 1;
-      if (targetIndex < 0) targetIndex = desktopPages.length - 1;
-    } else return;
-    desktopCurrent = targetIndex;
-    desktopPagesWrapper.scrollTo({ left: targetIndex * pageWidth, behavior: 'smooth' });
-    updateDesktopNav(targetIndex);
-  }
+  // Arrow keys no longer navigate between pages - allow natural scrolling
 });
 
+// Desktop scroll - update nav only after scrolling stops
+let desktopScrollTimeout = null;
 desktopPagesWrapper.addEventListener('scroll', () => {
-  const scrollLeft = desktopPagesWrapper.scrollLeft;
-  const pageWidth = getDesktopPageWidth();
-  const newCurrent = Math.round(scrollLeft / pageWidth);
-  if (newCurrent !== desktopCurrent) {
-    desktopCurrent = newCurrent;
-    updateDesktopNav(desktopCurrent);
-  }
+  // Clear previous timeout
+  if (desktopScrollTimeout) clearTimeout(desktopScrollTimeout);
+  // Update nav after scroll stops (150ms debounce)
+  desktopScrollTimeout = setTimeout(() => {
+    const scrollLeft = desktopPagesWrapper.scrollLeft;
+    const pageWidth = getDesktopPageWidth();
+    const newCurrent = Math.round(scrollLeft / pageWidth);
+    if (newCurrent !== desktopCurrent) {
+      desktopCurrent = newCurrent;
+      updateDesktopNav(desktopCurrent);
+    }
+  }, 150);
 }, { passive: true });
 
 // Desktop language toggle
