@@ -189,7 +189,32 @@ img{max-width:100%;display:block}
 .btn-ghost:hover{border-color:var(--accent2);color:var(--accent2)}
 
 /* ══════ WORKS PAGE ══════ */
-.works-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:2rem}
+/* ══════ SCROLL FRAME ══════ */
+.scroll-frame{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,0.05);
+  border-radius:12px;
+  background:rgba(0,0,0,0.2);
+}
+
+/* ══════ WORKS ══════ */
+.works-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:1.5rem;flex-shrink:0}
+.works-header h2{font-family:var(--display);font-weight:700;font-size:clamp(1.8rem,3.5vw,2.8rem)}
+.works-header .num{font-family:var(--display);font-size:3.5rem;font-weight:800;color:rgba(255,255,255,.04)}
+.works-grid{
+  flex:1;
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:1rem;
+  overflow-y:auto;
+  padding-right:.5rem;
+  min-height:0;
+}
+.works-grid::-webkit-scrollbar{width:4px}
+.works-grid::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px}
 .works-header h2{font-family:var(--display);font-weight:700;font-size:clamp(1.8rem,3.5vw,2.8rem)}
 .works-header .num{font-family:var(--display);font-size:3.5rem;font-weight:800;color:rgba(255,255,255,.04)}
 .works-grid{
@@ -250,16 +275,15 @@ img{max-width:100%;display:block}
 .work-tag.purple{background:rgba(192,132,252,.08);border-color:rgba(192,132,252,.25);color:#c084fc}
 
 /* ══════ BLOG PAGE ══════ */
-.blog-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:2rem}
+.blog-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:1.5rem;flex-shrink:0}
 .blog-header h2{font-family:var(--display);font-weight:700;font-size:clamp(1.8rem,3.5vw,2.8rem)}
 .blog-header .num{font-family:var(--display);font-size:3.5rem;font-weight:800;color:rgba(255,255,255,.04)}
 .blog-list{
-  max-height:calc(100% - 180px);
+  flex:1;
   overflow-y:auto;
   padding-right:.5rem;
+  min-height:0;
 }
-.blog-list::-webkit-scrollbar{width:4px}
-.blog-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px}
 .blog-list::-webkit-scrollbar{width:4px}
 .blog-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px}
 .blog-empty{text-align:center;padding:4rem 2rem;color:var(--dim);font-size:1.1rem}
@@ -270,16 +294,17 @@ img{max-width:100%;display:block}
 .blog-post-excerpt{font-size:.9rem;color:var(--dim);line-height:1.6}
 
 /* ══════ WENCHUANG PAGE ══════ */
-.wenchuang-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:2rem}
+.wenchuang-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:1.5rem;flex-shrink:0}
 .wenchuang-header h2{font-family:var(--display);font-weight:700;font-size:clamp(1.8rem,3.5vw,2.8rem)}
 .wenchuang-header .num{font-family:var(--display);font-size:3.5rem;font-weight:800;color:rgba(255,255,255,.04)}
 .wc-grid{
+  flex:1;
   display:grid;
   grid-template-columns:repeat(2,1fr);
-  gap:1.2rem;
-  max-height:calc(100% - 180px);
+  gap:1rem;
   overflow-y:auto;
   padding-right:.5rem;
+  min-height:0;
 }
 .wc-grid::-webkit-scrollbar{width:4px}
 .wc-grid::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px}
@@ -639,23 +664,27 @@ img{max-width:100%;display:block}
         <!-- PAGE 1: WORKS -->
         <section class="page" data-index="1">
           <div class="card">
-            <div class="works-header">
-              <h2><span data-zh="作品集" data-en="Portfolio">作品集</span></h2>
-              <div class="num">01</div>
+            <div class="scroll-frame" data-scrollable="works">
+              <div class="works-header">
+                <h2><span data-zh="作品集" data-en="Portfolio">作品集</span></h2>
+                <div class="num">01</div>
+              </div>
+              <div class="works-grid" id="desktopWorksGrid"></div>
             </div>
-            <div class="works-grid" id="desktopWorksGrid"></div>
           </div>
         </section>
 
         <!-- PAGE 2: BLOG -->
         <section class="page" data-index="2">
           <div class="card">
-            <div class="blog-header">
-              <h2><span data-zh="博客" data-en="Blog">博客</span></h2>
-              <div class="num">02</div>
-            </div>
-            <div class="blog-list" id="desktopBlogList">
-              <div class="blog-empty" data-zh="暂无内容，明天见！" data-en="No posts yet, see you tomorrow!">暂无内容，明天见！</div>
+            <div class="scroll-frame" data-scrollable="blog">
+              <div class="blog-header">
+                <h2><span data-zh="博客" data-en="Blog">博客</span></h2>
+                <div class="num">02</div>
+              </div>
+              <div class="blog-list" id="desktopBlogList">
+                <div class="blog-empty" data-zh="暂无内容，明天见！" data-en="No posts yet, see you tomorrow!">暂无内容，明天见！</div>
+              </div>
             </div>
           </div>
         </section>
@@ -663,11 +692,13 @@ img{max-width:100%;display:block}
         <!-- PAGE 3: WENCHUANG -->
         <section class="page" data-index="3">
           <div class="card">
-            <div class="wenchuang-header">
-              <h2><span data-zh="文创设计" data-en="Creative Works">文创设计</span></h2>
-              <div class="num">02</div>
+            <div class="scroll-frame" data-scrollable="wenchuang">
+              <div class="wenchuang-header">
+                <h2><span data-zh="文创设计" data-en="Creative Works">文创设计</span></h2>
+                <div class="num">02</div>
+              </div>
+              <div class="wc-grid" id="desktopWenchuangGrid"></div>
             </div>
-            <div class="wc-grid" id="desktopWenchuangGrid"></div>
           </div>
         </section>
 
@@ -879,19 +910,16 @@ function updateDesktopNav(forcedIndex) {
 let lastWheelTime = 0;
 window.addEventListener('wheel', e => {
   if (window.innerWidth > 900) {
-    // Check if mouse is over a scrollable content area
-    const scrollableAreas = ['.works-grid', '.blog-list', '.wc-grid'];
-    for (const selector of scrollableAreas) {
-      const area = document.querySelector(selector);
-      if (area) {
-        const rect = area.getBoundingClientRect();
-        if (e.clientX >= rect.left && e.clientX <= rect.right &&
-            e.clientY >= rect.top && e.clientY <= rect.bottom) {
-          // Mouse is over this area - scroll it vertically
-          area.scrollTop += e.deltaY;
-          e.preventDefault();
-          return;
-        }
+    // Check if mouse is over a scroll-frame
+    const frames = document.querySelectorAll('.scroll-frame');
+    for (const frame of frames) {
+      const rect = frame.getBoundingClientRect();
+      if (e.clientX >= rect.left && e.clientX <= rect.right &&
+          e.clientY >= rect.top && e.clientY <= rect.bottom) {
+        // Mouse is over this frame - scroll the frame's content vertically
+        frame.scrollTop += e.deltaY;
+        e.preventDefault();
+        return;
       }
     }
     
