@@ -153,9 +153,12 @@ img{max-width:100%;display:block}
 }
 .card{
   width:100%;max-width:1200px;
+  height:100%;
   padding:2rem;
   position:relative;
   overflow:visible;
+  display:flex;
+  flex-direction:column;
 }
 .card::-webkit-scrollbar{width:4px}
 .card::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px}
@@ -193,7 +196,7 @@ img{max-width:100%;display:block}
   display:grid;
   grid-template-columns:repeat(2,1fr);
   gap:1.2rem;
-  height:calc(100vh - 180px);
+  max-height:calc(100% - 180px);
   overflow-y:auto;
   padding-right:.5rem;
 }
@@ -251,7 +254,7 @@ img{max-width:100%;display:block}
 .blog-header h2{font-family:var(--display);font-weight:700;font-size:clamp(1.8rem,3.5vw,2.8rem)}
 .blog-header .num{font-family:var(--display);font-size:3.5rem;font-weight:800;color:rgba(255,255,255,.04)}
 .blog-list{
-  max-height:calc(100vh - 180px);
+  max-height:calc(100% - 180px);
   overflow-y:auto;
   padding-right:.5rem;
 }
@@ -274,7 +277,7 @@ img{max-width:100%;display:block}
   display:grid;
   grid-template-columns:repeat(2,1fr);
   gap:1.2rem;
-  height:calc(100vh - 180px);
+  max-height:calc(100% - 180px);
   overflow-y:auto;
   padding-right:.5rem;
 }
