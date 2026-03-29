@@ -933,35 +933,16 @@ function closeMobileMenu() {
   document.getElementById('mobileDropdown').classList.remove('active');
 }
 
-// Mobile touch swipe
+// Mobile touch - free scroll, no snap
 let touchStartX = 0;
 let touchStartY = 0;
-let isVerticalScroll = false;
 
 mobileSlider.addEventListener('touchstart', e => {
   touchStartX = e.touches[0].clientX;
   touchStartY = e.touches[0].clientY;
-  isVerticalScroll = false;
 }, { passive: true });
 
-mobileSlider.addEventListener('touchmove', e => {
-  const deltaX = Math.abs(e.touches[0].clientX - touchStartX);
-  const deltaY = Math.abs(e.touches[0].clientY - touchStartY);
-  if (deltaY > deltaX) isVerticalScroll = true;
-}, { passive: true });
-
-mobileSlider.addEventListener('touchend', e => {
-  if (isVerticalScroll) return;
-  const deltaX = e.changedTouches[0].clientX - touchStartX;
-  const threshold = window.innerWidth * 0.2;
-  if (deltaX < -threshold) {
-    const nextPage = Math.min(mobileCurrent + 1, 4);
-    if (nextPage !== mobileCurrent) goToMobile(nextPage);
-  } else if (deltaX > threshold) {
-    const prevPage = Math.max(mobileCurrent - 1, 0);
-    if (prevPage !== mobileCurrent) goToMobile(prevPage);
-  }
-}, { passive: true });
+// No touchend handling - let browser handle native scrolling naturally
 
 // Track current page on scroll (free scroll, no snap)
 mobileSlider.addEventListener('scroll', () => {
