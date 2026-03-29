@@ -415,18 +415,18 @@ img{max-width:100%;display:block}
   flex:1;
   display:flex;
   overflow-x:auto;overflow-y:hidden;
-  scroll-behavior:smooth;
-  scroll-snap-type:x mandatory;
   -webkit-overflow-scrolling:touch;
+  scroll-behavior:auto;
+  scrollbar-width:none;
+  -ms-overflow-style:none;
 }
 
 .mobile-slider::-webkit-scrollbar{display:none}
 
-/* Mobile Page */
+/* Mobile Page - No snap */
 .mobile-page{
   width:100%;height:100%;
   flex-shrink:0;
-  scroll-snap-align:start;
   display:flex;align-items:center;justify-content:center;
   background:#151515;
 }
@@ -520,19 +520,6 @@ img{max-width:100%;display:block}
 .mobile-contact-email{font-family:var(--display);font-weight:700;font-size:1.1rem;color:var(--accent2);margin-bottom:1.5rem;display:inline-block}
 .mobile-socials{display:flex;gap:10px;justify-content:center}
 .mobile-soc{width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:1rem}
-
-/* Mobile Indicator */
-.mobile-indicator{
-  position:fixed;bottom:16px;left:50%;transform:translateX(-50%);
-  display:flex;gap:8px;z-index:50;
-}
-@media(min-width:901px){.mobile-indicator{display:none!important}}
-.mobile-indicator-dot{
-  width:8px;height:8px;border-radius:50%;
-  background:rgba(255,255,255,.2);
-  transition:all .3s;
-}
-.mobile-indicator-dot.active{background:var(--accent);transform:scale(1.3)}
 
 @media(max-width:900px){
   /* Desktop elements hidden */
@@ -810,15 +797,6 @@ img{max-width:100%;display:block}
       </div>
     </section>
   </div>
-
-  <!-- Mobile Indicator -->
-  <div class="mobile-indicator" id="mobileIndicator">
-    <div class="mobile-indicator-dot active" onclick="goToMobile(0)"></div>
-    <div class="mobile-indicator-dot" onclick="goToMobile(1)"></div>
-    <div class="mobile-indicator-dot" onclick="goToMobile(2)"></div>
-    <div class="mobile-indicator-dot" onclick="goToMobile(3)"></div>
-    <div class="mobile-indicator-dot" onclick="goToMobile(4)"></div>
-  </div>
 </div>
 
 <script>
@@ -930,17 +908,11 @@ let mobileCurrent = 0;
 let menuOpen = false;
 
 function goToMobile(index) {
+  const targetScroll = window.innerWidth * index;
+  mobileSlider.scrollTo({ left: targetScroll, behavior: 'smooth' });
   mobileCurrent = index;
-  mobileSlider.scrollTo({ left: window.innerWidth * index, behavior: 'smooth' });
-  updateMobileIndicator(index);
   updateMobileMenuActive(index);
   closeMobileMenu();
-}
-
-function updateMobileIndicator(index) {
-  document.querySelectorAll('.mobile-indicator-dot').forEach((dot, i) => {
-    dot.classList.toggle('active', i === index);
-  });
 }
 
 function updateMobileMenuActive(index) {
@@ -991,16 +963,11 @@ mobileSlider.addEventListener('touchend', e => {
   }
 }, { passive: true });
 
-// Sync mobile indicator on scroll
+// Track current page on scroll (free scroll, no snap)
 mobileSlider.addEventListener('scroll', () => {
   const scrollLeft = mobileSlider.scrollLeft;
   const pageWidth = window.innerWidth;
-  const newPage = Math.round(scrollLeft / pageWidth);
-  if (newPage !== mobileCurrent) {
-    mobileCurrent = newPage;
-    updateMobileIndicator(mobileCurrent);
-    updateMobileMenuActive(mobileCurrent);
-  }
+  mobileCurrent = Math.round(scrollLeft / pageWidth);
 }, { passive: true });
 
 // ═══════════════════════════════════════════════════════════
