@@ -154,7 +154,8 @@ img{max-width:100%;display:block}
 .card{
   width:100%;max-width:1200px;
   padding:2rem;
-  position:relative;overflow:hidden;
+  position:relative;
+  overflow:visible;
 }
 .card::-webkit-scrollbar{width:4px}
 .card::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px}
@@ -188,7 +189,16 @@ img{max-width:100%;display:block}
 .works-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:2rem}
 .works-header h2{font-family:var(--display);font-weight:700;font-size:clamp(1.8rem,3.5vw,2.8rem)}
 .works-header .num{font-family:var(--display);font-size:3.5rem;font-weight:800;color:rgba(255,255,255,.04)}
-.works-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.2rem}
+.works-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:1.2rem;
+  height:calc(100vh - 180px);
+  overflow-y:auto;
+  padding-right:.5rem;
+}
+.works-grid::-webkit-scrollbar{width:4px}
+.works-grid::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px}
 .work-card{
   border-radius:16px;position:relative;
   background:var(--card);border:1px solid var(--card-border);
@@ -240,7 +250,13 @@ img{max-width:100%;display:block}
 .blog-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:2rem}
 .blog-header h2{font-family:var(--display);font-weight:700;font-size:clamp(1.8rem,3.5vw,2.8rem)}
 .blog-header .num{font-family:var(--display);font-size:3.5rem;font-weight:800;color:rgba(255,255,255,.04)}
-.blog-list{max-height:calc(100vh - 220px);overflow-y:auto;padding-right:.5rem}
+.blog-list{
+  max-height:calc(100vh - 180px);
+  overflow-y:auto;
+  padding-right:.5rem;
+}
+.blog-list::-webkit-scrollbar{width:4px}
+.blog-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px}
 .blog-list::-webkit-scrollbar{width:4px}
 .blog-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px}
 .blog-empty{text-align:center;padding:4rem 2rem;color:var(--dim);font-size:1.1rem}
@@ -254,7 +270,16 @@ img{max-width:100%;display:block}
 .wenchuang-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:2rem}
 .wenchuang-header h2{font-family:var(--display);font-weight:700;font-size:clamp(1.8rem,3.5vw,2.8rem)}
 .wenchuang-header .num{font-family:var(--display);font-size:3.5rem;font-weight:800;color:rgba(255,255,255,.04)}
-.wc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.2rem}
+.wc-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:1.2rem;
+  height:calc(100vh - 180px);
+  overflow-y:auto;
+  padding-right:.5rem;
+}
+.wc-grid::-webkit-scrollbar{width:4px}
+.wc-grid::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px}
 .wc-card{
   border-radius:16px;position:relative;
   background:var(--card);border:1px solid var(--card-border);
@@ -847,9 +872,27 @@ function updateDesktopNav(forcedIndex) {
 
 
 // Desktop wheel - convert vertical scroll to horizontal scroll with infinite loop
+// and independent scroll for content areas
 let lastWheelTime = 0;
 window.addEventListener('wheel', e => {
   if (window.innerWidth > 900) {
+    // Check if mouse is over a scrollable content area
+    const scrollableAreas = ['.works-grid', '.blog-list', '.wc-grid'];
+    for (const selector of scrollableAreas) {
+      const area = document.querySelector(selector);
+      if (area) {
+        const rect = area.getBoundingClientRect();
+        if (e.clientX >= rect.left && e.clientX <= rect.right &&
+            e.clientY >= rect.top && e.clientY <= rect.bottom) {
+          // Mouse is over this area - scroll it vertically
+          area.scrollTop += e.deltaY;
+          e.preventDefault();
+          return;
+        }
+      }
+    }
+    
+    // Normal horizontal scroll
     const wrapper = document.querySelector('.pages-wrapper');
     if (wrapper) {
       const maxScroll = wrapper.scrollWidth - wrapper.clientWidth;
@@ -935,16 +978,37 @@ function closeMobileMenu() {
   document.getElementById('mobileDropdown').classList.remove('active');
 }
 
-// Mobile touch - free scroll, no snap
+// Mobile touch - free scroll with independent vertical scroll for content areas
 let touchStartX = 0;
 let touchStartY = 0;
+let isVerticalArea = false;
 
 mobileSlider.addEventListener('touchstart', e => {
   touchStartX = e.touches[0].clientX;
   touchStartY = e.touches[0].clientY;
+  
+  // Check if touch is over a vertical scroll area
+  const verticalAreas = ['.mobile-scroll', '.mobile-blog-list'];
+  isVerticalArea = false;
+  for (const selector of verticalAreas) {
+    const area = document.querySelector(selector);
+    if (area) {
+      const rect = area.getBoundingClientRect();
+      if (touchStartX >= rect.left && touchStartX <= rect.right &&
+          touchStartY >= rect.top && touchStartY <= rect.bottom) {
+        isVerticalArea = true;
+        break;
+      }
+    }
+  }
 }, { passive: true });
 
-// No touchend handling - let browser handle native scrolling naturally
+mobileSlider.addEventListener('touchmove', e => {
+  // If in vertical scroll area, prevent horizontal scroll
+  if (isVerticalArea) {
+    e.preventDefault();
+  }
+}, { passive: false });
 
 // Track current page on scroll (free scroll, no snap)
 mobileSlider.addEventListener('scroll', () => {
