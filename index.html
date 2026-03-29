@@ -846,6 +846,17 @@ function updateDesktopNav(forcedIndex) {
 
 
 
+// Desktop wheel - convert vertical scroll to horizontal scroll
+window.addEventListener('wheel', e => {
+  if (window.innerWidth > 900) {
+    const wrapper = document.querySelector('.pages-wrapper');
+    if (wrapper) {
+      wrapper.scrollLeft += e.deltaY;
+      e.preventDefault();
+    }
+  }
+}, { passive: false });
+
 // Desktop scroll - update nav only after scrolling stops
 let desktopScrollTimeout = null;
 desktopPagesWrapper.addEventListener('scroll', () => {
