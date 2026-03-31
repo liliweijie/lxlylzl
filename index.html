@@ -45,7 +45,7 @@ img{max-width:100%;display:block}
   transition:width var(--transition);
   flex-shrink:0;
 }
-.sidebar:hover{width:var(--sidebar-expanded)}
+.sidebar.expanded{width:var(--sidebar-expanded)}
 .sidebar-logo{
   display:grid;
   grid-template-columns:1fr;
@@ -68,18 +68,8 @@ img{max-width:100%;display:block}
 }
 .logo-icon .logo-default{opacity:1}
 .logo-icon .logo-hover{opacity:0;pointer-events:none}
-.logo-icon:hover .logo-default{opacity:0}
-.logo-icon:hover .logo-hover{opacity:1}
-
-/* GIF 播放一次动画 */
-@keyframes logoGifPlay {
-  0% { opacity: 1; }
-  99% { opacity: 1; }
-  100% { opacity: 0; }
-}
-.logo-hover.play-once {
-  animation: logoGifPlay 0.72s forwards;
-}
+.logo-icon.playing .logo-default{opacity:0}
+.logo-icon.playing .logo-hover{opacity:1}
 .logo-text{
   font-family:var(--display);font-weight:800;font-size:1rem;
   letter-spacing:.05em;text-transform:uppercase;
@@ -87,7 +77,7 @@ img{max-width:100%;display:block}
   transition:opacity .25s .15s,transform .3s .1s;
   pointer-events:none;color:var(--cream);
 }
-.sidebar:hover .logo-text{opacity:1;transform:translateX(0)}
+.sidebar.expanded .logo-text{opacity:1;transform:translateX(0)}
 .nav-section{
   flex:1;display:flex;flex-direction:column;
   gap:2px;padding:8px;
@@ -564,8 +554,8 @@ img{max-width:100%;display:block}
 }
 .mobile-logo-icon .logo-default{opacity:1}
 .mobile-logo-icon .logo-hover{opacity:0;pointer-events:none}
-.mobile-logo-icon:hover .logo-default{opacity:0}
-.mobile-logo-icon:hover .logo-hover{opacity:1}
+.mobile-logo-icon.playing .logo-default{opacity:0}
+.mobile-logo-icon.playing .logo-hover{opacity:1}
 
 .mobile-logo-text{
   font-family:var(--display);font-weight:800;font-size:.9rem;
@@ -1542,33 +1532,82 @@ renderWenchuang();
 renderBlog();
 
 // ═══════════════════════════════════════════════════════════
-// LOGO HOVER GIF (播放一次后停止)
+// LOGO HOVER GIF 交互逻辑
+// 1. 移入前：显示静态 logo，侧边栏默认宽度
+// 2. 移入：播放动画，侧边栏变宽，播完停在最后一帧
+// 3. 移出：恢复静态 logo，侧边栏恢复宽度
 // ═══════════════════════════════════════════════════════════
-document.querySelectorAll('.logo-icon, .mobile-logo-icon').forEach(function(container) {
-  var gifImg = container.querySelector('.logo-hover');
-  if (!gifImg) return;
+
+// 获取桌面端侧边栏和 logo 容器
+var desktopSidebar = document.querySelector('.sidebar');
+var desktopLogo = document.querySelector('.logo-icon');
+var desktopGif = desktopLogo ? desktopLogo.querySelector('.logo-hover') : null;
+var mobileLogo = document.querySelector('.mobile-logo-icon');
+var mobileGif = mobileLogo ? mobileLogo.querySelector('.logo-hover') : null;
+
+// GIF 播放完成的回调
+function onGifReady(img, container) {
+  // 标记为已加载完成，停在最后一帧
+  img.dataset.ready = 'true';
+}
+
+// 为容器添加交互
+function setupLogoInteraction(container, gifImg, sidebar) {
+  if (!container || !gifImg) return;
+  
+  var gifPlaying = false;
+  var animationTimeout = null;
   
   container.addEventListener('mouseenter', function() {
-    // 移除之前的动画
-    gifImg.classList.remove('play-once');
-    
     // 如果 GIF 还没加载，先加载
-    if (!gifImg.src || gifImg.src === window.location.href) {
+    if (!gifImg.src || gifImg.src === window.location.href || gifImg.src === '') {
       gifImg.src = gifImg.dataset.src;
+      // 等待 GIF 加载完成
+      gifImg.onload = function() {
+        playGif();
+      };
+      // 如果已经缓存了，加载事件可能不会触发
+      if (gifImg.complete) {
+        playGif();
+      }
+    } else {
+      playGif();
     }
     
-    // 强制重置并播放
-    void gifImg.offsetWidth;
-    gifImg.style.opacity = '1';
-    gifImg.classList.add('play-once');
+    function playGif() {
+      // 添加 playing 类 - 展开侧边栏 + 显示 GIF
+      if (sidebar) sidebar.classList.add('expanded');
+      container.classList.add('playing');
+      gifPlaying = true;
+      
+      // 清除之前的定时器
+      if (animationTimeout) clearTimeout(animationTimeout);
+      
+      // GIF 播放时长约 0.72s（根据之前设置的每帧 120ms * 6 帧）
+      // 播完后保持显示最后一帧
+      animationTimeout = setTimeout(function() {
+        gifPlaying = false;
+        // GIF 停在最后一帧，opacity 保持为 1
+      }, 750);
+    }
   });
   
   container.addEventListener('mouseleave', function() {
-    // 移除动画，恢复静态
-    gifImg.classList.remove('play-once');
-    gifImg.style.opacity = '0';
+    // 移除 playing 类 - 收起侧边栏 + 恢复静态 logo
+    if (sidebar) sidebar.classList.remove('expanded');
+    container.classList.remove('playing');
+    
+    // 清除定时器
+    if (animationTimeout) clearTimeout(animationTimeout);
+    gifPlaying = false;
   });
-});
+}
+
+// 设置桌面端交互
+setupLogoInteraction(desktopLogo, desktopGif, desktopSidebar);
+
+// 设置手机端交互（无侧边栏）
+setupLogoInteraction(mobileLogo, mobileGif, null);
 </script>
 </body>
 </html>
