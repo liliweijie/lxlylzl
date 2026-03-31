@@ -67,9 +67,19 @@ img{max-width:100%;display:block}
   transition:opacity 0.35s ease;
 }
 .logo-icon .logo-default{opacity:1}
-.logo-icon .logo-hover{opacity:0}
+.logo-icon .logo-hover{opacity:0;pointer-events:none}
 .logo-icon:hover .logo-default{opacity:0}
 .logo-icon:hover .logo-hover{opacity:1}
+
+/* GIF 播放一次动画 */
+@keyframes logoGifPlay {
+  0% { opacity: 1; }
+  99% { opacity: 1; }
+  100% { opacity: 0; }
+}
+.logo-hover.play-once {
+  animation: logoGifPlay 0.72s forwards;
+}
 .logo-text{
   font-family:var(--display);font-weight:800;font-size:1rem;
   letter-spacing:.05em;text-transform:uppercase;
@@ -553,7 +563,7 @@ img{max-width:100%;display:block}
   transition:opacity 0.35s ease;
 }
 .mobile-logo-icon .logo-default{opacity:1}
-.mobile-logo-icon .logo-hover{opacity:0}
+.mobile-logo-icon .logo-hover{opacity:0;pointer-events:none}
 .mobile-logo-icon:hover .logo-default{opacity:0}
 .mobile-logo-icon:hover .logo-hover{opacity:1}
 
@@ -1532,24 +1542,31 @@ renderWenchuang();
 renderBlog();
 
 // ═══════════════════════════════════════════════════════════
-// LOGO HOVER GIF (使用 data-src 技术)
+// LOGO HOVER GIF (播放一次后停止)
 // ═══════════════════════════════════════════════════════════
-var logoGifLoaded = false;
-document.querySelectorAll('.logo-hover').forEach(function(gifImg) {
-  var parent = gifImg.parentElement;
+document.querySelectorAll('.logo-icon, .mobile-logo-icon').forEach(function(container) {
+  var gifImg = container.querySelector('.logo-hover');
+  if (!gifImg) return;
   
-  // 同时监听 desktop 和 mobile logo
-  parent.addEventListener('mouseenter', function() {
-    if (!logoGifLoaded) {
-      // 第一次：从 data-src 加载 GIF，从头播放
+  container.addEventListener('mouseenter', function() {
+    // 移除之前的动画
+    gifImg.classList.remove('play-once');
+    
+    // 如果 GIF 还没加载，先加载
+    if (!gifImg.src || gifImg.src === window.location.href) {
       gifImg.src = gifImg.dataset.src;
-      logoGifLoaded = true;
-    } else {
-      // 重置 GIF：清空再重赋，强制从头播放
-      var src = gifImg.src;
-      gifImg.src = '';
-      gifImg.src = src;
     }
+    
+    // 强制重置并播放
+    void gifImg.offsetWidth;
+    gifImg.style.opacity = '1';
+    gifImg.classList.add('play-once');
+  });
+  
+  container.addEventListener('mouseleave', function() {
+    // 移除动画，恢复静态
+    gifImg.classList.remove('play-once');
+    gifImg.style.opacity = '0';
   });
 });
 </script>
