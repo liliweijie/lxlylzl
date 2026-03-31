@@ -66,6 +66,19 @@ img{max-width:100%;display:block}
   max-width:none;
   transition:opacity 0.35s ease;
 }
+.logo-icon{
+  display:grid;
+  cursor:pointer;
+  height:40px;
+  align-self:center;
+}
+.logo-icon img{
+  grid-area:1/1;
+  height:40px;
+  width:auto;
+  max-width:none;
+  transition:opacity 0.2s ease;
+}
 .logo-icon .logo-default{opacity:1}
 .logo-icon .logo-hover{opacity:0;pointer-events:none}
 .logo-icon:hover .logo-default{opacity:0}
@@ -550,12 +563,12 @@ img{max-width:100%;display:block}
   height:28px;
   width:auto;
   max-width:none;
-  transition:opacity 0.35s ease;
+  transition:opacity 0.2s ease;
 }
 .mobile-logo-icon .logo-default{opacity:1}
 .mobile-logo-icon .logo-hover{opacity:0;pointer-events:none}
-.mobile-logo-icon.playing .logo-default{opacity:0}
-.mobile-logo-icon.playing .logo-hover{opacity:1}
+.mobile-logo-icon:hover .logo-default{opacity:0}
+.mobile-logo-icon:hover .logo-hover{opacity:1}
 
 .mobile-logo-text{
   font-family:var(--display);font-weight:800;font-size:.9rem;
