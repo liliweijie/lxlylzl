@@ -915,8 +915,8 @@ img{max-width:100%;display:block}
   <header class="mobile-header">
     <div class="mobile-header-left">
       <div class="mobile-logo-icon">
-        <img class="logo-default" src="https://raw.githubusercontent.com/liliweijie/lxlylzl/main/assets/logo/1.webp" alt="Logo">
-        <img class="logo-hover" src="https://raw.githubusercontent.com/liliweijie/lxlylzl/main/assets/logo/2.webp" alt="Logo Hover">
+<img class="logo-default" src="https://raw.githubusercontent.com/liliweijie/lxlylzl/main/assets/logo/1.webp" alt="Logo">
+          <img class="logo-hover" src="https://raw.githubusercontent.com/liliweijie/lxlylzl/main/assets/logo/logo-hover.gif" alt="Logo Hover">
       </div>
     </div>
     <div class="mobile-header-right">
@@ -1530,6 +1530,20 @@ function renderBlog() {
 renderWorks();
 renderWenchuang();
 renderBlog();
+
+// ═══════════════════════════════════════════════════════════
+// LOGO HOVER GIF RESTART
+// ═══════════════════════════════════════════════════════════
+function restartGif(img) {
+  var src = img.src.split('?')[0];
+  img.src = src + '?t=' + new Date().getTime();
+}
+
+document.querySelectorAll('.logo-hover').forEach(function(gif) {
+  gif.parentElement.addEventListener('mouseenter', function() {
+    restartGif(gif);
+  });
+});
 </script>
 </body>
 </html>
