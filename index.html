@@ -751,7 +751,7 @@ img{max-width:100%;display:block}
     <aside class="sidebar">
       <div class="sidebar-logo">
         <div class="logo-icon">
-          <img class="logo-default" src="https://raw.githubusercontent.com/liliweijie/lxlylzl/main/assets/logo/1.webp" alt="Logo">\n          <img class="logo-hover" src="https://raw.githubusercontent.com/liliweijie/lxlylzl/main/assets/logo/2.webp" alt="Logo Hover">
+          <img class="logo-default" src="https://raw.githubusercontent.com/liliweijie/lxlylzl/main/assets/logo/1.webp" alt="Logo">\n          <img class="logo-hover" src="" data-src="https://raw.githubusercontent.com/liliweijie/lxlylzl/main/assets/logo/logo-hover.gif" alt="Logo Hover">
         </div>
       </div>
       <nav class="nav-section">
@@ -916,7 +916,7 @@ img{max-width:100%;display:block}
     <div class="mobile-header-left">
       <div class="mobile-logo-icon">
 <img class="logo-default" src="https://raw.githubusercontent.com/liliweijie/lxlylzl/main/assets/logo/1.webp" alt="Logo">
-          <img class="logo-hover" src="https://raw.githubusercontent.com/liliweijie/lxlylzl/main/assets/logo/logo-hover.gif" alt="Logo Hover">
+          <img class="logo-hover" src="" data-src="https://raw.githubusercontent.com/liliweijie/lxlylzl/main/assets/logo/logo-hover.gif" alt="Logo Hover">
       </div>
     </div>
     <div class="mobile-header-right">
@@ -1532,16 +1532,24 @@ renderWenchuang();
 renderBlog();
 
 // ═══════════════════════════════════════════════════════════
-// LOGO HOVER GIF RESTART
+// LOGO HOVER GIF (使用 data-src 技术)
 // ═══════════════════════════════════════════════════════════
-function restartGif(img) {
-  var src = img.src.split('?')[0];
-  img.src = src + '?t=' + new Date().getTime();
-}
-
-document.querySelectorAll('.logo-hover').forEach(function(gif) {
-  gif.parentElement.addEventListener('mouseenter', function() {
-    restartGif(gif);
+var logoGifLoaded = false;
+document.querySelectorAll('.logo-hover').forEach(function(gifImg) {
+  var parent = gifImg.parentElement;
+  
+  // 同时监听 desktop 和 mobile logo
+  parent.addEventListener('mouseenter', function() {
+    if (!logoGifLoaded) {
+      // 第一次：从 data-src 加载 GIF，从头播放
+      gifImg.src = gifImg.dataset.src;
+      logoGifLoaded = true;
+    } else {
+      // 重置 GIF：清空再重赋，强制从头播放
+      var src = gifImg.src;
+      gifImg.src = '';
+      gifImg.src = src;
+    }
   });
 });
 </script>
