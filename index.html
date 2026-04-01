@@ -54,13 +54,13 @@ img{max-width:100%;display:block}
   flex-shrink:0;white-space:nowrap;
 }
 .logo-wrapper{
-  display:grid;
+  display:flex;
+  align-items:center;
+  justify-content:center;
   cursor:pointer;
   height:40px;
-  align-self:center;
 }
 .logo-wrapper img{
-  grid-area:1/1;
   height:40px;
   width:auto;
   max-width:none;
@@ -1549,6 +1549,8 @@ logoFrames.forEach(function(src) {
   preloadedImages.push(img);
 });
 
+var staticLogo = 'https://raw.githubusercontent.com/liliweijie/lxlylzl/main/assets/logo/1.png';
+
 document.querySelectorAll('.logo-wrapper, .mobile-logo-wrapper').forEach(function(container) {
   var frameImg = container.querySelector('.logo-frame');
   if (!frameImg) return;
@@ -1585,8 +1587,8 @@ document.querySelectorAll('.logo-wrapper, .mobile-logo-wrapper').forEach(functio
     }
     animating = false;
     currentFrame = 0;
-    // 恢复第一帧
-    frameImg.src = preloadedImages[0].src;
+    // 恢复静态 logo
+    frameImg.src = staticLogo;
   });
 });
 </script>
