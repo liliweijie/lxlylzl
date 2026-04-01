@@ -68,11 +68,8 @@ img{max-width:100%;display:block}
 }
 .logo-static{opacity:1}
 .logo-gif{opacity:0;pointer-events:none}
-.logo-end{opacity:0;pointer-events:none;position:absolute}
 .logo-wrapper:hover .logo-static{opacity:0}
 .logo-wrapper:hover .logo-gif{opacity:1}
-.logo-wrapper.played .logo-gif{opacity:0}
-.logo-wrapper.played .logo-end{opacity:1}
 .logo-text{
   font-family:var(--display);font-weight:800;font-size:1rem;
   letter-spacing:.05em;text-transform:uppercase;
@@ -752,7 +749,6 @@ img{max-width:100%;display:block}
         <div class="logo-wrapper" id="logoWrapper">
           <img class="logo-static" src="https://raw.githubusercontent.com/liliweijie/lxlylzl/main/assets/logo/1.png" alt="Logo">
           <img class="logo-gif" src="" data-src="https://raw.githubusercontent.com/liliweijie/lxlylzl/main/assets/logo/logo-hover.gif" alt="Logo Hover">
-          <img class="logo-end" src="https://raw.githubusercontent.com/liliweijie/lxlylzl/main/assets/logo/logo-end.png" alt="Logo End">
         </div>
       </div>
       <nav class="nav-section">
@@ -918,7 +914,6 @@ img{max-width:100%;display:block}
       <div class="mobile-logo-wrapper" id="mobileLogoWrapper">
         <img class="logo-static" src="https://raw.githubusercontent.com/liliweijie/lxlylzl/main/assets/logo/1.png" alt="Logo">
         <img class="logo-gif" src="" data-src="https://raw.githubusercontent.com/liliweijie/lxlylzl/main/assets/logo/logo-hover.gif" alt="Logo Hover">
-        <img class="logo-end" src="https://raw.githubusercontent.com/liliweijie/lxlylzl/main/assets/logo/logo-end.png" alt="Logo End">
       </div>
     </div>
     <div class="mobile-header-right">
@@ -1534,68 +1529,22 @@ renderWenchuang();
 renderBlog();
 
 // ═══════════════════════════════════════════════════════════
-// LOGO HOVER GIF - 使用 canvas 控制只播放一次
+// LOGO HOVER GIF (与 logo-hover.html 完全一致)
 // ═══════════════════════════════════════════════════════════
 document.querySelectorAll('.logo-wrapper, .mobile-logo-wrapper').forEach(function(container) {
   var gifImg = container.querySelector('.logo-gif');
   if (!gifImg) return;
-  
-  var gifEnd = container.querySelector('.logo-end');
-  var gifLoaded = false;
-  var frameCount = 6;  // GIF 总帧数
-  var frameDelay = 120; // 每帧延迟 ms
-  var totalDuration = frameCount * frameDelay; // 720ms
+  var loaded = false;
   
   container.addEventListener('mouseenter', function() {
-    if (!gifLoaded) {
-      // 第一次加载 GIF
+    if (!loaded) {
       gifImg.src = gifImg.dataset.src;
-      gifLoaded = true;
-      
-      // 等待 GIF 加载完成后设置播放完成回调
-      gifImg.onload = function() {
-        startPlayback();
-      };
-      
-      // 如果图片已经在缓存中，onload 不会触发
-      if (gifImg.complete) {
-        startPlayback();
-      }
+      loaded = true;
     } else {
-      // 重置并重新播放
-      container.classList.remove('played');
-      gifImg.style.opacity = '1';
-      gifEnd.style.opacity = '0';
-      
-      // 清除之前的定时器
-      if (container.playbackTimer) {
-        clearTimeout(container.playbackTimer);
-      }
-      
-      // 重置 GIF
+      // 重置 GIF：清空再重赋，强制从头播放
       var src = gifImg.src;
       gifImg.src = '';
       gifImg.src = src;
-      
-      startPlayback();
-    }
-  });
-  
-  function startPlayback() {
-    // 播放完成后（720ms），切换到最后一帧
-    container.playbackTimer = setTimeout(function() {
-      container.classList.add('played');
-    }, totalDuration);
-  }
-  
-  container.addEventListener('mouseleave', function() {
-    // 鼠标移出，恢复到初始状态
-    container.classList.remove('played');
-    gifImg.style.opacity = '0';
-    gifEnd.style.opacity = '0';
-    
-    if (container.playbackTimer) {
-      clearTimeout(container.playbackTimer);
     }
   });
 });
