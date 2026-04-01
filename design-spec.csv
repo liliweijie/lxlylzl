@@ -1,0 +1,26 @@
+Name,Value,Category,Usage
+Background,#ffffff,Color,Page background
+Card Dark,#151515,Color,Sidebar, cards
+Card Border,rgba(255,255,255,0.06),Color,Borders
+Text Primary,#ffffff,Color,Main text
+Text Dim,rgba(255,255,255,0.45),Color,Secondary text
+Text Faint,rgba(255,255,255,0.12),Color,Disabled text
+Accent Pink,#FF3A5C,Color,Primary accent
+Accent Cyan,#00E0FF,Color,Secondary accent
+Accent Green,#B8FF57,Color,Tertiary accent
+Font Syne,Syne,Typography,Display headings
+Font Space Grotesk,Space Grotesk,Typography,Body text
+Font Noto Sans SC,Noto Sans SC,Typography,Chinese text
+Sidebar Collapsed,56px,Spacing,Collapsed sidebar width
+Sidebar Expanded,160px,Spacing,Expanded sidebar width
+Card Border Radius,20px,Spacing,Main card radius
+Nav Border Radius,10px,Spacing,Nav item radius
+Logo Height,40px,Component,Logo image height
+Logo Wrapper Height,72px,Component,Logo container height
+Nav Item Height,48px,Component,Navigation item height
+Nav Icon Size,22px,Component,Nav icon container
+Nav Icon SVG,18px,Component,Nav icon SVG
+Avatar Size,28px,Component,Avatar diameter
+Transition Default,0.38s cubic-bezier(0.65,0,0.25,1),Motion,Default transition
+Transition Nav,0.22s,Motion,Navigation hover
+Transition Logo,0.2s ease,Motion,Logo hover

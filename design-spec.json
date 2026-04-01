@@ -1,0 +1,86 @@
+{
+  "name": "LXLYLZL Portfolio Design System",
+  "version": "1.0.0",
+  "updated": "2026-04-01",
+
+  "colors": {
+    "background": { "hex": "#ffffff", "name": "Background" },
+    "card": { "hex": "#151515", "name": "Card Dark" },
+    "card-border": { "hex": "rgba(255,255,255,0.06)", "name": "Card Border" },
+    "cream": { "hex": "#ffffff", "name": "Text Primary" },
+    "dim": { "hex": "rgba(255,255,255,0.45)", "name": "Text Dim" },
+    "faint": { "hex": "rgba(255,255,255,0.12)", "name": "Text Faint" },
+    "accent": { "hex": "#FF3A5C", "name": "Accent Pink" },
+    "accent2": { "hex": "#00E0FF", "name": "Accent Cyan" },
+    "accent3": { "hex": "#B8FF57", "name": "Accent Green" }
+  },
+
+  "typography": {
+    "display": {
+      "fontFamily": "Syne",
+      "weights": [400, 500, 600, 700, 800],
+      "fallback": "Noto Sans SC, sans-serif",
+      "usage": "Headings, Logo"
+    },
+    "body": {
+      "fontFamily": "Space Grotesk",
+      "weights": [300, 400, 500, 600, 700],
+      "fallback": "Noto Sans SC, sans-serif",
+      "usage": "Body text, UI elements"
+    },
+    "chinese": {
+      "fontFamily": "Noto Sans SC",
+      "weights": [300, 400, 500, 700, 900],
+      "fallback": "sans-serif",
+      "usage": "Chinese text"
+    }
+  },
+
+  "spacing": {
+    "sidebar-collapsed": "56px",
+    "sidebar-expanded": "160px",
+    "border-radius-card": "20px",
+    "border-radius-nav": "10px",
+    "gap-nav": "2px",
+    "padding-nav": "8px"
+  },
+
+  "transitions": {
+    "default": "0.38s cubic-bezier(0.65, 0, 0.25, 1)",
+    "nav-hover": "0.22s",
+    "logo-hover": "0.2s ease"
+  },
+
+  "components": {
+    "sidebar": {
+      "widthCollapsed": "56px",
+      "widthExpanded": "160px",
+      "borderRadius": "20px",
+      "background": "#151515",
+      "border": "1px solid rgba(255,255,255,0.06)"
+    },
+    "navItem": {
+      "height": "48px",
+      "paddingX": "12px",
+      "borderRadius": "10px",
+      "iconSize": "22px",
+      "iconSvgSize": "18px"
+    },
+    "logo": {
+      "height": "40px",
+      "wrapperHeight": "72px"
+    },
+    "avatar": {
+      "size": "28px",
+      "borderRadius": "50%"
+    }
+  },
+
+  "pages": [
+    { "index": 0, "name": "首页 Home", "icon": "Home" },
+    { "index": 1, "name": "作品 Works", "icon": "Grid" },
+    { "index": 2, "name": "博客 Blog", "icon": "Book" },
+    { "index": 3, "name": "文创 Wenchuang", "icon": "Star" },
+    { "index": 4, "name": "联系 Contact", "icon": "Mail" }
+  ]
+}
