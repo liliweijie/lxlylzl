@@ -1541,6 +1541,14 @@ var logoFrames = [
 ];
 var frameDelay = 120; // 每帧间隔 ms
 
+// 预加载所有帧图片
+var preloadedImages = [];
+logoFrames.forEach(function(src) {
+  var img = new Image();
+  img.src = src;
+  preloadedImages.push(img);
+});
+
 document.querySelectorAll('.logo-wrapper, .mobile-logo-wrapper').forEach(function(container) {
   var frameImg = container.querySelector('.logo-frame');
   if (!frameImg) return;
@@ -1554,18 +1562,18 @@ document.querySelectorAll('.logo-wrapper, .mobile-logo-wrapper').forEach(functio
     
     animating = true;
     currentFrame = 0;
-    frameImg.src = logoFrames[currentFrame];
+    frameImg.src = preloadedImages[currentFrame].src;
     
     intervalId = setInterval(function() {
       currentFrame++;
       if (currentFrame < logoFrames.length) {
-        frameImg.src = logoFrames[currentFrame];
+        frameImg.src = preloadedImages[currentFrame].src;
       } else {
         clearInterval(intervalId);
         intervalId = null;
         animating = false;
         // 停在最后一帧
-        frameImg.src = logoFrames[logoFrames.length - 1];
+        frameImg.src = preloadedImages[logoFrames.length - 1].src;
       }
     }, frameDelay);
   });
@@ -1578,7 +1586,7 @@ document.querySelectorAll('.logo-wrapper, .mobile-logo-wrapper').forEach(functio
     animating = false;
     currentFrame = 0;
     // 恢复第一帧
-    frameImg.src = logoFrames[0];
+    frameImg.src = preloadedImages[0].src;
   });
 });
 </script>
