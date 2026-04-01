@@ -67,9 +67,9 @@ img{max-width:100%;display:block}
   transition:opacity 0.2s ease;
 }
 .logo-static{opacity:1}
-.logo-gif{opacity:0;pointer-events:none}
+.logo-frame{opacity:0;pointer-events:none}
 .logo-wrapper:hover .logo-static{opacity:0}
-.logo-wrapper:hover .logo-gif{opacity:1}
+.logo-wrapper:hover .logo-frame{opacity:1}
 .logo-text{
   font-family:var(--display);font-weight:800;font-size:1rem;
   letter-spacing:.05em;text-transform:uppercase;
@@ -748,7 +748,7 @@ img{max-width:100%;display:block}
       <div class="sidebar-logo">
         <div class="logo-wrapper" id="logoWrapper">
           <img class="logo-static" src="https://raw.githubusercontent.com/liliweijie/lxlylzl/main/assets/logo/1.png" alt="Logo">
-          <img class="logo-gif" src="" data-src="https://raw.githubusercontent.com/liliweijie/lxlylzl/main/assets/logo/logo-hover.gif" alt="Logo Hover">
+          <img class="logo-frame" src="https://raw.githubusercontent.com/liliweijie/lxlylzl/main/assets/logo/1.png" alt="Logo Hover">
         </div>
       </div>
       <nav class="nav-section">
@@ -913,7 +913,7 @@ img{max-width:100%;display:block}
     <div class="mobile-header-left">
       <div class="mobile-logo-wrapper" id="mobileLogoWrapper">
         <img class="logo-static" src="https://raw.githubusercontent.com/liliweijie/lxlylzl/main/assets/logo/1.png" alt="Logo">
-        <img class="logo-gif" src="" data-src="https://raw.githubusercontent.com/liliweijie/lxlylzl/main/assets/logo/logo-hover.gif" alt="Logo Hover">
+        <img class="logo-frame" src="https://raw.githubusercontent.com/liliweijie/lxlylzl/main/assets/logo/1.png" alt="Logo Hover">
       </div>
     </div>
     <div class="mobile-header-right">
@@ -1529,23 +1529,56 @@ renderWenchuang();
 renderBlog();
 
 // ═══════════════════════════════════════════════════════════
-// LOGO HOVER GIF (与 logo-hover.html 完全一致)
+// LOGO HOVER 帧动画 (html-frame_0 ~ html-frame_5)
 // ═══════════════════════════════════════════════════════════
+var logoFrames = [
+  'https://raw.githubusercontent.com/liliweijie/lxlylzl/main/assets/logo/html-frame_0.png',
+  'https://raw.githubusercontent.com/liliweijie/lxlylzl/main/assets/logo/html-frame_1.png',
+  'https://raw.githubusercontent.com/liliweijie/lxlylzl/main/assets/logo/html-frame_2.png',
+  'https://raw.githubusercontent.com/liliweijie/lxlylzl/main/assets/logo/html-frame_3.png',
+  'https://raw.githubusercontent.com/liliweijie/lxlylzl/main/assets/logo/html-frame_4.png',
+  'https://raw.githubusercontent.com/liliweijie/lxlylzl/main/assets/logo/html-frame_5.png'
+];
+var frameDelay = 120; // 每帧间隔 ms
+
 document.querySelectorAll('.logo-wrapper, .mobile-logo-wrapper').forEach(function(container) {
-  var gifImg = container.querySelector('.logo-gif');
-  if (!gifImg) return;
-  var loaded = false;
+  var frameImg = container.querySelector('.logo-frame');
+  if (!frameImg) return;
+  
+  var animating = false;
+  var currentFrame = 0;
+  var intervalId = null;
   
   container.addEventListener('mouseenter', function() {
-    if (!loaded) {
-      gifImg.src = gifImg.dataset.src;
-      loaded = true;
-    } else {
-      // 重置 GIF：清空再重赋，强制从头播放
-      var src = gifImg.src;
-      gifImg.src = '';
-      gifImg.src = src;
+    if (animating) return;
+    
+    animating = true;
+    currentFrame = 0;
+    frameImg.src = logoFrames[currentFrame];
+    
+    intervalId = setInterval(function() {
+      currentFrame++;
+      if (currentFrame < logoFrames.length) {
+        frameImg.src = logoFrames[currentFrame];
+      } else {
+        clearInterval(intervalId);
+        intervalId = null;
+        animating = false;
+        // 停在最后一帧
+        frameImg.src = logoFrames[logoFrames.length - 1];
+      }
+    }, frameDelay);
+  });
+  
+  container.addEventListener('mouseleave', function() {
+    if (intervalId) {
+      clearInterval(intervalId);
+      intervalId = null;
     }
+    animating = false;
+    currentFrame = 0;
+    // 恢复第一帧
+    frameImg.src = logoFrames[0];
   });
 });
 </script>
