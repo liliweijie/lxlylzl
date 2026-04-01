@@ -60,11 +60,15 @@ img{max-width:100%;display:block}
   justify-content:center;
   cursor:pointer;
   height:40px;
+  width:40px;
+  flex-shrink:0;
+  position:relative;
 }
 .logo-wrapper img{
+  position:absolute;
   height:40px;
-  width:auto;
-  max-width:none;
+  width:40px;
+  object-fit:contain;
   transition:opacity 0.2s ease;
 }
 .logo-static{opacity:1}
@@ -85,7 +89,7 @@ img{max-width:100%;display:block}
   overflow:hidden;
 }
 .nav-item{
-  position:relative;display:flex;align-items:center;justify-content:center;gap:10px;
+  position:relative;display:flex;align-items:center;justify-content:flex-start;gap:10px;
   padding:0 12px;margin-right:6px;height:48px;border-radius:10px;
   cursor:pointer;white-space:nowrap;
   transition:background .2s,color .2s;user-select:none;
@@ -100,10 +104,11 @@ img{max-width:100%;display:block}
 .nav-icon svg{width:18px;height:18px}
 .nav-item:hover .nav-icon{color:var(--cream)}
 .nav-label{
+  position:absolute;left:44px;
   font-size:13.5px;font-weight:500;letter-spacing:.01em;
   opacity:0;transform:translateX(-8px);
   transition:opacity .22s,transform .28s;
-  pointer-events:none;flex:1;
+  pointer-events:none;
 }
 .sidebar:hover .nav-label{opacity:1;transform:translateX(0)}
 .nav-item:nth-child(1) .nav-label{transition-delay:.07s}
