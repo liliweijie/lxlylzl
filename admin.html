@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>后台管理 - LXLYLZL</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#111;--card:#1a1a1a;--card-hover:#222;--border:rgba(255,255,255,.08);
+  --cream:#fff;--dim:rgba(255,255,255,.45);--accent:#FF3A5C;--accent2:#00E0FF;
+  --font:'Syne','Noto Sans SC',sans-serif;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--cream);min-height:100vh;padding:20px;padding-bottom:80px}
+input,textarea,select,button{font-family:inherit}
+
+/* Login */
+.login-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+.login-title{font-size:2rem;font-weight:800;margin-bottom:2rem}
+.login-box{width:100%;max-width:360px;display:flex;flex-direction:column;gap:1rem}
+.login-box input{padding:14px 16px;border:1px solid var(--border);border-radius:12px;background:var(--card);color:var(--cream);font-size:1rem;outline:none;transition:border-color .2s}
+.login-box input:focus{border-color:var(--accent)}
+.login-box input::placeholder{color:var(--dim)}
+.login-btn{width:100%;padding:14px;border:none;border-radius:12px;background:var(--accent);color:#fff;font-size:1rem;font-weight:600;cursor:pointer;transition:opacity .2s}
+.login-btn:hover{opacity:.85}
+.login-error{color:#ff6b6b;font-size:.85rem;display:none;text-align:center}
+.login-hint{padding:12px;background:rgba(255,58,92,.1);border:1px solid rgba(255,58,92,.2);border-radius:8px;font-size:.8rem;color:var(--dim);text-align:center}
+
+/* Header */
+.admin-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;position:sticky;top:0;z-index:100;background:var(--bg);padding:10px 0}
+.admin-header h1{font-size:1.2rem;font-weight:700}
+.header-actions{display:flex;gap:8px}
+.icon-btn{padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--cream);cursor:pointer;font-size:.85rem;transition:all .2s}
+.icon-btn:hover{border-color:var(--accent);color:var(--accent)}
+.icon-btn.danger{color:#ff6b6b;border-color:rgba(255,107,107,.3)}
+.icon-btn.danger:hover{background:rgba(255,107,107,.1)}
+
+/* Tabs */
+.tabs{display:flex;gap:8px;margin-bottom:16px;overflow-x:auto;padding-bottom:4px}
+.tab{flex-shrink:0;padding:10px 18px;border:1px solid var(--border);border-radius:20px;background:var(--card);color:var(--dim);cursor:pointer;font-size:.9rem;font-weight:500;transition:all .2s;display:flex;align-items:center;gap:6px}
+.tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.tab .count{background:rgba(255,255,255,.2);padding:2px 7px;border-radius:10px;font-size:.75rem}
+
+/* Section */
+.section{display:none}
+.section.active{display:block}
+.section-title{font-size:.7rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--dim);margin-bottom:12px}
+
+/* Item Card */
+.item-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;transition:all .2s}
+.item-card:hover{border-color:rgba(255,255,255,.15)}
+.item-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}
+.item-title{font-size:1rem;font-weight:600;line-height:1.3;flex:1}
+.item-actions{display:flex;gap:6px;flex-shrink:0}
+.item-actions button{padding:6px 12px;border-radius:8px;border:none;font-size:.8rem;cursor:pointer;transition:all .2s}
+.btn-edit{background:rgba(0,224,255,.1);color:var(--accent2)}
+.btn-edit:hover{background:rgba(0,224,255,.2)}
+.btn-delete{background:rgba(255,107,107,.1);color:#ff6b6b}
+.btn-delete:hover{background:rgba(255,107,107,.2)}
+.item-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.tag{padding:4px 10px;background:rgba(255,255,255,.06);border-radius:20px;font-size:.75rem;color:var(--dim)}
+
+/* Add Button */
+.add-btn{width:100%;padding:14px;border:2px dashed var(--border);border-radius:14px;background:transparent;color:var(--dim);font-size:.95rem;cursor:pointer;transition:all .2s;margin-top:8px}
+.add-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+.modal-overlay.show{display:flex}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:20px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;padding:24px}
+.modal-title{font-size:1.1rem;font-weight:700;margin-bottom:20px}
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:.8rem;color:var(--dim);margin-bottom:6px;font-weight:500}
+.form-group input,.form-group textarea,.form-group select{width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:10px;background:rgba(255,255,255,.04);color:var(--cream);font-size:.95rem;outline:none;transition:border-color .2s}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:var(--accent2)}
+.form-group textarea{resize:vertical;min-height:80px}
+.form-group select option{background:var(--card)}
+.form-row{display:flex;gap:10px}
+.form-row .form-group{flex:1}
+.modal-actions{display:flex;gap:10px;margin-top:20px}
+.modal-actions button{flex:1;padding:12px;border:none;border-radius:10px;font-size:.95rem;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-cancel{background:rgba(255,255,255,.06);color:var(--dim)}
+.btn-cancel:hover{background:rgba(255,255,255,.1)}
+.btn-save{background:var(--accent);color:#fff}
+.btn-save:hover{opacity:.85}
+.btn-save:disabled{opacity:.4;cursor:not-allowed}
+
+/* Loading */
+.loading{text-align:center;padding:40px;color:var(--dim)}
+.loading::after{content:'';display:inline-block;width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin-left:10px;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Toast */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--card);border:1px solid var(--border);padding:12px 24px;border-radius:12px;font-size:.9rem;z-index:300;transition:transform .3s cubic-bezier(.65,0,.25,1);display:flex;align-items:center;gap:8px}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.success{border-color:rgba(0,224,255,.3)}
+.toast.error{border-color:rgba(255,107,107,.3)}
+.toast-icon{font-size:1.1rem}
+
+/* Empty */
+.empty{text-align:center;padding:40px 20px;color:var(--dim);font-size:.95rem}
+
+/* Image preview */
+.image-preview{width:100%;height:120px;background:rgba(255,255,255,.04);border:1px dashed var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-top:6px;overflow:hidden}
+.image-preview img{max-width:100%;max-height:100%;object-fit:contain}
+.image-preview span{color:var(--dim);font-size:.8rem}
+</style>
+</head>
+<body>
+
+<!-- Login -->
+<div id="loginScreen" class="login-wrap">
+  <div class="login-title">后台管理</div>
+  <div class="login-box">
+    <div class="login-hint">默认密码：<strong>lxlylzl2026</strong></div>
+    <input type="password" id="passwordInput" placeholder="输入密码进入后台" onkeydown="if(event.key==='Enter')attemptLogin()">
+    <button class="login-btn" onclick="attemptLogin()">进入后台</button>
+    <div class="login-error" id="loginError">密码错误，请重试</div>
+  </div>
+</div>
+
+<!-- Admin -->
+<div id="adminScreen" style="display:none">
+  <div class="admin-header">
+    <h1>LXLYLZL 后台</h1>
+    <div class="header-actions">
+      <button class="icon-btn" onclick="syncFromGitHub()">🔄 同步</button>
+      <button class="icon-btn danger" onclick="logout()">🚪 退出</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="works" onclick="switchTab('works')">
+      作品 <span class="count" id="worksCount">0</span>
+    </button>
+    <button class="tab" data-tab="blog" onclick="switchTab('blog')">
+      博客 <span class="count" id="blogCount">0</span>
+    </button>
+    <button class="tab" data-tab="wenchuang" onclick="switchTab('wenchuang')">
+      文创 <span class="count" id="wenchuangCount">0</span>
+    </button>
+  </div>
+
+  <!-- Works -->
+  <div class="section active" id="worksSection">
+    <div class="section-title">作品集</div>
+    <div id="worksList"></div>
+    <button class="add-btn" onclick="openModal('works')">+ 添加作品</button>
+  </div>
+
+  <!-- Blog -->
+  <div class="section" id="blogSection">
+    <div class="section-title">博客文章</div>
+    <div id="blogList"></div>
+    <button class="add-btn" onclick="openModal('blog')">+ 添加文章</button>
+  </div>
+
+  <!-- Wenchuang -->
+  <div class="section" id="wenchuangSection">
+    <div class="section-title">文创周边</div>
+    <div id="wenchuangList"></div>
+    <button class="add-btn" onclick="openModal('wenchuang')">+ 添加文创</button>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-title" id="modalTitle">添加</div>
+    <div id="modalBody"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">取消</button>
+      <button class="btn-save" id="modalSaveBtn" onclick="saveItem()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"><span class="toast-icon"></span><span class="toast-msg"></span></div>
+
+<script>
+// Config
+const CONFIG = {
+  owner: 'liliweijie',
+  repo: 'lxlylzl',
+  branch: 'main',
+  token: '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',
+  files: {
+    works: 'data/works.json',
+    blog: 'data/blog.json',
+    wenchuang: 'data/wenchuang.json'
+  }
+};
+
+// State
+let currentTab = 'works';
+let editingType = null;
+let editingIndex = null;
+let data = { works: [], blog: [], wenchuang: [] };
+const ADMIN_PASSWORD = 'lxlylzl2026';
+
+// Login
+function attemptLogin() {
+  const pwd = document.getElementById('passwordInput').value;
+  if (pwd === ADMIN_PASSWORD) {
+    localStorage.setItem('lxlylzl_admin', '1');
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminScreen').style.display = 'block';
+    loadAllData();
+  } else {
+    document.getElementById('loginError').style.display = 'block';
+  }
+}
+
+function logout() {
+  localStorage.removeItem('lxlylzl_admin');
+  location.reload();
+}
+
+function checkAuth() {
+  if (localStorage.getItem('lxlylzl_admin') === '1') {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminScreen').style.display = 'block';
+    loadAllData();
+  }
+}
+
+// GitHub API
+async function githubGet(path) {
+  const url = `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${path}?ref=${CONFIG.branch}`;
+  const resp = await fetch(url, { headers: { Authorization: `token ${CONFIG.token}` } });
+  if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+  const info = await resp.json();
+  const content = atob(info.content);
+  return JSON.parse(content);
+}
+
+async function githubPut(path, content, sha) {
+  const url = `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${path}`;
+  const body = {
+    message: `Update ${path}`,
+    content: btoa(unescape(encodeURIComponent(JSON.stringify(content, null, 2))))
+  };
+  if (sha) body.sha = sha;
+  const resp = await fetch(url, {
+    method: 'PUT',
+    headers: { Authorization: `token ${CONFIG.token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  if (!resp.ok) {
+    const err = await resp.json();
+    throw new Error(err.message || `HTTP ${resp.status}`);
+  }
+  return await resp.json();
+}
+
+async function githubGetSha(path) {
+  const url = `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${path}?ref=${CONFIG.branch}`;
+  const resp = await fetch(url, { headers: { Authorization: `token ${CONFIG.token}` } });
+  if (!resp.ok) return null;
+  const info = await resp.json();
+  return info.sha;
+}
+
+// Load
+async function loadAllData() {
+  try {
+    data.works = await githubGet(CONFIG.files.works);
+    data.blog = await githubGet(CONFIG.files.blog);
+    data.wenchuang = await githubGet(CONFIG.files.wenchuang);
+  } catch(e) {
+    toast('加载数据失败: ' + e.message, 'error');
+    // Fallback to empty arrays
+  }
+  renderAll();
+}
+
+async function syncFromGitHub() {
+  try {
+    data.works = await githubGet(CONFIG.files.works);
+    data.blog = await githubGet(CONFIG.files.blog);
+    data.wenchuang = await githubGet(CONFIG.files.wenchuang);
+    renderAll();
+    toast('同步成功 ✓', 'success');
+  } catch(e) {
+    toast('同步失败: ' + e.message, 'error');
+  }
+}
+
+// Render
+function renderAll() {
+  document.getElementById('worksCount').textContent = data.works.length;
+  document.getElementById('blogCount').textContent = data.blog.length;
+  document.getElementById('wenchuangCount').textContent = data.wenchuang.length;
+  renderWorks();
+  renderBlog();
+  renderWenchuang();
+}
+
+function renderWorks() {
+  const el = document.getElementById('worksList');
+  if (data.works.length === 0) { el.innerHTML = '<div class="empty">暂无作品，点击下方添加</div>'; return; }
+  el.innerHTML = data.works.map((item, i) => `
+    <div class="item-card">
+      <div class="item-header">
+        <div class="item-title">${item.titleZh}<br><span style="font-size:.8rem;color:var(--dim);font-weight:400">${item.titleEn||''}</span></div>
+        <div class="item-actions">
+          <button class="btn-edit" onclick="editItem('works',${i})">编辑</button>
+          <button class="btn-delete" onclick="deleteItem('works',${i})">删除</button>
+        </div>
+      </div>
+      <div style="font-size:.85rem;color:var(--dim);line-height:1.5">${item.aboutZh||''}</div>
+      <div class="item-tags">${(item.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+    </div>
+  `).join('');
+}
+
+function renderBlog() {
+  const el = document.getElementById('blogList');
+  if (data.blog.length === 0) { el.innerHTML = '<div class="empty">暂无文章，点击下方添加</div>'; return; }
+  el.innerHTML = data.blog.map((item, i) => `
+    <div class="item-card">
+      <div class="item-header">
+        <div class="item-title">${item.titleZh}<br><span style="font-size:.8rem;color:var(--dim);font-weight:400">${item.dateZh||''}</span></div>
+        <div class="item-actions">
+          <button class="btn-edit" onclick="editItem('blog',${i})">编辑</button>
+          <button class="btn-delete" onclick="deleteItem('blog',${i})">删除</button>
+        </div>
+      </div>
+      <div style="font-size:.85rem;color:var(--dim);line-height:1.5">${item.excerptZh||''}</div>
+    </div>
+  `).join('');
+}
+
+function renderWenchuang() {
+  const el = document.getElementById('wenchuangList');
+  if (data.wenchuang.length === 0) { el.innerHTML = '<div class="empty">暂无文创，点击下方添加</div>'; return; }
+  el.innerHTML = data.wenchuang.map((item, i) => `
+    <div class="item-card">
+      <div class="item-header">
+        <div class="item-title">${item.titleZh}<br><span style="font-size:.8rem;color:var(--dim);font-weight:400">${item.titleEn||''}</span></div>
+        <div class="item-actions">
+          <button class="btn-edit" onclick="editItem('wenchuang',${i})">编辑</button>
+          <button class="btn-delete" onclick="deleteItem('wenchuang',${i})">删除</button>
+        </div>
+      </div>
+      <div style="font-size:.85rem;color:var(--dim);line-height:1.5">${item.aboutZh||''}</div>
+      <div class="item-tags">${(item.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+    </div>
+  `).join('');
+}
+
+// Tabs
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+  document.querySelectorAll('.section').forEach(s => s.classList.toggle('active', s.id === tab + 'Section'));
+}
+
+// Modal
+function openModal(type, index = null) {
+  editingType = type;
+  editingIndex = index;
+  const item = index !== null ? data[type][index] : null;
+  document.getElementById('modalTitle').textContent = item ? '编辑' : '添加';
+  
+  if (type === 'works') {
+    document.getElementById('modalBody').innerHTML = `
+      <div class="form-group"><label>标题（中文）</label><input id="f_titleZh" value="${item?.titleZh||''}" placeholder="如：品牌设计"></div>
+      <div class="form-group"><label>标题（英文）</label><input id="f_titleEn" value="${item?.titleEn||''}" placeholder="如：Brand Design"></div>
+      <div class="form-group"><label>描述（中文）</label><textarea id="f_aboutZh" placeholder="作品描述">${item?.aboutZh||''}</textarea></div>
+      <div class="form-group"><label>描述（英文）</label><textarea id="f_aboutEn" placeholder="Description">${item?.aboutEn||''}</textarea></div>
+      <div class="form-group"><label>标签（逗号分隔）</label><input id="f_tags" value="${(item?.tags||[]).join(',')}" placeholder="如：品牌,VI,设计"></div>
+      <div class="form-group"><label>图片 URL</label><input id="f_image" value="${item?.image||''}" placeholder="https://..."></div>
+    `;
+  } else if (type === 'blog') {
+    document.getElementById('modalBody').innerHTML = `
+      <div class="form-group"><label>标题（中文）</label><input id="f_titleZh" value="${item?.titleZh||''}" placeholder="文章标题"></div>
+      <div class="form-group"><label>标题（英文）</label><input id="f_titleEn" value="${item?.titleEn||''}" placeholder="Title"></div>
+      <div class="form-row">
+        <div class="form-group"><label>日期（中文）</label><input id="f_dateZh" value="${item?.dateZh||''}" placeholder="2025年12月"></div>
+        <div class="form-group"><label>日期（英文）</label><input id="f_dateEn" value="${item?.dateEn||''}" placeholder="Dec 2025"></div>
+      </div>
+      <div class="form-group"><label>摘要（中文）</label><textarea id="f_excerptZh" placeholder="文章摘要">${item?.excerptZh||''}</textarea></div>
+      <div class="form-group"><label>摘要（英文）</label><textarea id="f_excerptEn" placeholder="Excerpt">${item?.excerptEn||''}</textarea></div>
+    `;
+  } else if (type === 'wenchuang') {
+    document.getElementById('modalBody').innerHTML = `
+      <div class="form-group"><label>标题（中文）</label><input id="f_titleZh" value="${item?.titleZh||''}" placeholder="如：品牌贴纸"></div>
+      <div class="form-group"><label>标题（英文）</label><input id="f_titleEn" value="${item?.titleEn||''}" placeholder="如：Brand Sticker Pack"></div>
+      <div class="form-group"><label>描述（中文）</label><textarea id="f_aboutZh" placeholder="文创描述">${item?.aboutZh||''}</textarea></div>
+      <div class="form-group"><label>描述（英文）</label><textarea id="f_aboutEn" placeholder="Description">${item?.aboutEn||''}</textarea></div>
+      <div class="form-group"><label>标签（逗号分隔）</label><input id="f_tags" value="${(item?.tags||[]).join(',')}" placeholder="如：贴纸,周边"></div>
+      <div class="form-group"><label>图片 URL</label><input id="f_image" value="${item?.image||''}" placeholder="https://..."></div>
+    `;
+  }
+  
+  document.getElementById('modalOverlay').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('show');
+  editingType = null;
+  editingIndex = null;
+}
+
+function getVal(id) {
+  const el = document.getElementById(id);
+  return el ? el.value.trim() : '';
+}
+
+async function saveItem() {
+  const btn = document.getElementById('modalSaveBtn');
+  btn.disabled = true;
+  btn.textContent = '保存中...';
+  
+  try {
+    let item;
+    if (editingType === 'works') {
+      item = {
+        id: data.works[editingIndex]?.id || String(Date.now()),
+        titleZh: getVal('f_titleZh'),
+        titleEn: getVal('f_titleEn'),
+        aboutZh: getVal('f_aboutZh'),
+        aboutEn: getVal('f_aboutEn'),
+        tags: getVal('f_tags').split(',').map(t=>t.trim()).filter(Boolean),
+        image: getVal('f_image')
+      };
+      if (editingIndex !== null) {
+        data.works[editingIndex] = item;
+      } else {
+        data.works.push(item);
+      }
+    } else if (editingType === 'blog') {
+      item = {
+        id: data.blog[editingIndex]?.id || String(Date.now()),
+        titleZh: getVal('f_titleZh'),
+        titleEn: getVal('f_titleEn'),
+        dateZh: getVal('f_dateZh'),
+        dateEn: getVal('f_dateEn'),
+        excerptZh: getVal('f_excerptZh'),
+        excerptEn: getVal('f_excerptEn')
+      };
+      if (editingIndex !== null) {
+        data.blog[editingIndex] = item;
+      } else {
+        data.blog.push(item);
+      }
+    } else if (editingType === 'wenchuang') {
+      item = {
+        id: data.wenchuang[editingIndex]?.id || String(Date.now()),
+        titleZh: getVal('f_titleZh'),
+        titleEn: getVal('f_titleEn'),
+        aboutZh: getVal('f_aboutZh'),
+        aboutEn: getVal('f_aboutEn'),
+        tags: getVal('f_tags').split(',').map(t=>t.trim()).filter(Boolean),
+        image: getVal('f_image')
+      };
+      if (editingIndex !== null) {
+        data.wenchuang[editingIndex] = item;
+      } else {
+        data.wenchuang.push(item);
+      }
+    }
+    
+    // Save to GitHub
+    await githubPut(CONFIG.files[editingType], data[editingType]);
+    renderAll();
+    closeModal();
+    toast('保存成功 ✓', 'success');
+  } catch(e) {
+    toast('保存失败: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '保存';
+  }
+}
+
+function editItem(type, index) {
+  openModal(type, index);
+}
+
+async function deleteItem(type, index) {
+  if (!confirm('确定删除此项？')) return;
+  try {
+    data[type].splice(index, 1);
+    await githubPut(CONFIG.files[type], data[type]);
+    renderAll();
+    toast('删除成功 ✓', 'success');
+  } catch(e) {
+    toast('删除失败: ' + e.message, 'error');
+  }
+}
+
+// Toast
+function toast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  t.querySelector('.toast-icon').textContent = type === 'success' ? '✓' : '✗';
+  t.querySelector('.toast-msg').textContent = msg;
+  t.className = 'toast ' + type;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// Init
+checkAuth();
+</script>
+</body>
+</html>

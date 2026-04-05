@@ -974,10 +974,7 @@ img{max-width:100%;display:block}
 </div>
 
 <script>
-// ══════ DATA KEYS ══════
-const WORKS_KEY = 'lxlylzl_works';
-const WENCHUANG_KEY = 'lxlylzl_wenchuang';
-const BLOG_KEY = 'lxlylzl_blog_posts';
+
 
 const DEFAULT_WORKS = [
   { id:'001', titleZh:'详情页设计', titleEn:'Product Detail Page', aboutZh:'电商店铺产品详情页设计，突出产品卖点与使用场景，提升转化率。', aboutEn:'E-commerce product detail pages that highlight features.', tags:['详情页','电商','视觉'] },
@@ -1000,6 +997,32 @@ const DEFAULT_WENCHUANG = [
 
 // ══════ STATE ══════
 let currentLang = 'zh';
+
+// ══════ SITE DATA (GitHub API) ══════
+const GITHUB_BASE = 'https://raw.githubusercontent.com/liliweijie/lxlylzl/main';
+const siteData = { works: DEFAULT_WORKS, wenchuang: DEFAULT_WENCHUANG, blog: [] };
+
+async function fetchSiteData() {
+  // Try GitHub API for data files, fall back to defaults
+  const files = {
+    works: 'data/works.json',
+    wenchuang: 'data/wenchuang.json',
+    blog: 'data/blog.json'
+  };
+  for (const [key, path] of Object.entries(files)) {
+    try {
+      const resp = await fetch(`${GITHUB_BASE}/${path}?t=${Date.now()}`);
+      if (resp.ok) {
+        const json = await resp.json();
+        if (Array.isArray(json) && json.length > 0) {
+          siteData[key] = json;
+        }
+      }
+    } catch(e) {
+      // Use default data on error
+    }
+  }
+}
 
 // ═══════════════════════════════════════════════════════════
 // DESKTOP LOGIC
@@ -1228,11 +1251,7 @@ let allWorks = [];
 // RENDER WORKS
 // ═══════════════════════════════════════════════════════════
 function renderWorks() {
-  let works = JSON.parse(localStorage.getItem(WORKS_KEY) || 'null');
-  if (!works) {
-    works = DEFAULT_WORKS;
-    localStorage.setItem(WORKS_KEY, JSON.stringify(works));
-  }
+  let works = siteData.works;
   allWorks = works;
   
   const tagColors = ['accent','accent2','accent3','purple'];
@@ -1367,12 +1386,7 @@ function renderWorksMobileGrid() {
 // RENDER WENCHUANG
 // ═══════════════════════════════════════════════════════════
 function renderWenchuang() {
-  let items = JSON.parse(localStorage.getItem(WENCHUANG_KEY) || 'null');
-  if (!items) {
-    items = DEFAULT_WENCHUANG;
-    localStorage.setItem(WENCHUANG_KEY, JSON.stringify(items));
-  }
-  
+  let items = siteData.wenchuang;
   const tagColors = ['accent','accent2','accent3','purple'];
   
   // Desktop grid
@@ -1431,7 +1445,7 @@ function renderWenchuang() {
 // RENDER BLOG
 // ═══════════════════════════════════════════════════════════
 function renderBlog() {
-  const posts = JSON.parse(localStorage.getItem(BLOG_KEY) || '[]');
+  const posts = siteData.blog;
   
   // Desktop
   const desktopList = document.getElementById('desktopBlogList');
@@ -1469,9 +1483,12 @@ function renderBlog() {
 // ═══════════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════════
-renderWorks();
-renderWenchuang();
-renderBlog();
+(async () => {
+  await fetchSiteData();
+  renderWorks();
+  renderWenchuang();
+  renderBlog();
+})();
 
 // ═══════════════════════════════════════════════════════════
 // LOGO HOVER 帧动画 (html-frame_0 ~ html-frame_5)
