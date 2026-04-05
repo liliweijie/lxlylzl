@@ -1,0 +1,13 @@
+[
+  {"id":"001","titleZh":"详情页设计","titleEn":"Product Detail Page","aboutZh":"电商店铺产品详情页设计，突出产品卖点与使用场景，提升转化率。","aboutEn":"E-commerce product detail pages that highlight features.","tags":["详情页","电商","视觉"],"image":""},
+  {"id":"002","titleZh":"海报设计","titleEn":"Poster Design","aboutZh":"品牌活动、文化艺术节及商业推广海报，通过视觉语言传递信息与情感。","aboutEn":"Brand events, cultural posters communicating through visual language.","tags":["海报","视觉","排版"],"image":""},
+  {"id":"003","titleZh":"LOGO 设计","titleEn":"Logo Design","aboutZh":"品牌标识从概念构思到矢量输出，打造具有辨识度的品牌符号。","aboutEn":"Brand logo from concept to vector output.","tags":["LOGO","品牌","矢量"],"image":""},
+  {"id":"004","titleZh":"商业插画","titleEn":"Commercial Illustration","aboutZh":"品牌插画与原创图形，为品牌注入独特艺术气质。","aboutEn":"Brand illustration adding artistic character.","tags":["插画","图形","原创"],"image":""},
+  {"id":"005","titleZh":"品牌视觉系统","titleEn":"Brand Identity System","aboutZh":"完整品牌视觉识别系统设计，包括标准色彩、字体、应用规范等。","aboutEn":"Complete brand visual identity system design.","tags":["品牌","VI","系统"],"image":""},
+  {"id":"006","titleZh":"包装设计","titleEn":"Packaging Design","aboutZh":"产品包装从概念到落地的全流程设计，打造独特货架吸引力。","aboutEn":"Product packaging design from concept to production.","tags":["包装","产品","货架"],"image":""},
+  {"id":"007","titleZh":"UI 界面设计","titleEn":"UI Interface Design","aboutZh":"移动端及 Web 界面设计，注重用户体验与视觉美感的平衡。","aboutEn":"Mobile and web interface design balancing UX and aesthetics.","tags":["UI","界面","体验"],"image":""},
+  {"id":"008","titleZh":"书籍装帧设计","titleEn":"Book Cover Design","aboutZh":"书籍、杂志及出版物的封面与版式设计。","aboutEn":"Book, magazine and publication cover and layout design.","tags":["书籍","版式","出版"],"image":""},
+  {"id":"009","titleZh":"活动主视觉","titleEn":"Event Visual Identity","aboutZh":"展览、发布会、演出等大型活动的整体视觉形象设计。","aboutEn":"Exhibition, launch events and large-scale event visual design.","tags":["活动","展览","主视觉"],"image":""},
+  {"id":"010","titleZh":"字体设计","titleEn":"Typography Design","aboutZh":"定制字体设计与字形优化，提升品牌专属感。","aboutEn":"Custom typography and glyph optimization.","tags":["字体","字形","定制"],"image":""},
+  {"id":"011","titleZh":"广告创意设计","titleEn":"Advertising Creative","aboutZh":"社交媒体、户外广告及数字营销视觉内容的创意设计。","aboutEn":"Social media, OOH and digital marketing creative design.","tags":["广告","创意","营销"],"image":""}
+]
