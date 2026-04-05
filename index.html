@@ -494,18 +494,6 @@ img{max-width:100%;display:block}
 .wc-about{font-size:.8rem;line-height:1.7;color:var(--dim);margin-bottom:1rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .wc-tags{display:flex;flex-wrap:wrap;gap:.4rem}
 
-/* ══════ CONTACT PAGE ══════ */
-.contact-card-inner{text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%}
-.contact-label{font-size:.68rem;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--accent3);margin-bottom:1.5rem}
-.contact-card-inner h2{font-family:var(--display);font-weight:800;font-size:clamp(2rem,5vw,3.5rem);line-height:1.05;margin-bottom:1rem}
-.contact-card-inner h2 .outline{-webkit-text-stroke:1.5px var(--cream);-webkit-text-fill-color:transparent}
-.contact-card-inner>p{font-size:.95rem;color:var(--dim);margin-bottom:2rem;max-width:420px;line-height:1.8}
-.contact-email{font-family:var(--display);font-weight:700;font-size:clamp(1.2rem,2.5vw,1.8rem);color:var(--accent2);position:relative;padding-bottom:.4rem;transition:color .3s;display:inline-block;margin-bottom:2rem}
-.contact-email:hover{color:var(--accent)}
-.contact-email::after{content:'';position:absolute;bottom:0;left:0;width:100%;height:1.5px;background:linear-gradient(90deg,var(--accent2),var(--accent))}
-.contact-socials{display:flex;gap:.8rem;margin-bottom:2rem}
-.soc{width:44px;height:44px;border-radius:50%;border:1px solid var(--card-border);display:flex;align-items:center;justify-content:center;font-size:1rem;transition:all .4s}
-.soc:hover{border-color:var(--accent);background:rgba(255,58,92,.06);transform:translateY(-3px)}
 
 /* ══════ FOOTER ══════ */
 .footer{position:fixed;bottom:1.5rem;left:1.5rem;z-index:50;padding:0;display:flex;font-size:.65rem;color:rgba(255,255,255,.3);transition:left var(--transition)}
@@ -722,15 +710,6 @@ img{max-width:100%;display:block}
 .mobile-blog-title{font-family:var(--display);font-size:1.1rem;font-weight:600;margin-bottom:6px}
 .mobile-blog-excerpt{font-size:.8rem;color:var(--dim);line-height:1.5}
 
-/* Mobile Contact */
-.mobile-contact{text-align:center;width:100%}
-.mobile-contact-label{font-size:.6rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--accent3);margin-bottom:1.2rem}
-.mobile-contact-title{font-family:var(--display);font-weight:800;font-size:clamp(1.6rem,10vw,2.2rem);line-height:1.1;margin-bottom:1rem}
-.mobile-contact-title .outline{-webkit-text-stroke:1.5px var(--cream);-webkit-text-fill-color:transparent}
-.mobile-contact-desc{font-size:.85rem;color:var(--dim);margin-bottom:1.5rem;line-height:1.6}
-.mobile-contact-email{font-family:var(--display);font-weight:700;font-size:1.1rem;color:var(--accent2);margin-bottom:1.5rem;display:inline-block}
-.mobile-socials{display:flex;gap:10px;justify-content:center}
-.mobile-soc{width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:1rem}
 
 @media(max-width:900px){
   /* Desktop elements hidden */
@@ -783,11 +762,6 @@ img{max-width:100%;display:block}
           <span class="nav-label" data-zh="文创" data-en="Creative">文创</span>
           <span class="nav-tooltip">文创</span>
         </div>
-        <div class="nav-item" onclick="goToDesktop(4)">
-          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></span>
-          <span class="nav-label" data-zh="联系" data-en="Contact">联系</span>
-          <span class="nav-tooltip">联系</span>
-        </div>
       </nav>
       <div class="sidebar-bottom">
         <div class="nav-divider"></div>
@@ -814,7 +788,7 @@ img{max-width:100%;display:block}
             <a href="mailto:757497092@qq.com" class="hero-email">757497092@qq.com</a>
             <div class="hero-btns">
               <button class="btn btn-fill" onclick="goToDesktop(1)" data-zh="查看作品" data-en="View Works">查看作品</button>
-              <button class="btn btn-ghost" onclick="goToDesktop(4)" data-zh="联系我" data-en="Contact">联系我</button>
+              <button class="btn btn-ghost" onclick="goToDesktop(3)" data-zh="文创周边" data-en="Creative">文创周边</button>
             </div>
           </div>
         </section>
@@ -887,23 +861,6 @@ img{max-width:100%;display:block}
           </div>
         </section>
 
-        <!-- PAGE 4: CONTACT -->
-        <section class="page is-contact" data-index="4">
-          <div class="card">
-            <div class="contact-card-inner">
-              <div class="contact-label" data-zh="联系我" data-en="Get in Touch">联系我</div>
-              <h2><span data-zh="有项目想法？" data-en="Got a Project?">有项目想法？</span><br><span class="outline" data-zh="聊聊吧" data-en="Let's Talk">聊聊吧</span></h2>
-              <p data-zh="无论是品牌升级、平面设计还是创意合作，都欢迎与我联系。" data-en="Brand upgrades, graphic design, or creative collaboration — let's connect.">无论是品牌升级、平面设计还是创意合作，都欢迎与我联系。</p>
-              <a href="mailto:757497092@qq.com" class="contact-email">757497092@qq.com</a>
-              <div class="contact-socials">
-                <a href="#" class="soc" title="WeChat">💬</a>
-                <a href="#" class="soc" title="Behance">🅱️</a>
-                <a href="#" class="soc" title="Dribbble">🏀</a>
-                <a href="#" class="soc" title="Instagram">📷</a>
-              </div>
-            </div>
-          </div>
-        </section>
       </div>
     </main>
   </div>
@@ -954,9 +911,6 @@ img{max-width:100%;display:block}
     <div class="mobile-menu-item" data-index="3" onclick="goToMobile(3)">
       <span data-zh="文创" data-en="Creative">文创</span>
     </div>
-    <div class="mobile-menu-item" data-index="4" onclick="goToMobile(4)">
-      <span data-zh="联系" data-en="Contact">联系</span>
-    </div>
   </div>
 
   <!-- Mobile Slider -->
@@ -971,7 +925,7 @@ img{max-width:100%;display:block}
           <a href="mailto:757497092@qq.com" class="mobile-email">757497092@qq.com</a>
           <div class="mobile-btns">
             <button class="mobile-btn mobile-btn-fill" onclick="goToMobile(1)" data-zh="查看作品" data-en="View Works">查看作品</button>
-            <button class="mobile-btn mobile-btn-ghost" onclick="goToMobile(4)" data-zh="联系我" data-en="Contact">联系我</button>
+            <button class="mobile-btn mobile-btn-ghost" onclick="goToMobile(3)" data-zh="文创周边" data-en="Creative">文创周边</button>
           </div>
         </div>
       </div>
@@ -1016,26 +970,6 @@ img{max-width:100%;display:block}
       </div>
     </section>
 
-    <!-- PAGE 4: CONTACT -->
-    <section class="mobile-page" data-index="4">
-      <div class="mobile-page-content">
-        <div class="mobile-contact">
-          <div class="mobile-contact-label" data-zh="联系我" data-en="Get in Touch">联系我</div>
-          <h2 class="mobile-contact-title">
-            <span data-zh="有项目想法？" data-en="Got a Project?">有项目想法？</span><br>
-            <span class="outline" data-zh="聊聊吧" data-en="Let's Talk">聊聊吧</span>
-          </h2>
-          <p class="mobile-contact-desc" data-zh="无论是品牌升级、平面设计还是创意合作，都欢迎与我联系。" data-en="Brand upgrades, graphic design, or creative collaboration.">无论是品牌升级、平面设计还是创意合作，都欢迎与我联系。</p>
-          <a href="mailto:757497092@qq.com" class="mobile-contact-email">757497092@qq.com</a>
-          <div class="mobile-socials">
-            <a href="#" class="mobile-soc" title="WeChat">💬</a>
-            <a href="#" class="mobile-soc" title="Behance">🅱️</a>
-            <a href="#" class="mobile-soc" title="Dribbble">🏀</a>
-            <a href="#" class="mobile-soc" title="Instagram">📷</a>
-          </div>
-        </div>
-      </div>
-    </section>
   </div>
 </div>
 
