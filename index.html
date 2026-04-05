@@ -13,8 +13,8 @@
   --accent:#FF3A5C;--accent2:#00E0FF;--accent3:#B8FF57;
   --display:'Syne','Noto Sans SC',sans-serif;
   --body:'Space Grotesk','Noto Sans SC',sans-serif;
-  --sidebar-collapsed:56px;
-  --sidebar-expanded:160px;
+  --sidebar-collapsed:80px;
+  --sidebar-expanded:260px;
   --transition:0.38s cubic-bezier(.65,0,.25,1);
 }
 html,body{height:100%;font-family:var(--body);background:var(--bg);color:var(--cream);overflow:hidden}
@@ -39,7 +39,7 @@ img{max-width:100%;display:block}
   position:relative;z-index:10;
   width:var(--sidebar-collapsed);height:100%;
   background:var(--card);border:1px solid var(--card-border);
-  border-radius:20px;
+  border-radius:20px 0 0 20px;
   display:flex;flex-direction:column;
   overflow:hidden;
   transition:width var(--transition);
@@ -59,8 +59,8 @@ img{max-width:100%;display:block}
   align-items:center;
   justify-content:center;
   cursor:pointer;
-  width:44px;
-  height:44px;
+  width:40px;
+  height:40px;
   flex-shrink:0;
   position:relative;
   transition:width 0.38s cubic-bezier(.65,0,.25,1),height 0.38s cubic-bezier(.65,0,.25,1);
@@ -77,8 +77,8 @@ img{max-width:100%;display:block}
 .logo-wrapper:hover .logo-static{opacity:0}
 .logo-wrapper:hover .logo-frame{opacity:1}
 .sidebar:hover .logo-wrapper{
-  width:148px;
-  height:74px;
+  width:192px;
+  height:96px;
 }
 .logo-text{
   font-family:var(--display);font-weight:800;font-size:1rem;
