@@ -1,0 +1,6 @@
+# Assets (large images - deploy separately)
+assets/
+
+# macOS
+.DS_Store
+._*
