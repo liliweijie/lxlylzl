@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LXLYLZL — 平面设计师 · 品牌设计</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Animated Background (shared) -->
+  <canvas id="bgCanvas"></canvas>
+
+  <!-- Loading Screen -->
+    <!-- ================================================
+       FRAMEWORK 1: HORIZONTAL (fixed full-viewport)
+       Transition: slides up and out on entry to Framework 2
+       ================================================ -->
+  <div class="horizontal-framework" id="horizontalFramework">
+
+    <!-- Scroll Progress -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <!-- APP CONTAINER (Glassmorphism Floating Card) -->
+    <div class="app-container" id="appContainer">
+
+      <!-- Left Icon Sidebar -->
+      <aside class="icon-sidebar" id="iconSidebar">
+        <div class="icon-sidebar__brand">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <rect width="28" height="28" rx="7" fill="#FF3A5C"/>
+            <text x="14" y="19" text-anchor="middle" fill="white" font-size="14" font-weight="700" font-family="sans-serif">L</text>
+          </svg>
+        </div>
+
+        <nav class="icon-sidebar__nav" id="sidebarNav">
+          <button class="icon-sidebar__item icon-sidebar__item--active" data-page="0" aria-label="首页">
+            <svg class="icon-sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+              <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+            <span class="icon-sidebar__tooltip">首页</span>
+          </button>
+          <button class="icon-sidebar__item" data-page="1" aria-label="作品集">
+            <svg class="icon-sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/>
+              <path d="M21 15l-5-5L5 21"/>
+            </svg>
+            <span class="icon-sidebar__tooltip">作品集</span>
+          </button>
+          <button class="icon-sidebar__item" data-page="2" aria-label="文创周边">
+            <svg class="icon-sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+              <path d="M2 17l10 5 10-5"/>
+              <path d="M2 12l10 5 10-5"/>
+            </svg>
+            <span class="icon-sidebar__tooltip">文创周边</span>
+          </button>
+          <button class="icon-sidebar__item" data-page="3" aria-label="关于">
+            <svg class="icon-sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+            <span class="icon-sidebar__tooltip">关于</span>
+          </button>
+        </nav>
+
+        <div class="icon-sidebar__bottom">
+          <button class="icon-sidebar__item" id="themeToggle" aria-label="切换主题">
+            <svg class="icon-sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <circle cx="12" cy="12" r="5"/>
+              <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+            </svg>
+            <span class="icon-sidebar__tooltip">主题</span>
+          </button>
+        </div>
+      </aside>
+
+      <!-- Main Content (Horizontal Scroll) -->
+      <main class="main" id="mainContent">
+        <div class="main__inner">
+
+          <!-- ==================== PAGE 0: HERO ==================== -->
+          <section class="page hero-page" id="page0">
+            <div class="hero-immersive">
+              <div class="hero-immersive__content">
+                <div class="hero-immersive__badge">平面设计师 · 品牌视觉</div>
+                <h1 class="hero-immersive__name">
+                  <span class="hero-immersive__name-line">LX</span>
+                  <span class="hero-immersive__name-line hero-immersive__name-line--accent">LYLZL</span>
+                </h1>
+                <p class="hero-immersive__tagline">
+                  将传统文化元素与现代设计语言融合<br>
+                  创造有温度、有记忆点的品牌视觉
+                </p>
+                <div class="hero-immersive__actions">
+                  <button class="btn btn--primary" data-page="1">
+                    查看作品
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                      <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                  </button>
+                  <button class="btn btn--glass" data-page="3">
+                    关于我
+                  </button>
+                </div>
+                <div class="hero-immersive__stats">
+                  <div class="hero-stat">
+                    <span class="hero-stat__num">20+</span>
+                    <span class="hero-stat__label">品牌客户</span>
+                  </div>
+                  <div class="hero-stat__divider"></div>
+                  <div class="hero-stat">
+                    <span class="hero-stat__num">50+</span>
+                    <span class="hero-stat__label">完成项目</span>
+                  </div>
+                  <div class="hero-stat__divider"></div>
+                  <div class="hero-stat">
+                    <span class="hero-stat__num">5年</span>
+                    <span class="hero-stat__label">设计经验</span>
+                  </div>
+                </div>
+              </div>
+              <div class="hero-immersive__scroll-hint" id="scrollHint">
+                <span>向下滚动探索</span>
+                <div class="hero-immersive__scroll-line"></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ==================== PAGE 1: PORTFOLIO ==================== -->
+          <section class="page portfolio-page" id="page1">
+            <div class="content-wrapper">
+              <div class="page-header">
+                <span class="page-header__eyebrow">PORTFOLIO</span>
+                <h2 class="page-header__title">作品集</h2>
+                <p class="page-header__subtitle">品牌电商 · 包装设计 · 节气海报 · 社媒视觉</p>
+              </div>
+
+              <div class="work-grid" id="portfolioGrid">
+                <article class="work-card" data-page="1">
+                  <div class="work-card__image">
+                    <img src="assets/card1-product.png" alt="杨梅桑葚小番茄" loading="lazy">
+                    <div class="work-card__overlay">
+                      <span class="work-card__view">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                          <path d="M1 12s4-8 11-8 11 8 11 8M1 12s4 8 11 8 11-8 11-8"/>
+                        </svg>
+                        查看详情
+                      </span>
+                    </div>
+                  </div>
+                  <div class="work-card__body">
+                    <span class="work-card__category" style="color:#FF3A5C">产品视觉</span>
+                    <h3 class="work-card__title">茶小开·纤畅果饮</h3>
+                    <p class="work-card__desc">杨梅桑葚小番茄 — 产品KV与电商详情页</p>
+                  </div>
+                </article>
+                <article class="work-card" data-page="1">
+                  <div class="work-card__image">
+                    <img src="assets/card2-package.png" alt="青砖茶包装" loading="lazy">
+                    <div class="work-card__overlay">
+                      <span class="work-card__view">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                          <path d="M1 12s4-8 11-8 11 8 11 8M1 12s4 8 11 8 11-8 11-8"/>
+                        </svg>
+                        查看详情
+                      </span>
+                    </div>
+                  </div>
+                  <div class="work-card__body">
+                    <span class="work-card__category" style="color:#00E0FF">包装设计</span>
+                    <h3 class="work-card__title">茶小开·青砖茶系列</h3>
+                    <p class="work-card__desc">传统茶品类多SKU统一视觉包装体系</p>
+                  </div>
+                </article>
+                <article class="work-card" data-page="1">
+                  <div class="work-card__image">
+                    <img src="assets/card3-poster.png" alt="大暑节气海报" loading="lazy">
+                    <div class="work-card__overlay">
+                      <span class="work-card__view">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                          <path d="M1 12s4-8 11-8 11 8 11 8M1 12s4 8 11 8 11-8 11-8"/>
+                        </svg>
+                        查看详情
+                      </span>
+                    </div>
+                  </div>
+                  <div class="work-card__body">
+                    <span class="work-card__category" style="color:#B8FF57">节气海报</span>
+                    <h3 class="work-card__title">大暑节气视觉海报</h3>
+                    <p class="work-card__desc">24节气系列 · 中式美学与茶文化融合</p>
+                  </div>
+                </article>
+                <article class="work-card" data-page="1">
+                  <div class="work-card__image">
+                    <img src="assets/card4-social.jpg" alt="古人春节推文" loading="lazy">
+                    <div class="work-card__overlay">
+                      <span class="work-card__view">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                          <path d="M1 12s4-8 11-8 11 8 11 8M1 12s4 8 11 8 11-8 11-8"/>
+                        </svg>
+                        查看详情
+                      </span>
+                    </div>
+                  </div>
+                  <div class="work-card__body">
+                    <span class="work-card__category" style="color:#FF6B81">社媒推文</span>
+                    <h3 class="work-card__title">古人春节社媒推文</h3>
+                    <p class="work-card__desc">传统文化×现代设计 · 新春营销视觉</p>
+                  </div>
+                </article>
+              </div>
+            </div>
+          </section>
+
+          <!-- ==================== PAGE 2: CULTURAL CREATIVE ==================== -->
+          <section class="page cc-page" id="page2">
+            <div class="content-wrapper">
+              <div class="page-header">
+                <span class="page-header__eyebrow">CREATIVE</span>
+                <h2 class="page-header__title">文创周边</h2>
+                <p class="page-header__subtitle">节气手账 · 茶礼盒 · 品牌IP · 衍生设计</p>
+              </div>
+
+              <div class="cc-grid" id="ccGrid">
+                <article class="cc-card">
+                  <div class="cc-card__image" style="background: linear-gradient(135deg, rgba(255,58,92,0.15) 0%, rgba(255,107,129,0.08) 100%);">
+                    <div class="cc-card__placeholder">📔</div>
+                  </div>
+                  <div class="cc-card__body">
+                    <h3 class="cc-card__title">节气手账贴纸</h3>
+                    <p class="cc-card__desc">24节气系列 · 新中式美学设计</p>
+                  </div>
+                </article>
+                <article class="cc-card">
+                  <div class="cc-card__image" style="background: linear-gradient(135deg, rgba(0,224,255,0.12) 0%, rgba(0,153,204,0.06) 100%);">
+                    <div class="cc-card__placeholder">🎁</div>
+                  </div>
+                  <div class="cc-card__body">
+                    <h3 class="cc-card__title">茶礼盒包装</h3>
+                    <p class="cc-card__desc">传统节日 × 现代礼赠场景</p>
+                  </div>
+                </article>
+                <article class="cc-card">
+                  <div class="cc-card__image" style="background: linear-gradient(135deg, rgba(184,255,87,0.12) 0%, rgba(122,204,41,0.06) 100%);">
+                    <div class="cc-card__placeholder">🎨</div>
+                  </div>
+                  <div class="cc-card__body">
+                    <h3 class="cc-card__title">品牌IP形象</h3>
+                    <p class="cc-card__desc">茶小开品牌IP与表情包设计</p>
+                  </div>
+                </article>
+              </div>
+            </div>
+          </section>
+
+          <!-- ==================== PAGE 3: ABOUT ==================== -->
+          <section class="page about-page" id="page3">
+            <div class="content-wrapper">
+              <div class="page-header">
+                <span class="page-header__eyebrow">ABOUT</span>
+                <h2 class="page-header__title">关于我</h2>
+              </div>
+
+              <div class="about-layout">
+                <div class="about-card">
+                  <div class="about-card__avatar">L</div>
+                  <h3 class="about-card__name">LXLYLZL</h3>
+                  <p class="about-card__role">平面设计师 · 品牌视觉</p>
+                  <p class="about-card__bio">
+                    专注于品牌视觉与包装设计，擅长将传统文化元素与现代设计语言结合。
+                    曾主导「茶小开」品牌全案，涵盖青砖茶系列、纤畅果饮系列、24节气视觉体系等。
+                  </p>
+                  <div class="about-card__stats">
+                    <div class="about-stat">
+                      <span class="about-stat__num">20+</span>
+                      <span class="about-stat__label">品牌客户</span>
+                    </div>
+                    <div class="about-stat">
+                      <span class="about-stat__num">50+</span>
+                      <span class="about-stat__label">完成项目</span>
+                    </div>
+                    <div class="about-stat">
+                      <span class="about-stat__num">5年</span>
+                      <span class="about-stat__label">设计经验</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="about-right">
+                  <div class="skills-card">
+                    <h4 class="skills-card__title">专业技能</h4>
+                    <div class="skills-card__tags">
+                      <span class="skill-tag">品牌设计</span>
+                      <span class="skill-tag">包装设计</span>
+                      <span class="skill-tag">电商视觉</span>
+                      <span class="skill-tag">插画设计</span>
+                      <span class="skill-tag">节气海报</span>
+                      <span class="skill-tag">社媒推文</span>
+                      <span class="skill-tag">VI设计</span>
+                      <span class="skill-tag">3D渲染</span>
+                    </div>
+                  </div>
+                  <div class="contact-card">
+                    <h4 class="contact-card__title">联系方式</h4>
+                    <div class="contact-item">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                        <polyline points="22,6 12,13 2,6"/>
+                      </svg>
+                      <span>757497092@qq.com</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 更多内容：让关于页可以纵向滚动 -->
+              <div style="margin-top:32px; display:flex; flex-direction:column; gap:20px;">
+                <div class="about-card" style="text-align:left;">
+                  <h4 style="font-size:15px; font-weight:700; color:var(--text-primary); margin-bottom:12px;">设计理念</h4>
+                  <p style="font-size:14px; color:var(--text-secondary); line-height:1.8;">
+                    我相信好的设计是「看不见」的——它不喧宾夺主，而是让内容自然地被感知。
+                    在品牌视觉和包装设计中，我始终关注文化与商业的平衡点：既要有传统文化的温度，
+                    也要有现代审美的克制。每一个项目，我都试图找到那个独特的视觉锚点，
+                    让品牌在拥挤的市场中被记住。
+                  </p>
+                </div>
+                <div class="about-card" style="text-align:left;">
+                  <h4 style="font-size:15px; font-weight:700; color:var(--text-primary); margin-bottom:16px;">工作历程</h4>
+                  <div style="display:flex; flex-direction:column; gap:14px;">
+                    <div style="display:flex; gap:14px; align-items:flex-start;">
+                      <span style="font-size:12px; color:var(--accent-primary); font-weight:700; min-width:64px;">2021—至今</span>
+                      <div>
+                        <p style="font-size:14px; font-weight:600; color:var(--text-primary);">自由平面设计师</p>
+                        <p style="font-size:13px; color:var(--text-muted); margin-top:2px;">服务茶小开、杨梅桑葚等品牌，涵盖品牌全案与包装设计</p>
+                      </div>
+                    </div>
+                    <div style="display:flex; gap:14px; align-items:flex-start;">
+                      <span style="font-size:12px; color:var(--accent-secondary); font-weight:700; min-width:64px;">2019—2021</span>
+                      <div>
+                        <p style="font-size:14px; font-weight:600; color:var(--text-primary);">XX设计工作室 · 视觉设计师</p>
+                        <p style="font-size:13px; color:var(--text-muted); margin-top:2px;">负责电商视觉与社媒推文设计，参与多个节日营销项目</p>
+                      </div>
+                    </div>
+                    <div style="display:flex; gap:14px; align-items:flex-start;">
+                      <span style="font-size:12px; color:var(--accent-tertiary); font-weight:700; min-width:64px;">2017—2019</span>
+                      <div>
+                        <p style="font-size:14px; font-weight:600; color:var(--text-primary);">XX广告公司 · 设计实习生 → 助理设计师</p>
+                        <p style="font-size:13px; color:var(--text-muted); margin-top:2px;">从执行走向创意，打下扎实的排版与色彩基础</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="about-card" style="text-align:left;">
+                  <h4 style="font-size:15px; font-weight:700; color:var(--text-primary); margin-bottom:12px;">合作品牌</h4>
+                  <div style="display:flex; flex-wrap:wrap; gap:8px;">
+                    <span class="skill-tag">茶小开</span>
+                    <span class="skill-tag">杨梅桑葚</span>
+                    <span class="skill-tag">青砖茶</span>
+                    <span class="skill-tag">悦然水</span>
+                    <span class="skill-tag">花茶系列</span>
+                    <span class="skill-tag">24节气计划</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+        </div><!-- /.main__inner -->
+      </main>
+
+    </div><!-- /.app-container -->
+
+    <!-- Page Dots (inside horizontal framework, floating) -->
+    <div class="page-dots" id="pageDots">
+      <button class="page-dots__dot page-dots__dot--active" data-page="0"></button>
+      <button class="page-dots__dot" data-page="1"></button>
+      <button class="page-dots__dot" data-page="2"></button>
+      <button class="page-dots__dot" data-page="3"></button>
+    </div>
+
+  </div><!-- /horizontalFramework -->
+
+  <!-- ================================================
+       FRAMEWORK 2: VERTICAL (enters after Framework 1)
+       ================================================ -->
+  <div class="vertical-framework" id="verticalFramework">
+
+    <!-- PAGE: 联系·合作 -->
+    <section class="vf-page" id="vfPage0">
+      <div class="vf-page__inner">
+        <div class="page-header">
+          <span class="page-header__eyebrow">CONTACT</span>
+          <h2 class="page-header__title">联系 · 合作</h2>
+          <p class="page-header__subtitle">有项目想法？让我们一起把它变成现实</p>
+        </div>
+
+        <div class="contact-grid">
+          <div class="contact-form-card">
+            <h3 class="contact-form-card__title">发送消息</h3>
+            <form class="contact-form" id="contactForm" action="mailto:hello@lxlylzl.xyz" method="post">
+              <div class="form-group">
+                <label class="form-label" for="cfName">姓名</label>
+                <input class="form-input" type="text" id="cfName" placeholder="你的名字" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="cfEmail">邮箱</label>
+                <input class="form-input" type="email" id="cfEmail" placeholder="your@email.com" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="cfType">合作类型</label>
+                <select class="form-input" id="cfType">
+                  <option value="brand">品牌设计</option>
+                  <option value="package">包装设计</option>
+                  <option value="social">社媒视觉</option>
+                  <option value="other">其他</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="cfMsg">项目简述</label>
+                <textarea class="form-input form-textarea" id="cfMsg" rows="4" placeholder="告诉我你的想法..."></textarea>
+              </div>
+              <button class="btn btn--primary" type="submit" style="width:100%; justify-content:center;">
+                发送消息
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                  <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                </svg>
+              </button>
+            </form>
+          </div>
+
+          <div class="contact-info-stack">
+            <div class="contact-info-card">
+              <div class="contact-info-card__icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                  <polyline points="22,6 12,13 2,6"/>
+                </svg>
+              </div>
+              <div>
+                <p class="contact-info-card__label">邮箱</p>
+                <p class="contact-info-card__value">757497092@qq.com</p>
+              </div>
+            </div>
+            <div class="contact-info-card">
+              <div class="contact-info-card__icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+                </svg>
+              </div>
+              <div>
+                <p class="contact-info-card__label">微信</p>
+                <p class="contact-info-card__value">LXLYLZL</p>
+              </div>
+            </div>
+            <div class="contact-info-card">
+              <div class="contact-info-card__icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                  <circle cx="12" cy="10" r="3"/>
+                </svg>
+              </div>
+              <div>
+                <p class="contact-info-card__label">地点</p>
+                <p class="contact-info-card__value">中国 · 杭州</p>
+              </div>
+            </div>
+
+            <div class="availability-card">
+              <div class="availability-card__dot"></div>
+              <div>
+                <p class="availability-card__status">可接受新项目</p>
+                <p class="availability-card__note">2026年Q3起可接新单</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE: 设计随笔 -->
+    <section class="vf-page" id="vfPage1">
+      <div class="vf-page__inner">
+        <div class="page-header">
+          <span class="page-header__eyebrow">BLOG</span>
+          <h2 class="page-header__title">设计随笔</h2>
+          <p class="page-header__subtitle">日常思考、设计方法论、工具分享</p>
+        </div>
+
+        <div class="blog-grid">
+          <article class="blog-card">
+            <div class="blog-card__meta">
+              <span class="blog-card__date">2026.05.20</span>
+              <span class="blog-card__tag">设计方法论</span>
+            </div>
+            <h3 class="blog-card__title">中式美学在品牌设计中的运用边界</h3>
+            <p class="blog-card__excerpt">
+              传统文化元素用得好是加分项，用得不好就是「模板感」。本文聊聊如何在品牌视觉中找到那个微妙的平衡点……
+            </p>
+            <span class="blog-card__read">阅读全文 →</span>
+          </article>
+          <article class="blog-card">
+            <div class="blog-card__meta">
+              <span class="blog-card__date">2026.04.12</span>
+              <span class="blog-card__tag">工具分享</span>
+            </div>
+            <h3 class="blog-card__title">我的2026设计工具栈：AI辅助下的工作流重构</h3>
+            <p class="blog-card__excerpt">
+              从 Midjourney 到 ComfyUI，从 Figma 插件到自动化出图——分享一套兼顾效率与质感的工作流……
+            </p>
+            <span class="blog-card__read">阅读全文 →</span>
+          </article>
+          <article class="blog-card">
+            <div class="blog-card__meta">
+              <span class="blog-card__date">2026.03.08</span>
+              <span class="blog-card__tag">节气系列</span>
+            </div>
+            <h3 class="blog-card__title">24节气视觉体系：从色彩到构图的系统化思考</h3>
+            <p class="blog-card__excerpt">
+              做节气海报做了三年，终于摸索出一套可复用又不呆板的视觉体系。色彩怎么选、构图怎么变、细节怎么藏……
+            </p>
+            <span class="blog-card__read">阅读全文 →</span>
+          </article>
+          <article class="blog-card">
+            <div class="blog-card__meta">
+              <span class="blog-card__date">2026.01.15</span>
+              <span class="blog-card__tag">包装设计</span>
+            </div>
+            <h3 class="blog-card__title">茶小开青砖茶：当年轻人遇见老味道</h3>
+            <p class="blog-card__excerpt">
+              如何让95后愿意为一包青砖茶买单？包装设计里的文化翻译工作，比想象中更有趣……
+            </p>
+            <span class="blog-card__read">阅读全文 →</span>
+          </article>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /verticalFramework -->
+
+  <script src="script.js"></script>
+</body>
+</html>
