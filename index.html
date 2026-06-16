@@ -136,13 +136,14 @@
       box-shadow: 0 12px 40px rgba(0,0,0,0.3);
     }
 
-    .nav-container:hover .nav-dot {
+    /* JS-driven: use .is-expanded class instead of :hover */
+    .nav-container.is-expanded .nav-dot {
       opacity: 0;
       transform: scale(0.5);
       pointer-events: none;
     }
 
-    .nav-container:hover .nav-panel {
+    .nav-container.is-expanded .nav-panel {
       opacity: 1;
       pointer-events: auto;
       transform: translateY(-50%) scale(1) translateX(0);
@@ -517,7 +518,7 @@
 
 <script>
 (function(){
-  'use strict';
+     'use strict';
 
   var mainContent = document.getElementById('mainContent');
   var mainInner = mainContent.querySelector('.main__inner');
@@ -527,10 +528,45 @@
   var themeBtn = document.getElementById('themeBtn');
   var logoBtn = document.getElementById('logoBtn');
   var pageIndicator = document.getElementById('pageIndicator');
+  var navContainer = document.getElementById('navContainer');
+  var navPanel = document.getElementById('navPanel');
 
   var PAGE_COUNT = 5;
   var currentPage = 0;
   var inVerticalFramework = false;
+  var navHideTimer = null;
+
+  // ========== NAV PANEL (click to toggle) ==========
+  function toggleNavPanel() {
+    var isOpen = navContainer.classList.contains('is-expanded');
+    if (isOpen) {
+      navContainer.classList.remove('is-expanded');
+    } else {
+      navContainer.classList.add('is-expanded');
+    }
+  }
+
+  function closeNavPanel() {
+    navContainer.classList.remove('is-expanded');
+  }
+
+  // Click dot to toggle
+  document.getElementById('navDot').addEventListener('click', function (e) {
+    e.stopPropagation();
+    toggleNavPanel();
+  });
+
+  // Click outside to close
+  document.addEventListener('click', function (e) {
+    if (!navContainer.contains(e.target)) {
+      closeNavPanel();
+    }
+  });
+
+  // Prevent panel clicks from closing
+  navPanel.addEventListener('click', function (e) {
+    e.stopPropagation();
+  });
 
   // ========== THEME ==========
   function applyTheme(theme) {
@@ -637,10 +673,8 @@
         if (!inVerticalFramework) enterVerticalFramework();
       }
 
-      // Close nav panel on mobile
-      if (window.innerWidth < 1024) {
-        document.getElementById('navContainer').classList.remove('is-open');
-      }
+      // Close nav panel after clicking any nav item
+      closeNavPanel();
     });
   });
 
