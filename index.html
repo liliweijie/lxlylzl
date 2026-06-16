@@ -272,11 +272,10 @@
     transition: background var(--transition-theme), border-color var(--transition-theme);
   }
 
-  /* ========== VERTICAL FRAMEWORK ========== */
+  /* ========== VERTICAL FRAMEWORK — inside glass frame ========== */
   .vertical-framework {
-    position: fixed;
-    top: 72px;
-    left: 0; right: 0;
+    position: absolute;
+    top: 0; left: 0; right: 0;
     bottom: 0;
     overflow-y: auto;
     overflow-x: hidden;
@@ -285,6 +284,7 @@
     transition: opacity 0.6s;
     z-index: 10;
     scroll-behavior: smooth;
+    border-radius: 32px;
   }
 
   .vertical-framework.is-visible {
@@ -293,7 +293,7 @@
   }
 
   .vf-page {
-    min-height: 100vh;
+    min-height: calc(100vh - 72px);
     display: flex;
     align-items: center;
     justify-content: center;
