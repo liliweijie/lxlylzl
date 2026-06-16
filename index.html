@@ -1,86 +1,43 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LXLYLZL — 平面设计师 · 品牌设计</title>
-  <style>
-    /* ============================================
-       LXLYLZL — 美学优化 Demo (极简+有力)
-       ============================================ */
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LX · 李欣怡 - 平面设计师</title>
+<style>
     :root {
-      /* 配色：深灰蓝底 + 暖奶油白字 + 红色强调 */
       --bg-primary: #0e0e12;
       --bg-card: rgba(24, 24, 34, 0.68);
-      --bg-card-hover: rgba(26, 26, 36, 0.78);
       --bg-glass: rgba(18, 18, 28, 0.58);
       --glass-border: rgba(255, 255, 255, 0.07);
-
       --text-primary: #f0ece6;
       --text-secondary: #9898a8;
-      --text-muted: #6a6a7a;
-
+      --text-muted: rgba(152,152,168,0.5);
       --accent: #FF3A5C;
       --accent-dim: rgba(255, 58, 92, 0.12);
-      --accent-hover: #FF1A4A;
-
       --border: rgba(255, 255, 255, 0.07);
-      --border-hover: rgba(255, 255, 255, 0.14);
-
-      /* 排版 */
-      --font-display: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans SC', sans-serif;
+      --border-hover: rgba(255, 255, 255, 0.15);
+      --nav-bg: rgba(18, 18, 28, 0.92);
       --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans SC', sans-serif;
-
-      /* 间距 */
-      --space-xs: 4px;
-      --space-sm: 8px;
-      --space-md: 16px;
-      --space-lg: 24px;
-      --space-xl: 40px;
-
-      /* 圆角 */
-      --radius-sm: 8px;
-      --radius-md: 12px;
-      --radius-lg: 20px;
-      --radius-xl: 24px;
-      --radius-full: 9999px;
     }
 
-
-    /* ================================================
-       LIGHT MODE — 浅色模式
-       ================================================ */
     [data-theme="light"] {
       --bg-primary: #f5f0e8;
-      --bg-card: rgba(255, 255, 252, 0.78);
-      --bg-card-hover: rgba(245, 245, 250, 0.92);
-      --bg-glass: rgba(255, 255, 250, 0.68);
+      --bg-card: rgba(255, 255, 252, 0.82);
+      --bg-glass: rgba(255, 255, 250, 0.72);
       --glass-border: rgba(0, 0, 0, 0.08);
-
       --text-primary: #1a1a2c;
       --text-secondary: #5a5a6a;
-      --text-muted: #9898a8;
-
-      --accent: #FF3A5C;
-      --accent-dim: rgba(255, 58, 92, 0.10);
-      --accent-hover: #cc2040;
-
+      --text-muted: rgba(90,90,106,0.5);
       --border: rgba(0, 0, 0, 0.08);
-      --border-hover: rgba(0, 0, 0, 0.16);
+      --border-hover: rgba(0, 0, 0, 0.15);
+      --nav-bg: rgba(255, 255, 252, 0.95);
     }
 
-
-    /* --- Reset --- */
-    *, *::before, *::after {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    *, *::before, *::after { margin:0; padding:0;box-sizing:border-box; }
 
     html {
-      overflow: hidden;
-      height: 100%;
+      overflow: hidden; height: 100%;
       background: var(--bg-primary);
       color: var(--text-primary);
       font-family: var(--font-body);
@@ -88,1547 +45,654 @@
       transition: background-color 0.45s ease, color 0.45s ease;
     }
 
-    body {
-      height: 100%;
-      overflow: hidden;
-      position: relative;
-    }
+    body { height: 100%; }
 
-    a, button {
-      color: inherit;
-      text-decoration: none;
-      border: none;
-      background: none;
-      cursor: pointer;
-      font-family: inherit;
-    }
-
-    /* --- 静态渐变背景（替换 Canvas） --- */
-    #bgCanvas {
+    /* ========== LEFT SIDE CONTROL PANEL ========== */
+    .left-panel {
       position: fixed;
-      inset: 0;
-      z-index: 0;
-      width: 100%;
-      height: 100%;
-      background:
-        radial-gradient(ellipse at 20% 30%, rgba(255, 58, 92, 0.07) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 70%, rgba(255, 58, 92, 0.035) 0%, transparent 50%),
-        var(--bg-primary);
-      transition: background 0.45s ease;
+      left: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
     }
 
-    [data-theme="light"] #bgCanvas {
-      background:
-        radial-gradient(ellipse at 20% 30%, rgba(255, 58, 92, 0.05) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 70%, rgba(255, 58, 92, 0.025) 0%, transparent 50%),
-        var(--bg-primary);
+    /* Logo */
+    .logo {
+      width: 40px; height: 40px;
+      background: var(--accent);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 15px; color: #fff;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      text-decoration: none;
+    }
+    .logo:hover { transform: scale(1.1) rotate(5deg); box-shadow: 0 4px 20px rgba(255,58,92,0.4); }
+
+    /* ========== PLAYFUL NAV (LEFT SIDE) ========== */
+    .nav-container {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
     }
 
-    /* ================================================
-       APP CONTAINER — 极简毛玻璃卡片
-       ================================================ */
+    /* The collapsed dot */
+    .nav-dot {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      position: relative;
+      transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 0 0 0 rgba(255, 58, 92, 0.4);
+      animation: dot-pulse 2.5s ease-in-out infinite;
+      align-self: center;
+    }
+
+    @keyframes dot-pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(255, 58, 92, 0.4); }
+      50% { box-shadow: 0 0 0 8px rgba(255, 58, 92, 0); }
+    }
+
+    .nav-dot::after {
+      content: '';
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255, 58, 92, 0.3);
+      animation: dot-ring 2.5s ease-in-out infinite;
+    }
+
+    @keyframes dot-ring {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.8); opacity: 0; }
+    }
+
+    /* Expanded nav panel */
+    .nav-panel {
+      position: absolute;
+      left: 36px;
+      top: 50%;
+      transform: translateY(-50%) scale(0.3) translateX(-16px);
+      opacity: 0;
+      pointer-events: none;
+      background: var(--nav-bg);
+      backdrop-filter: blur(32px) saturate(1.2);
+      -webkit-backdrop-filter: blur(32px) saturate(1.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 12px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 150px;
+      transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transform-origin: left center;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    }
+
+    .nav-container:hover .nav-dot {
+      opacity: 0;
+      transform: scale(0.5);
+      pointer-events: none;
+    }
+
+    .nav-container:hover .nav-panel {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(-50%) scale(1) translateX(0);
+    }
+
+    /* Nav items */
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.35s ease;
+      white-space: nowrap;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .nav-item::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: var(--accent);
+      border-radius: 0 2px 2px 0;
+      transform: scaleY(0);
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .nav-item:hover { background: var(--accent-dim); }
+    .nav-item:hover::before { transform: scaleY(1); }
+
+    .nav-item--active { background: var(--accent-dim); }
+    .nav-item--active::before { transform: scaleY(1); }
+
+    .nav-item__dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--border);
+      transition: all 0.4s ease;
+      flex-shrink: 0;
+    }
+
+    .nav-item:hover .nav-item__dot { background: var(--accent); transform: scale(1.3); }
+    .nav-item--active .nav-item__dot { background: var(--accent); box-shadow: 0 0 8px rgba(255,58,92,0.5); }
+
+    .nav-item__label { font-size: 13px; font-weight: 600; color: var(--text-secondary); transition: color 0.3s ease; }
+    .nav-item:hover .nav-item__label,
+    .nav-item--active .nav-item__label { color: var(--text-primary); }
+
+    .nav-divider { height: 1px; background: var(--border); margin: 4px 14px; }
+
+    .nav-section-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+      color: var(--text-muted); padding: 4px 14px 2px; text-transform: uppercase;
+    }
+
+    /* Theme toggle */
+    .theme-toggle {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      backdrop-filter: blur(10px);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+    .theme-toggle:hover { border-color: var(--accent); transform: rotate(180deg); }
+
+    /* ========== APP CONTAINER ========== */
     .app-container {
       position: fixed;
-      top: 72px;
-      bottom: 72px;
-      left: 72px;
-      right: 72px;
-      display: flex;
-      overflow: hidden;
+      top: 72px; bottom: 72px;
+      left: 80px; right: 72px;
+      display: flex; overflow: hidden;
       z-index: 10;
-
       background: var(--bg-glass);
       backdrop-filter: blur(32px) saturate(1.2);
       -webkit-backdrop-filter: blur(32px) saturate(1.2);
       border: 1px solid var(--glass-border);
       border-radius: 32px;
-
-      box-shadow:
-        0 24px 64px rgba(0, 0, 0, 0.4),
-        0 0 0 1px rgba(255, 255, 255, 0.02);
-      transition: background 0.45s ease, border-color 0.45s ease, box-shadow 0.45s ease;
+      transition: background 0.45s ease, border-color 0.45s ease;
     }
 
-    [data-theme="light"] .app-container {
-      box-shadow:
-        0 24px 64px rgba(0, 0, 0, 0.12),
-        0 0 0 1px rgba(0, 0, 0, 0.04);
-    }
+    /* ========== MAIN ========== */
+    .main { flex:1; display:flex; overflow:hidden; }
+    .main__inner { display:flex; height:100%; }
 
-    /* --- Icon Sidebar --- */
-    .icon-sidebar {
-      width: 72px;
-      height: 100%;
-      flex-shrink: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 28px 0;
-      z-index: 100;
-      background: rgba(10, 10, 16, 0.3);
-      border-right: 1px solid var(--border);
-    }
-
-    .icon-sidebar__brand {
-      margin-bottom: 40px;
-      opacity: 0.88;
-      transition: opacity 0.3s ease;
-    }
-    .icon-sidebar__brand:hover { opacity: 1; }
-
-    .icon-sidebar__nav {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-      flex: 1;
-    }
-
-    .icon-sidebar__item {
-      position: relative;
-      width: 48px;
-      height: 48px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: var(--radius-md);
-      color: var(--text-muted);
-      transition: all 0.3s ease;
-    }
-    .icon-sidebar__item:hover {
-      color: var(--text-secondary);
-      background: rgba(255, 255, 255, 0.06);
-    }
-    .icon-sidebar__item--active {
-      color: var(--accent);
-      background: var(--accent-dim);
-    }
-    .icon-sidebar__item--active::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 3px;
-      height: 20px;
-      background: var(--accent);
-      border-radius: 0 2px 2px 0;
-      box-shadow: 0 0 8px rgba(255, 58, 92, 0.4);
-    }
-
-    .icon-sidebar__icon {
-      width: 22px;
-      height: 22px;
-      stroke-width: 1.8;
-    }
-
-    .icon-sidebar__bottom {
-      margin-top: auto;
-      padding-top: 20px;
-    }
-
-    /* --- Main Content --- */
-    .main {
-      flex: 1;
-      min-width: 0;
-      height: 100%;
-      overflow-x: auto;
-      overflow-y: hidden;
-      scroll-behavior: auto;
-      -webkit-overflow-scrolling: touch;
-      position: relative;
-    }
-    .main::-webkit-scrollbar { display: none; }
-
-    .main__inner {
-      display: flex;
-      height: 100%;
-    }
-
-    /* --- Page --- */
     .page {
-      flex-shrink: 0;
-      height: 100%;
-      padding: 40px 48px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      scroll-snap-align: start;
-      scroll-snap-stop: always;
-      position: relative;
+      min-height: 100%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      padding: 60px 56px;
     }
 
-    .content-wrapper {
-      width: 100%;
-      max-width: 1200px;
-      margin: 0 auto;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-    }
+    .content-wrapper { width:100%; max-width:1100px; margin:0 auto; display:flex; flex-direction:column; gap:32px; }
 
-    /* ================================================
-       HERO — 极简有力
-       ================================================ */
-    .hero {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      gap: 40px;
-    }
+    .page-header { margin-bottom: 8px; }
+    .page-header__eyebrow { font-size:11px; font-weight:700; letter-spacing:0.12em; color:var(--accent); text-transform:uppercase; }
+    .page-header__title { font-size:clamp(36px,4vw,52px); font-weight:800; color:var(--text-primary); margin-top:8px; line-height:1.15; }
+    .page-header__subtitle { font-size:15px; color:var(--text-secondary); margin-top:12px; line-height:1.7; }
 
-    /* 核心改动：更强的排版对比 */
-    .hero__name {
-      font-family: var(--font-display);
-      font-size: clamp(64px, 8vw, 120px);  /* 更大 */
-      font-weight: 900;
-      line-height: 0.95;  /* 更紧凑 */
-      letter-spacing: -0.03em;  /* 中文字符紧凑 */
-      color: var(--text-primary);
-      text-align: center;
-    }
+    .hero { text-align:center; }
+    .hero__name { font-size:clamp(56px,7vw,96px); font-weight:800; line-height:1.05; }
+    .hero__name-line--accent { color:var(--accent); }
+    .hero__tagline { font-size:16px; color:var(--text-secondary); margin-top:20px; line-height:1.8; }
+    .hero__actions { display:flex; gap:16px; justify-content:center; margin-top:36px; }
+    .btn { padding:14px 32px; border-radius:24px; font-size:14px; font-weight:700; cursor:pointer; border:none; transition:all 0.35s ease; }
+    .btn--primary { background:var(--accent); color:white; }
+    .btn--primary:hover { background:#FF1A4A; transform:translateY(-2px); }
+    .btn--ghost { background:var(--bg-card); color:var(--text-primary); border:1px solid var(--border); }
 
-    .hero__name-line {
-      display: block;
-    }
+    .work-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:20px; }
+    .work-card { background:var(--bg-card); border:1px solid var(--border); border-radius:24px; padding:32px; transition:all 0.4s ease; cursor:pointer; }
+    .work-card:hover { border-color:var(--border-hover); transform:translateY(-4px); }
 
-    /* 唯一强调色：只在"LZL"使用 */
-    .hero__name-line--accent {
-      background: linear-gradient(135deg, var(--accent), var(--accent-hover));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    /* 副标题：更小，形成强对比 */
-    .hero__tagline {
-      font-size: clamp(13px, 1.2vw, 15px);  /* 更小 */
-      color: var(--text-muted);  /* 更低对比度 */
-      line-height: 1.8;
-      max-width: 420px;
-      text-align: center;
-      letter-spacing: 0.02em;
-    }
-
-    /* 行动按钮：更简洁 */
-    .hero__actions {
-      display: flex;
-      gap: 14px;
-      margin-top: 12px;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 14px 32px;
-      border-radius: var(--radius-full);
-      font-size: 14px;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      cursor: pointer;
-    }
-
-    .btn--primary {
-      background: var(--accent);
-      color: white;
-      border: none;
-      box-shadow: 0 4px 16px rgba(255, 58, 92, 0.25);
-    }
-    .btn--primary:hover {
-      background: var(--accent-hover);
-      transform: translateY(-3px);
-      box-shadow: 0 8px 24px rgba(255, 58, 92, 0.4);
-    }
-
-    .btn--ghost {
-      background: transparent;
-      color: var(--text-secondary);
-      border: 1px solid var(--border);
-    }
-    .btn--ghost:hover {
-      color: var(--text-primary);
-      border-color: var(--border-hover);
-      transform: translateY(-3px);
-    }
-
-    /* 统计数据：更精简 */
-    .hero__stats {
-      display: flex;
-      align-items: center;
-      gap: 32px;
-      padding: 24px 40px;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-    }
-
-    .hero-stat {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .hero-stat__num {
-      font-size: 28px;  /* 更大 */
-      font-weight: 800;
-      color: var(--text-primary);
-      font-variant-numeric: tabular-nums;
-    }
-
-    .hero-stat__label {
-      font-size: 11px;
-      color: var(--text-muted);
-      letter-spacing: 0.04em;
-    }
-
-    .hero-stat__divider {
-      width: 1px;
-      height: 36px;
-      background: var(--border);
-    }
-
-    /* --- Page Header --- */
-    .page-header {
-      margin-bottom: 32px;
-      flex-shrink: 0;
-    }
-
-    .page-header__eyebrow {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--accent);
-      letter-spacing: 0.2em;
-      margin-bottom: 8px;
-      display: block;
-    }
-
-    .page-header__title {
-      font-family: var(--font-display);
-      font-size: 36px;
-      font-weight: 800;
-      color: var(--text-primary);
-      letter-spacing: -0.01em;
-    }
-
-    .page-header__subtitle {
-      font-size: 14px;
-      color: var(--text-muted);
-      margin-top: 8px;
-    }
-
-    /* ================================================
-       WORK GRID — 优化布局（主推作品+其他）
-       ================================================ */
-    .work-grid {
-      display: grid;
-      grid-template-columns: 1.2fr 1fr;  /* 主推作品更大 */
-      grid-template-rows: 1fr 1fr;
-      gap: 20px;
-      overflow-y: auto;
-      padding-right: 4px;
-      flex: 1;
-      min-height: 0;
-    }
-    .work-grid::-webkit-scrollbar { width: 3px; }
-    .work-grid::-webkit-scrollbar-thumb {
-      background: var(--border);
-      border-radius: var(--radius-full);
-    }
-
-    /* 第一个作品：主推，占 2 行 */
-    .work-card:first-child {
-      grid-row: span 2;
-    }
-
-    .work-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      overflow: hidden;
-      transition: all 0.4s ease;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .work-card:hover {
-      border-color: var(--border-hover);
-      transform: translateY(-6px);
-      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.4);
-    }
-
-    .work-card__image {
-      width: 100%;
-      aspect-ratio: 16 / 10;
-      overflow: hidden;
-      position: relative;
-      background: rgba(255, 255, 255, 0.02);
-    }
-
-    /* 第一个作品：更高 */
-    .work-card:first-child .work-card__image {
-      aspect-ratio: auto;
-      flex: 1;
-    }
-
-    .work-card__image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.6s ease;
-    }
-
-    .work-card:hover .work-card__image img {
-      transform: scale(1.05);
-    }
-
-    .work-card__body {
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .work-card__category {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      color: var(--accent);
-    }
-
-    .work-card__title {
-      font-family: var(--font-display);
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--text-primary);
-      line-height: 1.3;
-    }
-
-    .work-card__desc {
-      font-size: 13px;
-      color: var(--text-muted);
-      line-height: 1.6;
-    }
-
-    /* ================================================
-       ABOUT PAGE — 优化布局
-       ================================================ */
-    .about-layout {
-      display: grid;
-      grid-template-columns: 1fr 1.5fr;  /* 右侧更多信息 */
-      gap: 32px;
-      align-items: start;
-      flex: 1;
-      min-height: 0;
-    }
-
-    .about-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      padding: 40px 36px;
-      text-align: center;
-      transition: all 0.4s ease;
-    }
-
-    .about-card:hover {
-      border-color: var(--border-hover);
-      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35);
-    }
-
-    .about-card__avatar {
-      width: 96px;  /* 更大 */
-      height: 96px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent), var(--accent-hover));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 40px;  /* 更大 */
-      font-weight: 800;
-      color: white;
-      margin: 0 auto 24px;
-      border: 3px solid rgba(255, 255, 255, 0.06);
-      box-shadow: 0 8px 24px rgba(255, 58, 92, 0.2);
-    }
-
-    .about-card__name {
-      font-family: var(--font-display);
-      font-size: 28px;  /* 更大 */
-      font-weight: 800;
-      color: var(--text-primary);
-      letter-spacing: -0.01em;
-    }
-
-    .about-card__role {
-      font-size: 14px;
-      color: var(--text-muted);
-      margin-top: 6px;
-    }
-
-    .about-card__bio {
-      font-size: 14px;
-      color: var(--text-secondary);
-      line-height: 1.8;
-      margin-top: 20px;
-      text-align: left;
-    }
-
-    /* --- Skills --- */
-    .skills-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      padding: 32px;
-      margin-top: 20px;
-    }
-
-    .skills-card__title {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: 16px;
-    }
-
-    .skills-card__tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .skill-tag {
-      padding: 8px 16px;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-full);
-      font-size: 13px;
-      color: var(--text-secondary);
-      transition: all 0.3s ease;
-      cursor: default;
-    }
-
-    .skill-tag:hover {
-      border-color: var(--border-hover);
-      color: var(--text-primary);
-      background: rgba(255, 255, 255, 0.06);
-    }
-
-    /* ================================================
-       CONTACT PAGE
-       ================================================ */
-    .contact-grid {
-      display: grid;
-      grid-template-columns: 1.5fr 1fr;
-      gap: 28px;
-      align-items: start;
-    }
-
-    .contact-form-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      padding: 40px 36px;
-    }
-
-    .contact-form-card__title {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: 28px;
-    }
-
-    .form-group { margin-bottom: 20px; }
-
-    .form-label {
-      display: block;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-muted);
-      letter-spacing: 0.06em;
-      margin-bottom: 8px;
-    }
-
-    .form-input {
-      width: 100%;
-      padding: 14px 18px;  /* 更大 */
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      color: var(--text-primary);
-      font-size: 14px;
-      font-family: inherit;
-      outline: none;
-      transition: border-color 0.3s, box-shadow 0.3s;
-    }
-
-    .form-input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px var(--accent-dim);
-    }
-
-    .form-input::placeholder { color: var(--text-muted); }
-
-    textarea.form-input { resize: vertical; min-height: 120px; }
-
-    /* --- Contact Info --- */
-    .contact-info-stack {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      position: sticky;
-      top: 120px;
-    }
-
-    .contact-info-card {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 18px 22px;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      transition: border-color 0.3s;
-    }
-
-    .contact-info-card:hover { border-color: var(--border-hover); }
-
-    .contact-info-card__icon {
-      width: 44px;
-      height: 44px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--accent-dim);
-      border-radius: var(--radius-md);
-      color: var(--accent);
-      flex-shrink: 0;
-    }
-
-    .contact-info-card__label {
-      font-size: 11px;
-      color: var(--text-muted);
-      letter-spacing: 0.04em;
-    }
-
-    .contact-info-card__value {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-top: 2px;
-    }
-
-    /* ================================================
-       VERTICAL FRAMEWORK
-       ================================================ */
+    /* ========== VERTICAL FRAMEWORK ========== */
     .vertical-framework {
-      position: fixed;
-      top: 72px;
-      bottom: 72px;
-      left: 72px;
-      right: 72px;
+      position: fixed; top:72px; bottom:72px; left:80px; right:72px;
       z-index: 90;
       transform: translateY(120%);
       transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
       overflow-y: auto;
-      overflow-x: hidden;
-      scrollbar-width: thin;
-      scrollbar-color: var(--border) transparent;
-      -webkit-overflow-scrolling: touch;
-
       background: var(--bg-glass);
       backdrop-filter: blur(32px) saturate(1.2);
       -webkit-backdrop-filter: blur(32px) saturate(1.2);
       border: 1px solid var(--glass-border);
       border-radius: 32px;
-      box-shadow:
-        0 24px 64px rgba(0, 0, 0, 0.4),
-        0 0 0 1px rgba(255, 255, 255, 0.02);
-      transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1),
-                  background 0.45s ease, border-color 0.45s ease, box-shadow 0.45s ease;
+    }
+    .vertical-framework.is-visible { transform: translateY(0); }
+    .vf-page { min-height: calc(100vh - 144px); display:flex; align-items:center; justify-content:center; padding:80px 48px 60px; }
+    .vf-page__inner { width:100%; max-width:960px; margin:0 auto; }
+
+    /* ========== PAGE INDICATOR ========== */
+    .page-indicator {
+      position: fixed; bottom: 28px; right: 28px;
+      z-index: 50; font-size: 11px; font-weight: 600;
+      color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase;
     }
 
-    [data-theme="light"] .vertical-framework {
-      box-shadow:
-        0 24px 64px rgba(0, 0, 0, 0.12),
-        0 0 0 1px rgba(0, 0, 0, 0.04);
+    /* ========== RESPONSIVE ========== */
+    @media (max-width:1024px) {
+      .app-container { top:16px; bottom:16px; left:60px; right:16px; }
+      .vertical-framework { top:16px; bottom:16px; left:60px; right:16px; }
+      .page { padding:32px 36px; }
+      .left-panel { left:12px; }
     }
-
-    .vertical-framework.is-visible {
-      transform: translateY(0);
-    }
-
-    .vertical-framework::-webkit-scrollbar { width: 3px; }
-    .vertical-framework::-webkit-scrollbar-thumb {
-      background: var(--border);
-      border-radius: 9999px;
-    }
-
-    /* --- VF Page --- */
-    .vf-page {
-      min-height: calc(100vh - 144px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 80px 48px 60px;
-      position: relative;
-    }
-
-    .vf-page__inner {
-      width: 100%;
-      max-width: 960px;
-      margin: 0 auto;
-    }
-
-    /* ================================================
-       BLOG PAGE
-       ================================================ */
-    .blog-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
-    }
-
-    .blog-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      padding: 36px 32px;  /* 更大 */
-      cursor: pointer;
-      transition: all 0.4s ease;
-    }
-
-    .blog-card:hover {
-      border-color: var(--border-hover);
-      transform: translateY(-4px);
-      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35);
-    }
-
-    .blog-card__meta {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-
-    .blog-card__date {
-      font-size: 11px;
-      color: var(--text-muted);
-      font-variant-numeric: tabular-nums;
-    }
-
-    .blog-card__tag {
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      color: var(--accent);
-      background: var(--accent-dim);
-      padding: 4px 12px;
-      border-radius: var(--radius-full);
-    }
-
-    .blog-card__title {
-      font-family: var(--font-display);
-      font-size: 19px;  /* 更大 */
-      font-weight: 700;
-      color: var(--text-primary);
-      line-height: 1.4;
-      margin-bottom: 12px;
-      transition: color 0.3s;
-    }
-
-    .blog-card:hover .blog-card__title { color: var(--accent); }
-
-    .blog-card__excerpt {
-      font-size: 13px;
-      color: var(--text-secondary);
-      line-height: 1.7;
-    }
-
-    /* ================================================
-       RESPONSIVE
-       ================================================ */
-    @media (max-width: 1024px) {
-      :root { --app-padding: 16px; }
-      .icon-sidebar { display: none; }
-      .app-container {
-        top: 16px;
-        bottom: 16px;
-        left: 16px;
-        right: 16px;
-      }
-      .vertical-framework {
-        top: 16px;
-        bottom: 16px;
-        left: 16px;
-        right: 16px;
-      }
-      .main { width: 100%; }
-      .page { padding: 32px 36px; }
-      .hero__name { font-size: 56px; }
-      .work-grid { grid-template-columns: 1fr; }
-      .work-card:first-child { grid-row: span 1; }
-      .about-layout { grid-template-columns: 1fr; }
-      .contact-grid { grid-template-columns: 1fr; }
-      .vf-page { padding: 100px 36px 80px; }
-    }
-
-    @media (max-width: 640px) {
-      :root { --app-padding: 12px; }
-      .page { padding: 24px 20px; }
-      .hero__name { font-size: 40px; }
-      .hero__stats { flex-direction: column; gap: 12px; padding: 20px; }
-      .hero-stat__divider { width: 32px; height: 1px; }
-      .hero__actions { flex-direction: column; }
-      .blog-grid { grid-template-columns: 1fr; }
-      .vf-page { padding: 100px 20px 80px; }
-    }
-
-    /* --- Page Visibility --- */
-    .page .content-wrapper > * {
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.5s ease, transform 0.5s ease;
-    }
-
-    .page.is-visible .content-wrapper > * {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .page.is-visible .content-wrapper > *:nth-child(1) { transition-delay: 0.05s; }
-    .page.is-visible .content-wrapper > *:nth-child(2) { transition-delay: 0.1s; }
-    .page.is-visible .content-wrapper > *:nth-child(3) { transition-delay: 0.15s; }
-    .page.is-visible .content-wrapper > *:nth-child(4) { transition-delay: 0.2s; }
-    .page.is-visible .content-wrapper > *:nth-child(5) { transition-delay: 0.25s; }
-  </style>
+</style>
 </head>
 <body>
 
-  <!-- Static Gradient Background -->
-  <div id="bgCanvas"></div>
+<!-- ========== LEFT SIDE CONTROL PANEL ========== -->
+<div class="left-panel">
+  <!-- Logo -->
+  <div class="logo" id="logoBtn" title="回到首页">LX</div>
 
-  <!-- ================================================
-       FRAMEWORK 1: HORIZONTAL
-       ================================================ -->
-  
-<aside class="icon-sidebar" id="iconSidebar">
-      <div class="icon-sidebar__brand">
-        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-          <rect width="32" height="32" rx="8" fill="#FF3A5C"/>
-          <text x="16" y="22" text-anchor="middle" fill="white" font-size="16" font-weight="800" font-family="serif">L</text>
-        </svg>
+  <!-- Playful Nav -->
+  <div class="nav-container" id="navContainer">
+    <!-- Collapsed dot -->
+    <div class="nav-dot" id="navDot"></div>
+    <!-- Expanded panel -->
+    <div class="nav-panel" id="navPanel">
+      <div class="nav-section-label">横向</div>
+      <div class="nav-item nav-item--active" data-target="page" data-index="0">
+        <span class="nav-item__dot"></span>
+        <span class="nav-item__label">首页</span>
       </div>
-
-      <nav class="icon-sidebar__nav" id="sidebarNav">
-        <button class="icon-sidebar__item icon-sidebar__item--active" data-page="0" aria-label="首页">
-          <svg class="icon-sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-            <polyline points="9 22 9 12 15 12 15 22"/>
-          </svg>
-        </button>
-        <button class="icon-sidebar__item" data-page="1" aria-label="作品集">
-          <svg class="icon-sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="3" width="18" height="18" rx="2"/>
-            <circle cx="8.5" cy="8.5" r="1.5"/>
-            <path d="M21 15l-5-5L5 21"/>
-          </svg>
-        </button>
-        <button class="icon-sidebar__item" data-page="2" aria-label="关于">
-          <svg class="icon-sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-            <circle cx="12" cy="7" r="4"/>
-          </svg>
-        </button>
-        <button class="icon-sidebar__item" data-page="3" aria-label="服务">
-          <svg class="icon-sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-            <path d="M2 17l10 5 10-5"/>
-            <path d="M2 12l10 5 10-5"/>
-          </svg>
-        </button>
-        <button class="icon-sidebar__item" data-page="4" aria-label="案例">
-          <svg class="icon-sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-          </svg>
-        </button>
-      </nav>
-
-      <div class="icon-sidebar__bottom">
-        <button class="icon-sidebar__item" aria-label="主题">
-          <svg class="icon-sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-            <circle cx="12" cy="12" r="5"/>
-            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
-          </svg>
-        </button>
+      <div class="nav-item" data-target="page" data-index="1">
+        <span class="nav-item__dot"></span>
+        <span class="nav-item__label">作品集</span>
       </div>
-    </aside>
-  <div class="app-container" id="appContainer">
+      <div class="nav-item" data-target="page" data-index="2">
+        <span class="nav-item__dot"></span>
+        <span class="nav-item__label">关于</span>
+      </div>
+      <div class="nav-item" data-target="page" data-index="3">
+        <span class="nav-item__dot"></span>
+        <span class="nav-item__label">服务</span>
+      </div>
+      <div class="nav-item" data-target="page" data-index="4">
+        <span class="nav-item__dot"></span>
+        <span class="nav-item__label">案例</span>
+      </div>
+      <div class="nav-divider"></div>
+      <div class="nav-section-label">竖向</div>
+      <div class="nav-item" data-target="vertical" data-index="0">
+        <span class="nav-item__dot"></span>
+        <span class="nav-item__label">联系</span>
+      </div>
+      <div class="nav-item" data-target="vertical" data-index="1">
+        <span class="nav-item__dot"></span>
+        <span class="nav-item__label">博客</span>
+      </div>
+    </div>
+  </div>
 
-    <!-- Icon Sidebar -->
-    
+  <!-- Theme Toggle -->
+  <div class="theme-toggle" id="themeBtn" title="切换明暗模式">🌓</div>
+</div>
 
-    <!-- Main Content (Horizontal Scroll) -->
-    <main class="main" id="mainContent">
-      <div class="main__inner">
+<!-- ========== HORIZONTAL FRAMEWORK ========== -->
+<div class="app-container" id="appContainer">
+  <main class="main" id="mainContent">
+    <div class="main__inner">
 
-        <!-- ==================== PAGE 0: HERO ==================== -->
-        <section class="page hero-page" id="page0">
-          <div class="hero">
-            <h1 class="hero__name">
-              <span class="hero__name-line">LX</span>
-              <span class="hero__name-line hero__name-line--accent">LYLZL</span>
-            </h1>
-            <p class="hero__tagline">
-              将传统文化元素与现代设计语言融合<br>
-              创造有温度、有记忆点的品牌视觉
-            </p>
-            <div class="hero__actions">
-              <button class="btn btn--primary" data-page="1">
-                查看作品
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                  <path d="M5 12h14M12 5l7 7-7 7"/>
-                </svg>
-              </button>
-              <button class="btn btn--ghost" data-page="2">
-                关于我
-              </button>
-            </div>
-            <div class="hero__stats">
-              <div class="hero-stat">
-                <span class="hero-stat__num">20+</span>
-                <span class="hero-stat__label">品牌客户</span>
-              </div>
-              <div class="hero-stat__divider"></div>
-              <div class="hero-stat">
-                <span class="hero-stat__num">50+</span>
-                <span class="hero-stat__label">完成项目</span>
-              </div>
-              <div class="hero-stat__divider"></div>
-              <div class="hero-stat">
-                <span class="hero-stat__num">5年</span>
-                <span class="hero-stat__label">设计经验</span>
-              </div>
-            </div>
+      <!-- PAGE 0: HERO -->
+      <section class="page" id="page0">
+        <div class="content-wrapper hero">
+          <h1 class="hero__name">
+            <span>LX</span><span class="hero__name-line--accent">LYLZL</span>
+          </h1>
+          <p class="hero__tagline">将传统文化元素与现代设计语言融合<br>创造有温度、有记忆点的品牌视觉</p>
+          <div class="hero__actions">
+            <button class="btn btn--primary" data-page="1">查看作品 →</button>
+            <button class="btn btn--ghost" data-page="2">关于我</button>
           </div>
-        </section>
-
-        <!-- ==================== PAGE 1: PORTFOLIO ==================== -->
-        <section class="page portfolio-page" id="page1">
-          <div class="content-wrapper">
-            <div class="page-header">
-              <span class="page-header__eyebrow">PORTFOLIO</span>
-              <h2 class="page-header__title">作品集</h2>
-              <p class="page-header__subtitle">品牌电商 · 包装设计 · 节气海报 · 社媒视觉</p>
-            </div>
-
-            <div class="work-grid" id="portfolioGrid">
-              <article class="work-card" data-page="1">
-                <div class="work-card__image">
-                  <img src="assets/card1-product.png" alt="杨梅桑葚小番茄" loading="lazy">
-                </div>
-                <div class="work-card__body">
-                  <span class="work-card__category">产品视觉</span>
-                  <h3 class="work-card__title">茶小开·纤畅果饮</h3>
-                  <p class="work-card__desc">杨梅桑葚小番茄 — 产品KV与电商详情页</p>
-                </div>
-              </article>
-              <article class="work-card" data-page="1">
-                <div class="work-card__image">
-                  <img src="assets/card2-package.png" alt="青砖茶包装" loading="lazy">
-                </div>
-                <div class="work-card__body">
-                  <span class="work-card__category">包装设计</span>
-                  <h3 class="work-card__title">茶小开·青砖茶系列</h3>
-                  <p class="work-card__desc">传统茶品类多SKU统一视觉包装体系</p>
-                </div>
-              </article>
-              <article class="work-card" data-page="1">
-                <div class="work-card__image">
-                  <img src="assets/card3-poster.png" alt="大暑节气海报" loading="lazy">
-                </div>
-                <div class="work-card__body">
-                  <span class="work-card__category">节气海报</span>
-                  <h3 class="work-card__title">24节气视觉体系</h3>
-                  <p class="work-card__desc">中式美学与茶文化融合的系统化设计</p>
-                </div>
-              </article>
-            </div>
-          </div>
-        </section>
-
-        <!-- ==================== PAGE 2: ABOUT ==================== -->
-        <section class="page about-page" id="page2">
-          <div class="content-wrapper">
-            <div class="page-header">
-              <span class="page-header__eyebrow">ABOUT</span>
-              <h2 class="page-header__title">关于我</h2>
-            </div>
-
-            <div class="about-layout">
-              <div class="about-card">
-                <div class="about-card__avatar">L</div>
-                <h3 class="about-card__name">LXLYLZL</h3>
-                <p class="about-card__role">平面设计师 · 品牌视觉</p>
-                <p class="about-card__bio">
-                  专注于品牌视觉与包装设计，擅长将传统文化元素与现代设计语言结合。
-                  曾主导「茶小开」品牌全案，涵盖青砖茶系列、纤畅果饮系列、24节气视觉体系等。
-                </p>
-                <div style="display:flex; gap:28px; margin-top:28px; justify-content:center;">
-                  <div style="display:flex; flex-direction:column; gap:4px; align-items:center;">
-                    <span style="font-size:24px; font-weight:800; color:var(--text-primary);">20+</span>
-                    <span style="font-size:11px; color:var(--text-muted); letter-spacing:0.04em;">品牌客户</span>
-                  </div>
-                  <div style="width:1px; background:var(--border);"></div>
-                  <div style="display:flex; flex-direction:column; gap:4px; align-items:center;">
-                    <span style="font-size:24px; font-weight:800; color:var(--text-primary);">50+</span>
-                    <span style="font-size:11px; color:var(--text-muted); letter-spacing:0.04em;">完成项目</span>
-                  </div>
-                  <div style="width:1px; background:var(--border);"></div>
-                  <div style="display:flex; flex-direction:column; gap:4px; align-items:center;">
-                    <span style="font-size:24px; font-weight:800; color:var(--text-primary);">5年</span>
-                    <span style="font-size:11px; color:var(--text-muted); letter-spacing:0.04em;">设计经验</span>
-                  </div>
-                </div>
-              </div>
-              <div style="display:flex; flex-direction:column; gap:20px;">
-                <div class="skills-card">
-                  <h4 class="skills-card__title">专业技能</h4>
-                  <div class="skills-card__tags">
-                    <span class="skill-tag">品牌设计</span>
-                    <span class="skill-tag">包装设计</span>
-                    <span class="skill-tag">电商视觉</span>
-                    <span class="skill-tag">插画设计</span>
-                    <span class="skill-tag">节气海报</span>
-                    <span class="skill-tag">社媒推文</span>
-                    <span class="skill-tag">VI设计</span>
-                  </div>
-                </div>
-                <div class="contact-form-card" style="padding:32px;">
-                  <h4 style="font-size:15px; font-weight:700; color:var(--text-primary); margin-bottom:16px;">联系方式</h4>
-                  <div style="display:flex; flex-direction:column; gap:12px;">
-                    <div style="display:flex; align-items:center; gap:12px;">
-                      <div style="width:40px; height:40px; display:flex; align-items:center; justify-content:center; background:rgba(255,58,92,0.1); border-radius:var(--radius-md); color:var(--accent); flex-shrink:0;">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                          <polyline points="22,6 12,13 2,6"/>
-                        </svg>
-                      </div>
-                      <span style="font-size:14px; color:var(--text-secondary);">757497092@qq.com</span>
-                    </div>
-                    <div style="display:flex; align-items:center; gap:12px;">
-                      <div style="width:40px; height:40px; display:flex; align-items:center; justify-content:center; background:rgba(255,58,92,0.1); border-radius:var(--radius-md); color:var(--accent); flex-shrink:0;">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                          <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
-                        </svg>
-                      </div>
-                      <span style="font-size:14px; color:var(--text-secondary);">微信：LXLYLZL</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-
-        <!-- ==================== PAGE 3: SERVICES ==================== -->
-        <section class="page services-page" id="page3">
-          <div class="content-wrapper">
-            <div class="page-header">
-              <span class="page-header__eyebrow">SERVICES</span>
-              <h2 class="page-header__title">设计服务</h2>
-              <p class="page-header__subtitle">提供从品牌策略到视觉落地的全案设计服务</p>
-            </div>
-            <div style="display:grid; grid-template-columns:1.2fr 1fr 1fr; gap:20px; flex:1; overflow-y:auto; padding-right:4px;">
-              <div class="work-card" style="display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:48px 32px;">
-                <div style="width:64px; height:64px; display:flex; align-items:center; justify-content:center; background:var(--accent-dim); border-radius:var(--radius-lg); color:var(--accent); margin-bottom:24px;">
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-                </div>
-                <h3 style="font-size:22px; font-weight:800; color:var(--text-primary); margin-bottom:12px;">品牌全案设计</h3>
-                <p style="font-size:14px; color:var(--text-secondary); line-height:1.8;">VI设计 / 品牌视觉体系<br>从策略到落地的完整方案</p>
-                <span style="margin-top:24px; font-size:13px; font-weight:700; color:var(--accent); letter-spacing:0.06em;">了解更多 &rarr;</span>
-              </div>
-              <div class="work-card" style="display:flex; flex-direction:column; justify-content:center; padding:32px;">
-                <h4 style="font-size:16px; font-weight:700; color:var(--text-primary); margin-bottom:8px;">包装设计</h4>
-                <p style="font-size:13px; color:var(--text-secondary); line-height:1.7;">产品包装 / 礼盒设计<br>食品、茶饮、消费品</p>
-              </div>
-              <div class="work-card" style="display:flex; flex-direction:column; justify-content:center; padding:32px;">
-                <h4 style="font-size:16px; font-weight:700; color:var(--text-primary); margin-bottom:8px;">电商视觉</h4>
-                <p style="font-size:13px; color:var(--text-secondary); line-height:1.7;">详情页 / 主图 / 活动页<br>转化率导向的视觉设计</p>
-              </div>
-              <div class="work-card" style="display:flex; flex-direction:column; justify-content:center; padding:32px;">
-                <h4 style="font-size:16px; font-weight:700; color:var(--text-primary); margin-bottom:8px;">社媒内容</h4>
-                <p style="font-size:13px; color:var(--text-secondary); line-height:1.7;">推文设计 / 节气海报<br>小红书、公众号视觉</p>
-              </div>
-              <div class="work-card" style="display:flex; flex-direction:column; justify-content:center; padding:32px;">
-                <h4 style="font-size:16px; font-weight:700; color:var(--text-primary); margin-bottom:8px;">插画设计</h4>
-                <p style="font-size:13px; color:var(--text-secondary); line-height:1.7;">品牌插画 / IP形象<br>中式美学风格</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- ==================== PAGE 4: TESTIMONIALS ==================== -->
-        <section class="page testimonials-page" id="page4">
-          <div class="content-wrapper">
-            <div class="page-header">
-              <span class="page-header__eyebrow">REVIEWS</span>
-              <h2 class="page-header__title">客户评价</h2>
-              <p class="page-header__subtitle">来自合作品牌与团队的真实反馈</p>
-            </div>
-
-            <!-- 评分概览 -->
-            <div style="display:flex; gap:16px; margin-bottom:24px; flex-shrink:0;">
-              <div class="work-card" style="flex:1; padding:20px 24px; display:flex; flex-direction:column; align-items:center; text-align:center;">
-                <span style="font-size:32px; font-weight:900; color:var(--accent); line-height:1;">5.0</span>
-                <span style="font-size:12px; color:var(--text-muted); margin-top:4px;">综合评分</span>
-                <div style="display:flex; gap:2px; margin-top:8px;">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--accent)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--accent)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--accent)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--accent)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--accent)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                </div>
-              </div>
-              <div class="work-card" style="flex:1; padding:20px 24px; display:flex; flex-direction:column; align-items:center; text-align:center;">
-                <span style="font-size:32px; font-weight:900; color:var(--accent); line-height:1;">50+</span>
-                <span style="font-size:12px; color:var(--text-muted); margin-top:4px;">完成项目</span>
-              </div>
-              <div class="work-card" style="flex:1; padding:20px 24px; display:flex; flex-direction:column; align-items:center; text-align:center;">
-                <span style="font-size:32px; font-weight:900; color:var(--accent); line-height:1;">100%</span>
-                <span style="font-size:12px; color:var(--text-muted); margin-top:4px;">续约率</span>
-              </div>
-            </div>
-
-            <!-- 评价列表 -->
-            <div style="display:flex; flex-direction:column; gap:16px; flex:1; overflow-y:auto; padding-right:4px;">
-              <div class="work-card" style="padding:28px 32px;">
-                <div style="display:flex; align-items:center; gap:14px; margin-bottom:16px;">
-                  <div style="width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg,var(--accent),#FF6B81); display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:800; color:white; flex-shrink:0;">茶</div>
-                  <div>
-                    <p style="font-size:14px; font-weight:700; color:var(--text-primary);">茶小开品牌方</p>
-                    <p style="font-size:11px; color:var(--text-muted); margin-top:1px;">青砖茶系列 &middot; 纤畅果饮</p>
-                  </div>
-                  <div style="margin-left:auto; display:flex; gap:1px;">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--accent)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--accent)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--accent)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--accent)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--accent)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                  </div>
-                </div>
-                <p style="font-size:13px; color:var(--text-secondary); line-height:1.9;">&ldquo;设计风格非常有辨识度，把传统茶文化用年轻人喜欢的方式表达出来。包装上线后好评率提升30%，复购率也有明显增长。合作过程沟通高效，改稿响应很快。&rdquo;</p>
-              </div>
-
-              <div class="work-card" style="padding:28px 32px;">
-                <div style="display:flex; align-items:center; gap:14px; margin-bottom:16px;">
-                  <div style="width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg,#6366f1,#a855f7); display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:800; color:white; flex-shrink:0;">电</div>
-                  <div>
-                    <p style="font-size:14px; font-weight:700; color:var(--text-primary);">某电商团队</p>
-                    <p style="font-size:11px; color:var(--text-muted); margin-top:1px;">详情页 redesign</p>
-                  </div>
-                  <div style="margin-left:auto; display:flex; gap:1px;">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--accent)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--accent)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--accent)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--accent)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--accent)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                  </div>
-                </div>
-                <p style="font-size:13px; color:var(--text-secondary); line-height:1.9;">&ldquo;详情页 redesign 之后点击转化率提升18%。设计不仅好看，更懂电商逻辑。后续又续约了活动页和主图系列，配合度很高。&rdquo;</p>
-              </div>
-
-              <div class="work-card" style="padding:28px 32px;">
-                <div style="display:flex; align-items:center; gap:14px; margin-bottom:16px;">
-                  <div style="width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg,#f59e0b,#ef4444); display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:800; color:white; flex-shrink:0;">节</div>
-                  <div>
-                    <p style="font-size:14px; font-weight:700; color:var(--text-primary);">节气海报客户</p>
-                    <p style="font-size:11px; color:var(--text-muted); margin-top:1px;">24节气视觉体系</p>
-                  </div>
-                  <div style="margin-left:auto; display:flex; gap:1px;">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--accent)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--accent)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--accent)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--accent)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--accent)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                  </div>
-                </div>
-                <p style="font-size:13px; color:var(--text-secondary); line-height:1.9;">&ldquo;24节气系列在社媒上自发传播，单篇最高互动量破万。视觉识别度非常高，已经成为品牌固定的节气内容供应商。&rdquo;</p>
-              </div>
-
-              <div class="work-card" style="padding:28px 32px;">
-                <div style="display:flex; align-items:center; gap:14px; margin-bottom:16px;">
-                  <div style="width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg,#10b981,#3b82f6); display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:800; color:white; flex-shrink:0;">零</div>
-                  <div>
-                    <p style="font-size:14px; font-weight:700; color:var(--text-primary);">零售品牌方</p>
-                    <p style="font-size:11px; color:var(--text-muted); margin-top:1px;">零食品类包装升级</p>
-                  </div>
-                  <div style="margin-left:auto; display:flex; gap:1px;">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--accent)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--accent)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--accent)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--accent)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--accent)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                  </div>
-                </div>
-                <p style="font-size:13px; color:var(--text-secondary); line-height:1.9;">&ldquo;包装升级项目从调研到落地只用了3周，货架视觉效果提升明显，新品首月销量超预期。设计对零食品类的理解很到位。&rdquo;</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-      </div><!-- /.main__inner -->
-    </main>
-
-  </div><!-- /app-container -->
-
-  <!-- ================================================
-       FRAMEWORK 2: VERTICAL
-       ================================================ -->
-  <div class="vertical-framework" id="verticalFramework">
-
-    <!-- PAGE: 联系·合作 -->
-    <section class="vf-page" id="vfPage0">
-      <div class="vf-page__inner">
-        <div class="page-header">
-          <span class="page-header__eyebrow">CONTACT</span>
-          <h2 class="page-header__title">联系 · 合作</h2>
-          <p class="page-header__subtitle">有项目想法？让我们一起把它变成现实</p>
         </div>
+      </section>
 
-        <div class="contact-grid">
-          <div class="contact-form-card">
-            <h3 class="contact-form-card__title">发送消息</h3>
-            <form class="contact-form" action="mailto:757497092@qq.com" method="post">
-              <div class="form-group">
-                <label class="form-label" for="cfName">姓名</label>
-                <input class="form-input" type="text" id="cfName" placeholder="你的名字" required>
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="cfEmail">邮箱</label>
-                <input class="form-input" type="email" id="cfEmail" placeholder="your@email.com" required>
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="cfType">合作类型</label>
-                <select class="form-input" id="cfType">
-                  <option value="brand">品牌设计</option>
-                  <option value="package">包装设计</option>
-                  <option value="social">社媒视觉</option>
-                  <option value="other">其他</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="cfMsg">项目简述</label>
-                <textarea class="form-input" id="cfMsg" rows="4" placeholder="告诉我你的想法..."></textarea>
-              </div>
-              <button class="btn btn--primary" type="submit" style="width:100%; justify-content:center;">
-                发送消息
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                  <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
-                </svg>
-              </button>
-            </form>
+      <!-- PAGE 1: WORK -->
+      <section class="page" id="page1">
+        <div class="content-wrapper">
+          <div class="page-header">
+            <span class="page-header__eyebrow">WORK</span>
+            <h2 class="page-header__title">作品集</h2>
           </div>
-
-          <div class="contact-info-stack">
-            <div class="contact-info-card">
-              <div class="contact-info-card__icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                  <polyline points="22,6 12,13 2,6"/>
-                </svg>
-              </div>
-              <div>
-                <p class="contact-info-card__label">邮箱</p>
-                <p class="contact-info-card__value">757497092@qq.com</p>
-              </div>
+          <div class="work-grid">
+            <div class="work-card">
+              <h3 style="font-size:18px;font-weight:700;margin-bottom:8px;">茶小开·青砖茶</h3>
+              <p style="font-size:13px;color:var(--text-secondary);">品牌全案+包装设计</p>
             </div>
-            <div class="contact-info-card">
-              <div class="contact-info-card__icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                  <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
-                </svg>
-              </div>
-              <div>
-                <p class="contact-info-card__label">微信</p>
-                <p class="contact-info-card__value">LXLYLZL</p>
-              </div>
+            <div class="work-card">
+              <h3 style="font-size:18px;font-weight:700;margin-bottom:8px;">纤畅果饮</h3>
+              <p style="font-size:13px;color:var(--text-secondary);">品牌策略+视觉体系</p>
             </div>
-            <div class="contact-info-card">
-              <div class="contact-info-card__icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                  <circle cx="12" cy="10" r="3"/>
-                </svg>
-              </div>
-              <div>
-                <p class="contact-info-card__label">地点</p>
-                <p class="contact-info-card__value">中国 · 杭州</p>
-              </div>
+            <div class="work-card">
+              <h3 style="font-size:18px;font-weight:700;margin-bottom:8px;">节气海报系列</h3>
+              <p style="font-size:13px;color:var(--text-secondary);">24节气社媒视觉</p>
+            </div>
+            <div class="work-card">
+              <h3 style="font-size:18px;font-weight:700;margin-bottom:8px;">电商详情页 redesign</h3>
+              <p style="font-size:13px;color:var(--text-secondary);">转化率导向视觉</p>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- PAGE: 设计随笔 -->
-    <section class="vf-page" id="vfPage1">
-      <div class="vf-page__inner">
-        <div class="page-header">
-          <span class="page-header__eyebrow">BLOG</span>
-          <h2 class="page-header__title">设计随笔</h2>
-          <p class="page-header__subtitle">日常思考、设计方法论、工具分享</p>
+      <!-- PAGE 2: ABOUT -->
+      <section class="page" id="page2">
+        <div class="content-wrapper">
+          <div class="page-header">
+            <span class="page-header__eyebrow">ABOUT</span>
+            <h2 class="page-header__title">关于我</h2>
+          </div>
+          <p style="font-size:15px;color:var(--text-secondary);line-height:1.9;max-width:600px;">
+            5年品牌设计经验，擅长将中式美学融入现代商业设计。
+            服务过茶饮、食品、消费品等多个品类，注重文化表达与商业价值的平衡。
+          </p>
         </div>
+      </section>
 
-        <div class="blog-grid">
-          <article class="blog-card">
-            <div class="blog-card__meta">
-              <span class="blog-card__date">2026.05.20</span>
-              <span class="blog-card__tag">设计方法论</span>
+      <!-- PAGE 3: SERVICES -->
+      <section class="page" id="page3">
+        <div class="content-wrapper">
+          <div class="page-header">
+            <span class="page-header__eyebrow">SERVICES</span>
+            <h2 class="page-header__title">设计服务</h2>
+          </div>
+          <div class="work-grid">
+            <div class="work-card" style="display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:48px 32px;">
+              <h3 style="font-size:22px;font-weight:800;margin-bottom:12px;">品牌全案设计</h3>
+              <p style="font-size:14px;color:var(--text-secondary);line-height:1.8;">VI设计 / 品牌视觉体系</p>
             </div>
-            <h3 class="blog-card__title">中式美学在品牌设计中的运用边界</h3>
-            <p class="blog-card__excerpt">
-              传统文化元素用得好是加分项，用得不好就是「模板感」。本文聊聊如何在品牌视觉中找到那个微妙的平衡点……
-            </p>
-          </article>
-          <article class="blog-card">
-            <div class="blog-card__meta">
-              <span class="blog-card__date">2026.04.12</span>
-              <span class="blog-card__tag">工具分享</span>
+            <div class="work-card" style="display:flex;flex-direction:column;justify-content:center;padding:32px;">
+              <h4 style="font-size:16px;font-weight:700;margin-bottom:8px;">包装设计</h4>
+              <p style="font-size:13px;color:var(--text-secondary);">产品包装 / 礼盒设计</p>
             </div>
-            <h3 class="blog-card__title">我的2026设计工具栈：AI辅助下的工作流重构</h3>
-            <p class="blog-card__excerpt">
-              从 Midjourney 到 ComfyUI，从 Figma 插件到自动化出图——分享一套兼顾效率与质感的工作流……
-            </p>
-          </article>
+            <div class="work-card" style="display:flex;flex-direction:column;justify-content:center;padding:32px;">
+              <h4 style="font-size:16px;font-weight:700;margin-bottom:8px;">电商视觉</h4>
+              <p style="font-size:13px;color:var(--text-secondary);">详情页 / 主图 / 活动页</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PAGE 4: TESTIMONIALS -->
+      <section class="page" id="page4">
+        <div class="content-wrapper">
+          <div class="page-header">
+            <span class="page-header__eyebrow">REVIEWS</span>
+            <h2 class="page-header__title">客户评价</h2>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:20px;">
+            <div class="work-card" style="padding:32px 36px;">
+              <p style="font-size:14px;color:var(--text-secondary);line-height:1.9;font-style:italic;">
+                "设计风格非常有辨识度，把传统茶文化用年轻人喜欢的方式表达出来。"
+              </p>
+              <p style="font-size:12px;color:var(--text-muted);margin-top:12px;">— 茶小开品牌方</p>
+            </div>
+            <div class="work-card" style="padding:32px 36px;">
+              <p style="font-size:14px;color:var(--text-secondary);line-height:1.9;font-style:italic;">
+                "详情页 redesign 之后点击转化率提升了18%。"
+              </p>
+              <p style="font-size:12px;color:var(--text-muted);margin-top:12px;">— 某电商团队</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<!-- ========== VERTICAL FRAMEWORK ========== -->
+<div class="vertical-framework" id="verticalFramework">
+
+  <!-- VERTICAL PAGE 0: CONTACT -->
+  <section class="vf-page" id="vfPage0">
+    <div class="vf-page__inner">
+      <div class="page-header">
+        <span class="page-header__eyebrow">CONTACT</span>
+        <h2 class="page-header__title">联系 · 合作</h2>
+        <p class="page-header__subtitle">有项目想法？让我们一起把它变成现实</p>
+      </div>
+      <div style="margin-top:32px;display:flex;gap:20px;flex-wrap:wrap;">
+        <div class="work-card" style="flex:1;min-width:200px;padding:32px;text-align:center;">
+          <p style="font-size:13px;color:var(--text-muted);">邮箱</p>
+          <p style="font-size:15px;font-weight:700;margin-top:8px;">hello@lxlylzl.xyz</p>
+        </div>
+        <div class="work-card" style="flex:1;min-width:200px;padding:32px;text-align:center;">
+          <p style="font-size:13px;color:var(--text-muted);">微信</p>
+          <p style="font-size:15px;font-weight:700;margin-top:8px;">liliweijie</p>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-  </div><!-- /verticalFramework -->
+  <!-- VERTICAL PAGE 1: BLOG -->
+  <section class="vf-page" id="vfPage1">
+    <div class="vf-page__inner">
+      <div class="page-header">
+        <span class="page-header__eyebrow">BLOG</span>
+        <h2 class="page-header__title">设计随笔</h2>
+        <p class="page-header__subtitle">记录设计思考、行业观察与创作日常</p>
+      </div>
+      <div style="margin-top:32px;display:flex;flex-direction:column;gap:16px;">
+        <div class="work-card" style="padding:28px 32px;">
+          <h3 style="font-size:16px;font-weight:700;margin-bottom:6px;">中式美学在品牌设计中的运用</h3>
+          <p style="font-size:13px;color:var(--text-secondary);line-height:1.7;">探讨如何将传统文化元素自然地融入现代品牌视觉体系...</p>
+          <p style="font-size:11px;color:var(--text-muted);margin-top:10px;">2025.05.20 · 设计思考</p>
+        </div>
+        <div class="work-card" style="padding:28px 32px;">
+          <h3 style="font-size:16px;font-weight:700;margin-bottom:6px;">包装设计中的材料与工艺选择</h3>
+          <p style="font-size:13px;color:var(--text-secondary);line-height:1.7;">从成本、质感到环保，聊聊包装设计的落地细节...</p>
+          <p style="font-size:11px;color:var(--text-muted);margin-top:10px;">2025.04.12 · 设计干货</p>
+        </div>
+        <div class="work-card" style="padding:28px 32px;">
+          <h3 style="font-size:16px;font-weight:700;margin-bottom:6px;">电商详情页的视觉转化逻辑</h3>
+          <p style="font-size:13px;color:var(--text-secondary);line-height:1.7;">如何通过视觉层级引导用户完成购买决策...</p>
+          <p style="font-size:11px;color:var(--text-muted);margin-top:10px;">2025.03.08 · 电商设计</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  <script>
-    /* ============================================
-       LXLYLZL — Simplified Scroll Logic + Theme Toggle
-       ============================================ */
+</div>
 
-    (function () {
-      "use strict";
+<!-- Page Indicator -->
+<div class="page-indicator" id="pageIndicator">01 / 05</div>
 
-      // ========== THEME ==========
-      var htmlEl   = document.documentElement;
-      var themeBtn = document.querySelector(".icon-sidebar__bottom .icon-sidebar__item");
+<script>
+(function(){
+  'use strict';
 
-      function applyTheme(theme) {
-        htmlEl.setAttribute("data-theme", theme);
-        localStorage.setItem("lxlylzl-theme", theme);
-        updateThemeIcon(theme);
-      }
+  var mainContent = document.getElementById('mainContent');
+  var mainInner = mainContent.querySelector('.main__inner');
+  var horizontalFw = document.getElementById('appContainer');
+  var verticalFw = document.getElementById('verticalFramework');
+  var navItems = document.querySelectorAll('.nav-item');
+  var themeBtn = document.getElementById('themeBtn');
+  var logoBtn = document.getElementById('logoBtn');
+  var pageIndicator = document.getElementById('pageIndicator');
 
-      function updateThemeIcon(theme) {
-        if (!themeBtn) return;
-        var isLight = theme === "light";
-        themeBtn.innerHTML = isLight
-          ? "<svg class=\"icon-sidebar__icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\"><path d=\"M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 21 12.79z\"/></svg>"
-          : "<svg class=\"icon-sidebar__icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\"><circle cx=\"12\" cy=\"12\" r=\"5\"/><path d=\"M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42\"/></svg>";
-      }
+  var PAGE_COUNT = 5;
+  var currentPage = 0;
+  var inVerticalFramework = false;
 
-      // Init theme
-      (function initTheme() {
-        var saved = localStorage.getItem("lxlylzl-theme");
-        if (saved) {
-          applyTheme(saved);
-        } else if (window.matchMedia("(prefers-color-scheme: light)").matches) {
-          applyTheme("light");
-        } else {
-          applyTheme("dark");
-        }
-      })();
+  // ========== THEME ==========
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('lxlylzl-theme', theme);
+    themeBtn.textContent = theme === 'light' ? '🌙' : '🌓';
+  }
 
-      if (themeBtn) {
-        themeBtn.addEventListener("click", function () {
-          var current = htmlEl.getAttribute("data-theme");
-          applyTheme(current === "light" ? "dark" : "light");
-        });
-      }
+  (function initTheme() {
+    var saved = localStorage.getItem('lxlylzl-theme');
+    if (saved) applyTheme(saved);
+    else if (window.matchMedia('(prefers-color-scheme: light)').matches) applyTheme('light');
+    else applyTheme('dark');
+  })();
 
-      // ========== DOM REFS ==========
-      var mainContent   = document.getElementById("mainContent");
-      var mainInner    = mainContent ? mainContent.querySelector(".main__inner") : null;
-      var sidebarNav   = document.getElementById("iconSidebar");
-      var horizontalFw = document.getElementById("appContainer");
-      var verticalFw   = document.getElementById("verticalFramework");
-      var pages         = document.querySelectorAll(".page");
+  themeBtn.addEventListener('click', function() {
+    var current = document.documentElement.getAttribute('data-theme');
+    applyTheme(current === 'light' ? 'dark' : 'light');
+  });
 
-      if (!mainContent || !verticalFw) return;
+  // ========== LAYOUT ==========
+  function updateLayoutWidths() {
+    var pageWidth = mainContent.clientWidth;
+    mainInner.style.width = (pageWidth * PAGE_COUNT) + 'px';
+    var pages = document.querySelectorAll('.page');
+    pages.forEach(function(p) { p.style.width = pageWidth + 'px'; });
+  }
+  updateLayoutWidths();
+  window.addEventListener('resize', function() {
+    updateLayoutWidths();
+    mainContent.scrollLeft = currentPage * mainContent.clientWidth;
+  });
 
-      var PAGE_COUNT = 5;
-      var currentPage = 0;
-      var inVerticalFramework = false;
+  // ========== SCROLL TO PAGE ==========
+  function scrollToPage(idx) {
+    idx = Math.max(0, Math.min(PAGE_COUNT - 1, idx));
+    currentPage = idx;
+    mainContent.scrollTo({ left: idx * mainContent.clientWidth, behavior: 'smooth' });
+    updatePageIndicator();
+    updateNavState();
+  }
 
-      // ========== LAYOUT WIDTHS ==========
-      function updateLayoutWidths() {
-        var pageWidth = mainContent.clientWidth;
-        if (mainInner) mainInner.style.width = (pageWidth * PAGE_COUNT) + "px";
-        pages.forEach(function (p) { p.style.width = pageWidth + "px"; });
-      }
-      updateLayoutWidths();
-      window.addEventListener("resize", function () {
-        updateLayoutWidths();
-        mainContent.scrollLeft = currentPage * mainContent.clientWidth;
-      });
+  function updatePageIndicator() {
+    pageIndicator.textContent = String(currentPage + 1).padStart(2, '0') + ' / ' + String(PAGE_COUNT).padStart(2, '0');
+  }
 
-      // ========== TRACK CURRENT PAGE FROM SCROLL ==========
-      function updateCurrentPageFromScroll() {
-        if (inVerticalFramework) return;
-        var newPage = Math.round(mainContent.scrollLeft / mainContent.clientWidth);
-        var clamped = Math.max(0, Math.min(PAGE_COUNT - 1, newPage));
-        if (clamped !== currentPage) {
-          currentPage = clamped;
-          updateNavState();
-        }
-      }
-      mainContent.addEventListener("scroll", updateCurrentPageFromScroll);
-
-      // ========== HORIZONTAL SCROLL ==========
-      // FIX: Only enter vertical framework when scrollLeft is truly at the end
-      mainContent.addEventListener("wheel", function (e) {
-        if (inVerticalFramework) return;
-
-        // Check if we are at the very end of horizontal scroll
-        var maxScroll = mainContent.scrollWidth - mainContent.clientWidth;
-        var atEnd = mainContent.scrollLeft >= maxScroll - 2;
-
-        // On last page + scroll down + at end => enter vertical framework
-        if (atEnd && e.deltaY > 0) {
-          e.preventDefault();
-          enterVerticalFramework();
-          return;
-        }
-
-        // Normal horizontal scroll
-        e.preventDefault();
-        mainContent.scrollLeft += e.deltaY * 1.0;
-      }, { passive: false });
-
-      // ========== VERTICAL SCROLL ==========
-      verticalFw.addEventListener("wheel", function (e) {
-        if (!inVerticalFramework) return;
-        if (verticalFw.scrollTop <= 0 && e.deltaY < 0) {
-          e.preventDefault();
-          exitVerticalFramework();
-        }
-      }, { passive: false });
-
-      // ========== FRAMEWORK TRANSITION ==========
-      function enterVerticalFramework() {
-        if (inVerticalFramework) return;
-        inVerticalFramework = true;
-        if (horizontalFw) {
-          horizontalFw.style.opacity = "0";
-          horizontalFw.style.pointerEvents = "none";
-        }
-        verticalFw.classList.add("is-visible");
-        verticalFw.scrollTop = 0;
-
-        // Dim sidebar nav in vertical mode (keep theme toggle visible)
-        if (sidebarNav) sidebarNav.style.opacity = "0.35";
-      }
-
-      function exitVerticalFramework() {
-        if (!inVerticalFramework) return;
-        inVerticalFramework = false;
-        if (horizontalFw) {
-          horizontalFw.style.opacity = "";
-          horizontalFw.style.pointerEvents = "";
-        }
-        verticalFw.classList.remove("is-visible");
-
-        // Restore sidebar nav
-        if (sidebarNav) sidebarNav.style.opacity = "";
-      }
-
-      // ========== SCROLL TO PAGE ==========
-      function scrollToPage(pageIndex) {
-        if (pageIndex < 0 || pageIndex >= PAGE_COUNT) return;
-        currentPage = pageIndex;
-        var target  = pageIndex * mainContent.clientWidth;
-        var start   = mainContent.scrollLeft;
-        var dist    = target - start;
-        var duration = 650;
-        var startTime = performance.now();
-
-        function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
-
-        function step(now) {
-          var elapsed = now - startTime;
-          var t       = Math.min(elapsed / duration, 1);
-          mainContent.scrollLeft = start + dist * easeOutCubic(t);
-          if (t < 1) {
-            requestAnimationFrame(step);
-          }
-        }
-        requestAnimationFrame(step);
-        updateNavState();
-      }
-
-      // ========== NAV CLICKS ==========
-      if (sidebarNav) {
-        sidebarNav.addEventListener("click", function (e) {
-          var item = e.target.closest(".icon-sidebar__item");
-          if (!item) return;
-          var p = parseInt(item.dataset.page, 10);
-          if (!isNaN(p)) {
-            if (inVerticalFramework) exitVerticalFramework();
-            scrollToPage(p);
-          }
-        });
-      }
-
-      document.querySelectorAll("[data-page]").forEach(function (el) {
-        el.addEventListener("click", function () {
-          var p = parseInt(el.dataset.page, 10);
-          if (!isNaN(p)) scrollToPage(p);
-        });
-      });
-
-      // ========== KEYBOARD ==========
-      document.addEventListener("keydown", function (e) {
-        if (inVerticalFramework) {
-          if (e.key === "Escape") exitVerticalFramework();
-          return;
-        }
-        if (e.key === "ArrowRight") scrollToPage(currentPage + 1);
-        if (e.key === "ArrowLeft")  scrollToPage(currentPage - 1);
-      });
-
-      // ========== PAGE VISIBILITY ==========
-      pages.forEach(function (p, i) {
-        p.style.animationDelay = (i * 0.1) + "s";
-        p.classList.add("is-visible");
-      });
-
-      // ========== INIT ==========
-      function updateNavState() {
-        if (!sidebarNav) return;
-        sidebarNav.querySelectorAll(".icon-sidebar__item").forEach(function (item, i) {
-          item.classList.toggle("icon-sidebar__item--active", i === currentPage);
-        });
-      }
-
+  // ========== TRACK PAGE ==========
+  function updateCurrentPageFromScroll() {
+    if (inVerticalFramework) return;
+    var newPage = Math.round(mainContent.scrollLeft / mainContent.clientWidth);
+    var clamped = Math.max(0, Math.min(PAGE_COUNT - 1, newPage));
+    if (clamped !== currentPage) {
+      currentPage = clamped;
+      updatePageIndicator();
       updateNavState();
-      setTimeout(function () {
-        if (pages.length > 0) pages[0].classList.add("is-visible");
-      }, 1300);
+    }
+  }
+  mainContent.addEventListener('scroll', updateCurrentPageFromScroll);
 
-    })();
-  </script>
+  // ========== WHEEL ==========
+  mainContent.addEventListener('wheel', function(e) {
+    if (inVerticalFramework) return;
+    e.preventDefault();
+    var maxScroll = mainContent.scrollWidth - mainContent.clientWidth;
+    if (e.deltaY > 0 && mainContent.scrollLeft >= maxScroll - 5) {
+      enterVerticalFramework();
+      return;
+    }
+    mainContent.scrollLeft += e.deltaY * 1.0;
+  }, { passive: false });
+
+  // ========== FRAMEWORK TRANSITION ==========
+  function enterVerticalFramework() {
+    if (inVerticalFramework) return;
+    inVerticalFramework = true;
+    horizontalFw.style.opacity = '0';
+    horizontalFw.style.pointerEvents = 'none';
+    verticalFw.classList.add('is-visible');
+    verticalFw.scrollTop = 0;
+    updateNavState();
+  }
+
+  function exitVerticalFramework() {
+    if (!inVerticalFramework) return;
+    inVerticalFramework = false;
+    horizontalFw.style.opacity = '';
+    horizontalFw.style.pointerEvents = '';
+    verticalFw.classList.remove('is-visible');
+    updateNavState();
+  }
+
+  // ========== NAV CLICK ==========
+  navItems.forEach(function(item) {
+    item.addEventListener('click', function() {
+      var target = item.dataset.target;
+      var idx = parseInt(item.dataset.index, 10);
+
+      if (target === 'page') {
+        if (inVerticalFramework) exitVerticalFramework();
+        setTimeout(function() { scrollToPage(idx); }, inVerticalFramework ? 80 : 0);
+      }
+
+      if (target === 'vertical') {
+        if (!inVerticalFramework) enterVerticalFramework();
+      }
+
+      // Close nav panel on mobile
+      if (window.innerWidth < 1024) {
+        document.getElementById('navContainer').classList.remove('is-open');
+      }
+    });
+  });
+
+  // Logo click → home
+  logoBtn.addEventListener('click', function() {
+    if (inVerticalFramework) exitVerticalFramework();
+    setTimeout(function() { scrollToPage(0); }, 80);
+  });
+
+  // ========== NAV STATE ==========
+  function updateNavState() {
+    navItems.forEach(function(item) {
+      var isHorizontal = item.dataset.target === 'page';
+      var idx = parseInt(item.dataset.index, 10);
+      var isActive = isHorizontal && !inVerticalFramework && idx === currentPage;
+      item.classList.toggle('nav-item--active', isActive);
+    });
+  }
+
+  // ========== VERTICAL WHEEL (swipe up to exit) ==========
+  verticalFw.addEventListener('wheel', function(e) {
+    if (!inVerticalFramework) return;
+    if (verticalFw.scrollTop <= 0 && e.deltaY < 0) {
+      e.preventDefault();
+      exitVerticalFramework();
+      scrollToPage(PAGE_COUNT - 1);
+    }
+  }, { passive: false });
+
+  // ========== KEYBOARD ==========
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      if (inVerticalFramework) { exitVerticalFramework(); scrollToPage(PAGE_COUNT - 1); }
+      else scrollToPage(0);
+    }
+    if (e.key === 'ArrowRight' && !inVerticalFramework) scrollToPage(currentPage + 1);
+    if (e.key === 'ArrowLeft' && !inVerticalFramework) scrollToPage(currentPage - 1);
+  });
+
+  // ========== BUTTONS ==========
+  document.querySelectorAll('[data-page]').forEach(function(el) {
+    el.addEventListener('click', function() {
+      var p = parseInt(el.dataset.page, 10);
+      if (!isNaN(p)) scrollToPage(p);
+    });
+  });
+
+  // ========== INIT ==========
+  updatePageIndicator();
+  updateNavState();
+
+})();
+</script>
 </body>
 </html>
