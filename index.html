@@ -45,11 +45,12 @@
   /* ========== PAGE WRAPPER (nav + glass frame) ========== */
   .page-wrapper {
     position: fixed;
-    top: 72px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: min(92vw, 1200px);
-    height: calc(100vh - 72px);
+    top: 0; left: 0; right: 0; bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 72px;
   }
 
   /* ========== TOP NAV — inside page-wrapper ========== */
@@ -183,10 +184,10 @@
 
   /* ========== GLASS FRAME — fills page-wrapper ========== */
   .app-container {
-    position: absolute;
-    top: 56px;
-    left: 0; right: 0;
-    bottom: 0;
+    position: relative;
+    width: 100%;
+    height: calc(100% - 56px);
+    margin-top: 56px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -280,7 +281,7 @@
   /* ========== VERTICAL FRAMEWORK — inside glass frame ========== */
   .vertical-framework {
     position: absolute;
-    top: 0; left: 0; right: 0;
+    top: 56px; left: 0; right: 0;
     bottom: 0;
     overflow-y: auto;
     overflow-x: hidden;
@@ -289,7 +290,7 @@
     transition: opacity 0.6s;
     z-index: 10;
     scroll-behavior: smooth;
-    border-radius: 32px;
+    border-radius: 28px;
   }
 
   .vertical-framework.is-visible {
@@ -689,11 +690,13 @@
   }
 
   @media (max-width: 768px) {
-    .page-wrapper { width: min(96vw, 100%); }
+    .page-wrapper { padding: 16px; }
+    .glass-frame { border-radius: 20px; }
     .nav-section { padding: 6px 14px; }
     .nav-link { padding: 5px 8px; font-size: 0.82rem; }
     .works-grid, .services-grid { grid-template-columns: 1fr 1fr; }
     .about-grid { grid-template-columns: 1fr; }
+    .vertical-framework { top: 48px; }
   }
 </style>
 </head>
