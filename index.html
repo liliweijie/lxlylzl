@@ -42,20 +42,20 @@
     transition: background var(--transition-theme), color var(--transition-theme);
   }
 
-  /* ========== PAGE WRAPPER — max size, small margin ========== */
+  /* ========== PAGE WRAPPER — below nav, max size ========== */
   .page-wrapper {
     position: fixed;
-    top: 72px; left: 72px; right: 72px; bottom: 72px;
+    top: 52px; left: 72px; right: 72px; bottom: 72px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
   }
 
-  /* Nav sits above the frame, same width as frame */
+  /* ========== TOP NAV — fixed at viewport top ========== */
   .top-nav {
-    position: absolute;
-    top: 0; left: 0; right: 0;
+    position: fixed;
+    top: 0; left: 72px; right: 72px;
     height: 52px;
     z-index: 1000;
     pointer-events: none;
@@ -695,7 +695,8 @@
   }
 
   @media (max-width: 768px) {
-    .page-wrapper { top: 16px; left: 16px; right: 16px; bottom: 16px; }
+    .top-nav { left: 16px; right: 16px; }
+    .page-wrapper { top: 48px; left: 16px; right: 16px; bottom: 16px; }
     .glass-frame { border-radius: 20px; }
     .nav-section { padding: 6px 12px; }
     .nav-link { padding: 5px 7px; font-size: 0.82rem; }
@@ -708,9 +709,6 @@
 </style>
 </head>
 <body>
-
-<!-- ========== PAGE WRAPPER (nav + glass frame) ========== -->
-<div class="page-wrapper">
 
 <!-- ========== THREE-SECTION TOP NAV ========== -->
 <nav class="top-nav">
@@ -775,6 +773,11 @@
     </button>
   </div>
 </nav>
+
+<!-- ========== PAGE WRAPPER (glass frame) ========== -->
+<div class="page-wrapper">
+
+
 
 
 <!-- ========== GLASS FRAME — contains all content ========== -->
