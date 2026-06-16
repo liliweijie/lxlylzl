@@ -917,10 +917,8 @@
   <!-- ================================================
        FRAMEWORK 1: HORIZONTAL
        ================================================ -->
-  <div class="app-container" id="appContainer">
-
-    <!-- Icon Sidebar -->
-    <aside class="icon-sidebar" id="iconSidebar">
+  
+<aside class="icon-sidebar" id="iconSidebar">
       <div class="icon-sidebar__brand">
         <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
           <rect width="32" height="32" rx="8" fill="#FF3A5C"/>
@@ -971,6 +969,10 @@
         </button>
       </div>
     </aside>
+  <div class="app-container" id="appContainer">
+
+    <!-- Icon Sidebar -->
+    
 
     <!-- Main Content (Horizontal Scroll) -->
     <main class="main" id="mainContent">
@@ -1535,6 +1537,9 @@
         }
         verticalFw.classList.add("is-visible");
         verticalFw.scrollTop = 0;
+
+        // Dim sidebar nav in vertical mode (keep theme toggle visible)
+        if (sidebarNav) sidebarNav.style.opacity = "0.35";
       }
 
       function exitVerticalFramework() {
@@ -1545,6 +1550,9 @@
           horizontalFw.style.pointerEvents = "";
         }
         verticalFw.classList.remove("is-visible");
+
+        // Restore sidebar nav
+        if (sidebarNav) sidebarNav.style.opacity = "";
       }
 
       // ========== SCROLL TO PAGE ==========
@@ -1577,7 +1585,10 @@
           var item = e.target.closest(".icon-sidebar__item");
           if (!item) return;
           var p = parseInt(item.dataset.page, 10);
-          if (!isNaN(p)) scrollToPage(p);
+          if (!isNaN(p)) {
+            if (inVerticalFramework) exitVerticalFramework();
+            scrollToPage(p);
+          }
         });
       }
 
