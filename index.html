@@ -42,22 +42,24 @@
     transition: background var(--transition-theme), color var(--transition-theme);
   }
 
-  /* ========== PAGE WRAPPER (nav + glass frame) ========== */
+  /* ========== PAGE WRAPPER — truly 4-side centered ========== */
   .page-wrapper {
     position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(92vw, 1200px);
+    height: min(90vh, 840px);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 72px;
   }
 
-  /* ========== TOP NAV — inside page-wrapper ========== */
+  /* Nav sits above the frame, same width as frame */
   .top-nav {
     position: absolute;
     top: 0; left: 0; right: 0;
-    height: 56px;
+    height: 52px;
     z-index: 1000;
     pointer-events: none;
     display: flex;
@@ -70,7 +72,7 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    padding: 8px 20px;
+    padding: 7px 18px;
     background: var(--nav-bg);
     backdrop-filter: blur(32px) saturate(1.2);
     -webkit-backdrop-filter: blur(32px) saturate(1.2);
@@ -79,12 +81,10 @@
     transition: background 0.3s, border-color 0.3s;
   }
 
-  .nav-left { position: absolute; top: 0; left: 0; }
+  .nav-left  { position: absolute; top: 0; left: 0; }
   .nav-center {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
+    position: absolute; top: 0;
+    left: 50%; transform: translateX(-50%);
   }
   .nav-right { position: absolute; top: 0; right: 0; }
 
@@ -182,18 +182,19 @@
     stroke-linejoin: round;
   }
 
-  /* ========== GLASS FRAME — fills page-wrapper ========== */
+  /* ========== GLASS FRAME CONTAINER ========== */
   .app-container {
     position: relative;
     width: 100%;
-    height: calc(100% - 56px);
-    margin-top: 56px;
+    flex: 1;
+    margin-top: 60px;
     display: flex;
     align-items: center;
     justify-content: center;
     opacity: 1;
     pointer-events: auto;
     z-index: 10;
+    min-height: 0;
   }
 
   .glass-frame {
@@ -210,6 +211,15 @@
     flex-direction: column;
     box-shadow: 0 24px 80px rgba(0,0,0,0.4);
     transition: background var(--transition-theme), border-color var(--transition-theme);
+  }
+
+  /* Vertical divider between horizontal & vertical nav */
+  .nav-v-divider {
+    width: 1px;
+    height: 20px;
+    background: var(--glass-border);
+    margin: 0 6px;
+    flex-shrink: 0;
   }
 
   /* Horizontal scroll — inside glass frame */
@@ -281,8 +291,7 @@
   /* ========== VERTICAL FRAMEWORK — inside glass frame ========== */
   .vertical-framework {
     position: absolute;
-    top: 56px; left: 0; right: 0;
-    bottom: 0;
+    top: 0; left: 0; right: 0; bottom: 0;
     overflow-y: auto;
     overflow-x: hidden;
     opacity: 0;
@@ -299,7 +308,7 @@
   }
 
   .vf-page {
-    min-height: calc(100vh - 72px);
+    min-height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -690,13 +699,14 @@
   }
 
   @media (max-width: 768px) {
-    .page-wrapper { padding: 16px; }
+    .page-wrapper { width: 96vw; height: 92vh; }
     .glass-frame { border-radius: 20px; }
-    .nav-section { padding: 6px 14px; }
-    .nav-link { padding: 5px 8px; font-size: 0.82rem; }
+    .nav-section { padding: 6px 12px; }
+    .nav-link { padding: 5px 7px; font-size: 0.82rem; }
+    .nav-v-divider { margin: 0 3px; }
     .works-grid, .services-grid { grid-template-columns: 1fr 1fr; }
     .about-grid { grid-template-columns: 1fr; }
-    .vertical-framework { top: 48px; }
+  }
   }
 </style>
 </head>
@@ -728,6 +738,8 @@
       <div class="nav-link" data-target="page" data-index="4">
         <span class="char">案</span><span class="char">例</span>
       </div>
+
+      <div class="nav-v-divider"></div>
 
       <div class="nav-link" data-target="vertical" data-index="0">
         <span class="char">联</span><span class="char">系</span>
