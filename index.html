@@ -1538,6 +1538,15 @@
     }
 
     // 内容不溢出：滚轮 → 横向滚动切页
+    // 但：如果是最后一页且往下滚，进入竖屏
+    if (currentPage >= pages.length - 1 && e.deltaY > 0) {
+      e.preventDefault();
+      if (boundaryCooldown) return;
+      boundaryCooldown = setTimeout(function() { boundaryCooldown = null; }, 900);
+      enterVerticalFramework();
+      return;
+    }
+
     e.preventDefault();
 
     wheelAccum += e.deltaY * 3;
@@ -1551,16 +1560,26 @@
   }, { passive: false });
 
   // Vertical framework: wheel up at top to exit back to horizontal
+  // 用 document 监听，确保一定能捕获
   var vfWheelTimeout = null;
-  verticalFw.addEventListener('wheel', function(e) {
+  document.addEventListener('wheel', function(e) {
     if (!inVerticalFramework) return;
-    if (verticalFw.scrollTop <= 0 && e.deltaY < 0) {
+    // 找到当前正在滚动的容器
+    var scrollingEl = document.elementFromPoint(window.innerWidth / 2, 80);
+    while (scrollingEl && scrollingEl !== document.body) {
+      if (scrollingEl === verticalFw || scrollingEl.classList.contains('vf-page')) {
+        break;
+      }
+      scrollingEl = scrollingEl.parentElement;
+    }
+    var atTop = verticalFw.scrollTop <= 0;
+    if (atTop && e.deltaY < 0) {
       e.preventDefault();
       if (vfWheelTimeout) return;
       vfWheelTimeout = setTimeout(function() { vfWheelTimeout = null; }, 900);
       exitVerticalFramework();
     }
-  }, { passive: false });
+  }, { passive: false, capture: true });
 
   // Track scroll position to update currentPage
   mainContent.addEventListener('scroll', function() {
