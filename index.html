@@ -1135,39 +1135,29 @@
     }
   }
 
-  // ========== WHEEL HANDLER — silky smooth horizontal scroll ==========
-  var scrollVelocity = 0;
-  var momentumRAF = null;
+  // ========== WHEEL HANDLER — vertical wheel → horizontal scroll ==========
+  var wheelAccum = 0;
+  var wheelRAF = null;
   var lastPageWheelTimeout = null;
-
-  function animateMomentum() {
-    if (Math.abs(scrollVelocity) < 0.3) {
-      scrollVelocity = 0;
-      momentumRAF = null;
-      return;
-    }
-    mainContent.scrollLeft += scrollVelocity;
-    scrollVelocity *= 0.92;
-    momentumRAF = requestAnimationFrame(animateMomentum);
-  }
 
   mainContent.addEventListener('wheel', function(e) {
     if (inVerticalFramework) return;
+    if (e.ctrlKey) return;
     e.preventDefault();
 
-    // Accumulate velocity (positive = scroll right)
-    scrollVelocity += e.deltaY * 1.6;
-
-    // Clamp velocity to avoid crazy speeds
-    scrollVelocity = Math.max(-80, Math.min(80, scrollVelocity));
-
-    if (!momentumRAF) {
-      momentumRAF = requestAnimationFrame(animateMomentum);
+    // Batch into next animation frame
+    wheelAccum += e.deltaY * 3;
+    if (!wheelRAF) {
+      wheelRAF = requestAnimationFrame(function() {
+        mainContent.scrollLeft += wheelAccum;
+        wheelAccum = 0;
+        wheelRAF = null;
+      });
     }
 
     // Scroll past last page → enter vertical framework
     var maxScroll = mainContent.scrollWidth - mainContent.clientWidth;
-    if (maxScroll - mainContent.scrollLeft <= 3 && e.deltaY > 0) {
+    if (maxScroll - mainContent.scrollLeft <= 4 && e.deltaY > 0) {
       if (lastPageWheelTimeout) return;
       lastPageWheelTimeout = setTimeout(function() { lastPageWheelTimeout = null; }, 1000);
       enterVerticalFramework();
@@ -1202,7 +1192,7 @@
   // ========== FRAMEWORK TRANSITION ==========
   function enterVerticalFramework(done) {
     if (inVerticalFramework) { if (done) done(); return; }
-inVerticalFramework = true;
+    inVerticalFramework = true;
     mainContent.classList.add('faded');
     // Wait for fade-out transition, then show vertical framework (slower)
     setTimeout(function() {
@@ -1211,13 +1201,13 @@ inVerticalFramework = true;
       scrollHint.classList.add('hidden');
       updateNavState();
       updateScrollHintArrow();
-if (done) done();
+      if (done) done();
     }, 800);
   }
 
   function exitVerticalFramework(done) {
     if (!inVerticalFramework) { if (done) done(); return; }
-inVerticalFramework = false;
+    inVerticalFramework = false;
     // Fade out vertical framework first (400ms transition)
     verticalFw.classList.remove('is-visible');
     // Wait for fade-out to complete, then restore horizontal content (slower)
@@ -1226,7 +1216,7 @@ inVerticalFramework = false;
       scrollHint.classList.remove('hidden');
       updateNavState();
       updateScrollHintArrow();
-if (done) done();
+      if (done) done();
     }, 800);
   }
 
