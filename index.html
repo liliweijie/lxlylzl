@@ -1172,7 +1172,7 @@
   mainContent.addEventListener('wheel', function(e) {
     if (inVerticalFramework) return;
     e.preventDefault();
-    wheelAccum += e.deltaY * 1.2;
+    wheelAccum += e.deltaY * 1.8;
     if (!wheelRAF) {
       wheelRAF = requestAnimationFrame(function() {
         mainContent.scrollLeft += wheelAccum;
