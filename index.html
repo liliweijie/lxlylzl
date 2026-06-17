@@ -1135,27 +1135,41 @@
     }
   }
 
-  // ========== WHEEL HANDLER — map vertical wheel to horizontal scroll ==========
-  var wheelAccum = 0;
-  var wheelRAF = null;
+  // ========== WHEEL HANDLER — silky smooth horizontal scroll ==========
+  var scrollVelocity = 0;
+  var momentumRAF = null;
   var lastPageWheelTimeout = null;
+
+  function animateMomentum() {
+    if (Math.abs(scrollVelocity) < 0.3) {
+      scrollVelocity = 0;
+      momentumRAF = null;
+      return;
+    }
+    mainContent.scrollLeft += scrollVelocity;
+    scrollVelocity *= 0.92;
+    momentumRAF = requestAnimationFrame(animateMomentum);
+  }
 
   mainContent.addEventListener('wheel', function(e) {
     if (inVerticalFramework) return;
     e.preventDefault();
-    wheelAccum += e.deltaY * 1.8;
-    if (!wheelRAF) {
-      wheelRAF = requestAnimationFrame(function() {
-        mainContent.scrollLeft += wheelAccum;
-        wheelAccum = 0;
-        wheelRAF = null;
-      });
+
+    // Accumulate velocity (positive = scroll right)
+    scrollVelocity += e.deltaY * 1.6;
+
+    // Clamp velocity to avoid crazy speeds
+    scrollVelocity = Math.max(-80, Math.min(80, scrollVelocity));
+
+    if (!momentumRAF) {
+      momentumRAF = requestAnimationFrame(animateMomentum);
     }
+
     // Scroll past last page → enter vertical framework
     var maxScroll = mainContent.scrollWidth - mainContent.clientWidth;
-    if (maxScroll - mainContent.scrollLeft <= 2 && e.deltaY > 0) {
+    if (maxScroll - mainContent.scrollLeft <= 3 && e.deltaY > 0) {
       if (lastPageWheelTimeout) return;
-      lastPageWheelTimeout = setTimeout(function() { lastPageWheelTimeout = null; }, 900);
+      lastPageWheelTimeout = setTimeout(function() { lastPageWheelTimeout = null; }, 1000);
       enterVerticalFramework();
     }
   }, { passive: false });
