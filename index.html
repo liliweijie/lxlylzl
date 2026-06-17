@@ -69,13 +69,15 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    padding: 7px 18px;
+    padding: 6px 18px;
     background: var(--nav-bg);
     backdrop-filter: blur(32px) saturate(1.2);
     -webkit-backdrop-filter: blur(32px) saturate(1.2);
     border: 1px solid var(--glass-border);
     border-radius: 100px;
     transition: background 0.3s, border-color 0.3s;
+    height: 36px;
+    box-sizing: border-box;
   }
 
   .nav-left  { position: absolute; top: 0; left: 0; }
@@ -151,24 +153,26 @@
     user-select: none;
   }
 
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+
   .theme-btn {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    border: 1px solid var(--glass-border);
+    width: 30px;
+    height: 30px;
+    border: none;
     background: transparent;
     color: var(--text-secondary);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s;
+    transition: color 0.3s, transform 0.5s;
+    border-radius: 8px;
   }
-  .theme-btn:hover {
-    color: var(--text-primary);
-    border-color: var(--accent);
-    transform: rotate(180deg);
-  }
+  .theme-btn:hover { color: var(--accent); }
   .theme-btn svg {
     width: 18px;
     height: 18px;
@@ -178,6 +182,26 @@
     stroke-linecap: round;
     stroke-linejoin: round;
   }
+
+  .lang-btn {
+    width: 32px;
+    height: 30px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    transition: color 0.3s;
+    border-radius: 8px;
+    user-select: none;
+    line-height: 1;
+  }
+  .lang-btn:hover { color: var(--accent); }
 
   /* ========== GLASS FRAME CONTAINER — fills page-wrapper ========== */
   .app-container {
@@ -760,22 +784,25 @@
   </div>
 
   <div class="nav-section nav-right">
-    <button class="theme-btn" id="themeBtn" aria-label="切换明暗模式">
-      <svg class="icon-sun" viewBox="0 0 24 24" style="display:none;">
-        <circle cx="12" cy="12" r="5"/>
-        <line x1="12" y1="1" x2="12" y2="3"/>
-        <line x1="12" y1="21" x2="12" y2="23"/>
-        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-        <line x1="1" y1="12" x2="3" y2="12"/>
-        <line x1="21" y1="12" x2="23" y2="12"/>
-        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-      </svg>
-      <svg class="icon-moon" viewBox="0 0 24 24">
-        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-      </svg>
-    </button>
+    <div class="nav-actions">
+      <button class="theme-btn" id="themeBtn" aria-label="切换明暗模式">
+        <svg class="icon-sun" viewBox="0 0 24 24" style="display:none;">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1" x2="12" y2="3"/>
+          <line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/>
+          <line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+      <button class="lang-btn" id="langBtn" aria-label="切换语言">中/EN</button>
+    </div>
   </div>
 </nav>
 
@@ -1184,6 +1211,118 @@
     }
   }
   verticalFw.addEventListener('scroll', updateCurrentVerticalPage);
+
+  // ========== LANGUAGE TOGGLE ==========
+  var currentLang = 'zh';
+  var langBtn = document.getElementById('langBtn');
+
+  var i18n = {
+    zh: {
+      nav: ['首页', '作品集', '关于', '服务', '案例', '联系', '博客', '关于我', '技能', '流程'],
+      pageTitle: ['创意设计，触手可及', '精选作品集', '关于我', '我的服务', '客户评价'],
+      pageDesc: [
+        '用极简主义的设计语言，为品牌注入灵魂。每一个像素，都是对美的极致追求。',
+        '过去几年中，我为有雄心的品牌创造了令人难忘的视觉体验。',
+        '一名专注细节的平面设计师，擅长品牌识别、UI设计和印刷品设计。',
+        '从概念到落地，提供全流程设计服务，让每一个创意都精准传达。',
+        '来自客户们的真实反馈，是对我工作最大的肯定。'
+      ],
+      vfTitles: ['取得联系', '博客随笔', '关于我', '专业技能', '工作流程'],
+      scrollHint: '滚动探索'
+    },
+    en: {
+      nav: ['Home', 'Works', 'About', 'Services', 'Cases', 'Contact', 'Blog', 'About Me', 'Skills', 'Process'],
+      pageTitle: ['Creative Design at Your Fingertips', 'Selected Works', 'About Me', 'My Services', 'Testimonials'],
+      pageDesc: [
+        'Using minimalist design language to inject soul into brands. Every pixel is a pursuit of beauty.',
+        'In the past few years, I have created unforgettable visual experiences for ambitious brands.',
+        'A detail-oriented graphic designer specializing in brand identity, UI design, and print design.',
+        'Full-process design services from concept to delivery, ensuring every idea is conveyed precisely.',
+        'Real feedback from clients is the greatest affirmation of my work.'
+      ],
+      vfTitles: ['Get in Touch', 'Blog', 'About Me', 'Skills', 'Process'],
+      scrollHint: 'Scroll to Explore'
+    }
+  };
+
+  function applyLang() {
+    var t = i18n[currentLang];
+    // Update horizontal nav links
+    var hLinks = document.querySelectorAll('#navLinksHorizontal > .nav-link');
+    hLinks.forEach(function(link, i) {
+      if (t.nav[i]) {
+        var chars = t.nav[i].split('');
+        link.innerHTML = chars.map(function(ch) { return '<span class="char">' + ch + '</span>'; }).join('');
+      }
+    });
+    // Update vertical nav links
+    var vLinks = document.querySelectorAll('#navLinksVertical > .nav-link');
+    vLinks.forEach(function(link, i) {
+      if (t.nav[5 + i]) {
+        var chars = t.nav[5 + i].split('');
+        link.innerHTML = chars.map(function(ch) { return '<span class="char">' + ch + '</span>'; }).join('');
+      }
+    });
+
+    // Page titles & descs
+    var pages = document.querySelectorAll('.page');
+    pages.forEach(function(page, i) {
+      if (t.pageTitle[i]) {
+        var titleEl = page.querySelector('.page__title');
+        if (titleEl) {
+          // For English: accent on last word; for Chinese: accent on keyword
+          if (currentLang === 'en') {
+            var parts = t.pageTitle[i].split(' ');
+            if (parts.length > 1) {
+              var last = parts.pop();
+              titleEl.innerHTML = parts.join(' ') + ' <span class="accent">' + last + '</span>';
+            } else {
+              titleEl.innerHTML = t.pageTitle[i];
+            }
+          } else {
+            titleEl.innerHTML = t.pageTitle[i];
+          }
+        }
+      }
+      if (t.pageDesc[i]) {
+        var descEl = page.querySelector('.page__desc');
+        if (descEl) descEl.textContent = t.pageDesc[i];
+      }
+    });
+
+    // VF page titles
+    var vfTitles = document.querySelectorAll('.vf-page__title');
+    vfTitles.forEach(function(el, i) {
+      if (t.vfTitles[i]) el.textContent = t.vfTitles[i];
+    });
+
+    // Scroll hint
+    var hintText = document.querySelector('.scroll-hint__text');
+    if (hintText) hintText.textContent = t.scrollHint;
+
+    // Re-bind char hover
+    bindCharHover();
+    updateNavState();
+  }
+
+  function bindCharHover() {
+    document.querySelectorAll('.nav-link .char').forEach(function(ch) {
+      ch.addEventListener('mouseenter', function() {
+        var link = ch.closest('.nav-link');
+        if (!link.classList.contains('active')) ch.style.fontWeight = '700';
+      });
+      ch.addEventListener('mouseleave', function() {
+        var link = ch.closest('.nav-link');
+        if (!link.classList.contains('active')) ch.style.fontWeight = '';
+      });
+    });
+  }
+
+  langBtn.addEventListener('click', function() {
+    currentLang = currentLang === 'zh' ? 'en' : 'zh';
+    langBtn.textContent = currentLang === 'zh' ? '中/EN' : 'EN/中';
+    applyLang();
+  });
 
   // Init
   updatePageIndicator();
