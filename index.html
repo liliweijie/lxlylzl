@@ -79,12 +79,29 @@
     height: 42px;
   }
 
-  .nav-left  { position: absolute; top: 50%; left: 0; transform: translateY(-50%); }
-  .nav-center {
-    position: absolute; top: 50%;
-    left: 50%; transform: translate(-50%, -50%);
+  .top-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
-  .nav-right { position: absolute; top: 50%; right: 0; transform: translateY(-50%); }
+
+  .nav-left, .nav-center, .nav-right {
+    position: static;
+    top: auto; left: auto; right: auto;
+    transform: none;
+  }
+
+  .nav-center {
+    flex: 1;
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .nav-center::-webkit-scrollbar { display: none; }
+
+  .nav-links { flex-wrap: nowrap; }
 
   .nav-logo {
     font-size: 1.2rem;
@@ -710,26 +727,41 @@
     line-height: 1.7;
   }
 
-  @media (max-width: 768px) {
-    .top-nav { left: 16px; right: 16px; }
-    .page-wrapper { top: 48px; left: 16px; right: 16px; bottom: 16px; }
-    .glass-frame { border-radius: 20px; }
+  @media (max-width: 1200px) {
+    .top-nav { left: 32px; right: 32px; }
+    .page-wrapper { left: 32px; right: 32px; }
     .nav-section { padding: 6px 12px; }
-    .nav-link { padding: 5px 7px; font-size: 0.82rem; }
-    .nav-v-divider { margin: 0 3px; }
+    .nav-link { padding: 5px 9px; font-size: 0.85rem; }
+    .nav-links { gap: 6px; }
+  }
+
+  @media (max-width: 768px) {
+    .top-nav { left: 12px; right: 12px; top: 8px; }
+    .page-wrapper { top: 52px; left: 12px; right: 12px; bottom: 12px; }
+    .glass-frame { border-radius: 18px; }
+    .nav-section { padding: 5px 10px; height: 36px; }
+    .nav-link { padding: 4px 6px; font-size: 0.78rem; }
+    .nav-links { gap: 4px; }
+    .nav-actions { gap: 6px; }
     .works-grid, .services-grid { grid-template-columns: 1fr 1fr; }
     .about-grid { grid-template-columns: 1fr; }
     .vertical-framework {
-    display: none;
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    overflow-y: auto;
-    overflow-x: hidden;
-    scroll-behavior: smooth;
-    border-radius: 28px;
+    /* 修复：删除 display:none，让竖屏正常显示 */
+    border-radius: 18px;
   }
-    .page__content { padding: 24px; }
-    .vf-page { padding: 40px 20px; }
+    .page__content { padding: 20px; }
+    .vf-page { padding: 32px 16px; }
+  }
+
+  @media (max-width: 480px) {
+    .nav-center { display: none; }
+    .top-nav { justify-content: space-between; }
+    .nav-left { flex: 0; }
+    .nav-right { flex: 0; }
+    .page__title { font-size: 1.8rem; }
+    .works-grid, .services-grid { grid-template-columns: 1fr; }
+    .contact-cards { grid-template-columns: 1fr; }
+    .skills-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
