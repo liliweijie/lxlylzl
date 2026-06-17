@@ -218,13 +218,18 @@
     flex-shrink: 0;
   }
 
-  /* Horizontal scroll — inside glass frame */
   .main-content {
     position: absolute;
     top: 0; left: 0;
     width: 100%; height: 100%;
     overflow: hidden;
-    z-index: 1;
+    z-index: 2;
+    transition: opacity 0.5s;
+  }
+
+  .main-content.faded {
+    opacity: 0;
+    pointer-events: none;
   }
 
   .main__inner {
@@ -232,6 +237,7 @@
     height: 100%;
     width: 500%;
     transition: transform 0.8s cubic-bezier(0.16,1,0.3,1);
+    will-change: transform;
   }
 
   /* ========== HORIZONTAL PAGES ========== */
@@ -292,8 +298,8 @@
     overflow-x: hidden;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.6s;
-    z-index: 10;
+    transition: opacity 0.5s;
+    z-index: 1;
     scroll-behavior: smooth;
     border-radius: 28px;
   }
@@ -301,6 +307,7 @@
   .vertical-framework.is-visible {
     opacity: 1;
     pointer-events: auto;
+    z-index: 10;
   }
 
   .vf-page {
@@ -1065,8 +1072,7 @@
   function enterVerticalFramework() {
     if (inVerticalFramework) return;
     inVerticalFramework = true;
-    mainContent.style.opacity = '0';
-    mainContent.style.pointerEvents = 'none';
+    mainContent.classList.add('faded');
     verticalFw.classList.add('is-visible');
     verticalFw.scrollTop = 0;
     scrollHint.classList.add('hidden');
@@ -1076,8 +1082,7 @@
   function exitVerticalFramework() {
     if (!inVerticalFramework) return;
     inVerticalFramework = false;
-    mainContent.style.opacity = '';
-    mainContent.style.pointerEvents = '';
+    mainContent.classList.remove('faded');
     verticalFw.classList.remove('is-visible');
     scrollHint.classList.remove('hidden');
     updateNavState();
@@ -1091,7 +1096,7 @@
 
       if (target === 'page') {
         if (inVerticalFramework) exitVerticalFramework();
-        setTimeout(function() { scrollToPage(idx); }, inVerticalFramework ? 80 : 0);
+        setTimeout(function() { scrollToPage(idx); }, 500);
       }
 
       if (target === 'vertical') {
@@ -1114,9 +1119,16 @@
     navLinks.forEach(function(item) {
       var isHorizontal = item.dataset.target === 'page';
       var idx = parseInt(item.dataset.index, 10);
-      var isActive = isHorizontal && !inVerticalFramework && idx === currentPage;
-      item.classList.toggle('active', isActive);
+
+      if (isHorizontal) {
+        item.classList.toggle('active', !inVerticalFramework && idx === currentPage);
+      } else {
+        item.classList.toggle('active', inVerticalFramework && idx === currentVerticalPage);
+      }
     });
+
+    // Hide page indicator in vertical mode
+    pageIndicator.style.opacity = inVerticalFramework ? '0' : '';
   }
 
   // ========== VERTICAL SCROLL TRACKING ==========
@@ -1132,6 +1144,7 @@
     });
     if (newPage !== currentVerticalPage) {
       currentVerticalPage = newPage;
+      updateNavState();
     }
   }
   verticalFw.addEventListener('scroll', updateCurrentVerticalPage);
