@@ -907,6 +907,30 @@
               <div class="testimonial-role">&#x67D0;&#x79D1;&#x6280;&#x516C;&#x53F8; · CEO</div>
             </div>
           </div>
+          <div class="testimonial-item">
+            <div class="testimonial-avatar">&#x9648;</div>
+            <div class="testimonial-content">
+              <div class="testimonial-text">&#x300C;第一次找自由设计师有点担心，但Lili的专业程度完全不输设计公司。沟通顺畅，交付及时，后续还主动跟进应用效果。&#x300D;</div>
+              <div class="testimonial-name">&#x9648;&#x5C0F;&#x59D0;</div>
+              <div class="testimonial-role">&#x72EC;&#x7ACB;&#x8377;&#x724C;&#x521B;&#x59CB;&#x4EBA; · &#x54C1;&#x724C;&#x4E3B;&#x7406;</div>
+            </div>
+          </div>
+          <div class="testimonial-item">
+            <div class="testimonial-avatar">&#x5F20;</div>
+            <div class="testimonial-content">
+              <div class="testimonial-text">&#x300C;Lili的设计有一种「刚好」的分寸感——不会过度设计，也不会平庸。这种克制而精准的审美，正是我们品牌需要的。&#x300D;</div>
+              <div class="testimonial-name">&#x5F20;&#x5148;&#x751F;</div>
+              <div class="testimonial-role">&#x5F00;&#x5E97;&#x751F;&#x6D3B;&#x9986; · &#x521B;&#x59CB;&#x4EBA;</div>
+            </div>
+          </div>
+          <div class="testimonial-item">
+            <div class="testimonial-avatar">&#x5218;</div>
+            <div class="testimonial-content">
+              <div class="testimonial-text">&#x300C;合作过最省心的设计师。brief 一说就懂，初稿就能用，基本不用大改。这种设计敏感度，是多年积累出来的。&#x300D;</div>
+              <div class="testimonial-name">&#x5218;&#x7ECF;&#x7406;</div>
+              <div class="testimonial-role">&#x5FEB;&#x6D88;&#x54C1;&#x724C; · &#x5E02;&#x573A;&#x90E8;&#x95E8;</div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -1107,9 +1131,9 @@
   // ========== WHEEL HANDLER ==========
   var wheelTimeout = null;
 
-  // Horizontal pages: wheel to switch pages, push up to enter vertical
-  mainContent.addEventListener('wheel', function(e) {
-    if (inVerticalFramework) return;
+  // Capture wheel on document to ensure it works even when mouse is over .page content
+  document.addEventListener('wheel', function(e) {
+    if (inVerticalFramework) return;  // let vertical framework scroll normally
     e.preventDefault();
 
     if (wheelTimeout) return;
@@ -1159,15 +1183,17 @@
     if (!inVerticalFramework) { if (done) done(); return; }
     console.log('[DEBUG] exitVerticalFramework called');
     inVerticalFramework = false;
-    // Hide vertical framework immediately (display:none via CSS)
+    // Fade out vertical framework first (400ms transition)
     verticalFw.classList.remove('is-visible');
-    // Restore horizontal content right away
-    mainContent.classList.remove('faded');
-    scrollHint.classList.remove('hidden');
-    updateNavState();
-    updateScrollHintArrow();
-    console.log('[DEBUG] exitVerticalFramework: exited, inVerticalFramework=', inVerticalFramework);
-    if (done) done();
+    // Wait for fade-out to complete, then restore horizontal content
+    setTimeout(function() {
+      mainContent.classList.remove('faded');
+      scrollHint.classList.remove('hidden');
+      updateNavState();
+      updateScrollHintArrow();
+      console.log('[DEBUG] exitVerticalFramework: exited, inVerticalFramework=', inVerticalFramework);
+      if (done) done();
+    }, 400);
   }
 
   // ========== NAV CLICK ==========
