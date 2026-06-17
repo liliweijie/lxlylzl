@@ -769,11 +769,206 @@
     .contact-cards { grid-template-columns: 1fr; }
     .skills-grid { grid-template-columns: 1fr; }
   }
+
+  /* ========== MOBILE LAYOUT (≤768px) ========== */
+  .mobile-top {
+    position: fixed;
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    height: 48px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(32px) saturate(1.2);
+    -webkit-backdrop-filter: blur(32px) saturate(1.2);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 14px;
+    z-index: 1000;
+    transition: background 0.45s, border-color 0.45s;
+  }
+
+  .mobile-top .nav-icon-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: none;
+    background: rgba(255,255,255,0.05);
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: color 0.25s, background 0.25s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .mobile-top .nav-icon-btn svg { width: 19px; height: 19px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+  .mobile-top .nav-icon-btn:active { color: var(--accent); background: rgba(192,57,43,0.1); }
+
+  .mobile-top .mobile-logo {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  /* Mobile content: vertical scroll-snap */
+  .mobile-content {
+    display: none;
+    scroll-snap-type: y proximity;
+    overflow-y: auto;
+    height: 100%;
+  }
+
+  .m-section {
+    min-height: 100%;
+    padding: 60px 20px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    scroll-snap-align: start;
+    position: relative;
+    overflow-y: auto;
+  }
+
+  .m-section__bg {
+    position: absolute;
+    inset: 0;
+    background: #2a2a2a;
+    opacity: 0.8;
+  }
+
+  .m-section__content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    width: 100%;
+    max-width: 420px;
+  }
+
+  .m-section__title {
+    font-size: clamp(1.6rem, 6vw, 2.2rem);
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 12px;
+    letter-spacing: -0.02em;
+  }
+  .m-section__title .accent { color: var(--accent); }
+
+  .m-section__desc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .m-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 20px;
+    width: 100%;
+  }
+
+  .m-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: 14px;
+    padding: 14px 10px;
+    text-align: center;
+  }
+  .m-card__icon { font-size: 1.4rem; margin-bottom: 6px; }
+  .m-card__title { font-size: 0.82rem; font-weight: 600; }
+  .m-card__cat { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; }
+
+  .m-stats {
+    display: flex;
+    gap: 16px;
+    margin-top: 20px;
+    width: 100%;
+    justify-content: center;
+  }
+  .m-stat { text-align: center; }
+  .m-stat__num {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .m-stat__label { font-size: 0.72rem; color: var(--text-secondary); margin-top: 4px; }
+
+  .m-text {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    line-height: 1.8;
+    text-align: left;
+    margin-top: 16px;
+  }
+
+  .m-testimonial {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: 14px;
+    padding: 16px;
+    text-align: left;
+    margin-top: 14px;
+    width: 100%;
+  }
+  .m-testimonial__text {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+  .m-testimonial__name {
+    font-size: 0.82rem;
+    font-weight: 600;
+    margin-top: 10px;
+  }
+  .m-testimonial__role { font-size: 0.72rem; color: var(--text-muted); }
+
+  /* ========== DESKTOP: show desktop, hide mobile ========== */
+  /* (default — no extra rule needed) */
+
+  /* ========== MOBILE (≤768px): hide desktop, show mobile ========== */
+  @media (max-width: 768px) {
+    .top-nav { display: none !important; }
+    .page-wrapper { top: 0; left: 0; right: 0; bottom: 0; }
+    .glass-frame { margin: 58px 10px 24px 10px; border-radius: 22px; }
+    .main-content { display: none !important; }
+    .vertical-framework { display: none !important; }
+
+    .mobile-top { display: flex !important; }
+    .mobile-content { display: block !important; }
+
+    .scroll-hint, .page-indicator { display: none !important; }
+  }
+
+  @media (min-width: 769px) {
+    .mobile-top, .mobile-content { display: none !important; }
+  }
+
 </style>
 </head>
 <body>
 
-<!-- ========== THREE-SECTION TOP NAV ========== -->
+<!-- ========== MOBILE TOP NAV (fixed, 5px gap) ========== -->
+<div class="mobile-top" id="mobileTop">
+  <button class="nav-icon-btn" id="mobileHomeBtn" aria-label="首页">
+    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+  </button>
+  <div class="mobile-logo">LX</div>
+  <button class="nav-icon-btn" id="mobileAboutBtn" aria-label="关于">
+    <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+  </button>
+</div>
+
+<!-- ========== THREE-SECTION TOP NAV (desktop only) ========== -->
 <nav class="top-nav">
   <div class="nav-section nav-left">
     <div class="nav-logo" id="logoBtn" title="回到首页">LX</div>
@@ -984,6 +1179,96 @@
 
     </div>
   </div>
+
+
+    <!-- Mobile content (vertical scroll-snap, shown at ≤768px) -->
+    <div class="mobile-content" id="mobileContent">
+
+      <section class="m-section" id="mSec0">
+        <div class="m-section__bg"></div>
+        <div class="m-section__content">
+          <div style="font-size:3rem;margin-bottom:16px;">✨</div>
+          <h1 class="m-section__title">用设计讲述<span class="accent">品牌故事</span></h1>
+          <p class="m-section__desc">平面设计师 · 视觉策划 · 品牌顾问<br>将每一个创意转化为打动人心的视觉语言</p>
+        </div>
+      </section>
+
+      <section class="m-section" id="mSec1">
+        <div class="m-section__bg"></div>
+        <div class="m-section__content">
+          <h1 class="m-section__title"><span class="accent">作品集</span></h1>
+          <div class="m-grid">
+            <div class="m-card"><div class="m-card__icon">🎨</div><div class="m-card__title">品牌视觉升级</div><div class="m-card__cat">品牌设计 · 2024</div></div>
+            <div class="m-card"><div class="m-card__icon">📦</div><div class="m-card__title">包装设计系列</div><div class="m-card__cat">包装设计 · 2024</div></div>
+            <div class="m-card"><div class="m-card__icon">📱</div><div class="m-card__title">电商详情页</div><div class="m-card__cat">电商设计 · 2023</div></div>
+            <div class="m-card"><div class="m-card__icon">✏️</div><div class="m-card__title">品牌IP形象</div><div class="m-card__cat">品牌设计 · 2024</div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="m-section" id="mSec2">
+        <div class="m-section__bg"></div>
+        <div class="m-section__content">
+          <h1 class="m-section__title">关于<span class="accent">我</span></h1>
+          <div class="m-text">毕业于中央美术学院视觉传达专业，拥有8年平面设计经验。曾服务于腾讯、字节跳动等知名企业，擅长品牌视觉设计、包装设计和电商视觉策划。</div>
+          <div class="m-stats">
+            <div class="m-stat"><div class="m-stat__num">8+</div><div class="m-stat__label">年设计经验</div></div>
+            <div class="m-stat"><div class="m-stat__num">120+</div><div class="m-stat__label">完成项目</div></div>
+            <div class="m-stat"><div class="m-stat__num">30+</div><div class="m-stat__label">合作品牌</div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="m-section" id="mSec3">
+        <div class="m-section__bg"></div>
+        <div class="m-section__content">
+          <h1 class="m-section__title">设计<span class="accent">服务</span></h1>
+          <div class="m-grid">
+            <div class="m-card"><div class="m-card__icon">🎯</div><div class="m-card__title">品牌视觉设计</div><div class="m-card__cat">Logo / VI / 品牌手册</div></div>
+            <div class="m-card"><div class="m-card__icon">📦</div><div class="m-card__title">包装设计</div><div class="m-card__cat">包装结构 / 材质选配</div></div>
+            <div class="m-card"><div class="m-card__icon">📱</div><div class="m-card__title">电商视觉</div><div class="m-card__cat">详情页 / 主图策划</div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="m-section" id="mSec4">
+        <div class="m-section__bg"></div>
+        <div class="m-section__content">
+          <h1 class="m-section__title">客户<span class="accent">评价</span></h1>
+          <div class="m-testimonial">
+            <div class="m-testimonial__text">"与Lili合作了3个项目，每次都能精准把握品牌调性，设计输出超出预期。特别是包装设计，上市后销量提升了40%。"</div>
+            <div class="m-testimonial__name">王某某</div>
+            <div class="m-testimonial__role">某新消费品牌 · 市场总监</div>
+          </div>
+          <div class="m-testimonial" style="margin-top:12px;">
+            <div class="m-testimonial__text">"专业、高效、有审美。Lili对细节的把控让人放心，是难得的靠谱设计师。"</div>
+            <div class="m-testimonial__name">李某某</div>
+            <div class="m-testimonial__role">互联网公司 · 品牌经理</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="m-section" id="mSec5">
+        <div class="m-section__bg"></div>
+        <div class="m-section__content">
+          <h1 class="m-section__title">更多<span class="accent">案例</span></h1>
+          <div class="m-grid">
+            <div class="m-card"><div class="m-card__icon">🎭</div><div class="m-card__title">品牌IP设计</div><div class="m-card__cat">品牌设计 · 2024</div></div>
+            <div class="m-card"><div class="m-card__icon">📒</div><div class="m-card__title">企业画册</div><div class="m-card__cat">画册设计 · 2023</div></div>
+            <div class="m-card"><div class="m-card__icon">📱</div><div class="m-card__title">社交媒体视觉</div><div class="m-card__cat">社媒设计 · 2024</div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="m-section" id="mSec6">
+        <div class="m-section__bg"></div>
+        <div class="m-section__content">
+          <h1 class="m-section__title"><span class="accent">合作品牌</span></h1>
+          <div class="m-text" style="text-align:center;">腾讯 · 字节跳动 · 小米 · 美团<br>网易 · 理想汽车 · 元气森林</div>
+        </div>
+      </section>
+
+    </div><!-- /mobile-content -->
 
     <!-- Vertical framework (5 pages) -->
     <div class="vertical-framework" id="verticalFramework">
@@ -1473,6 +1758,37 @@
   updateScrollHintArrow();
 
 })();
+
+
+  // ========== MOBILE TOP NAV BUTTONS ==========
+  (function(){
+    var homeBtn = document.getElementById('mobileHomeBtn');
+    var aboutBtn = document.getElementById('mobileAboutBtn');
+    var mobileContent = document.getElementById('mobileContent');
+
+    if (homeBtn) {
+      homeBtn.addEventListener('click', function(){
+        if (mobileContent) {
+          var sec = document.getElementById('mSec0');
+          if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    }
+
+    if (aboutBtn) {
+      aboutBtn.addEventListener('click', function(){
+        if (mobileContent) {
+          var sec = document.getElementById('mSec6');
+          if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    }
+
+    // Sync theme with desktop
+    var stored = localStorage.getItem('theme');
+    if (stored) document.documentElement.setAttribute('data-theme', stored);
+  })();
+
 </script>
 </body>
 </html>
