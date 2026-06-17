@@ -1101,6 +1101,8 @@
 
   // ========== WHEEL HANDLER ==========
   var wheelTimeout = null;
+
+  // Horizontal pages: wheel to switch pages, push up to enter vertical
   mainContent.addEventListener('wheel', function(e) {
     if (inVerticalFramework) return;
     e.preventDefault();
@@ -1117,9 +1119,23 @@
     }
   }, { passive: false });
 
+  // Vertical framework: wheel up at top to exit back to horizontal
+  var vfWheelTimeout = null;
+  verticalFw.addEventListener('wheel', function(e) {
+    if (!inVerticalFramework) return;
+    // If at top and user scrolls up, exit to horizontal
+    if (verticalFw.scrollTop <= 0 && e.deltaY < 0) {
+      e.preventDefault();
+      if (vfWheelTimeout) return;
+      vfWheelTimeout = setTimeout(function() { vfWheelTimeout = null; }, 900);
+      exitVerticalFramework();
+    }
+  }, { passive: false });
+
   // ========== FRAMEWORK TRANSITION ==========
   function enterVerticalFramework(done) {
     if (inVerticalFramework) { if (done) done(); return; }
+    console.log('[DEBUG] enterVerticalFramework called');
     inVerticalFramework = true;
     mainContent.classList.add('faded');
     // Wait for fade-out transition (450ms), then show vertical framework
@@ -1129,12 +1145,14 @@
       scrollHint.classList.add('hidden');
       updateNavState();
       updateScrollHintArrow();
+      console.log('[DEBUG] enterVerticalFramework: vertical framework shown');
       if (done) done();
     }, 500);
   }
 
   function exitVerticalFramework(done) {
     if (!inVerticalFramework) { if (done) done(); return; }
+    console.log('[DEBUG] exitVerticalFramework called');
     inVerticalFramework = false;
     // Hide vertical framework immediately (display:none via CSS)
     verticalFw.classList.remove('is-visible');
@@ -1143,6 +1161,7 @@
     scrollHint.classList.remove('hidden');
     updateNavState();
     updateScrollHintArrow();
+    console.log('[DEBUG] exitVerticalFramework: exited, inVerticalFramework=', inVerticalFramework);
     if (done) done();
   }
 
