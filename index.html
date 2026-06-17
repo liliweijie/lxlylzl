@@ -18,7 +18,6 @@
     --text-muted: #5a5a6a;
     --bg-primary: #0e0e12;
     --nav-bg: rgba(18,18,24,0.6);
-    --transition-theme: 0.45s cubic-bezier(0.4,0,0.2,1);
   }
 
   [data-theme="light"] {
@@ -39,7 +38,7 @@
     color: var(--text-primary);
     overflow: hidden;
     height: 100vh;
-    transition: background var(--transition-theme), color var(--transition-theme);
+    transition: background 0.45s cubic-bezier(0.4,0,0.2,1), color 0.45s cubic-bezier(0.4,0,0.2,1);
   }
 
   /* ========== PAGE WRAPPER — below nav, max size ========== */
@@ -145,14 +144,6 @@
     margin: 0 4px;
   }
 
-  .nav-section-label {
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    letter-spacing: 0.08em;
-    padding: 0 4px;
-    user-select: none;
-  }
-
   .nav-actions {
     display: flex;
     align-items: center;
@@ -237,16 +228,7 @@
     display: flex;
     flex-direction: column;
     box-shadow: 0 24px 80px rgba(0,0,0,0.4);
-    transition: background var(--transition-theme), border-color var(--transition-theme);
-  }
-
-  /* Vertical divider between horizontal & vertical nav */
-  .nav-v-divider {
-    width: 1px;
-    height: 20px;
-    background: var(--glass-border);
-    margin: 0 6px;
-    flex-shrink: 0;
+    transition: background 0.45s cubic-bezier(0.4,0,0.2,1), border-color 0.45s cubic-bezier(0.4,0,0.2,1);
   }
 
   .main-content {
@@ -1062,8 +1044,6 @@
   'use strict';
 
   var mainContent = document.getElementById('mainContent');
-  var mainInner = document.getElementById('mainInner');
-  var appContainer = document.getElementById('appContainer');
   var verticalFw = document.getElementById('verticalFramework');
   var navLinks = document.querySelectorAll('.nav-link');
   var themeBtn = document.getElementById('themeBtn');
@@ -1074,7 +1054,6 @@
   var PAGE_COUNT = 7;
   var currentPage = 0;
   var inVerticalFramework = false;
-  var currentVerticalPage = 0;
 
   // ========== PER-CHARACTER HOVER BOLD ==========
   navLinks.forEach(function(link) {
@@ -1159,6 +1138,7 @@
   // ========== WHEEL HANDLER — map vertical wheel to horizontal scroll ==========
   var wheelAccum = 0;
   var wheelRAF = null;
+  var lastPageWheelTimeout = null;
 
   mainContent.addEventListener('wheel', function(e) {
     if (inVerticalFramework) return;
@@ -1171,19 +1151,14 @@
         wheelRAF = null;
       });
     }
-  }, { passive: false });
-
-  // Scroll past last page → enter vertical framework
-  var lastPageWheelTimeout = null;
-  mainContent.addEventListener('wheel', function(e) {
-    if (inVerticalFramework) return;
+    // Scroll past last page → enter vertical framework
     var maxScroll = mainContent.scrollWidth - mainContent.clientWidth;
     if (maxScroll - mainContent.scrollLeft <= 2 && e.deltaY > 0) {
       if (lastPageWheelTimeout) return;
       lastPageWheelTimeout = setTimeout(function() { lastPageWheelTimeout = null; }, 900);
       enterVerticalFramework();
     }
-  }, { passive: true });
+  }, { passive: false });
 
   // Vertical framework: wheel up at top to exit back to horizontal
   var vfWheelTimeout = null;
@@ -1213,8 +1188,7 @@
   // ========== FRAMEWORK TRANSITION ==========
   function enterVerticalFramework(done) {
     if (inVerticalFramework) { if (done) done(); return; }
-    console.log('[DEBUG] enterVerticalFramework called');
-    inVerticalFramework = true;
+inVerticalFramework = true;
     mainContent.classList.add('faded');
     // Wait for fade-out transition, then show vertical framework (slower)
     setTimeout(function() {
@@ -1223,15 +1197,13 @@
       scrollHint.classList.add('hidden');
       updateNavState();
       updateScrollHintArrow();
-      console.log('[DEBUG] enterVerticalFramework: vertical framework shown');
-      if (done) done();
+if (done) done();
     }, 800);
   }
 
   function exitVerticalFramework(done) {
     if (!inVerticalFramework) { if (done) done(); return; }
-    console.log('[DEBUG] exitVerticalFramework called');
-    inVerticalFramework = false;
+inVerticalFramework = false;
     // Fade out vertical framework first (400ms transition)
     verticalFw.classList.remove('is-visible');
     // Wait for fade-out to complete, then restore horizontal content (slower)
@@ -1240,8 +1212,7 @@
       scrollHint.classList.remove('hidden');
       updateNavState();
       updateScrollHintArrow();
-      console.log('[DEBUG] exitVerticalFramework: exited, inVerticalFramework=', inVerticalFramework);
-      if (done) done();
+if (done) done();
     }, 800);
   }
 
@@ -1291,7 +1262,7 @@
       if (isHorizontal) {
         item.classList.toggle('active', !inVerticalFramework && idx === currentPage);
       } else {
-        item.classList.toggle('active', inVerticalFramework && idx === currentVerticalPage);
+        item.classList.toggle('active', inVerticalFramework);
       }
     });
 
@@ -1299,28 +1270,8 @@
     pageIndicator.style.opacity = inVerticalFramework ? '0' : '';
   }
 
-  // ========== VERTICAL SCROLL TRACKING ==========
-  function updateCurrentVerticalPage() {
-    if (!inVerticalFramework) return;
-    var vfPages = verticalFw.querySelectorAll('.vf-page');
-    var newPage = 0;
-    vfPages.forEach(function(page, i) {
-      var rect = page.getBoundingClientRect();
-      if (rect.top < window.innerHeight * 0.5) {
-        newPage = i;
-      }
-    });
-    if (newPage !== currentVerticalPage) {
-      currentVerticalPage = newPage;
-      updateNavState();
-    }
-  }
-  verticalFw.addEventListener('scroll', updateCurrentVerticalPage);
-
   // ========== LANGUAGE TOGGLE ==========
   var currentLang = 'zh';
-  var langBtn = document.getElementById('langBtn');
-
   var i18n = {
     zh: {
       nav: ['首页', '作品集', '关于', '服务', '案例', '联系', '博客', '关于我', '技能', '流程'],
