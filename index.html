@@ -282,25 +282,9 @@
     position: relative;
     overflow-y: auto;
     scroll-snap-align: start;
-    /* flex column: 内容少时靠上显示，内容多时可滚动 */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
+    /* 内容从顶部开始，溢出时可竖向滚动 */
     padding-top: 60px;
     padding-bottom: 60px;
-  }
-
-  /* 内容少时通过伪元素把内容垂直居中 */
-  .page::before {
-    content: '';
-    flex: 1 0 0;
-    min-height: 0;
-  }
-  .page::after {
-    content: '';
-    flex: 1 0 0;
-    min-height: 0;
   }
 
   .page__bg {
@@ -316,6 +300,8 @@
     text-align: center;
     padding: 40px;
     max-width: 680px;
+    margin: 0 auto;
+    width: 100%;
   }
 
   .page__title {
@@ -763,9 +749,9 @@
     .works-grid, .services-grid { grid-template-columns: 1fr 1fr; }
     .about-grid { grid-template-columns: 1fr; }
     .vertical-framework {
-    /* 修复：删除 display:none，让竖屏正常显示 */
-    border-radius: 18px;
-  }
+      /* 修复：删除 display:none，让竖屏正常显示 */
+      border-radius: 18px;
+    }
     .page { padding-top: 32px; padding-bottom: 32px; }
     .page__content { padding: 20px; }
     .vf-page { padding: 32px 16px; }
@@ -1165,6 +1151,13 @@
     currentPage = idx;
     var pageWidth = mainContent.clientWidth;
     mainContent.scrollTo({ left: idx * pageWidth, behavior: 'smooth' });
+
+    // 切页时复位所有横向页面的滚动位置
+    var allPages = mainContent.querySelectorAll('.page');
+    for (var i = 0; i < allPages.length; i++) {
+      allPages[i].scrollTop = 0;
+    }
+
     updateNavState();
     updatePageIndicator();
     updateScrollHintArrow();
@@ -1187,34 +1180,63 @@
     }
   }
 
-  // ========== WHEEL HANDLER — vertical wheel → horizontal scroll ==========
+  // ========== WHEEL HANDLER — 边界链式滚动 ==========
+  // 逻辑：
+  //   1. 当前页面内容不溢出 → 滚轮直接横向切页（原有行为）
+  //   2. 当前页面内容溢出 →
+  //      - 未到边界：滚轮控制页面内部竖向滚动
+  //      - 滚到最底部再往下滚 → 切到下一页
+  //      - 滚到最顶部再往上滚 → 切到上一页
   var wheelAccum = 0;
   var wheelRAF = null;
-  var lastPageWheelTimeout = null;
+  var boundaryCooldown = null;
 
   mainContent.addEventListener('wheel', function(e) {
     if (inVerticalFramework) return;
     if (e.ctrlKey) return;
 
-    // 如果鼠标下方的页面内容溢出，不拦截滚轮，让页面内部正常竖向滚动
-    var target = e.target;
-    var pageEl = null;
-    while (target && target !== mainContent) {
-      if (target.classList && target.classList.contains('page')) {
-        pageEl = target;
-        break;
-      }
-      target = target.parentElement;
-    }
+    var pages = mainContent.querySelectorAll('.page');
+    var currentPageEl = pages[currentPage];
+    if (!currentPageEl) return;
 
-    if (pageEl && pageEl.scrollHeight > pageEl.clientHeight) {
-      // 内容溢出：不拦截，让 .page 自己处理竖向滚动
+    var hasOverflow = currentPageEl.scrollHeight > currentPageEl.clientHeight + 1;
+
+    if (hasOverflow) {
+      // 内容溢出：判断是否在边界
+      var atBottom = currentPageEl.scrollTop + currentPageEl.clientHeight >= currentPageEl.scrollHeight - 5;
+      var atTop    = currentPageEl.scrollTop <= 5;
+
+      if (e.deltaY > 0 && atBottom) {
+        // 在底部，继续往下滚 → 下一页
+        e.preventDefault();
+        if (boundaryCooldown) return;
+        boundaryCooldown = setTimeout(function() { boundaryCooldown = null; }, 900);
+        if (currentPage < pages.length - 1) {
+          scrollToPage(currentPage + 1);
+        } else {
+          enterVerticalFramework();
+        }
+        return;
+      }
+
+      if (e.deltaY < 0 && atTop) {
+        // 在顶部，继续往上滚 → 上一页
+        e.preventDefault();
+        if (boundaryCooldown) return;
+        boundaryCooldown = setTimeout(function() { boundaryCooldown = null; }, 900);
+        if (currentPage > 0) {
+          scrollToPage(currentPage - 1);
+        }
+        return;
+      }
+
+      // 不在边界：让页面内部正常竖向滚动（不拦截）
       return;
     }
 
+    // 内容不溢出：滚轮 → 横向滚动切页
     e.preventDefault();
 
-    // Batch into next animation frame
     wheelAccum += e.deltaY * 3;
     if (!wheelRAF) {
       wheelRAF = requestAnimationFrame(function() {
@@ -1222,14 +1244,6 @@
         wheelAccum = 0;
         wheelRAF = null;
       });
-    }
-
-    // Scroll past last page → enter vertical framework
-    var maxScroll = mainContent.scrollWidth - mainContent.clientWidth;
-    if (maxScroll - mainContent.scrollLeft <= 4 && e.deltaY > 0) {
-      if (lastPageWheelTimeout) return;
-      lastPageWheelTimeout = setTimeout(function() { lastPageWheelTimeout = null; }, 1000);
-      enterVerticalFramework();
     }
   }, { passive: false });
 
