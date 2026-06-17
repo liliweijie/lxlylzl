@@ -224,7 +224,7 @@
     width: 100%; height: 100%;
     overflow: hidden;
     z-index: 2;
-    transition: opacity 0.5s;
+    transition: opacity 0.45s ease;
   }
 
   .main-content.faded {
@@ -1069,23 +1069,46 @@
   }, { passive: false });
 
   // ========== FRAMEWORK TRANSITION ==========
-  function enterVerticalFramework() {
-    if (inVerticalFramework) return;
+  function enterVerticalFramework(done) {
+    if (inVerticalFramework) { if (done) done(); return; }
     inVerticalFramework = true;
+    // Immediately hide horizontal content from pointer events
     mainContent.classList.add('faded');
+    // Show vertical framework
     verticalFw.classList.add('is-visible');
     verticalFw.scrollTop = 0;
     scrollHint.classList.add('hidden');
     updateNavState();
+    if (done) done();
   }
 
-  function exitVerticalFramework() {
-    if (!inVerticalFramework) return;
+  function exitVerticalFramework(done) {
+    if (!inVerticalFramework) { if (done) done(); return; }
     inVerticalFramework = false;
-    mainContent.classList.remove('faded');
+    // Immediately disable pointer events on vertical framework
     verticalFw.classList.remove('is-visible');
+    // Show horizontal content
+    mainContent.classList.remove('faded');
     scrollHint.classList.remove('hidden');
     updateNavState();
+    // Wait for opacity transition to finish before calling done
+    if (done) {
+      var waited = false;
+      function finish() {
+        if (waited) return;
+        waited = true;
+        mainContent.removeEventListener('transitionend', onEnd);
+        done();
+      }
+      function onEnd(e) {
+        if (e.target === mainContent && e.propertyName === 'opacity') {
+          finish();
+        }
+      }
+      mainContent.addEventListener('transitionend', onEnd);
+      // Fallback: if transitionend doesn't fire, proceed after 600ms
+      setTimeout(finish, 600);
+    }
   }
 
   // ========== NAV CLICK ==========
@@ -1095,23 +1118,34 @@
       var idx = parseInt(item.dataset.index, 10);
 
       if (target === 'page') {
-        if (inVerticalFramework) exitVerticalFramework();
-        setTimeout(function() { scrollToPage(idx); }, 500);
+        if (inVerticalFramework) {
+          exitVerticalFramework(function() {
+            scrollToPage(idx);
+          });
+        } else {
+          scrollToPage(idx);
+        }
       }
 
       if (target === 'vertical') {
-        if (!inVerticalFramework) enterVerticalFramework();
-        var vfPages = verticalFw.querySelectorAll('.vf-page');
-        if (vfPages[idx]) {
-          vfPages[idx].scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
+        enterVerticalFramework(function() {
+          var vfPages = verticalFw.querySelectorAll('.vf-page');
+          if (vfPages[idx]) {
+            vfPages[idx].scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
       }
     });
   });
 
   logoBtn.addEventListener('click', function() {
-    if (inVerticalFramework) exitVerticalFramework();
-    scrollToPage(0);
+    if (inVerticalFramework) {
+      exitVerticalFramework(function() {
+        scrollToPage(0);
+      });
+    } else {
+      scrollToPage(0);
+    }
   });
 
   // ========== NAV STATE ==========
