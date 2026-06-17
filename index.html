@@ -1499,17 +1499,12 @@
   }
 
   // ========== WHEEL HANDLER — 边界链式滚动 ==========
-  // 逻辑：
-  //   1. 当前页面内容不溢出 → 滚轮直接横向切页（原有行为）
-  //   2. 当前页面内容溢出 →
-  //      - 未到边界：滚轮控制页面内部竖向滚动
-  //      - 滚到最底部再往下滚 → 切到下一页
-  //      - 滚到最顶部再往上滚 → 切到上一页
+  // 绑在 document 捕获阶段，确保任何位置都能收到滚轮事件
   var wheelAccum = 0;
   var wheelRAF = null;
   var boundaryCooldown = null;
 
-  mainContent.addEventListener('wheel', function(e) {
+  document.addEventListener('wheel', function(e) {
     if (inVerticalFramework) return;
     if (e.ctrlKey) return;
 
@@ -1520,12 +1515,10 @@
     var hasOverflow = currentPageEl.scrollHeight > currentPageEl.clientHeight + 1;
 
     if (hasOverflow) {
-      // 内容溢出：判断是否在边界
       var atBottom = currentPageEl.scrollTop + currentPageEl.clientHeight >= currentPageEl.scrollHeight - 5;
       var atTop    = currentPageEl.scrollTop <= 5;
 
       if (e.deltaY > 0 && atBottom) {
-        // 在底部，继续往下滚 → 下一页
         e.preventDefault();
         if (boundaryCooldown) return;
         boundaryCooldown = setTimeout(function() { boundaryCooldown = null; }, 900);
@@ -1538,7 +1531,6 @@
       }
 
       if (e.deltaY < 0 && atTop) {
-        // 在顶部，继续往上滚 → 上一页
         e.preventDefault();
         if (boundaryCooldown) return;
         boundaryCooldown = setTimeout(function() { boundaryCooldown = null; }, 900);
@@ -1552,8 +1544,7 @@
       return;
     }
 
-    // 内容不溢出：滚轮 → 横向滚动切页
-    // 但：如果是最后一页且往下滚，进入竖屏
+    // 内容不溢出：最后一页往下滚 → 进竖屏；其他情况 → 横向滚动切页
     if (currentPage >= pages.length - 1 && e.deltaY > 0) {
       e.preventDefault();
       if (boundaryCooldown) return;
@@ -1563,7 +1554,6 @@
     }
 
     e.preventDefault();
-
     wheelAccum += e.deltaY * 3;
     if (!wheelRAF) {
       wheelRAF = requestAnimationFrame(function() {
@@ -1572,7 +1562,8 @@
         wheelRAF = null;
       });
     }
-  }, { passive: false });
+
+  }, { passive: false, capture: true });
 
   // Vertical framework: wheel up at top to exit back to horizontal
   // 用 document 监听，确保一定能捕获
