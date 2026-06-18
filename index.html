@@ -108,11 +108,9 @@
   .nav-links { flex-wrap: nowrap; }
 
   .nav-logo {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: var(--accent);
+    height: 36px;
+    width: auto;
     cursor: pointer;
-    letter-spacing: -0.02em;
     user-select: none;
     transition: opacity 0.2s;
   }
@@ -829,10 +827,8 @@
   .mobile-top .nav-icon-btn:active { color: var(--accent); background: rgba(192,57,43,0.1); }
 
   .mobile-top .mobile-logo {
-    font-size: 1.15rem;
-    font-weight: 700;
-    color: var(--accent);
-    letter-spacing: -0.02em;
+    height: 32px;
+    width: auto;
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
@@ -982,7 +978,7 @@
   <button class="nav-icon-btn" id="mobileHomeBtn" aria-label="首页">
     <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
   </button>
-  <div class="mobile-logo">LX</div>
+  <img class="mobile-logo" id="mobileLogoImg" alt="lxlylzl.xyz" />
   <button class="nav-icon-btn" id="mobileAboutBtn" aria-label="关于">
     <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
   </button>
@@ -991,7 +987,7 @@
 <!-- ========== THREE-SECTION TOP NAV (desktop only) ========== -->
 <nav class="top-nav">
   <div class="nav-section nav-left">
-    <div class="nav-logo" id="logoBtn" title="回到首页">LX</div>
+    <img class="nav-logo" id="logoBtn" alt="lxlylzl.xyz" />
   </div>
 
   <div class="nav-section nav-center">
@@ -1442,6 +1438,12 @@
       iconSun.style.display = 'none';
       iconMoon.style.display = '';
     }
+    // 同步更换 logo SVG
+    var logoImg = document.getElementById('logoBtn');
+    var mobileLogoImg = document.getElementById('mobileLogoImg');
+    var src = theme === 'light' ? 'logo-light.svg' : 'logo.svg';
+    if (logoImg) logoImg.src = src;
+    if (mobileLogoImg) mobileLogoImg.src = src;
   }
 
   applyTheme(getPreferredTheme());
