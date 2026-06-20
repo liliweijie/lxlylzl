@@ -1,1801 +1,1802 @@
-<!DOCTYPE html>
-<html lang="zh-CN" data-theme="dark">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>liliweijie - 平面设计师</title>
-<link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="icon" href="favicon.png" sizes="32x32" type="image/png">
-<link rel="shortcut icon" href="favicon.png" type="image/png">
-<style>
-  /* ========== RESET & BASE ========== */
-  *, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
-
-  :root {
-    --accent: #c0392b;
-    --accent-glow: rgba(192,57,43,0.25);
-    --glass-bg: rgba(18,18,24,0.72);
-    --glass-border: rgba(255,255,255,0.08);
-    --text-primary: #f0ece4;
-    --text-secondary: #9898a8;
-    --text-muted: #5a5a6a;
-    --bg-primary: #0e0e12;
-    --card-bg: rgba(18,18,24,0.6);
-    --nav-bg: rgba(18,18,24,0.6);
-  }
-
-  [data-theme="light"] {
-    --glass-bg: rgba(255,255,255,0.72);
-    --glass-border: rgba(0,0,0,0.08);
-    --text-primary: #1a1a2e;
-    --text-secondary: #6a6a7a;
-    --text-muted: #a0a0b0;
-    --bg-primary: #f5f0e8;
-    --card-bg: rgba(255,255,255,0.6);
-    --nav-bg: rgba(255,255,255,0.6);
-  }
-
-  html { font-size: 16px; scroll-behavior: smooth; }
-
-  body {
-    font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
-    background: var(--bg-primary);
-    color: var(--text-primary);
-    overflow: hidden;
-    height: 100vh;
-    transition: background 0.45s cubic-bezier(0.4,0,0.2,1), color 0.45s cubic-bezier(0.4,0,0.2,1);
-  }
-
-  /* ========== PAGE WRAPPER — below nav, max size ========== */
-  .page-wrapper {
-    position: fixed;
-    top: 52px; left: 72px; right: 72px; bottom: 72px;
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>liliweijie - 平面设计师</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon.png" sizes="32x32" type="image/png">
+<link rel="shortcut icon" href="favicon.png" type="image/png">
+<style>
+  /* ========== RESET & BASE ========== */
+  *, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
+
+  :root {
+    --accent: #c0392b;
+    --accent-glow: rgba(192,57,43,0.25);
+    --glass-bg: rgba(18,18,24,0.72);
+    --glass-border: rgba(255,255,255,0.08);
+    --text-primary: #f0ece4;
+    --text-secondary: #9898a8;
+    --text-muted: #5a5a6a;
+    --bg-primary: #0e0e12;
+    --card-bg: rgba(18,18,24,0.6);
+    --nav-bg: rgba(18,18,24,0.6);
+  }
+
+  [data-theme="light"] {
+    --glass-bg: rgba(255,255,255,0.72);
+    --glass-border: rgba(0,0,0,0.08);
+    --text-primary: #1a1a2e;
+    --text-secondary: #6a6a7a;
+    --text-muted: #a0a0b0;
+    --bg-primary: #f5f0e8;
+    --card-bg: rgba(255,255,255,0.6);
+    --nav-bg: rgba(255,255,255,0.6);
+  }
+
+  html { font-size: 16px; scroll-behavior: smooth; }
+
+  body {
+    font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    overflow: hidden;
+    height: 100vh;
+    transition: background 0.45s cubic-bezier(0.4,0,0.2,1), color 0.45s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  /* ========== PAGE WRAPPER — below nav, max size ========== */
+  .page-wrapper {
+    position: fixed;
+    top: 52px; left: 72px; right: 72px; bottom: 72px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ========== TOP NAV — fixed at viewport top ========== */
+  .top-nav {
+    position: fixed;
+    top: 2px; left: 72px; right: 72px;
+    height: 47px;
+    z-index: 1000;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+  }
+
+  .top-nav * { pointer-events: auto; }
+
+  .nav-section {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 18px;
+    background: var(--nav-bg);
+    backdrop-filter: blur(32px) saturate(1.2);
+    -webkit-backdrop-filter: blur(32px) saturate(1.2);
+    border: 1px solid var(--glass-border);
+    border-radius: 100px;
+    transition: background 0.3s, border-color 0.3s;
+    box-sizing: border-box;
+    height: 42px;
+  }
+
+  .top-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-left, .nav-center, .nav-right {
+    position: static;
+    top: auto; left: auto; right: auto;
+    transform: none;
+  }
+
+  .nav-center {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    justify-content: center;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .nav-center::-webkit-scrollbar { display: none; }
+
+  .nav-links { flex-wrap: nowrap; }
+
+  .nav-logo {
+    height: 22px;
+    width: auto;
+    cursor: pointer;
+    user-select: none;
+    transition: opacity 0.2s;
+  }
+  .nav-logo:hover { opacity: 0.7; }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .nav-link {
+    position: relative;
+    font-size: 0.92rem;
+    font-weight: 400;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 6px 14px;
+    border-radius: 100px;
+    user-select: none;
+    white-space: nowrap;
+    transition: color 0.2s;
+  }
+
+  .nav-link .char {
+    display: inline-block;
+    font-weight: 400;
+    transition: font-weight 0.15s;
+    pointer-events: auto;
+  }
+
+  .nav-link .char.bold {
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .nav-link.active .char {
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .nav-link.active {
+    color: var(--accent);
+  }
+
+  .nav-divider {
+    width: 1px;
+    height: 18px;
+    background: var(--glass-border);
+    margin: 0 4px;
+  }
+
+  .nav-v-divider {
+    width: 1px;
+    height: 18px;
+    background: var(--glass-border);
+    margin: 0 8px;
+    flex-shrink: 0;
+  }
+
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .nav-actions-divider {
+    width: 1px;
+    height: 16px;
+    background: var(--glass-border);
+    flex-shrink: 0;
+  }
+
+  .theme-btn {
+    width: 30px;
+    height: 30px;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.3s, transform 0.5s;
+    border-radius: 8px;
+  }
+  .theme-btn:hover { color: var(--accent); }
+  .theme-btn svg {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .lang-btn {
+    width: 32px;
+    height: 30px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    transition: color 0.3s;
+    border-radius: 8px;
+    user-select: none;
+    line-height: 1;
+  }
+  .lang-btn:hover { color: var(--accent); }
+
+  /* ========== GLASS FRAME CONTAINER — fills page-wrapper ========== */
+  .app-container {
+    position: relative;
+    width: 100%;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 10;
+    min-height: 0;
+  }
+
+  .glass-frame {
+    width: 100%;
+    height: 100%;
+    background: var(--glass-bg);
+    backdrop-filter: blur(32px) saturate(1.2);
+    -webkit-backdrop-filter: blur(32px) saturate(1.2);
+    border: 1px solid var(--glass-border);
+    border-radius: 28px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.4);
+    transition: background 0.45s cubic-bezier(0.4,0,0.2,1), border-color 0.45s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .main-content {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x proximity;
+    scroll-behavior: smooth;
+    z-index: 1;
+    transition: opacity 0.8s ease;
+  }
+
+  .main-content::-webkit-scrollbar { display: none; }
+  .main-content { -ms-overflow-style: none; scrollbar-width: none; }
+
+  .main-content.faded {
+    opacity: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .main__inner {
+    display: flex;
+    height: 100%;
+    width: 700vw;
+  }
+
+  /* ========== HORIZONTAL PAGES ========== */
+  .page {
+    min-width: 100vw;
+    height: 100%;
+    position: relative;
+    overflow-y: auto;
+    scroll-snap-align: start;
+    /* 内容从顶部开始，溢出时可竖向滚动 */
+    /* 内容垂直居中 */
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-
-  /* ========== TOP NAV — fixed at viewport top ========== */
-  .top-nav {
-    position: fixed;
-    top: 2px; left: 72px; right: 72px;
-    height: 47px;
-    z-index: 1000;
-    pointer-events: none;
-    display: flex;
-    align-items: center;
-  }
-
-  .top-nav * { pointer-events: auto; }
-
-  .nav-section {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 18px;
-    background: var(--nav-bg);
-    backdrop-filter: blur(32px) saturate(1.2);
-    -webkit-backdrop-filter: blur(32px) saturate(1.2);
-    border: 1px solid var(--glass-border);
-    border-radius: 100px;
-    transition: background 0.3s, border-color 0.3s;
-    box-sizing: border-box;
-    height: 42px;
-  }
-
-  .top-nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .nav-left, .nav-center, .nav-right {
-    position: static;
-    top: auto; left: auto; right: auto;
-    transform: none;
-  }
-
-  .nav-center {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    justify-content: center;
-    overflow-x: auto;
-    overflow-y: hidden;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-  .nav-center::-webkit-scrollbar { display: none; }
-
-  .nav-links { flex-wrap: nowrap; }
-
-  .nav-logo {
-    height: 22px;
-    width: auto;
-    cursor: pointer;
-    user-select: none;
-    transition: opacity 0.2s;
-  }
-  .nav-logo:hover { opacity: 0.7; }
-
-  .nav-links {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-  }
-
-  .nav-link {
-    position: relative;
-    font-size: 0.92rem;
-    font-weight: 400;
-    color: var(--text-secondary);
-    cursor: pointer;
-    padding: 6px 14px;
-    border-radius: 100px;
-    user-select: none;
-    white-space: nowrap;
-    transition: color 0.2s;
-  }
-
-  .nav-link .char {
-    display: inline-block;
-    font-weight: 400;
-    transition: font-weight 0.15s;
-    pointer-events: auto;
-  }
-
-  .nav-link .char.bold {
-    font-weight: 700;
-    color: var(--text-primary);
-  }
-
-  .nav-link.active .char {
-    font-weight: 700;
-    color: var(--text-primary);
-  }
-
-  .nav-link.active {
-    color: var(--accent);
-  }
-
-  .nav-divider {
-    width: 1px;
-    height: 18px;
-    background: var(--glass-border);
-    margin: 0 4px;
-  }
-
-  .nav-v-divider {
-    width: 1px;
-    height: 18px;
-    background: var(--glass-border);
-    margin: 0 8px;
-    flex-shrink: 0;
-  }
-
-  .nav-actions {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .nav-actions-divider {
-    width: 1px;
-    height: 16px;
-    background: var(--glass-border);
-    flex-shrink: 0;
-  }
-
-  .theme-btn {
-    width: 30px;
-    height: 30px;
-    border: none;
-    background: transparent;
-    color: var(--text-secondary);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: color 0.3s, transform 0.5s;
-    border-radius: 8px;
-  }
-  .theme-btn:hover { color: var(--accent); }
-  .theme-btn svg {
-    width: 18px;
-    height: 18px;
-    stroke: currentColor;
-    fill: none;
-    stroke-width: 1.8;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-
-  .lang-btn {
-    width: 32px;
-    height: 30px;
-    border: none;
-    background: transparent;
-    color: var(--text-muted);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.68rem;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    transition: color 0.3s;
-    border-radius: 8px;
-    user-select: none;
-    line-height: 1;
-  }
-  .lang-btn:hover { color: var(--accent); }
-
-  /* ========== GLASS FRAME CONTAINER — fills page-wrapper ========== */
-  .app-container {
-    position: relative;
-    width: 100%;
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 1;
-    pointer-events: auto;
-    z-index: 10;
-    min-height: 0;
-  }
-
-  .glass-frame {
-    width: 100%;
-    height: 100%;
-    background: var(--glass-bg);
-    backdrop-filter: blur(32px) saturate(1.2);
-    -webkit-backdrop-filter: blur(32px) saturate(1.2);
-    border: 1px solid var(--glass-border);
-    border-radius: 28px;
-    overflow: hidden;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 24px 80px rgba(0,0,0,0.4);
-    transition: background 0.45s cubic-bezier(0.4,0,0.2,1), border-color 0.45s cubic-bezier(0.4,0,0.2,1);
-  }
-
-  .main-content {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    overflow-x: auto;
-    overflow-y: hidden;
-    scroll-snap-type: x proximity;
-    scroll-behavior: smooth;
-    z-index: 1;
-    transition: opacity 0.8s ease;
-  }
-
-  .main-content::-webkit-scrollbar { display: none; }
-  .main-content { -ms-overflow-style: none; scrollbar-width: none; }
-
-  .main-content.faded {
-    opacity: 0;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  .main__inner {
-    display: flex;
-    height: 100%;
-    width: 700vw;
-  }
-
-  /* ========== HORIZONTAL PAGES ========== */
-  .page {
-    min-width: 100vw;
-    height: 100%;
-    position: relative;
-    overflow-y: auto;
-    scroll-snap-align: start;
-    /* 内容从顶部开始，溢出时可竖向滚动 */
-    /* 内容垂直居中 */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-  }
-
-  .page__bg {
-    position: absolute;
-    inset: 0;
-    background: var(--card-bg);
-    opacity: 1;
-  }
-
-  .page__content {
-    position: relative;
-    z-index: 2;
-    text-align: center;
-    padding: 40px;
-    max-width: 680px;
-    margin: 0 auto;
-    width: 100%;
-  }
-
-  .page__title {
-    font-size: clamp(2.4rem, 5vw, 4rem);
-    font-weight: 800;
-    line-height: 1.1;
-    margin-bottom: 20px;
-    letter-spacing: -0.02em;
-  }
-
-  .page__title .accent { color: var(--accent); }
-
-  .page__desc {
-    font-size: 1.05rem;
-    color: var(--text-secondary);
-    line-height: 1.7;
-  }
-
-
-  /* ========== VERTICAL FRAMEWORK — inside page-wrapper ========== */
-  .vertical-framework {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    overflow-y: auto;
-    overflow-x: hidden;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.8s, visibility 0.8s;
-    z-index: 0;
-    scroll-behavior: smooth;
-    border-radius: 28px;
-  }
-
-  .vertical-framework.is-visible {
-    opacity: 1;
-    visibility: visible;
-    z-index: 2;
-  }
-
-  .vf-page {
-    min-height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 60px 40px;
-  }
-
-  .vf-inner {
-    max-width: 900px;
-    width: 100%;
-  }
-
-  .vf-title {
-    font-size: clamp(1.8rem, 3.5vw, 2.6rem);
-    font-weight: 600;
-    margin-bottom: 32px;
-    letter-spacing: -0.02em;
-  }
-
-  .vf-title .accent { color: var(--accent); }
-
-  .vf-text {
-    font-size: 1rem;
-    color: var(--text-secondary);
-    line-height: 1.8;
-  }
-
-  /* ========== SCROLL HINT ========== */
-  .scroll-hint {
-    position: fixed;
-    bottom: 32px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 100;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    opacity: 1;
-    transition: opacity 0.4s;
-  }
-
-  .scroll-hint.hidden { opacity: 0; pointer-events: none; }
-
-  .scroll-hint__arrow {
-    font-size: 1.4rem;
-    color: var(--text-muted);
-    animation: hintBounce 2s ease-in-out infinite;
-    transition: color 0.3s;
-  }
-
-  .scroll-hint__text {
-    font-size: 0.72rem;
-    color: var(--text-muted);
-    letter-spacing: 0.08em;
-    transition: color 0.3s;
-  }
-
-  @keyframes hintBounce {
-    0%, 100% { transform: translateX(0); }
-    50% { transform: translateX(6px); }
-  }
-
-  @keyframes hintBounceDown {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(6px); }
-  }
-
-  /* ========== PAGE INDICATOR ========== */
-  .page-indicator {
-    position: fixed;
-    bottom: 32px;
-    right: 32px;
-    z-index: 100;
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    letter-spacing: 0.08em;
-    font-variant-numeric: tabular-nums;
-  }
-
-  /* ========== CONTENT STYLES ========== */
-  .works-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    margin-top: 32px;
-  }
-
-  .work-card {
-    aspect-ratio: 3/4;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid var(--glass-border);
-    border-radius: 16px;
-    overflow: hidden;
-    position: relative;
-    cursor: pointer;
-    transition: transform 0.3s, border-color 0.3s;
-  }
-
-  .work-card:hover {
-    transform: translateY(-4px);
-    border-color: var(--accent);
-  }
-
-  .work-card__img {
-    width: 100%;
-    height: 70%;
-    background: linear-gradient(135deg, rgba(192,57,43,0.2), rgba(192,57,43,0.05));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2rem;
-  }
-
-  .work-card__info { padding: 16px; }
-
-  .work-card__title {
-    font-size: 0.95rem;
-    font-weight: 600;
-    margin-bottom: 4px;
-  }
-
-  .work-card__cat {
-    font-size: 0.78rem;
-    color: var(--text-muted);
-  }
-
-  .about-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 40px;
-    margin-top: 32px;
-    text-align: left;
-  }
-
-  .about-text {
-    font-size: 1rem;
-    color: var(--text-secondary);
-    line-height: 1.9;
-  }
-
-  .about-stats {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-  }
-
-  .stat-item { display: flex; flex-direction: column; gap: 6px; }
-
-  .stat-number {
-    font-size: 2.2rem;
-    font-weight: 800;
-    color: var(--accent);
-    line-height: 1;
-  }
-
-  .stat-label { font-size: 0.85rem; color: var(--text-secondary); }
-
-  .services-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    margin-top: 32px;
-  }
-
-  .service-card {
-    padding: 28px 24px;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid var(--glass-border);
-    border-radius: 16px;
-    text-align: left;
-    transition: border-color 0.3s, transform 0.3s;
-  }
-
-  .service-card:hover {
-    border-color: var(--accent);
-    transform: translateY(-2px);
-  }
-
-  .service-icon { font-size: 1.6rem; margin-bottom: 14px; }
-
-  .service-title {
-    font-size: 1rem;
-    font-weight: 700;
-    margin-bottom: 8px;
-  }
-
-  .service-desc {
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-    line-height: 1.6;
-  }
-
-  .testimonials-list {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    margin-top: 32px;
-  }
-
-  .testimonial-item {
-    display: flex;
-    gap: 20px;
-    padding: 24px;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid var(--glass-border);
-    border-radius: 16px;
-    text-align: left;
-  }
-
-  .testimonial-avatar {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--accent), #8e1a1a);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
-    flex-shrink: 0;
-  }
-
-  .testimonial-content { flex: 1; }
-
-  .testimonial-text {
-    font-size: 0.95rem;
-    color: var(--text-secondary);
-    line-height: 1.7;
-    margin-bottom: 10px;
-  }
-
-  .testimonial-name { font-size: 0.85rem; font-weight: 600; }
-  .testimonial-role { font-size: 0.78rem; color: var(--text-muted); }
-
-  .contact-cards {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    margin-top: 32px;
-  }
-
-  .contact-card {
-    padding: 28px;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid var(--glass-border);
-    border-radius: 16px;
-    text-align: center;
-  }
-
-  .contact-icon { font-size: 1.8rem; margin-bottom: 12px; }
-  .contact-label { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px; }
-  .contact-value { font-size: 1.1rem; font-weight: 600; }
-
-  .blog-list {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    margin-top: 32px;
-  }
-
-  .blog-post {
-    display: flex;
-    gap: 24px;
-    padding: 24px;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid var(--glass-border);
-    border-radius: 16px;
-    text-align: left;
-    cursor: pointer;
-    transition: border-color 0.3s;
-  }
-
-  .blog-post:hover { border-color: var(--accent); }
-
-  .blog-date {
-    font-size: 0.78rem;
-    color: var(--text-muted);
-    white-space: nowrap;
-    min-width: 80px;
-  }
-
-  .blog-post-title {
-    font-size: 1.05rem;
-    font-weight: 600;
-    margin-bottom: 6px;
-  }
-
-  .blog-post-excerpt {
-    font-size: 0.88rem;
-    color: var(--text-secondary);
-    line-height: 1.6;
-  }
-
-  .skills-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-    margin-top: 32px;
-  }
-
-  .skill-item { display: flex; flex-direction: column; gap: 8px; }
-  .skill-header { display: flex; justify-content: space-between; font-size: 0.9rem; }
-  .skill-name { font-weight: 600; }
-  .skill-pct { color: var(--text-muted); }
-
-  .skill-bar {
-    height: 4px;
-    background: rgba(255,255,255,0.08);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-
-  .skill-fill {
-    height: 100%;
-    background: var(--accent);
-    border-radius: 2px;
-    transition: width 1s cubic-bezier(0.16,1,0.3,1);
-  }
-
-  .tools-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 32px;
-  }
-
-  .tool-tag {
-    padding: 8px 18px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid var(--glass-border);
-    border-radius: 100px;
-    font-size: 0.88rem;
-    color: var(--text-secondary);
-    transition: border-color 0.3s, color 0.3s;
-  }
-
-  .tool-tag:hover {
-    border-color: var(--accent);
-    color: var(--text-primary);
-  }
-
-  .timeline {
-    position: relative;
-    padding-left: 32px;
-    margin-top: 32px;
-  }
-
-  .timeline::before {
-    content: '';
-    position: absolute;
-    left: 7px;
-    top: 8px;
-    bottom: 8px;
-    width: 1px;
-    background: var(--glass-border);
-  }
-
-  .timeline-item {
-    position: relative;
-    padding-bottom: 32px;
-  }
-
-  .timeline-item::before {
-    content: '';
-    position: absolute;
-    left: -28px;
-    top: 8px;
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    background: var(--accent);
-    box-shadow: 0 0 8px var(--accent-glow);
-  }
-
-  .timeline-step {
-    font-size: 0.78rem;
-    color: var(--accent);
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    margin-bottom: 4px;
-  }
-
-  .timeline-title {
-    font-size: 1.05rem;
-    font-weight: 700;
-    margin-bottom: 6px;
-  }
-
-  .timeline-desc {
-    font-size: 0.88rem;
-    color: var(--text-secondary);
-    line-height: 1.7;
-  }
-
-  @media (max-width: 1200px) {
-    .top-nav { left: 32px; right: 32px; }
-    .page-wrapper { left: 32px; right: 32px; }
-    .page { padding-top: 40px; padding-bottom: 40px; }
-    .nav-section { padding: 6px 12px; }
-    .nav-link { padding: 5px 9px; font-size: 0.85rem; }
-    .nav-links { gap: 6px; }
-  }
-
-  @media (max-width: 768px) {
-    .top-nav { left: 12px; right: 12px; top: 8px; }
-    .page-wrapper { top: 52px; left: 12px; right: 12px; bottom: 12px; }
-    .glass-frame { border-radius: 18px; }
-    .nav-section { padding: 5px 10px; height: 36px; }
-    .nav-link { padding: 4px 6px; font-size: 0.78rem; }
-    .nav-links { gap: 4px; }
-    .nav-actions { gap: 6px; }
-    .works-grid, .services-grid { grid-template-columns: 1fr 1fr; }
-    .about-grid { grid-template-columns: 1fr; }
-    .vertical-framework {
-      /* 修复：删除 display:none，让竖屏正常显示 */
-      border-radius: 18px;
-    }
-    .page { padding-top: 32px; padding-bottom: 32px; }
-    .page__content { padding: 20px; }
-    .vf-page { padding: 40px 24px; }
-  }
-
-  @media (max-width: 480px) {
-    .page { padding-top: 20px; padding-bottom: 20px; }
-    .nav-center { display: none; }
-    .top-nav { justify-content: space-between; }
-    .nav-left { flex: 0; }
-    .nav-right { flex: 0; }
-    .page__title { font-size: 1.8rem; }
-    .page__content { padding: 16px; }
-    .works-grid, .services-grid { grid-template-columns: 1fr; }
-    .contact-cards { grid-template-columns: 1fr; }
-    .skills-grid { grid-template-columns: 1fr; }
-  }
-
-  /* ========== MOBILE LAYOUT (≤768px) ========== */
-  .mobile-top {
-    position: fixed;
-    top: 5px;
-    left: 5px;
-    right: 5px;
-    height: 48px;
-    background: var(--glass-bg);
-    backdrop-filter: blur(32px) saturate(1.2);
-    -webkit-backdrop-filter: blur(32px) saturate(1.2);
-    border: 1px solid var(--glass-border);
-    border-radius: 16px;
-    display: none;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 14px;
-    z-index: 1000;
-    transition: background 0.45s, border-color 0.45s;
-  }
-
-  .mobile-top .nav-icon-btn {
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    border: none;
-    background: rgba(255,255,255,0.05);
-    color: var(--text-secondary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    flex-shrink: 0;
-    transition: color 0.25s, background 0.25s;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .mobile-top .nav-icon-btn svg { width: 19px; height: 19px; stroke: currentColor; fill: none; stroke-width: 1.8; }
-  .mobile-top .nav-icon-btn:active { color: var(--accent); background: rgba(192,57,43,0.1); }
-
-  .mobile-top .mobile-logo {
-    height: 20px;
-    width: auto;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-
-  /* Mobile content: vertical scroll-snap */
-  .mobile-content {
-    display: none;
-    scroll-snap-type: y proximity;
-    overflow-y: auto;
-    height: 100%;
-  }
-
-  .m-section {
-    min-height: 100%;
-    padding: 60px 20px 40px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    scroll-snap-align: start;
-    position: relative;
-    overflow-y: auto;
-  }
-
-  .m-section__bg {
-    position: absolute;
-    inset: 0;
-    background: var(--card-bg);
-    opacity: 1;
-  }
-
-  .m-section__content {
-    position: relative;
-    z-index: 2;
-    text-align: center;
-    width: 100%;
-    max-width: 420px;
-  }
-
-  .m-section__title {
-    font-size: clamp(1.6rem, 6vw, 2.2rem);
-    font-weight: 800;
-    line-height: 1.15;
-    margin-bottom: 12px;
-    letter-spacing: -0.02em;
-  }
-  .m-section__title .accent { color: var(--accent); }
-
-  .m-section__desc {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-    line-height: 1.7;
-  }
-
-  .m-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-top: 20px;
-    width: 100%;
-  }
-
-  .m-card {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid var(--glass-border);
-    border-radius: 14px;
-    padding: 14px 10px;
-    text-align: center;
-  }
-  .m-card__icon { font-size: 1.4rem; margin-bottom: 6px; }
-  .m-card__title { font-size: 0.82rem; font-weight: 600; }
-  .m-card__cat { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; }
-
-  .m-stats {
-    display: flex;
-    gap: 16px;
-    margin-top: 20px;
-    width: 100%;
-    justify-content: center;
-  }
-  .m-stat { text-align: center; }
-  .m-stat__num {
-    font-size: 1.6rem;
-    font-weight: 800;
-    color: var(--accent);
-    line-height: 1;
-  }
-  .m-stat__label { font-size: 0.72rem; color: var(--text-secondary); margin-top: 4px; }
-
-  .m-text {
-    font-size: 0.88rem;
-    color: var(--text-secondary);
-    line-height: 1.8;
-    text-align: left;
-    margin-top: 16px;
-  }
-
-  .m-testimonial {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid var(--glass-border);
-    border-radius: 14px;
-    padding: 16px;
-    text-align: left;
-    margin-top: 14px;
-    width: 100%;
-  }
-  .m-testimonial__text {
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-    line-height: 1.7;
-  }
-  .m-testimonial__name {
-    font-size: 0.82rem;
-    font-weight: 600;
-    margin-top: 10px;
-  }
-  .m-testimonial__role { font-size: 0.72rem; color: var(--text-muted); }
-
-  /* ========== DESKTOP: show desktop, hide mobile ========== */
-  /* (default — no extra rule needed) */
-
-  /* ========== MOBILE (≤768px): hide desktop, show mobile ========== */
-  @media (max-width: 768px) {
-    .top-nav { display: none !important; }
-    .page-wrapper { top: 0; left: 0; right: 0; bottom: 0; }
-    .glass-frame { margin: 58px 10px 24px 10px; border-radius: 22px; }
-    .main-content { display: none !important; }
-    .vertical-framework { display: none !important; }
-
-    .mobile-top { display: flex !important; }
-    .mobile-content { display: block !important; }
-
-    .scroll-hint, .page-indicator { display: none !important; }
-  }
-
-  @media (min-width: 769px) {
-    .mobile-top, .mobile-content { display: none !important; }
-  }
-
-</style>
-</head>
-<body>
-
-<!-- ========== MOBILE TOP NAV (fixed, 5px gap) ========== -->
-<div class="mobile-top" id="mobileTop">
-  <button class="nav-icon-btn" id="mobileHomeBtn" aria-label="首页">
-    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-  </button>
-  <img class="mobile-logo" id="mobileLogoImg" alt="lxlylzl.xyz" />
-  <button class="nav-icon-btn" id="mobileAboutBtn" aria-label="关于">
-    <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-  </button>
-</div>
-
-<!-- ========== THREE-SECTION TOP NAV (desktop only) ========== -->
-<nav class="top-nav">
-  <div class="nav-section nav-left">
-    <img class="nav-logo" id="logoBtn" alt="lxlylzl.xyz" />
-  </div>
-
-  <div class="nav-section nav-center">
-    <div class="nav-links" id="navLinksHorizontal">
-      <div class="nav-link active" data-target="page" data-index="0">
-        <span class="char">首</span><span class="char">页</span>
-      </div>
-      <div class="nav-link" data-target="page" data-index="1">
-        <span class="char">作</span><span class="char">品</span><span class="char">集</span>
-      </div>
-      <div class="nav-link" data-target="page" data-index="2">
-        <span class="char">关</span><span class="char">于</span>
-      </div>
-      <div class="nav-link" data-target="page" data-index="3">
-        <span class="char">服</span><span class="char">务</span>
-      </div>
-      <div class="nav-link" data-target="page" data-index="4">
-        <span class="char">案</span><span class="char">例</span>
-      </div>
-
-      <div class="nav-v-divider"></div>
-
-      <div class="nav-link" data-target="vertical" data-index="0">
-        <span class="char">联</span><span class="char">系</span>
-      </div>
-      <div class="nav-link" data-target="vertical" data-index="1">
-        <span class="char">博</span><span class="char">客</span>
-      </div>
-      <div class="nav-link" data-target="vertical" data-index="2">
-        <span class="char">关</span><span class="char">于</span><span class="char">我</span>
-      </div>
-      <div class="nav-link" data-target="vertical" data-index="3">
-        <span class="char">技</span><span class="char">能</span>
-      </div>
-      <div class="nav-link" data-target="vertical" data-index="4">
-        <span class="char">流</span><span class="char">程</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="nav-section nav-right">
-    <div class="nav-actions">
-      <button class="theme-btn" id="themeBtn" aria-label="切换明暗模式">
-        <svg class="icon-sun" viewBox="0 0 24 24" style="display:none;">
-          <circle cx="12" cy="12" r="5"/>
-          <line x1="12" y1="1" x2="12" y2="3"/>
-          <line x1="12" y1="21" x2="12" y2="23"/>
-          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-          <line x1="1" y1="12" x2="3" y2="12"/>
-          <line x1="21" y1="12" x2="23" y2="12"/>
-          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-        </svg>
-        <svg class="icon-moon" viewBox="0 0 24 24">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-        </svg>
-      </button>
-      <div class="nav-actions-divider"></div>
-      <button class="lang-btn" id="langBtn" aria-label="切换语言">中/EN</button>
-    </div>
-  </div>
-</nav>
-
-<!-- ========== PAGE WRAPPER (glass frame) ========== -->
-<div class="page-wrapper">
-
-
-
-
-<!-- ========== GLASS FRAME — contains all content ========== -->
-<div class="app-container">
-  <div class="glass-frame">
-
-    <!-- Horizontal scroll (5 pages) -->
-    <div class="main-content" id="mainContent">
-      <div class="main__inner" id="mainInner">
-
-    <section class="page page--hero" id="page0">
-      <div class="page__bg"></div>
-      <div class="page__content">
-        <h1 class="page__title">用设计讲述<span class="accent">品牌故事</span></h1>
-        <p class="page__desc">平面设计师 · 视觉策划 · 品牌顾问<br>将每一个创意转化为打动人心的视觉语言</p>
-      </div>
-    </section>
-
-    <section class="page page--works" id="page1">
-      <div class="page__bg"></div>
-      <div class="page__content" style="width:100%;max-width:900px;">
-        <h1 class="page__title"><span class="accent">作品集</span></h1>
-        <div class="works-grid">
-          <div class="work-card"><div class="work-card__img">&#x1F3A8;</div><div class="work-card__info"><div class="work-card__title">品牌视觉升级</div><div class="work-card__cat">品牌设计 · 2024</div></div></div>
-          <div class="work-card"><div class="work-card__img">&#x1F4E6;</div><div class="work-card__info"><div class="work-card__title">包装设计系列</div><div class="work-card__cat">包装设计 · 2024</div></div></div>
-          <div class="work-card"><div class="work-card__img">&#x1F4F1;</div><div class="work-card__info"><div class="work-card__title">电商详情页</div><div class="work-card__cat">电商设计 · 2023</div></div></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="page page--about" id="page2">
-      <div class="page__bg"></div>
-      <div class="page__content" style="width:100%;max-width:900px;">
-        <h1 class="page__title">关于<span class="accent">我</span></h1>
-        <div class="about-grid">
-          <div class="about-text">
-            毕业于中央美术学院视觉传达专业，拥有8年平面设计经验。曾服务于腾讯、字节跳动等知名企业，擅长品牌视觉设计、包装设计和电商视觉策划。设计理念是「让每一个像素都有意义」，注重细节与整体视觉语言的统一。
-          </div>
-          <div class="about-stats">
-            <div class="stat-item"><div class="stat-number">8+</div><div class="stat-label">年设计经验</div></div>
-            <div class="stat-item"><div class="stat-number">120+</div><div class="stat-label">完成项目</div></div>
-            <div class="stat-item"><div class="stat-number">30+</div><div class="stat-label">合作品牌</div></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="page page--services" id="page3">
-      <div class="page__bg"></div>
-      <div class="page__content" style="width:100%;max-width:900px;">
-        <h1 class="page__title">设计<span class="accent">服务</span></h1>
-        <div class="services-grid">
-          <div class="service-card"><div class="service-icon">&#x1F3AF;</div><div class="service-title">品牌视觉设计</div><div class="service-desc">Logo设计、VI系统、品牌手册、视觉规范制定</div></div>
-          <div class="service-card"><div class="service-icon">&#x1F4E6;</div><div class="service-title">包装设计</div><div class="service-desc">产品包装、礼盒设计、包装结构、材质选配</div></div>
-          <div class="service-card"><div class="service-icon">&#x1F4E2;</div><div class="service-title">电商视觉</div><div class="service-desc">详情页设计、主图策划、店铺视觉、营销素材</div></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="page page--testimonials" id="page4">
-      <div class="page__bg"></div>
-      <div class="page__content" style="width:100%;max-width:900px;">
-        <h1 class="page__title">客户<span class="accent">评价</span></h1>
-        <div class="testimonials-list">
-          <div class="testimonial-item">
-            <div class="testimonial-avatar">&#x738B;</div>
-            <div class="testimonial-content">
-              <div class="testimonial-text">&#x300C;与Lili合作了3个项目，每次都能精准把握品牌调性，设计输出超出预期。特别是包装设计，上市后销量提升了40%。&#x300D;</div>
-              <div class="testimonial-name">&#x738B;&#x7ECF;&#x7406;</div>
-              <div class="testimonial-role">&#x67D0;&#x65B0;&#x6D88;&#x8D39;&#x54C1;&#x724C; · &#x5E02;&#x573A;&#x603B;&#x76D1;</div>
-            </div>
-          </div>
-          <div class="testimonial-item">
-            <div class="testimonial-avatar">&#x674E;</div>
-            <div class="testimonial-content">
-              <div class="testimonial-text">&#x300C;专业、高效、有审美。Lili对细节的把控让人放心，每次修改都能快速理解需求并给出更好的方案。&#x300D;</div>
-              <div class="testimonial-name">&#x674E;&#x603B;</div>
-              <div class="testimonial-role">&#x67D0;&#x79D1;&#x6280;&#x516C;&#x53F8; · CEO</div>
-            </div>
-          </div>
-          <div class="testimonial-item">
-            <div class="testimonial-avatar">&#x9648;</div>
-            <div class="testimonial-content">
-              <div class="testimonial-text">&#x300C;第一次找自由设计师有点担心，但Lili的专业程度完全不输设计公司。沟通顺畅，交付及时，后续还主动跟进应用效果。&#x300D;</div>
-              <div class="testimonial-name">&#x9648;&#x5C0F;&#x59D0;</div>
-              <div class="testimonial-role">&#x72EC;&#x7ACB;&#x8377;&#x724C;&#x521B;&#x59CB;&#x4EBA; · &#x54C1;&#x724C;&#x4E3B;&#x7406;</div>
-            </div>
-          </div>
-          <div class="testimonial-item">
-            <div class="testimonial-avatar">&#x5F20;</div>
-            <div class="testimonial-content">
-              <div class="testimonial-text">&#x300C;Lili的设计有一种「刚好」的分寸感——不会过度设计，也不会平庸。这种克制而精准的审美，正是我们品牌需要的。&#x300D;</div>
-              <div class="testimonial-name">&#x5F20;&#x5148;&#x751F;</div>
-              <div class="testimonial-role">&#x5F00;&#x5E97;&#x751F;&#x6D3B;&#x9986; · &#x521B;&#x59CB;&#x4EBA;</div>
-            </div>
-          </div>
-          <div class="testimonial-item">
-            <div class="testimonial-avatar">&#x5218;</div>
-            <div class="testimonial-content">
-              <div class="testimonial-text">&#x300C;合作过最省心的设计师。brief 一说就懂，初稿就能用，基本不用大改。这种设计敏感度，是多年积累出来的。&#x300D;</div>
-              <div class="testimonial-name">&#x5218;&#x7ECF;&#x7406;</div>
-              <div class="testimonial-role">&#x5FEB;&#x6D88;&#x54C1;&#x724C; · &#x5E02;&#x573A;&#x90E8;&#x95E8;</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="page page--cases-extra" id="page5">
-      <div class="page__bg"></div>
-      <div class="page__content" style="width:100%;max-width:900px;">
-        <h1 class="page__title">更多<span class="accent">案例</span></h1>
-        <div class="works-grid">
-          <div class="work-card"><div class="work-card__img">&#x1F3AD;</div><div class="work-card__info"><div class="work-card__title">品牌IP形象设计</div><div class="work-card__cat">品牌设计 · 2024</div></div></div>
-          <div class="work-card"><div class="work-card__img">&#x1F4E2;</div><div class="work-card__info"><div class="work-card__title">企业画册设计</div><div class="work-card__cat">画册设计 · 2023</div></div></div>
-          <div class="work-card"><div class="work-card__img">&#x1F3A8;</div><div class="work-card__info"><div class="work-card__title">社交媒体视觉</div><div class="work-card__cat">社媒设计 · 2024</div></div></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="page page--brands" id="page6">
-      <div class="page__bg"></div>
-      <div class="page__content" style="width:100%;max-width:900px;">
-        <h1 class="page__title">合作<span class="accent">品牌</span></h1>
-        <div class="about-grid">
-          <div class="about-text">
-            多年来与各行各业的企业建立了长期合作关系，涵盖快消、科技、文化、教育等多个领域。每一个合作品牌都是一段故事，我很荣幸能用设计讲述它们的故事。
-          </div>
-          <div class="about-stats">
-            <div class="stat-item"><div class="stat-number">30+</div><div class="stat-label">合作品牌</div></div>
-            <div class="stat-item"><div class="stat-number">8年</div><div class="stat-label">设计经验</div></div>
-            <div class="stat-item"><div class="stat-number">120+</div><div class="stat-label">完成项目</div></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    </div>
-  </div>
-
-
-    <!-- Mobile content (vertical scroll-snap, shown at ≤768px) -->
-    <div class="mobile-content" id="mobileContent">
-
-      <section class="m-section" id="mSec0">
-        <div class="m-section__bg"></div>
-        <div class="m-section__content">
-          <div style="font-size:3rem;margin-bottom:16px;">✨</div>
-          <h1 class="m-section__title">用设计讲述<span class="accent">品牌故事</span></h1>
-          <p class="m-section__desc">平面设计师 · 视觉策划 · 品牌顾问<br>将每一个创意转化为打动人心的视觉语言</p>
-        </div>
-      </section>
-
-      <section class="m-section" id="mSec1">
-        <div class="m-section__bg"></div>
-        <div class="m-section__content">
-          <h1 class="m-section__title"><span class="accent">作品集</span></h1>
-          <div class="m-grid">
-            <div class="m-card"><div class="m-card__icon">🎨</div><div class="m-card__title">品牌视觉升级</div><div class="m-card__cat">品牌设计 · 2024</div></div>
-            <div class="m-card"><div class="m-card__icon">📦</div><div class="m-card__title">包装设计系列</div><div class="m-card__cat">包装设计 · 2024</div></div>
-            <div class="m-card"><div class="m-card__icon">📱</div><div class="m-card__title">电商详情页</div><div class="m-card__cat">电商设计 · 2023</div></div>
-            <div class="m-card"><div class="m-card__icon">✏️</div><div class="m-card__title">品牌IP形象</div><div class="m-card__cat">品牌设计 · 2024</div></div>
-          </div>
-        </div>
-      </section>
-
-      <section class="m-section" id="mSec2">
-        <div class="m-section__bg"></div>
-        <div class="m-section__content">
-          <h1 class="m-section__title">关于<span class="accent">我</span></h1>
-          <div class="m-text">毕业于中央美术学院视觉传达专业，拥有8年平面设计经验。曾服务于腾讯、字节跳动等知名企业，擅长品牌视觉设计、包装设计和电商视觉策划。</div>
-          <div class="m-stats">
-            <div class="m-stat"><div class="m-stat__num">8+</div><div class="m-stat__label">年设计经验</div></div>
-            <div class="m-stat"><div class="m-stat__num">120+</div><div class="m-stat__label">完成项目</div></div>
-            <div class="m-stat"><div class="m-stat__num">30+</div><div class="m-stat__label">合作品牌</div></div>
-          </div>
-        </div>
-      </section>
-
-      <section class="m-section" id="mSec3">
-        <div class="m-section__bg"></div>
-        <div class="m-section__content">
-          <h1 class="m-section__title">设计<span class="accent">服务</span></h1>
-          <div class="m-grid">
-            <div class="m-card"><div class="m-card__icon">🎯</div><div class="m-card__title">品牌视觉设计</div><div class="m-card__cat">Logo / VI / 品牌手册</div></div>
-            <div class="m-card"><div class="m-card__icon">📦</div><div class="m-card__title">包装设计</div><div class="m-card__cat">包装结构 / 材质选配</div></div>
-            <div class="m-card"><div class="m-card__icon">📱</div><div class="m-card__title">电商视觉</div><div class="m-card__cat">详情页 / 主图策划</div></div>
-          </div>
-        </div>
-      </section>
-
-      <section class="m-section" id="mSec4">
-        <div class="m-section__bg"></div>
-        <div class="m-section__content">
-          <h1 class="m-section__title">客户<span class="accent">评价</span></h1>
-          <div class="m-testimonial">
-            <div class="m-testimonial__text">"与Lili合作了3个项目，每次都能精准把握品牌调性，设计输出超出预期。特别是包装设计，上市后销量提升了40%。"</div>
-            <div class="m-testimonial__name">王某某</div>
-            <div class="m-testimonial__role">某新消费品牌 · 市场总监</div>
-          </div>
-          <div class="m-testimonial" style="margin-top:12px;">
-            <div class="m-testimonial__text">"专业、高效、有审美。Lili对细节的把控让人放心，是难得的靠谱设计师。"</div>
-            <div class="m-testimonial__name">李某某</div>
-            <div class="m-testimonial__role">互联网公司 · 品牌经理</div>
-          </div>
-        </div>
-      </section>
-
-      <section class="m-section" id="mSec5">
-        <div class="m-section__bg"></div>
-        <div class="m-section__content">
-          <h1 class="m-section__title">更多<span class="accent">案例</span></h1>
-          <div class="m-grid">
-            <div class="m-card"><div class="m-card__icon">🎭</div><div class="m-card__title">品牌IP设计</div><div class="m-card__cat">品牌设计 · 2024</div></div>
-            <div class="m-card"><div class="m-card__icon">📒</div><div class="m-card__title">企业画册</div><div class="m-card__cat">画册设计 · 2023</div></div>
-            <div class="m-card"><div class="m-card__icon">📱</div><div class="m-card__title">社交媒体视觉</div><div class="m-card__cat">社媒设计 · 2024</div></div>
-          </div>
-        </div>
-      </section>
-
-      <section class="m-section" id="mSec6">
-        <div class="m-section__bg"></div>
-        <div class="m-section__content">
-          <h1 class="m-section__title"><span class="accent">合作品牌</span></h1>
-          <div class="m-text" style="text-align:center;">腾讯 · 字节跳动 · 小米 · 美团<br>网易 · 理想汽车 · 元气森林</div>
-        </div>
-      </section>
-
-    </div><!-- /mobile-content -->
-
-    <!-- Vertical framework (5 pages) -->
-    <div class="vertical-framework" id="verticalFramework">
-
-  <section class="vf-page">
-    <div class="vf-inner">
-      <h2 class="vf-title">&#x8054;&#x7CFB;·<span class="accent">&#x5408;&#x4F5C;</span></h2>
-      <div class="contact-cards">
-        <div class="contact-card"><div class="contact-icon">&#x1F4E7;</div><div class="contact-label">&#x90AE;&#x7BB1;</div><div class="contact-value">hello@liliweijie.com</div></div>
-        <div class="contact-card"><div class="contact-icon">&#x1F4AC;</div><div class="contact-label">&#x5FAE;&#x4FE1;</div><div class="contact-value">liliweijie_design</div></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="vf-page">
-    <div class="vf-inner">
-      <h2 class="vf-title">&#x8BBE;&#x8BA1;<span class="accent">&#x968F;&#x7B14;</span></h2>
-      <div class="blog-list">
-        <div class="blog-post"><div class="blog-date">2024.03</div><div><div class="blog-post-title">&#x4E2D;&#x5F0F;&#x7F8E;&#x5B66;&#x5728;&#x73B0;&#x4EE3;&#x5305;&#x88C5;&#x8BBE;&#x8BA1;&#x4E2D;&#x7684;&#x5E94;&#x7528;</div><div class="blog-post-excerpt">&#x63A2;&#x8BA8;&#x5982;&#x4F55;&#x5C06;&#x4F20;&#x7EDF;&#x5143;&#x7D20;&#x878D;&#x5165;&#x73B0;&#x4EE3;&#x5305;&#x88C5;&#x8BBE;&#x8BA1;&#xFF0C;&#x8BA9;&#x4EA7;&#x54C1;&#x5728;&#x8D27;&#x67B6;&#x4E0A;&#x8131;&#x9891;&#x800C;&#x51FA;...</div></div></div>
-        <div class="blog-post"><div class="blog-date">2024.01</div><div><div class="blog-post-title">&#x5305;&#x88C5;&#x8BBE;&#x8BA1;&#x8D8B;&#x52BF;&#x89C2;&#x5BDF;&#xFF1A;2024&#x5E74;&#x503C;&#x5F97;&#x5173;&#x6CE8;&#x7684;&#x65B9;&#x5411;</div><div class="blog-post-excerpt">&#x4ECE;&#x53EF;&#x6301;&#x7EED;&#x6750;&#x6599;&#x5230;&#x4E92;&#x52A8;&#x5F0F;&#x5305;&#x88C5;&#xFF0C;&#x68B3;&#x7406;&#x4ECA;&#x5E74;&#x6700;&#x503C;&#x5F97;&#x5173;&#x6CE8;&#x7684;&#x8BBE;&#x8BA1;&#x8D8B;&#x52BF;...</div></div></div>
-        <div class="blog-post"><div class="blog-date">2023.11</div><div><div class="blog-post-title">&#x7535;&#x5546;&#x8BE6;&#x60C5;&#x9875;&#x7684;&#x89C6;&#x89C9;&#x53D9;&#x4E8B;&#x6280;&#x5DE7;</div><div class="blog-post-excerpt">&#x5982;&#x4F55;&#x901A;&#x8FC7;&#x89C6;&#x89C9;&#x8BBE;&#x8BA1;&#x8BB2;&#x597D;&#x4EA7;&#x54C1;&#x6545;&#x4E8B;&#xFF0C;&#x63D0;&#x5347;&#x8F6C;&#x5316;&#x7387;&#x4E0E;&#x8BBE;&#x8BA1;&#x8D28;&#x611F;...</div></div></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="vf-page">
-    <div class="vf-inner">
-      <h2 class="vf-title">&#x5173;&#x4E8E;&#x6211;·<span class="accent">&#x66F4;&#x591A;&#x4FE1;&#x606F;</span></h2>
-      <div class="about-grid">
-        <div class="about-text">
-          <p style="margin-bottom:16px;">&#x8BBE;&#x8BA1;&#x7406;&#x5FF5;&#xFF1A;&#x300C;&#x8BA9;&#x6BCF;&#x4E00;&#x4E2A;&#x50CF;&#x7D20;&#x90FD;&#x6709;&#x610F;&#x4E49;&#x300D;&#x3002;&#x6211;&#x76F8;&#x4FE1;&#x597D;&#x7684;&#x8BBE;&#x8BA1;&#x4E0D;&#x4EC5;&#x662F;&#x597D;&#x770B;&#xFF0C;&#x66F4;&#x8981;&#x80FD;&#x4F20;&#x8FBE;&#x4FE1;&#x606F;&#x3001;&#x5F15;&#x53D1;&#x5171;&#x9E23;&#x3002;</p>
-          <p style="margin-bottom:16px;">&#x5DE5;&#x4F5C;&#x7ECF;&#x5386;&#xFF1A;&#x817E;&#x8BAF;&#x8BBE;&#x8BA1;&#x90E8;&#xFF08;2018-2021&#xFF09;| &#x5B57;&#x8282;&#x8DF3;&#x52A8;&#x54C1;&#x724C;&#x56E2;&#x961F;&#xFF08;2021-2023&#xFF09;| &#x81EA;&#x7531;&#x8BBE;&#x8BA1;&#x5E08;&#xFF08;2023-&#x81F3;&#x4ECA;&#xFF09;</p>
-          <p>&#x6559;&#x80B2;&#x80CC;&#x666F;&#xFF1A;&#x4E2D;&#x592E;&#x7F8E;&#x672F;&#x5B66;&#x9662; · &#x89C6;&#x89C9;&#x4F20;&#x8FBE;&#x8BBE;&#x8BA1; · &#x672C;&#x79D1;&#xFF08;2014-2018&#xFF09;</p>
-        </div>
-        <div class="about-stats">
-          <div class="stat-item"><div class="stat-number">&#x4E2D;&#x592E;&#x7F8E;&#x9662;</div><div class="stat-label">&#x6BD5;&#x4E1A;&#x9662;&#x6821;</div></div>
-          <div class="stat-item"><div class="stat-number">&#x817E;&#x8BAF;/&#x5B57;&#x8282;</div><div class="stat-label">&#x66FE;&#x4EFB;&#x804C;</div></div>
-          <div class="stat-item"><div class="stat-number">2018&#x5E74;&#x8D77;</div><div class="stat-label">&#x8BBE;&#x8BA1;&#x5E08;&#x751F;&#x6DAF;</div></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="vf-page">
-    <div class="vf-inner">
-      <h2 class="vf-title">&#x4E13;&#x4E1A;<span class="accent">&#x6280;&#x80FD;</span></h2>
-      <div class="skills-grid">
-        <div class="skill-item"><div class="skill-header"><span class="skill-name">&#x54C1;&#x724C;&#x89C6;&#x89C9;&#x8BBE;&#x8BA1;</span><span class="skill-pct">95%</span></div><div class="skill-bar"><div class="skill-fill" style="width:95%;"></div></div></div>
-        <div class="skill-item"><div class="skill-header"><span class="skill-name">&#x5305;&#x88C5;&#x8BBE;&#x8BA1;</span><span class="skill-pct">90%</span></div><div class="skill-bar"><div class="skill-fill" style="width:90%;"></div></div></div>
-        <div class="skill-item"><div class="skill-header"><span class="skill-name">&#x7535;&#x5546;&#x89C6;&#x89C9;&#x8BBE;&#x8BA1;</span><span class="skill-pct">88%</span></div><div class="skill-bar"><div class="skill-fill" style="width:88%;"></div></div></div>
-        <div class="skill-item"><div class="skill-header"><span class="skill-name">&#x63D2;&#x753B;&#x8BBE;&#x8BA1;</span><span class="skill-pct">82%</span></div><div class="skill-bar"><div class="skill-fill" style="width:82%;"></div></div></div>
-      </div>
-      <div class="tools-tags">
-        <span class="tool-tag">Photoshop</span>
-        <span class="tool-tag">Illustrator</span>
-        <span class="tool-tag">InDesign</span>
-        <span class="tool-tag">Figma</span>
-        <span class="tool-tag">C4D</span>
-      </div>
-    </div>
-  </section>
-
-  <section class="vf-page">
-    <div class="vf-inner">
-      <h2 class="vf-title">&#x5DE5;&#x4F5C;<span class="accent">&#x6D41;&#x7A0B;</span></h2>
-      <div class="timeline">
-        <div class="timeline-item"><div class="timeline-step">STEP 01</div><div class="timeline-title">&#x9700;&#x6C42;&#x6C9F;&#x901A;</div><div class="timeline-desc">&#x6DF1;&#x5165;&#x4E86;&#x89E3;&#x54C1;&#x724C;&#x5B9A;&#x4F4D;&#x3001;&#x76EE;&#x6807;&#x53D7;&#x4F17;&#x548C;&#x9879;&#x76EE;&#x76EE;&#x6807;&#xFF0C;&#x660E;&#x786E;&#x8BBE;&#x8BA1;&#x65B9;&#x5411;&#x3002;</div></div>
-        <div class="timeline-item"><div class="timeline-step">STEP 02</div><div class="timeline-title">&#x5E02;&#x573A;&#x8C03;&#x7814;</div><div class="timeline-desc">&#x5206;&#x6790;&#x7ADE;&#x54C1;&#x89C6;&#x89C9;&#x3001;&#x884C;&#x4E1A;&#x8D8B;&#x52BF;&#xFF0C;&#x63D0;&#x70BC;&#x5DEE;&#x5F02;&#x5316;&#x8BBE;&#x8BA1;&#x7B56;&#x7565;&#x3002;</div></div>
-        <div class="timeline-item"><div class="timeline-step">STEP 03</div><div class="timeline-title">&#x6982;&#x5FF5;&#x8BBE;&#x8BA1;</div><div class="timeline-desc">&#x8F93;&#x51FA;3&#x4E2A;&#x65B9;&#x5411;&#x7684;&#x6982;&#x5FF5;&#x65B9;&#x6848;&#xFF0C;&#x5305;&#x542B;&#x8272;&#x5F69;&#x3001;&#x5B57;&#x4F53;&#x3001;&#x56FE;&#x5F62;&#x8BED;&#x8A00;&#x3002;</div></div>
-        <div class="timeline-item"><div class="timeline-step">STEP 04</div><div class="timeline-title">&#x6DF1;&#x5316;&#x8BBE;&#x8BA1;</div><div class="timeline-desc">&#x9009;&#x5B9A;&#x65B9;&#x5411;&#x540E;&#x6DF1;&#x5165;&#x7EC6;&#x5316;&#xFF0C;&#x5B8C;&#x6210;&#x5168;&#x5957;&#x8BBE;&#x8BA1;&#x4EA4;&#x4ED8;&#x7269;&#x3002;</div></div>
-        <div class="timeline-item"><div class="timeline-step">STEP 05</div><div class="timeline-title">&#x5E94;&#x7528;&#x5EF6;&#x5C55;</div><div class="timeline-desc">&#x5C06;&#x6838;&#x5FC3;&#x89C6;&#x89C9;&#x5EF6;&#x5C55;&#x5230;&#x5404;&#x7C7B;&#x5E94;&#x7528;&#x573A;&#x666F;&#xFF0C;&#x786E;&#x4FDD;&#x4E00;&#x81F4;&#x6027;&#x3002;</div></div>
-        <div class="timeline-item"><div class="timeline-step">STEP 06</div><div class="timeline-title">&#x4EA4;&#x4ED8;&#x4E0E;&#x7EF4;&#x62A4;</div><div class="timeline-desc">&#x6574;&#x7406;&#x8BBE;&#x8BA1;&#x6E90;&#x6587;&#x4EF6;&#x3001;&#x4F7F;&#x7528;&#x89C4;&#x8303;&#xFF0C;&#x63D0;&#x4F9B;&#x540E;&#x7EED;&#x7EF4;&#x62A4;&#x652F;&#x6301;&#x3002;</div></div>
-      </div>
-    </div>
-  </section>
-
-</div>
-
-  </div><!-- /glass-frame -->
-</div><!-- /app-container -->
-
-</div><!-- /page-wrapper -->
-
-
-<!-- ========== SCROLL HINT (viewport-fixed) ========== -->
-<div class="scroll-hint" id="scrollHint">
-  <div class="scroll-hint__arrow" id="scrollHintArrow">→</div>
-  <div class="scroll-hint__text" id="scrollHintText">滚动探索</div>
-</div>
-
-<!-- ========== PAGE INDICATOR ========== -->
-<div class="page-indicator" id="pageIndicator">01 / 05</div>
-
-
-<script>
-(function() {
-  'use strict';
-
-  var mainContent = document.getElementById('mainContent');
-  var verticalFw = document.getElementById('verticalFramework');
-  var navLinks = document.querySelectorAll('.nav-link');
-  var themeBtn = document.getElementById('themeBtn');
-  var logoBtn = document.getElementById('logoBtn');
-  var scrollHint = document.getElementById('scrollHint');
-  var pageIndicator = document.getElementById('pageIndicator');
-
-  var PAGE_COUNT = 7;
-  var currentPage = 0;
-  var inVerticalFramework = false;
-
-  // ========== PER-CHARACTER HOVER BOLD ==========
-  navLinks.forEach(function(link) {
-    var chars = link.querySelectorAll('.char');
-
-    link.addEventListener('mousemove', function(e) {
-      var hoveredIdx = -1;
-      chars.forEach(function(ch, i) {
-        var rect = ch.getBoundingClientRect();
-        if (e.clientX >= rect.left && e.clientX <= rect.right) {
-          hoveredIdx = i;
-        }
-      });
-
-      chars.forEach(function(ch, i) {
-        ch.classList.toggle('bold', i === hoveredIdx);
-      });
-    });
-
-    link.addEventListener('mouseleave', function() {
-      chars.forEach(function(ch) {
-        ch.classList.remove('bold');
-      });
-    });
-  });
-
-  // ========== THEME TOGGLE ==========
-  function getPreferredTheme() {
-    var stored = localStorage.getItem('theme');
-    if (stored) return stored;
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  }
-
-  function applyTheme(theme) {
-    document.documentElement.setAttribute('data-theme', theme);
-    var iconSun = themeBtn.querySelector('.icon-sun');
-    var iconMoon = themeBtn.querySelector('.icon-moon');
-    if (theme === 'light') {
-      iconSun.style.display = '';
-      iconMoon.style.display = 'none';
-    } else {
-      iconSun.style.display = 'none';
-      iconMoon.style.display = '';
-    }
-    // 同步更换 logo SVG
-    var logoImg = document.getElementById('logoBtn');
-    var mobileLogoImg = document.getElementById('mobileLogoImg');
-    var src = theme === 'light' ? 'logo-light.svg' : 'logo.svg';
-    if (logoImg) logoImg.src = src;
-    if (mobileLogoImg) mobileLogoImg.src = src;
-  }
-
-  applyTheme(getPreferredTheme());
-
-  themeBtn.addEventListener('click', function() {
-    var next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-    localStorage.setItem('theme', next);
-    applyTheme(next);
-  });
-
-  // ========== SCROLL TO PAGE ==========
-  function scrollToPage(idx) {
-    currentPage = idx;
-    var pageWidth = mainContent.clientWidth;
-    mainContent.scrollTo({ left: idx * pageWidth, behavior: 'smooth' });
-
-    // 切页时复位所有横向页面的滚动位置
-    var allPages = mainContent.querySelectorAll('.page');
-    for (var i = 0; i < allPages.length; i++) {
-      allPages[i].scrollTop = 0;
-    }
-
-    updateNavState();
-    updatePageIndicator();
-    updateScrollHintArrow();
-  }
-
-  function updatePageIndicator() {
-    var num = String(currentPage + 1).padStart(2, '0');
-    pageIndicator.textContent = num + ' / 07';
-  }
-
-  function updateScrollHintArrow() {
-    var arrow = document.getElementById('scrollHintArrow');
-    var text = document.getElementById('scrollHintText');
-    if (!arrow) return;
-    if (inVerticalFramework) {
-      arrow.textContent = '↓';
-      arrow.style.animation = 'hintBounceDown 2s ease-in-out infinite';
-      if (text) text.textContent = '向上滚动返回';
-    } else {
-      arrow.textContent = '→';
-      arrow.style.animation = 'hintBounce 2s ease-in-out infinite';
-      if (currentPage >= PAGE_COUNT - 1) {
-        if (text) text.textContent = '继续滚动进入详情';
-      } else {
-        if (text) text.textContent = '滚动探索';
-      }
-    }
-  }
-
-  // ========== WHEEL HANDLER — 边界链式滚动 ==========
-  // 绑在 document 捕获阶段，确保任何位置都能收到滚轮事件
-  var wheelAccum = 0;
-    var scrollCooldown = false;
-  var wheelRAF = null;
-  var boundaryCooldown = null;
-
-  document.addEventListener('wheel', function(e) {
-    if (inVerticalFramework) return;
-    if (e.ctrlKey) return;
-    if (scrollCooldown) return;
-    e.preventDefault();
-    scrollCooldown = true;
-    setTimeout(function() { scrollCooldown = false; }, 800);
-    var delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-    if (delta > 15) {
-      if (currentPage < PAGE_COUNT - 1) {
-        scrollToPage(currentPage + 1);
-      } else {
-        enterVerticalFramework();
-      }
-    } else if (delta < -15) {
-      if (currentPage > 0) {
-        scrollToPage(currentPage - 1);
-      }
-    }
-  }, { passive: false, capture: true });
-
-  // Vertical framework: wheel up at top to exit back to horizontal
-  // 用 document 监听，确保一定能捕获
-  var vfWheelTimeout = null;
-  document.addEventListener('wheel', function(e) {
-    if (!inVerticalFramework) return;
-    // 找到当前正在滚动的容器
-    var scrollingEl = document.elementFromPoint(window.innerWidth / 2, 80);
-    while (scrollingEl && scrollingEl !== document.body) {
-      if (scrollingEl === verticalFw || scrollingEl.classList.contains('vf-page')) {
-        break;
-      }
-      scrollingEl = scrollingEl.parentElement;
-    }
-    var atTop = verticalFw.scrollTop <= 0;
-    if (atTop && e.deltaY < 0) {
-      e.preventDefault();
-      if (vfWheelTimeout) return;
-      vfWheelTimeout = setTimeout(function() { vfWheelTimeout = null; }, 900);
-      exitVerticalFramework();
-    }
-  }, { passive: false, capture: true });
-
-  // Track scroll position to update currentPage
-  mainContent.addEventListener('scroll', function() {
-    if (inVerticalFramework) return;
-    var pageWidth = mainContent.clientWidth;
-    if (pageWidth === 0) return;
-    var newPage = Math.round(mainContent.scrollLeft / pageWidth);
-    if (newPage !== currentPage) {
-      currentPage = Math.min(newPage, PAGE_COUNT - 1);
-      updateNavState();
-      updatePageIndicator();
-    }
-  });
-
-  // ========== FRAMEWORK TRANSITION ==========
-  function enterVerticalFramework(done) {
-    if (inVerticalFramework) { if (done) done(); return; }
-    inVerticalFramework = true;
-    mainContent.classList.add('faded');
-    // Wait for fade-out transition, then show vertical framework (slower)
-    setTimeout(function() {
-      verticalFw.classList.add('is-visible');
-      verticalFw.scrollTop = 0;
-      scrollHint.classList.add('hidden');
-      updateNavState();
-      updateScrollHintArrow();
-      if (done) done();
-    }, 800);
-  }
-
-  function exitVerticalFramework(done) {
-    if (!inVerticalFramework) { if (done) done(); return; }
-    inVerticalFramework = false;
-    // Fade out vertical framework first (400ms transition)
-    verticalFw.classList.remove('is-visible');
-    // Wait for fade-out to complete, then restore horizontal content (slower)
-    setTimeout(function() {
-      mainContent.classList.remove('faded');
-      scrollHint.classList.remove('hidden');
-      updateNavState();
-      updateScrollHintArrow();
-      if (done) done();
-    }, 800);
-  }
-
-  // ========== NAV CLICK ==========
-  navLinks.forEach(function(item) {
-    item.addEventListener('click', function() {
-      var target = item.dataset.target;
-      var idx = parseInt(item.dataset.index, 10);
-
-      if (target === 'page') {
-        if (inVerticalFramework) {
-          exitVerticalFramework(function() {
-            scrollToPage(idx);
-          });
-        } else {
-          scrollToPage(idx);
-        }
-      }
-
-      if (target === 'vertical') {
-        enterVerticalFramework(function() {
-          var vfPages = verticalFw.querySelectorAll('.vf-page');
-          if (vfPages[idx]) {
-            vfPages[idx].scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-        });
-      }
-    });
-  });
-
-  logoBtn.addEventListener('click', function() {
-    if (inVerticalFramework) {
-      exitVerticalFramework(function() {
-        scrollToPage(0);
-      });
-    } else {
-      scrollToPage(0);
-    }
-  });
-
-  // ========== NAV STATE ==========
-  function updateNavState() {
-    navLinks.forEach(function(item) {
-      var isHorizontal = item.dataset.target === 'page';
-      var idx = parseInt(item.dataset.index, 10);
-
-      if (isHorizontal) {
-        item.classList.toggle('active', !inVerticalFramework && idx === currentPage);
-      } else {
-        item.classList.toggle('active', inVerticalFramework);
-      }
-    });
-
-    // Hide page indicator in vertical mode
-    pageIndicator.style.opacity = inVerticalFramework ? '0' : '';
-  }
-
-  // ========== LANGUAGE TOGGLE ==========
-  var currentLang = 'zh';
-  var i18n = {
-    zh: {
-      nav: ['首页', '作品集', '关于', '服务', '案例', '联系', '博客', '关于我', '技能', '流程'],
-      pageTitle: ['创意设计，触手可及', '精选作品集', '关于我', '我的服务', '客户评价'],
-      pageDesc: [
-        '用极简主义的设计语言，为品牌注入灵魂。每一个像素，都是对美的极致追求。',
-        '过去几年中，我为有雄心的品牌创造了令人难忘的视觉体验。',
-        '一名专注细节的平面设计师，擅长品牌识别、UI设计和印刷品设计。',
-        '从概念到落地，提供全流程设计服务，让每一个创意都精准传达。',
-        '来自客户们的真实反馈，是对我工作最大的肯定。'
-      ],
-      vfTitles: ['取得联系', '博客随笔', '关于我', '专业技能', '工作流程'],
-      scrollHint: '滚动探索'
-    },
-    en: {
-      nav: ['Home', 'Works', 'About', 'Services', 'Cases', 'Contact', 'Blog', 'About Me', 'Skills', 'Process'],
-      pageTitle: ['Creative Design at Your Fingertips', 'Selected Works', 'About Me', 'My Services', 'Testimonials'],
-      pageDesc: [
-        'Using minimalist design language to inject soul into brands. Every pixel is a pursuit of beauty.',
-        'In the past few years, I have created unforgettable visual experiences for ambitious brands.',
-        'A detail-oriented graphic designer specializing in brand identity, UI design, and print design.',
-        'Full-process design services from concept to delivery, ensuring every idea is conveyed precisely.',
-        'Real feedback from clients is the greatest affirmation of my work.'
-      ],
-      vfTitles: ['Get in Touch', 'Blog', 'About Me', 'Skills', 'Process'],
-      scrollHint: 'Scroll to Explore'
-    }
-  };
-
-  function applyLang() {
-    var t = i18n[currentLang];
-    // Update horizontal nav links
-    var hLinks = document.querySelectorAll('#navLinksHorizontal > .nav-link');
-    hLinks.forEach(function(link, i) {
-      if (t.nav[i]) {
-        var chars = t.nav[i].split('');
-        link.innerHTML = chars.map(function(ch) { return '<span class="char">' + ch + '</span>'; }).join('');
-      }
-    });
-    // Update vertical nav links
-    var vLinks = document.querySelectorAll('#navLinksVertical > .nav-link');
-    vLinks.forEach(function(link, i) {
-      if (t.nav[5 + i]) {
-        var chars = t.nav[5 + i].split('');
-        link.innerHTML = chars.map(function(ch) { return '<span class="char">' + ch + '</span>'; }).join('');
-      }
-    });
-
-    // Page titles & descs
-    var pages = document.querySelectorAll('.page');
-    pages.forEach(function(page, i) {
-      if (t.pageTitle[i]) {
-        var titleEl = page.querySelector('.page__title');
-        if (titleEl) {
-          // For English: accent on last word; for Chinese: accent on keyword
-          if (currentLang === 'en') {
-            var parts = t.pageTitle[i].split(' ');
-            if (parts.length > 1) {
-              var last = parts.pop();
-              titleEl.innerHTML = parts.join(' ') + ' <span class="accent">' + last + '</span>';
-            } else {
-              titleEl.innerHTML = t.pageTitle[i];
-            }
-          } else {
-            titleEl.innerHTML = t.pageTitle[i];
-          }
-        }
-      }
-      if (t.pageDesc[i]) {
-        var descEl = page.querySelector('.page__desc');
-        if (descEl) descEl.textContent = t.pageDesc[i];
-      }
-    });
-
-    // VF page titles
-    var vfTitles = document.querySelectorAll('.vf-page__title');
-    vfTitles.forEach(function(el, i) {
-      if (t.vfTitles[i]) el.textContent = t.vfTitles[i];
-    });
-
-    // Scroll hint
-    var hintText = document.querySelector('.scroll-hint__text');
-    if (hintText) hintText.textContent = t.scrollHint;
-
-    // Re-bind char hover
-    bindCharHover();
-    updateNavState();
-  }
-
-  function bindCharHover() {
-    document.querySelectorAll('.nav-link .char').forEach(function(ch) {
-      ch.addEventListener('mouseenter', function() {
-        var link = ch.closest('.nav-link');
-        if (!link.classList.contains('active')) ch.style.fontWeight = '700';
-      });
-      ch.addEventListener('mouseleave', function() {
-        var link = ch.closest('.nav-link');
-        if (!link.classList.contains('active')) ch.style.fontWeight = '';
-      });
-    });
-  }
-
-  langBtn.addEventListener('click', function() {
-    currentLang = currentLang === 'zh' ? 'en' : 'zh';
-    langBtn.textContent = currentLang === 'zh' ? '中/EN' : 'EN/中';
-    applyLang();
-  });
-
-  // Init
-  updatePageIndicator();
-  updateNavState();
-  updateScrollHintArrow();
-
-})();
-
-
-  // ========== MOBILE TOP NAV BUTTONS ==========
-  (function(){
-    var homeBtn = document.getElementById('mobileHomeBtn');
-    var aboutBtn = document.getElementById('mobileAboutBtn');
-    var mobileContent = document.getElementById('mobileContent');
-
-    if (homeBtn) {
-      homeBtn.addEventListener('click', function(){
-        if (mobileContent) {
-          var sec = document.getElementById('mSec0');
-          if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      });
-    }
-
-    if (aboutBtn) {
-      aboutBtn.addEventListener('click', function(){
-        if (mobileContent) {
-          var sec = document.getElementById('mSec6');
-          if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      });
-    }
-
-    // Sync theme with desktop
-    var stored = localStorage.getItem('theme');
-    if (stored) document.documentElement.setAttribute('data-theme', stored);
-  })();
-
-</script>
-</body>
-</html>
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
+
+  .page__bg {
+    position: absolute;
+    inset: 0;
+    background: var(--card-bg);
+    opacity: 1;
+  }
+
+  .page__content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 40px;
+    max-width: 680px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .page__title {
+    font-size: clamp(2.4rem, 5vw, 4rem);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 20px;
+    letter-spacing: -0.02em;
+  }
+
+  .page__title .accent { color: var(--accent); }
+
+  .page__desc {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+
+  /* ========== VERTICAL FRAMEWORK — inside page-wrapper ========== */
+  .vertical-framework {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.8s, visibility 0.8s;
+    z-index: 0;
+    scroll-behavior: smooth;
+    border-radius: 28px;
+  }
+
+  .vertical-framework.is-visible {
+    opacity: 1;
+    visibility: visible;
+    z-index: 2;
+  }
+
+  .vf-page {
+    min-height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 40px;
+  }
+
+  .vf-inner {
+    max-width: 900px;
+    width: 100%;
+  }
+
+  .vf-title {
+    font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+    font-weight: 600;
+    margin-bottom: 32px;
+    letter-spacing: -0.02em;
+  }
+
+  .vf-title .accent { color: var(--accent); }
+
+  .vf-text {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.8;
+  }
+
+  /* ========== SCROLL HINT ========== */
+  .scroll-hint {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 1;
+    transition: opacity 0.4s;
+  }
+
+  .scroll-hint.hidden { opacity: 0; pointer-events: none; }
+
+  .scroll-hint__arrow {
+    font-size: 1.4rem;
+    color: var(--text-muted);
+    animation: hintBounce 2s ease-in-out infinite;
+    transition: color 0.3s;
+  }
+
+  .scroll-hint__text {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    transition: color 0.3s;
+  }
+
+  @keyframes hintBounce {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(6px); }
+  }
+
+  @keyframes hintBounceDown {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(6px); }
+  }
+
+  /* ========== PAGE INDICATOR ========== */
+  .page-indicator {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    z-index: 100;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ========== CONTENT STYLES ========== */
+  .works-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 32px;
+  }
+
+  .work-card {
+    aspect-ratio: 3/4;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.3s, border-color 0.3s;
+  }
+
+  .work-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent);
+  }
+
+  .work-card__img {
+    width: 100%;
+    height: 70%;
+    background: linear-gradient(135deg, rgba(192,57,43,0.2), rgba(192,57,43,0.05));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+  }
+
+  .work-card__info { padding: 16px; }
+
+  .work-card__title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .work-card__cat {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-top: 32px;
+    text-align: left;
+  }
+
+  .about-text {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.9;
+  }
+
+  .about-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .stat-item { display: flex; flex-direction: column; gap: 6px; }
+
+  .stat-number {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .stat-label { font-size: 0.85rem; color: var(--text-secondary); }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 32px;
+  }
+
+  .service-card {
+    padding: 28px 24px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    text-align: left;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+
+  .service-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  .service-icon { font-size: 1.6rem; margin-bottom: 14px; }
+
+  .service-title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .service-desc {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .testimonials-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-top: 32px;
+  }
+
+  .testimonial-item {
+    display: flex;
+    gap: 20px;
+    padding: 24px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    text-align: left;
+  }
+
+  .testimonial-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), #8e1a1a);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+
+  .testimonial-content { flex: 1; }
+
+  .testimonial-text {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 10px;
+  }
+
+  .testimonial-name { font-size: 0.85rem; font-weight: 600; }
+  .testimonial-role { font-size: 0.78rem; color: var(--text-muted); }
+
+  .contact-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 32px;
+  }
+
+  .contact-card {
+    padding: 28px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    text-align: center;
+  }
+
+  .contact-icon { font-size: 1.8rem; margin-bottom: 12px; }
+  .contact-label { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px; }
+  .contact-value { font-size: 1.1rem; font-weight: 600; }
+
+  .blog-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 32px;
+  }
+
+  .blog-post {
+    display: flex;
+    gap: 24px;
+    padding: 24px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.3s;
+  }
+
+  .blog-post:hover { border-color: var(--accent); }
+
+  .blog-date {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    min-width: 80px;
+  }
+
+  .blog-post-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .blog-post-excerpt {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 32px;
+  }
+
+  .skill-item { display: flex; flex-direction: column; gap: 8px; }
+  .skill-header { display: flex; justify-content: space-between; font-size: 0.9rem; }
+  .skill-name { font-weight: 600; }
+  .skill-pct { color: var(--text-muted); }
+
+  .skill-bar {
+    height: 4px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .skill-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width 1s cubic-bezier(0.16,1,0.3,1);
+  }
+
+  .tools-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 32px;
+  }
+
+  .tool-tag {
+    padding: 8px 18px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--glass-border);
+    border-radius: 100px;
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    transition: border-color 0.3s, color 0.3s;
+  }
+
+  .tool-tag:hover {
+    border-color: var(--accent);
+    color: var(--text-primary);
+  }
+
+  .timeline {
+    position: relative;
+    padding-left: 32px;
+    margin-top: 32px;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 8px;
+    bottom: 8px;
+    width: 1px;
+    background: var(--glass-border);
+  }
+
+  .timeline-item {
+    position: relative;
+    padding-bottom: 32px;
+  }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -28px;
+    top: 8px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent-glow);
+  }
+
+  .timeline-step {
+    font-size: 0.78rem;
+    color: var(--accent);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    margin-bottom: 4px;
+  }
+
+  .timeline-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .timeline-desc {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  @media (max-width: 1200px) {
+    .top-nav { left: 32px; right: 32px; }
+    .page-wrapper { left: 32px; right: 32px; }
+    .page { padding-top: 40px; padding-bottom: 40px; }
+    .nav-section { padding: 6px 12px; }
+    .nav-link { padding: 5px 9px; font-size: 0.85rem; }
+    .nav-links { gap: 6px; }
+  }
+
+  @media (max-width: 768px) {
+    .top-nav { left: 12px; right: 12px; top: 8px; }
+    .page-wrapper { top: 52px; left: 12px; right: 12px; bottom: 12px; }
+    .glass-frame { border-radius: 18px; }
+    .nav-section { padding: 5px 10px; height: 36px; }
+    .nav-link { padding: 4px 6px; font-size: 0.78rem; }
+    .nav-links { gap: 4px; }
+    .nav-actions { gap: 6px; }
+    .works-grid, .services-grid { grid-template-columns: 1fr 1fr; }
+    .about-grid { grid-template-columns: 1fr; }
+    .vertical-framework {
+      /* 修复：删除 display:none，让竖屏正常显示 */
+      border-radius: 18px;
+    }
+    .page { padding-top: 32px; padding-bottom: 32px; }
+    .page__content { padding: 20px; }
+    .vf-page { padding: 40px 24px; }
+  }
+
+  @media (max-width: 480px) {
+    .page { padding-top: 20px; padding-bottom: 20px; }
+    .nav-center { display: none; }
+    .top-nav { justify-content: space-between; }
+    .nav-left { flex: 0; }
+    .nav-right { flex: 0; }
+    .page__title { font-size: 1.8rem; }
+    .page__content { padding: 16px; }
+    .works-grid, .services-grid { grid-template-columns: 1fr; }
+    .contact-cards { grid-template-columns: 1fr; }
+    .skills-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ========== MOBILE LAYOUT (≤768px) ========== */
+  .mobile-top {
+    position: fixed;
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    height: 48px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(32px) saturate(1.2);
+    -webkit-backdrop-filter: blur(32px) saturate(1.2);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 14px;
+    z-index: 1000;
+    transition: background 0.45s, border-color 0.45s;
+  }
+
+  .mobile-top .nav-icon-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: none;
+    background: rgba(255,255,255,0.05);
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: color 0.25s, background 0.25s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .mobile-top .nav-icon-btn svg { width: 19px; height: 19px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+  .mobile-top .nav-icon-btn:active { color: var(--accent); background: rgba(192,57,43,0.1); }
+
+  .mobile-top .mobile-logo {
+    height: 20px;
+    width: auto;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  /* Mobile content: vertical scroll-snap */
+  .mobile-content {
+    display: none;
+    scroll-snap-type: y proximity;
+    overflow-y: auto;
+    height: 100%;
+  }
+
+  .m-section {
+    min-height: 100%;
+    padding: 60px 20px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    scroll-snap-align: start;
+    position: relative;
+    overflow-y: auto;
+  }
+
+  .m-section__bg {
+    position: absolute;
+    inset: 0;
+    background: var(--card-bg);
+    opacity: 1;
+  }
+
+  .m-section__content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    width: 100%;
+    max-width: 420px;
+  }
+
+  .m-section__title {
+    font-size: clamp(1.6rem, 6vw, 2.2rem);
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 12px;
+    letter-spacing: -0.02em;
+  }
+  .m-section__title .accent { color: var(--accent); }
+
+  .m-section__desc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .m-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 20px;
+    width: 100%;
+  }
+
+  .m-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: 14px;
+    padding: 14px 10px;
+    text-align: center;
+  }
+  .m-card__icon { font-size: 1.4rem; margin-bottom: 6px; }
+  .m-card__title { font-size: 0.82rem; font-weight: 600; }
+  .m-card__cat { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; }
+
+  .m-stats {
+    display: flex;
+    gap: 16px;
+    margin-top: 20px;
+    width: 100%;
+    justify-content: center;
+  }
+  .m-stat { text-align: center; }
+  .m-stat__num {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .m-stat__label { font-size: 0.72rem; color: var(--text-secondary); margin-top: 4px; }
+
+  .m-text {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    line-height: 1.8;
+    text-align: left;
+    margin-top: 16px;
+  }
+
+  .m-testimonial {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: 14px;
+    padding: 16px;
+    text-align: left;
+    margin-top: 14px;
+    width: 100%;
+  }
+  .m-testimonial__text {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+  .m-testimonial__name {
+    font-size: 0.82rem;
+    font-weight: 600;
+    margin-top: 10px;
+  }
+  .m-testimonial__role { font-size: 0.72rem; color: var(--text-muted); }
+
+  /* ========== DESKTOP: show desktop, hide mobile ========== */
+  /* (default — no extra rule needed) */
+
+  /* ========== MOBILE (≤768px): hide desktop, show mobile ========== */
+  @media (max-width: 768px) {
+    .top-nav { display: none !important; }
+    .page-wrapper { top: 0; left: 0; right: 0; bottom: 0; }
+    .glass-frame { margin: 58px 10px 24px 10px; border-radius: 22px; }
+    .main-content { display: none !important; }
+    .vertical-framework { display: none !important; }
+
+    .mobile-top { display: flex !important; }
+    .mobile-content { display: block !important; }
+
+    .scroll-hint, .page-indicator { display: none !important; }
+  }
+
+  @media (min-width: 769px) {
+    .mobile-top, .mobile-content { display: none !important; }
+  }
+
+</style>
+</head>
+<body>
+
+<!-- ========== MOBILE TOP NAV (fixed, 5px gap) ========== -->
+<div class="mobile-top" id="mobileTop">
+  <button class="nav-icon-btn" id="mobileHomeBtn" aria-label="首页">
+    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+  </button>
+  <img class="mobile-logo" id="mobileLogoImg" alt="lxlylzl.xyz" />
+  <button class="nav-icon-btn" id="mobileAboutBtn" aria-label="关于">
+    <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+  </button>
+</div>
+
+<!-- ========== THREE-SECTION TOP NAV (desktop only) ========== -->
+<nav class="top-nav">
+  <div class="nav-section nav-left">
+    <img class="nav-logo" id="logoBtn" alt="lxlylzl.xyz" />
+  </div>
+
+  <div class="nav-section nav-center">
+    <div class="nav-links" id="navLinksHorizontal">
+      <div class="nav-link active" data-target="page" data-index="0">
+        <span class="char">首</span><span class="char">页</span>
+      </div>
+      <div class="nav-link" data-target="page" data-index="1">
+        <span class="char">作</span><span class="char">品</span><span class="char">集</span>
+      </div>
+      <div class="nav-link" data-target="page" data-index="2">
+        <span class="char">关</span><span class="char">于</span>
+      </div>
+      <div class="nav-link" data-target="page" data-index="3">
+        <span class="char">服</span><span class="char">务</span>
+      </div>
+      <div class="nav-link" data-target="page" data-index="4">
+        <span class="char">案</span><span class="char">例</span>
+      </div>
+
+      <div class="nav-v-divider"></div>
+
+      <div class="nav-link" data-target="vertical" data-index="0">
+        <span class="char">联</span><span class="char">系</span>
+      </div>
+      <div class="nav-link" data-target="vertical" data-index="1">
+        <span class="char">博</span><span class="char">客</span>
+      </div>
+      <div class="nav-link" data-target="vertical" data-index="2">
+        <span class="char">关</span><span class="char">于</span><span class="char">我</span>
+      </div>
+      <div class="nav-link" data-target="vertical" data-index="3">
+        <span class="char">技</span><span class="char">能</span>
+      </div>
+      <div class="nav-link" data-target="vertical" data-index="4">
+        <span class="char">流</span><span class="char">程</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-section nav-right">
+    <div class="nav-actions">
+      <button class="theme-btn" id="themeBtn" aria-label="切换明暗模式">
+        <svg class="icon-sun" viewBox="0 0 24 24" style="display:none;">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1" x2="12" y2="3"/>
+          <line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/>
+          <line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+      <div class="nav-actions-divider"></div>
+      <button class="lang-btn" id="langBtn" aria-label="切换语言">中/EN</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ========== PAGE WRAPPER (glass frame) ========== -->
+<div class="page-wrapper">
+
+
+
+
+<!-- ========== GLASS FRAME — contains all content ========== -->
+<div class="app-container">
+  <div class="glass-frame">
+
+    <!-- Horizontal scroll (5 pages) -->
+    <div class="main-content" id="mainContent">
+      <div class="main__inner" id="mainInner">
+
+    <section class="page page--hero" id="page0">
+      <div class="page__bg"></div>
+      <div class="page__content">
+        <h1 class="page__title">用设计讲述<span class="accent">品牌故事</span></h1>
+        <p class="page__desc">平面设计师 · 视觉策划 · 品牌顾问<br>将每一个创意转化为打动人心的视觉语言</p>
+      </div>
+    </section>
+
+    <section class="page page--works" id="page1">
+      <div class="page__bg"></div>
+      <div class="page__content" style="width:100%;max-width:900px;">
+        <h1 class="page__title"><span class="accent">作品集</span></h1>
+        <div class="works-grid">
+          <div class="work-card"><div class="work-card__img">&#x1F3A8;</div><div class="work-card__info"><div class="work-card__title">品牌视觉升级</div><div class="work-card__cat">品牌设计 · 2024</div></div></div>
+          <div class="work-card"><div class="work-card__img">&#x1F4E6;</div><div class="work-card__info"><div class="work-card__title">包装设计系列</div><div class="work-card__cat">包装设计 · 2024</div></div></div>
+          <div class="work-card"><div class="work-card__img">&#x1F4F1;</div><div class="work-card__info"><div class="work-card__title">电商详情页</div><div class="work-card__cat">电商设计 · 2023</div></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page page--about" id="page2">
+      <div class="page__bg"></div>
+      <div class="page__content" style="width:100%;max-width:900px;">
+        <h1 class="page__title">关于<span class="accent">我</span></h1>
+        <div class="about-grid">
+          <div class="about-text">
+            毕业于中央美术学院视觉传达专业，拥有8年平面设计经验。曾服务于腾讯、字节跳动等知名企业，擅长品牌视觉设计、包装设计和电商视觉策划。设计理念是「让每一个像素都有意义」，注重细节与整体视觉语言的统一。
+          </div>
+          <div class="about-stats">
+            <div class="stat-item"><div class="stat-number">8+</div><div class="stat-label">年设计经验</div></div>
+            <div class="stat-item"><div class="stat-number">120+</div><div class="stat-label">完成项目</div></div>
+            <div class="stat-item"><div class="stat-number">30+</div><div class="stat-label">合作品牌</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page page--services" id="page3">
+      <div class="page__bg"></div>
+      <div class="page__content" style="width:100%;max-width:900px;">
+        <h1 class="page__title">设计<span class="accent">服务</span></h1>
+        <div class="services-grid">
+          <div class="service-card"><div class="service-icon">&#x1F3AF;</div><div class="service-title">品牌视觉设计</div><div class="service-desc">Logo设计、VI系统、品牌手册、视觉规范制定</div></div>
+          <div class="service-card"><div class="service-icon">&#x1F4E6;</div><div class="service-title">包装设计</div><div class="service-desc">产品包装、礼盒设计、包装结构、材质选配</div></div>
+          <div class="service-card"><div class="service-icon">&#x1F4E2;</div><div class="service-title">电商视觉</div><div class="service-desc">详情页设计、主图策划、店铺视觉、营销素材</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page page--testimonials" id="page4">
+      <div class="page__bg"></div>
+      <div class="page__content" style="width:100%;max-width:900px;">
+        <h1 class="page__title">客户<span class="accent">评价</span></h1>
+        <div class="testimonials-list">
+          <div class="testimonial-item">
+            <div class="testimonial-avatar">&#x738B;</div>
+            <div class="testimonial-content">
+              <div class="testimonial-text">&#x300C;与Lili合作了3个项目，每次都能精准把握品牌调性，设计输出超出预期。特别是包装设计，上市后销量提升了40%。&#x300D;</div>
+              <div class="testimonial-name">&#x738B;&#x7ECF;&#x7406;</div>
+              <div class="testimonial-role">&#x67D0;&#x65B0;&#x6D88;&#x8D39;&#x54C1;&#x724C; · &#x5E02;&#x573A;&#x603B;&#x76D1;</div>
+            </div>
+          </div>
+          <div class="testimonial-item">
+            <div class="testimonial-avatar">&#x674E;</div>
+            <div class="testimonial-content">
+              <div class="testimonial-text">&#x300C;专业、高效、有审美。Lili对细节的把控让人放心，每次修改都能快速理解需求并给出更好的方案。&#x300D;</div>
+              <div class="testimonial-name">&#x674E;&#x603B;</div>
+              <div class="testimonial-role">&#x67D0;&#x79D1;&#x6280;&#x516C;&#x53F8; · CEO</div>
+            </div>
+          </div>
+          <div class="testimonial-item">
+            <div class="testimonial-avatar">&#x9648;</div>
+            <div class="testimonial-content">
+              <div class="testimonial-text">&#x300C;第一次找自由设计师有点担心，但Lili的专业程度完全不输设计公司。沟通顺畅，交付及时，后续还主动跟进应用效果。&#x300D;</div>
+              <div class="testimonial-name">&#x9648;&#x5C0F;&#x59D0;</div>
+              <div class="testimonial-role">&#x72EC;&#x7ACB;&#x8377;&#x724C;&#x521B;&#x59CB;&#x4EBA; · &#x54C1;&#x724C;&#x4E3B;&#x7406;</div>
+            </div>
+          </div>
+          <div class="testimonial-item">
+            <div class="testimonial-avatar">&#x5F20;</div>
+            <div class="testimonial-content">
+              <div class="testimonial-text">&#x300C;Lili的设计有一种「刚好」的分寸感——不会过度设计，也不会平庸。这种克制而精准的审美，正是我们品牌需要的。&#x300D;</div>
+              <div class="testimonial-name">&#x5F20;&#x5148;&#x751F;</div>
+              <div class="testimonial-role">&#x5F00;&#x5E97;&#x751F;&#x6D3B;&#x9986; · &#x521B;&#x59CB;&#x4EBA;</div>
+            </div>
+          </div>
+          <div class="testimonial-item">
+            <div class="testimonial-avatar">&#x5218;</div>
+            <div class="testimonial-content">
+              <div class="testimonial-text">&#x300C;合作过最省心的设计师。brief 一说就懂，初稿就能用，基本不用大改。这种设计敏感度，是多年积累出来的。&#x300D;</div>
+              <div class="testimonial-name">&#x5218;&#x7ECF;&#x7406;</div>
+              <div class="testimonial-role">&#x5FEB;&#x6D88;&#x54C1;&#x724C; · &#x5E02;&#x573A;&#x90E8;&#x95E8;</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page page--cases-extra" id="page5">
+      <div class="page__bg"></div>
+      <div class="page__content" style="width:100%;max-width:900px;">
+        <h1 class="page__title">更多<span class="accent">案例</span></h1>
+        <div class="works-grid">
+          <div class="work-card"><div class="work-card__img">&#x1F3AD;</div><div class="work-card__info"><div class="work-card__title">品牌IP形象设计</div><div class="work-card__cat">品牌设计 · 2024</div></div></div>
+          <div class="work-card"><div class="work-card__img">&#x1F4E2;</div><div class="work-card__info"><div class="work-card__title">企业画册设计</div><div class="work-card__cat">画册设计 · 2023</div></div></div>
+          <div class="work-card"><div class="work-card__img">&#x1F3A8;</div><div class="work-card__info"><div class="work-card__title">社交媒体视觉</div><div class="work-card__cat">社媒设计 · 2024</div></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page page--brands" id="page6">
+      <div class="page__bg"></div>
+      <div class="page__content" style="width:100%;max-width:900px;">
+        <h1 class="page__title">合作<span class="accent">品牌</span></h1>
+        <div class="about-grid">
+          <div class="about-text">
+            多年来与各行各业的企业建立了长期合作关系，涵盖快消、科技、文化、教育等多个领域。每一个合作品牌都是一段故事，我很荣幸能用设计讲述它们的故事。
+          </div>
+          <div class="about-stats">
+            <div class="stat-item"><div class="stat-number">30+</div><div class="stat-label">合作品牌</div></div>
+            <div class="stat-item"><div class="stat-number">8年</div><div class="stat-label">设计经验</div></div>
+            <div class="stat-item"><div class="stat-number">120+</div><div class="stat-label">完成项目</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    </div>
+  </div>
+
+
+    <!-- Mobile content (vertical scroll-snap, shown at ≤768px) -->
+    <div class="mobile-content" id="mobileContent">
+
+      <section class="m-section" id="mSec0">
+        <div class="m-section__bg"></div>
+        <div class="m-section__content">
+          <div style="font-size:3rem;margin-bottom:16px;">✨</div>
+          <h1 class="m-section__title">用设计讲述<span class="accent">品牌故事</span></h1>
+          <p class="m-section__desc">平面设计师 · 视觉策划 · 品牌顾问<br>将每一个创意转化为打动人心的视觉语言</p>
+        </div>
+      </section>
+
+      <section class="m-section" id="mSec1">
+        <div class="m-section__bg"></div>
+        <div class="m-section__content">
+          <h1 class="m-section__title"><span class="accent">作品集</span></h1>
+          <div class="m-grid">
+            <div class="m-card"><div class="m-card__icon">🎨</div><div class="m-card__title">品牌视觉升级</div><div class="m-card__cat">品牌设计 · 2024</div></div>
+            <div class="m-card"><div class="m-card__icon">📦</div><div class="m-card__title">包装设计系列</div><div class="m-card__cat">包装设计 · 2024</div></div>
+            <div class="m-card"><div class="m-card__icon">📱</div><div class="m-card__title">电商详情页</div><div class="m-card__cat">电商设计 · 2023</div></div>
+            <div class="m-card"><div class="m-card__icon">✏️</div><div class="m-card__title">品牌IP形象</div><div class="m-card__cat">品牌设计 · 2024</div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="m-section" id="mSec2">
+        <div class="m-section__bg"></div>
+        <div class="m-section__content">
+          <h1 class="m-section__title">关于<span class="accent">我</span></h1>
+          <div class="m-text">毕业于中央美术学院视觉传达专业，拥有8年平面设计经验。曾服务于腾讯、字节跳动等知名企业，擅长品牌视觉设计、包装设计和电商视觉策划。</div>
+          <div class="m-stats">
+            <div class="m-stat"><div class="m-stat__num">8+</div><div class="m-stat__label">年设计经验</div></div>
+            <div class="m-stat"><div class="m-stat__num">120+</div><div class="m-stat__label">完成项目</div></div>
+            <div class="m-stat"><div class="m-stat__num">30+</div><div class="m-stat__label">合作品牌</div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="m-section" id="mSec3">
+        <div class="m-section__bg"></div>
+        <div class="m-section__content">
+          <h1 class="m-section__title">设计<span class="accent">服务</span></h1>
+          <div class="m-grid">
+            <div class="m-card"><div class="m-card__icon">🎯</div><div class="m-card__title">品牌视觉设计</div><div class="m-card__cat">Logo / VI / 品牌手册</div></div>
+            <div class="m-card"><div class="m-card__icon">📦</div><div class="m-card__title">包装设计</div><div class="m-card__cat">包装结构 / 材质选配</div></div>
+            <div class="m-card"><div class="m-card__icon">📱</div><div class="m-card__title">电商视觉</div><div class="m-card__cat">详情页 / 主图策划</div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="m-section" id="mSec4">
+        <div class="m-section__bg"></div>
+        <div class="m-section__content">
+          <h1 class="m-section__title">客户<span class="accent">评价</span></h1>
+          <div class="m-testimonial">
+            <div class="m-testimonial__text">"与Lili合作了3个项目，每次都能精准把握品牌调性，设计输出超出预期。特别是包装设计，上市后销量提升了40%。"</div>
+            <div class="m-testimonial__name">王某某</div>
+            <div class="m-testimonial__role">某新消费品牌 · 市场总监</div>
+          </div>
+          <div class="m-testimonial" style="margin-top:12px;">
+            <div class="m-testimonial__text">"专业、高效、有审美。Lili对细节的把控让人放心，是难得的靠谱设计师。"</div>
+            <div class="m-testimonial__name">李某某</div>
+            <div class="m-testimonial__role">互联网公司 · 品牌经理</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="m-section" id="mSec5">
+        <div class="m-section__bg"></div>
+        <div class="m-section__content">
+          <h1 class="m-section__title">更多<span class="accent">案例</span></h1>
+          <div class="m-grid">
+            <div class="m-card"><div class="m-card__icon">🎭</div><div class="m-card__title">品牌IP设计</div><div class="m-card__cat">品牌设计 · 2024</div></div>
+            <div class="m-card"><div class="m-card__icon">📒</div><div class="m-card__title">企业画册</div><div class="m-card__cat">画册设计 · 2023</div></div>
+            <div class="m-card"><div class="m-card__icon">📱</div><div class="m-card__title">社交媒体视觉</div><div class="m-card__cat">社媒设计 · 2024</div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="m-section" id="mSec6">
+        <div class="m-section__bg"></div>
+        <div class="m-section__content">
+          <h1 class="m-section__title"><span class="accent">合作品牌</span></h1>
+          <div class="m-text" style="text-align:center;">腾讯 · 字节跳动 · 小米 · 美团<br>网易 · 理想汽车 · 元气森林</div>
+        </div>
+      </section>
+
+    </div><!-- /mobile-content -->
+
+    <!-- Vertical framework (5 pages) -->
+    <div class="vertical-framework" id="verticalFramework">
+
+  <section class="vf-page">
+    <div class="vf-inner">
+      <h2 class="vf-title">&#x8054;&#x7CFB;·<span class="accent">&#x5408;&#x4F5C;</span></h2>
+      <div class="contact-cards">
+        <div class="contact-card"><div class="contact-icon">&#x1F4E7;</div><div class="contact-label">&#x90AE;&#x7BB1;</div><div class="contact-value">hello@liliweijie.com</div></div>
+        <div class="contact-card"><div class="contact-icon">&#x1F4AC;</div><div class="contact-label">&#x5FAE;&#x4FE1;</div><div class="contact-value">liliweijie_design</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="vf-page">
+    <div class="vf-inner">
+      <h2 class="vf-title">&#x8BBE;&#x8BA1;<span class="accent">&#x968F;&#x7B14;</span></h2>
+      <div class="blog-list">
+        <div class="blog-post"><div class="blog-date">2024.03</div><div><div class="blog-post-title">&#x4E2D;&#x5F0F;&#x7F8E;&#x5B66;&#x5728;&#x73B0;&#x4EE3;&#x5305;&#x88C5;&#x8BBE;&#x8BA1;&#x4E2D;&#x7684;&#x5E94;&#x7528;</div><div class="blog-post-excerpt">&#x63A2;&#x8BA8;&#x5982;&#x4F55;&#x5C06;&#x4F20;&#x7EDF;&#x5143;&#x7D20;&#x878D;&#x5165;&#x73B0;&#x4EE3;&#x5305;&#x88C5;&#x8BBE;&#x8BA1;&#xFF0C;&#x8BA9;&#x4EA7;&#x54C1;&#x5728;&#x8D27;&#x67B6;&#x4E0A;&#x8131;&#x9891;&#x800C;&#x51FA;...</div></div></div>
+        <div class="blog-post"><div class="blog-date">2024.01</div><div><div class="blog-post-title">&#x5305;&#x88C5;&#x8BBE;&#x8BA1;&#x8D8B;&#x52BF;&#x89C2;&#x5BDF;&#xFF1A;2024&#x5E74;&#x503C;&#x5F97;&#x5173;&#x6CE8;&#x7684;&#x65B9;&#x5411;</div><div class="blog-post-excerpt">&#x4ECE;&#x53EF;&#x6301;&#x7EED;&#x6750;&#x6599;&#x5230;&#x4E92;&#x52A8;&#x5F0F;&#x5305;&#x88C5;&#xFF0C;&#x68B3;&#x7406;&#x4ECA;&#x5E74;&#x6700;&#x503C;&#x5F97;&#x5173;&#x6CE8;&#x7684;&#x8BBE;&#x8BA1;&#x8D8B;&#x52BF;...</div></div></div>
+        <div class="blog-post"><div class="blog-date">2023.11</div><div><div class="blog-post-title">&#x7535;&#x5546;&#x8BE6;&#x60C5;&#x9875;&#x7684;&#x89C6;&#x89C9;&#x53D9;&#x4E8B;&#x6280;&#x5DE7;</div><div class="blog-post-excerpt">&#x5982;&#x4F55;&#x901A;&#x8FC7;&#x89C6;&#x89C9;&#x8BBE;&#x8BA1;&#x8BB2;&#x597D;&#x4EA7;&#x54C1;&#x6545;&#x4E8B;&#xFF0C;&#x63D0;&#x5347;&#x8F6C;&#x5316;&#x7387;&#x4E0E;&#x8BBE;&#x8BA1;&#x8D28;&#x611F;...</div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="vf-page">
+    <div class="vf-inner">
+      <h2 class="vf-title">&#x5173;&#x4E8E;&#x6211;·<span class="accent">&#x66F4;&#x591A;&#x4FE1;&#x606F;</span></h2>
+      <div class="about-grid">
+        <div class="about-text">
+          <p style="margin-bottom:16px;">&#x8BBE;&#x8BA1;&#x7406;&#x5FF5;&#xFF1A;&#x300C;&#x8BA9;&#x6BCF;&#x4E00;&#x4E2A;&#x50CF;&#x7D20;&#x90FD;&#x6709;&#x610F;&#x4E49;&#x300D;&#x3002;&#x6211;&#x76F8;&#x4FE1;&#x597D;&#x7684;&#x8BBE;&#x8BA1;&#x4E0D;&#x4EC5;&#x662F;&#x597D;&#x770B;&#xFF0C;&#x66F4;&#x8981;&#x80FD;&#x4F20;&#x8FBE;&#x4FE1;&#x606F;&#x3001;&#x5F15;&#x53D1;&#x5171;&#x9E23;&#x3002;</p>
+          <p style="margin-bottom:16px;">&#x5DE5;&#x4F5C;&#x7ECF;&#x5386;&#xFF1A;&#x817E;&#x8BAF;&#x8BBE;&#x8BA1;&#x90E8;&#xFF08;2018-2021&#xFF09;| &#x5B57;&#x8282;&#x8DF3;&#x52A8;&#x54C1;&#x724C;&#x56E2;&#x961F;&#xFF08;2021-2023&#xFF09;| &#x81EA;&#x7531;&#x8BBE;&#x8BA1;&#x5E08;&#xFF08;2023-&#x81F3;&#x4ECA;&#xFF09;</p>
+          <p>&#x6559;&#x80B2;&#x80CC;&#x666F;&#xFF1A;&#x4E2D;&#x592E;&#x7F8E;&#x672F;&#x5B66;&#x9662; · &#x89C6;&#x89C9;&#x4F20;&#x8FBE;&#x8BBE;&#x8BA1; · &#x672C;&#x79D1;&#xFF08;2014-2018&#xFF09;</p>
+        </div>
+        <div class="about-stats">
+          <div class="stat-item"><div class="stat-number">&#x4E2D;&#x592E;&#x7F8E;&#x9662;</div><div class="stat-label">&#x6BD5;&#x4E1A;&#x9662;&#x6821;</div></div>
+          <div class="stat-item"><div class="stat-number">&#x817E;&#x8BAF;/&#x5B57;&#x8282;</div><div class="stat-label">&#x66FE;&#x4EFB;&#x804C;</div></div>
+          <div class="stat-item"><div class="stat-number">2018&#x5E74;&#x8D77;</div><div class="stat-label">&#x8BBE;&#x8BA1;&#x5E08;&#x751F;&#x6DAF;</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="vf-page">
+    <div class="vf-inner">
+      <h2 class="vf-title">&#x4E13;&#x4E1A;<span class="accent">&#x6280;&#x80FD;</span></h2>
+      <div class="skills-grid">
+        <div class="skill-item"><div class="skill-header"><span class="skill-name">&#x54C1;&#x724C;&#x89C6;&#x89C9;&#x8BBE;&#x8BA1;</span><span class="skill-pct">95%</span></div><div class="skill-bar"><div class="skill-fill" style="width:95%;"></div></div></div>
+        <div class="skill-item"><div class="skill-header"><span class="skill-name">&#x5305;&#x88C5;&#x8BBE;&#x8BA1;</span><span class="skill-pct">90%</span></div><div class="skill-bar"><div class="skill-fill" style="width:90%;"></div></div></div>
+        <div class="skill-item"><div class="skill-header"><span class="skill-name">&#x7535;&#x5546;&#x89C6;&#x89C9;&#x8BBE;&#x8BA1;</span><span class="skill-pct">88%</span></div><div class="skill-bar"><div class="skill-fill" style="width:88%;"></div></div></div>
+        <div class="skill-item"><div class="skill-header"><span class="skill-name">&#x63D2;&#x753B;&#x8BBE;&#x8BA1;</span><span class="skill-pct">82%</span></div><div class="skill-bar"><div class="skill-fill" style="width:82%;"></div></div></div>
+      </div>
+      <div class="tools-tags">
+        <span class="tool-tag">Photoshop</span>
+        <span class="tool-tag">Illustrator</span>
+        <span class="tool-tag">InDesign</span>
+        <span class="tool-tag">Figma</span>
+        <span class="tool-tag">C4D</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="vf-page">
+    <div class="vf-inner">
+      <h2 class="vf-title">&#x5DE5;&#x4F5C;<span class="accent">&#x6D41;&#x7A0B;</span></h2>
+      <div class="timeline">
+        <div class="timeline-item"><div class="timeline-step">STEP 01</div><div class="timeline-title">&#x9700;&#x6C42;&#x6C9F;&#x901A;</div><div class="timeline-desc">&#x6DF1;&#x5165;&#x4E86;&#x89E3;&#x54C1;&#x724C;&#x5B9A;&#x4F4D;&#x3001;&#x76EE;&#x6807;&#x53D7;&#x4F17;&#x548C;&#x9879;&#x76EE;&#x76EE;&#x6807;&#xFF0C;&#x660E;&#x786E;&#x8BBE;&#x8BA1;&#x65B9;&#x5411;&#x3002;</div></div>
+        <div class="timeline-item"><div class="timeline-step">STEP 02</div><div class="timeline-title">&#x5E02;&#x573A;&#x8C03;&#x7814;</div><div class="timeline-desc">&#x5206;&#x6790;&#x7ADE;&#x54C1;&#x89C6;&#x89C9;&#x3001;&#x884C;&#x4E1A;&#x8D8B;&#x52BF;&#xFF0C;&#x63D0;&#x70BC;&#x5DEE;&#x5F02;&#x5316;&#x8BBE;&#x8BA1;&#x7B56;&#x7565;&#x3002;</div></div>
+        <div class="timeline-item"><div class="timeline-step">STEP 03</div><div class="timeline-title">&#x6982;&#x5FF5;&#x8BBE;&#x8BA1;</div><div class="timeline-desc">&#x8F93;&#x51FA;3&#x4E2A;&#x65B9;&#x5411;&#x7684;&#x6982;&#x5FF5;&#x65B9;&#x6848;&#xFF0C;&#x5305;&#x542B;&#x8272;&#x5F69;&#x3001;&#x5B57;&#x4F53;&#x3001;&#x56FE;&#x5F62;&#x8BED;&#x8A00;&#x3002;</div></div>
+        <div class="timeline-item"><div class="timeline-step">STEP 04</div><div class="timeline-title">&#x6DF1;&#x5316;&#x8BBE;&#x8BA1;</div><div class="timeline-desc">&#x9009;&#x5B9A;&#x65B9;&#x5411;&#x540E;&#x6DF1;&#x5165;&#x7EC6;&#x5316;&#xFF0C;&#x5B8C;&#x6210;&#x5168;&#x5957;&#x8BBE;&#x8BA1;&#x4EA4;&#x4ED8;&#x7269;&#x3002;</div></div>
+        <div class="timeline-item"><div class="timeline-step">STEP 05</div><div class="timeline-title">&#x5E94;&#x7528;&#x5EF6;&#x5C55;</div><div class="timeline-desc">&#x5C06;&#x6838;&#x5FC3;&#x89C6;&#x89C9;&#x5EF6;&#x5C55;&#x5230;&#x5404;&#x7C7B;&#x5E94;&#x7528;&#x573A;&#x666F;&#xFF0C;&#x786E;&#x4FDD;&#x4E00;&#x81F4;&#x6027;&#x3002;</div></div>
+        <div class="timeline-item"><div class="timeline-step">STEP 06</div><div class="timeline-title">&#x4EA4;&#x4ED8;&#x4E0E;&#x7EF4;&#x62A4;</div><div class="timeline-desc">&#x6574;&#x7406;&#x8BBE;&#x8BA1;&#x6E90;&#x6587;&#x4EF6;&#x3001;&#x4F7F;&#x7528;&#x89C4;&#x8303;&#xFF0C;&#x63D0;&#x4F9B;&#x540E;&#x7EED;&#x7EF4;&#x62A4;&#x652F;&#x6301;&#x3002;</div></div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+  </div><!-- /glass-frame -->
+</div><!-- /app-container -->
+
+</div><!-- /page-wrapper -->
+
+
+<!-- ========== SCROLL HINT (viewport-fixed) ========== -->
+<div class="scroll-hint" id="scrollHint">
+  <div class="scroll-hint__arrow" id="scrollHintArrow">→</div>
+  <div class="scroll-hint__text" id="scrollHintText">滚动探索</div>
+</div>
+
+<!-- ========== PAGE INDICATOR ========== -->
+<div class="page-indicator" id="pageIndicator">01 / 05</div>
+
+
+<script>
+(function() {
+  'use strict';
+
+  var mainContent = document.getElementById('mainContent');
+  var verticalFw = document.getElementById('verticalFramework');
+  var navLinks = document.querySelectorAll('.nav-link');
+  var themeBtn = document.getElementById('themeBtn');
+  var logoBtn = document.getElementById('logoBtn');
+  var scrollHint = document.getElementById('scrollHint');
+  var pageIndicator = document.getElementById('pageIndicator');
+
+  var PAGE_COUNT = 7;
+  var currentPage = 0;
+  var inVerticalFramework = false;
+
+  // ========== PER-CHARACTER HOVER BOLD ==========
+  navLinks.forEach(function(link) {
+    var chars = link.querySelectorAll('.char');
+
+    link.addEventListener('mousemove', function(e) {
+      var hoveredIdx = -1;
+      chars.forEach(function(ch, i) {
+        var rect = ch.getBoundingClientRect();
+        if (e.clientX >= rect.left && e.clientX <= rect.right) {
+          hoveredIdx = i;
+        }
+      });
+
+      chars.forEach(function(ch, i) {
+        ch.classList.toggle('bold', i === hoveredIdx);
+      });
+    });
+
+    link.addEventListener('mouseleave', function() {
+      chars.forEach(function(ch) {
+        ch.classList.remove('bold');
+      });
+    });
+  });
+
+  // ========== THEME TOGGLE ==========
+  function getPreferredTheme() {
+    var stored = localStorage.getItem('theme');
+    if (stored) return stored;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    var iconSun = themeBtn.querySelector('.icon-sun');
+    var iconMoon = themeBtn.querySelector('.icon-moon');
+    if (theme === 'light') {
+      iconSun.style.display = '';
+      iconMoon.style.display = 'none';
+    } else {
+      iconSun.style.display = 'none';
+      iconMoon.style.display = '';
+    }
+    // 同步更换 logo SVG
+    var logoImg = document.getElementById('logoBtn');
+    var mobileLogoImg = document.getElementById('mobileLogoImg');
+    var src = theme === 'light' ? 'logo-light.svg' : 'logo.svg';
+    if (logoImg) logoImg.src = src;
+    if (mobileLogoImg) mobileLogoImg.src = src;
+  }
+
+  applyTheme(getPreferredTheme());
+
+  themeBtn.addEventListener('click', function() {
+    var next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    localStorage.setItem('theme', next);
+    applyTheme(next);
+  });
+
+  // ========== SCROLL TO PAGE ==========
+  function scrollToPage(idx) {
+    currentPage = idx;
+    var pageWidth = mainContent.clientWidth;
+    mainContent.scrollTo({ left: idx * pageWidth, behavior: 'smooth' });
+
+    // 切页时复位所有横向页面的滚动位置
+    var allPages = mainContent.querySelectorAll('.page');
+    for (var i = 0; i < allPages.length; i++) {
+      allPages[i].scrollTop = 0;
+    }
+
+    updateNavState();
+    updatePageIndicator();
+    updateScrollHintArrow();
+  }
+
+  function updatePageIndicator() {
+    var num = String(currentPage + 1).padStart(2, '0');
+    pageIndicator.textContent = num + ' / 07';
+  }
+
+  function updateScrollHintArrow() {
+    var arrow = document.getElementById('scrollHintArrow');
+    var text = document.getElementById('scrollHintText');
+    if (!arrow) return;
+    if (inVerticalFramework) {
+      arrow.textContent = '↓';
+      arrow.style.animation = 'hintBounceDown 2s ease-in-out infinite';
+      if (text) text.textContent = '向上滚动返回';
+    } else {
+      arrow.textContent = '→';
+      arrow.style.animation = 'hintBounce 2s ease-in-out infinite';
+      if (currentPage >= PAGE_COUNT - 1) {
+        if (text) text.textContent = '继续滚动进入详情';
+      } else {
+        if (text) text.textContent = '滚动探索';
+      }
+    }
+  }
+
+  // ========== WHEEL HANDLER — 边界链式滚动 ==========
+  // 绑在 document 捕获阶段，确保任何位置都能收到滚轮事件
+  var wheelAccum = 0;
+    var scrollCooldown = false;
+  var wheelRAF = null;
+  var boundaryCooldown = null;
+
+  document.addEventListener('wheel', function(e) {
+    if (inVerticalFramework) return;
+    if (e.ctrlKey) return;
+    if (scrollCooldown) return;
+    e.preventDefault();
+    scrollCooldown = true;
+    setTimeout(function() { scrollCooldown = false; }, 800);
+    var delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+    if (delta > 15) {
+      if (currentPage < PAGE_COUNT - 1) {
+        scrollToPage(currentPage + 1);
+      } else {
+        enterVerticalFramework();
+      }
+    } else if (delta < -15) {
+      if (currentPage > 0) {
+        scrollToPage(currentPage - 1);
+      }
+    }
+  }, { passive: false, capture: true });
+
+  // Vertical framework: wheel up at top to exit back to horizontal
+  // 用 document 监听，确保一定能捕获
+  var vfWheelTimeout = null;
+  document.addEventListener('wheel', function(e) {
+    if (!inVerticalFramework) return;
+    // 找到当前正在滚动的容器
+    var scrollingEl = document.elementFromPoint(window.innerWidth / 2, 80);
+    while (scrollingEl && scrollingEl !== document.body) {
+      if (scrollingEl === verticalFw || scrollingEl.classList.contains('vf-page')) {
+        break;
+      }
+      scrollingEl = scrollingEl.parentElement;
+    }
+    var atTop = verticalFw.scrollTop <= 0;
+    if (atTop && e.deltaY < 0) {
+      e.preventDefault();
+      if (vfWheelTimeout) return;
+      vfWheelTimeout = setTimeout(function() { vfWheelTimeout = null; }, 900);
+      exitVerticalFramework();
+    }
+  }, { passive: false, capture: true });
+
+  // Track scroll position to update currentPage
+  mainContent.addEventListener('scroll', function() {
+    if (inVerticalFramework) return;
+    var pageWidth = mainContent.clientWidth;
+    if (pageWidth === 0) return;
+    var newPage = Math.round(mainContent.scrollLeft / pageWidth);
+    if (newPage !== currentPage) {
+      currentPage = Math.min(newPage, PAGE_COUNT - 1);
+      updateNavState();
+      updatePageIndicator();
+    }
+  });
+
+  // ========== FRAMEWORK TRANSITION ==========
+  function enterVerticalFramework(done) {
+    if (inVerticalFramework) { if (done) done(); return; }
+    inVerticalFramework = true;
+    mainContent.classList.add('faded');
+    // Wait for fade-out transition, then show vertical framework (slower)
+    setTimeout(function() {
+      verticalFw.classList.add('is-visible');
+      verticalFw.scrollTop = 0;
+      scrollHint.classList.add('hidden');
+      updateNavState();
+      updateScrollHintArrow();
+      if (done) done();
+    }, 800);
+  }
+
+  function exitVerticalFramework(done) {
+    if (!inVerticalFramework) { if (done) done(); return; }
+    inVerticalFramework = false;
+    // Fade out vertical framework first (400ms transition)
+    verticalFw.classList.remove('is-visible');
+    // Wait for fade-out to complete, then restore horizontal content (slower)
+    setTimeout(function() {
+      mainContent.classList.remove('faded');
+      scrollHint.classList.remove('hidden');
+      updateNavState();
+      updateScrollHintArrow();
+      if (done) done();
+    }, 800);
+  }
+
+  // ========== NAV CLICK ==========
+  navLinks.forEach(function(item) {
+    item.addEventListener('click', function() {
+      var target = item.dataset.target;
+      var idx = parseInt(item.dataset.index, 10);
+
+      if (target === 'page') {
+        if (inVerticalFramework) {
+          exitVerticalFramework(function() {
+            scrollToPage(idx);
+          });
+        } else {
+          scrollToPage(idx);
+        }
+      }
+
+      if (target === 'vertical') {
+        enterVerticalFramework(function() {
+          var vfPages = verticalFw.querySelectorAll('.vf-page');
+          if (vfPages[idx]) {
+            vfPages[idx].scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      }
+    });
+  });
+
+  logoBtn.addEventListener('click', function() {
+    if (inVerticalFramework) {
+      exitVerticalFramework(function() {
+        scrollToPage(0);
+      });
+    } else {
+      scrollToPage(0);
+    }
+  });
+
+  // ========== NAV STATE ==========
+  function updateNavState() {
+    navLinks.forEach(function(item) {
+      var isHorizontal = item.dataset.target === 'page';
+      var idx = parseInt(item.dataset.index, 10);
+
+      if (isHorizontal) {
+        item.classList.toggle('active', !inVerticalFramework && idx === currentPage);
+      } else {
+        item.classList.toggle('active', inVerticalFramework);
+      }
+    });
+
+    // Hide page indicator in vertical mode
+    pageIndicator.style.opacity = inVerticalFramework ? '0' : '';
+  }
+
+  // ========== LANGUAGE TOGGLE ==========
+  var currentLang = 'zh';
+  var i18n = {
+    zh: {
+      nav: ['首页', '作品集', '关于', '服务', '案例', '联系', '博客', '关于我', '技能', '流程'],
+      pageTitle: ['创意设计，触手可及', '精选作品集', '关于我', '我的服务', '客户评价'],
+      pageDesc: [
+        '用极简主义的设计语言，为品牌注入灵魂。每一个像素，都是对美的极致追求。',
+        '过去几年中，我为有雄心的品牌创造了令人难忘的视觉体验。',
+        '一名专注细节的平面设计师，擅长品牌识别、UI设计和印刷品设计。',
+        '从概念到落地，提供全流程设计服务，让每一个创意都精准传达。',
+        '来自客户们的真实反馈，是对我工作最大的肯定。'
+      ],
+      vfTitles: ['取得联系', '博客随笔', '关于我', '专业技能', '工作流程'],
+      scrollHint: '滚动探索'
+    },
+    en: {
+      nav: ['Home', 'Works', 'About', 'Services', 'Cases', 'Contact', 'Blog', 'About Me', 'Skills', 'Process'],
+      pageTitle: ['Creative Design at Your Fingertips', 'Selected Works', 'About Me', 'My Services', 'Testimonials'],
+      pageDesc: [
+        'Using minimalist design language to inject soul into brands. Every pixel is a pursuit of beauty.',
+        'In the past few years, I have created unforgettable visual experiences for ambitious brands.',
+        'A detail-oriented graphic designer specializing in brand identity, UI design, and print design.',
+        'Full-process design services from concept to delivery, ensuring every idea is conveyed precisely.',
+        'Real feedback from clients is the greatest affirmation of my work.'
+      ],
+      vfTitles: ['Get in Touch', 'Blog', 'About Me', 'Skills', 'Process'],
+      scrollHint: 'Scroll to Explore'
+    }
+  };
+
+  function applyLang() {
+    var t = i18n[currentLang];
+    // Update horizontal nav links
+    var hLinks = document.querySelectorAll('#navLinksHorizontal > .nav-link');
+    hLinks.forEach(function(link, i) {
+      if (t.nav[i]) {
+        var chars = t.nav[i].split('');
+        link.innerHTML = chars.map(function(ch) { return '<span class="char">' + ch + '</span>'; }).join('');
+      }
+    });
+    // Update vertical nav links
+    var vLinks = document.querySelectorAll('#navLinksVertical > .nav-link');
+    vLinks.forEach(function(link, i) {
+      if (t.nav[5 + i]) {
+        var chars = t.nav[5 + i].split('');
+        link.innerHTML = chars.map(function(ch) { return '<span class="char">' + ch + '</span>'; }).join('');
+      }
+    });
+
+    // Page titles & descs
+    var pages = document.querySelectorAll('.page');
+    pages.forEach(function(page, i) {
+      if (t.pageTitle[i]) {
+        var titleEl = page.querySelector('.page__title');
+        if (titleEl) {
+          // For English: accent on last word; for Chinese: accent on keyword
+          if (currentLang === 'en') {
+            var parts = t.pageTitle[i].split(' ');
+            if (parts.length > 1) {
+              var last = parts.pop();
+              titleEl.innerHTML = parts.join(' ') + ' <span class="accent">' + last + '</span>';
+            } else {
+              titleEl.innerHTML = t.pageTitle[i];
+            }
+          } else {
+            titleEl.innerHTML = t.pageTitle[i];
+          }
+        }
+      }
+      if (t.pageDesc[i]) {
+        var descEl = page.querySelector('.page__desc');
+        if (descEl) descEl.textContent = t.pageDesc[i];
+      }
+    });
+
+    // VF page titles
+    var vfTitles = document.querySelectorAll('.vf-page__title');
+    vfTitles.forEach(function(el, i) {
+      if (t.vfTitles[i]) el.textContent = t.vfTitles[i];
+    });
+
+    // Scroll hint
+    var hintText = document.querySelector('.scroll-hint__text');
+    if (hintText) hintText.textContent = t.scrollHint;
+
+    // Re-bind char hover
+    bindCharHover();
+    updateNavState();
+  }
+
+  function bindCharHover() {
+    document.querySelectorAll('.nav-link .char').forEach(function(ch) {
+      ch.addEventListener('mouseenter', function() {
+        var link = ch.closest('.nav-link');
+        if (!link.classList.contains('active')) ch.style.fontWeight = '700';
+      });
+      ch.addEventListener('mouseleave', function() {
+        var link = ch.closest('.nav-link');
+        if (!link.classList.contains('active')) ch.style.fontWeight = '';
+      });
+    });
+  }
+
+  langBtn.addEventListener('click', function() {
+    currentLang = currentLang === 'zh' ? 'en' : 'zh';
+    langBtn.textContent = currentLang === 'zh' ? '中/EN' : 'EN/中';
+    applyLang();
+  });
+
+  // Init
+  updatePageIndicator();
+  updateNavState();
+  updateScrollHintArrow();
+
+})();
+
+
+  // ========== MOBILE TOP NAV BUTTONS ==========
+  (function(){
+    var homeBtn = document.getElementById('mobileHomeBtn');
+    var aboutBtn = document.getElementById('mobileAboutBtn');
+    var mobileContent = document.getElementById('mobileContent');
+
+    if (homeBtn) {
+      homeBtn.addEventListener('click', function(){
+        if (mobileContent) {
+          var sec = document.getElementById('mSec0');
+          if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    }
+
+    if (aboutBtn) {
+      aboutBtn.addEventListener('click', function(){
+        if (mobileContent) {
+          var sec = document.getElementById('mSec6');
+          if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    }
+
+    // Sync theme with desktop
+    var stored = localStorage.getItem('theme');
+    if (stored) document.documentElement.setAttribute('data-theme', stored);
+  })();
+
+</script>
+</body>
+</html>
