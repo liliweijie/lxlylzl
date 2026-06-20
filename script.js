@@ -81,24 +81,40 @@
       mainContent.addEventListener("scroll", updateCurrentPageFromScroll);
 
       // ========== HORIZONTAL SCROLL ==========
-      // FIX: Only enter vertical framework when scrollLeft is truly at the end
+      var scrollCooldown = false;
+      var SCROLL_DEBOUNCE_MS = 800;
+
       mainContent.addEventListener("wheel", function (e) {
         if (inVerticalFramework) return;
+        if (scrollCooldown) return;
+
+        // Determine scroll direction: prefer deltaX (trackpad/horizontal wheel),
+        // fall back to deltaY (vertical mouse wheel → horizontal navigation)
+        var delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
 
         // Check if we are at the very end of horizontal scroll
         var maxScroll = mainContent.scrollWidth - mainContent.clientWidth;
         var atEnd = mainContent.scrollLeft >= maxScroll - 2;
 
-        // On last page + scroll down + at end => enter vertical framework
-        if (atEnd && e.deltaY > 0) {
+        // On last page + scroll down/right + at end => enter vertical framework
+        if (atEnd && delta > 0) {
           e.preventDefault();
           enterVerticalFramework();
           return;
         }
 
-        // Normal horizontal scroll
+        // On first page + scroll up/left => ignore
+        if (currentPage === 0 && delta < 0) return;
+
+        // Snap to next/previous page
         e.preventDefault();
-        mainContent.scrollLeft += e.deltaY * 1.0;
+        scrollCooldown = true;
+        if (delta > 0) {
+          scrollToPage(currentPage + 1);
+        } else {
+          scrollToPage(currentPage - 1);
+        }
+        setTimeout(function () { scrollCooldown = false; }, SCROLL_DEBOUNCE_MS);
       }, { passive: false });
 
       // ========== VERTICAL SCROLL ==========
@@ -161,15 +177,15 @@
         sidebarNav.addEventListener("click", function (e) {
           var item = e.target.closest(".icon-sidebar__item");
           if (!item) return;
-          var p = parseInt(item.dataset.page, 10);
-          if (!isNaN(p)) scrollToPage(p);
+          var p = Number(item.dataset.page);
+          if (Number.isInteger(p) && p >= 0) scrollToPage(p);
         });
       }
 
       document.querySelectorAll("[data-page]").forEach(function (el) {
         el.addEventListener("click", function () {
-          var p = parseInt(el.dataset.page, 10);
-          if (!isNaN(p)) scrollToPage(p);
+          var p = Number(el.dataset.page);
+          if (Number.isInteger(p) && p >= 0) scrollToPage(p);
         });
       });
 
