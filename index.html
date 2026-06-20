@@ -296,11 +296,13 @@
     position: relative;
     overflow-y: auto;
     scroll-snap-align: start;
-    /* 内容从顶部开始，溢出时可竖向滚动 */
-    padding-top: 60px;
-    padding-bottom: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-top: 40px;
+    padding-bottom: 40px;
   }
-
   .page__bg {
     position: absolute;
     inset: 0;
@@ -312,10 +314,15 @@
     position: relative;
     z-index: 2;
     text-align: center;
-    padding: 40px;
-    max-width: 680px;
+    padding: 40px 24px;
+    max-width: 960px;
     margin: 0 auto;
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 28px;
   }
 
   .page__title {
@@ -1079,7 +1086,7 @@
 
     <section class="page page--works" id="page1">
       <div class="page__bg"></div>
-      <div class="page__content" style="width:100%;max-width:900px;">
+      <div class="page__content" style="width:100%;">
         <h1 class="page__title"><span class="accent">作品集</span></h1>
         <div class="works-grid">
           <div class="work-card"><div class="work-card__img">&#x1F3A8;</div><div class="work-card__info"><div class="work-card__title">品牌视觉升级</div><div class="work-card__cat">品牌设计 · 2024</div></div></div>
@@ -1091,7 +1098,7 @@
 
     <section class="page page--about" id="page2">
       <div class="page__bg"></div>
-      <div class="page__content" style="width:100%;max-width:900px;">
+      <div class="page__content" style="width:100%;">
         <h1 class="page__title">关于<span class="accent">我</span></h1>
         <div class="about-grid">
           <div class="about-text">
@@ -1108,7 +1115,7 @@
 
     <section class="page page--services" id="page3">
       <div class="page__bg"></div>
-      <div class="page__content" style="width:100%;max-width:900px;">
+      <div class="page__content" style="width:100%;">
         <h1 class="page__title">设计<span class="accent">服务</span></h1>
         <div class="services-grid">
           <div class="service-card"><div class="service-icon">&#x1F3AF;</div><div class="service-title">品牌视觉设计</div><div class="service-desc">Logo设计、VI系统、品牌手册、视觉规范制定</div></div>
@@ -1120,7 +1127,7 @@
 
     <section class="page page--testimonials" id="page4">
       <div class="page__bg"></div>
-      <div class="page__content" style="width:100%;max-width:900px;">
+      <div class="page__content" style="width:100%;">
         <h1 class="page__title">客户<span class="accent">评价</span></h1>
         <div class="testimonials-list">
           <div class="testimonial-item">
@@ -1169,7 +1176,7 @@
 
     <section class="page page--cases-extra" id="page5">
       <div class="page__bg"></div>
-      <div class="page__content" style="width:100%;max-width:900px;">
+      <div class="page__content" style="width:100%;">
         <h1 class="page__title">更多<span class="accent">案例</span></h1>
         <div class="works-grid">
           <div class="work-card"><div class="work-card__img">&#x1F3AD;</div><div class="work-card__info"><div class="work-card__title">品牌IP形象设计</div><div class="work-card__cat">品牌设计 · 2024</div></div></div>
@@ -1181,7 +1188,7 @@
 
     <section class="page page--brands" id="page6">
       <div class="page__bg"></div>
-      <div class="page__content" style="width:100%;max-width:900px;">
+      <div class="page__content" style="width:100%;">
         <h1 class="page__title">合作<span class="accent">品牌</span></h1>
         <div class="about-grid">
           <div class="about-text">
