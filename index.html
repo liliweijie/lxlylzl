@@ -49,7 +49,7 @@
   /* ========== PAGE WRAPPER — below nav, max size ========== */
   .page-wrapper {
     position: fixed;
-    top: 62px; left: 72px; right: 72px; bottom: 62px;
+    top: 52px; left: 72px; right: 72px; bottom: 72px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -287,7 +287,6 @@
     display: flex;
     height: 100%;
     width: 700vw;
-    align-items: stretch;
   }
 
   /* ========== HORIZONTAL PAGES ========== */
@@ -297,12 +296,11 @@
     position: relative;
     overflow-y: auto;
     scroll-snap-align: start;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
+    /* 内容从顶部开始，溢出时可竖向滚动 */
+    padding-top: 60px;
+    padding-bottom: 60px;
   }
+
   .page__bg {
     position: absolute;
     inset: 0;
@@ -314,15 +312,10 @@
     position: relative;
     z-index: 2;
     text-align: center;
-    padding: 24px 32px;
-    max-width: 960px;
+    padding: 40px;
+    max-width: 680px;
     margin: 0 auto;
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 24px;
   }
 
   .page__title {
@@ -964,7 +957,7 @@
   /* ========== MOBILE (≤768px): hide desktop, show mobile ========== */
   @media (max-width: 768px) {
     .top-nav { display: none !important; }
-    .page-wrapper { top: 8px; left: 8px; right: 8px; bottom: 8px; }
+    .page-wrapper { top: 0; left: 0; right: 0; bottom: 0; }
     .glass-frame { margin: 58px 10px 24px 10px; border-radius: 22px; }
     .main-content { display: none !important; }
     .vertical-framework { display: none !important; }
@@ -1086,7 +1079,7 @@
 
     <section class="page page--works" id="page1">
       <div class="page__bg"></div>
-      <div class="page__content" style="width:100%;">
+      <div class="page__content" style="width:100%;max-width:900px;">
         <h1 class="page__title"><span class="accent">作品集</span></h1>
         <div class="works-grid">
           <div class="work-card"><div class="work-card__img">&#x1F3A8;</div><div class="work-card__info"><div class="work-card__title">品牌视觉升级</div><div class="work-card__cat">品牌设计 · 2024</div></div></div>
@@ -1098,7 +1091,7 @@
 
     <section class="page page--about" id="page2">
       <div class="page__bg"></div>
-      <div class="page__content" style="width:100%;">
+      <div class="page__content" style="width:100%;max-width:900px;">
         <h1 class="page__title">关于<span class="accent">我</span></h1>
         <div class="about-grid">
           <div class="about-text">
@@ -1115,7 +1108,7 @@
 
     <section class="page page--services" id="page3">
       <div class="page__bg"></div>
-      <div class="page__content" style="width:100%;">
+      <div class="page__content" style="width:100%;max-width:900px;">
         <h1 class="page__title">设计<span class="accent">服务</span></h1>
         <div class="services-grid">
           <div class="service-card"><div class="service-icon">&#x1F3AF;</div><div class="service-title">品牌视觉设计</div><div class="service-desc">Logo设计、VI系统、品牌手册、视觉规范制定</div></div>
@@ -1127,7 +1120,7 @@
 
     <section class="page page--testimonials" id="page4">
       <div class="page__bg"></div>
-      <div class="page__content" style="width:100%;">
+      <div class="page__content" style="width:100%;max-width:900px;">
         <h1 class="page__title">客户<span class="accent">评价</span></h1>
         <div class="testimonials-list">
           <div class="testimonial-item">
@@ -1176,7 +1169,7 @@
 
     <section class="page page--cases-extra" id="page5">
       <div class="page__bg"></div>
-      <div class="page__content" style="width:100%;">
+      <div class="page__content" style="width:100%;max-width:900px;">
         <h1 class="page__title">更多<span class="accent">案例</span></h1>
         <div class="works-grid">
           <div class="work-card"><div class="work-card__img">&#x1F3AD;</div><div class="work-card__info"><div class="work-card__title">品牌IP形象设计</div><div class="work-card__cat">品牌设计 · 2024</div></div></div>
@@ -1188,7 +1181,7 @@
 
     <section class="page page--brands" id="page6">
       <div class="page__bg"></div>
-      <div class="page__content" style="width:100%;">
+      <div class="page__content" style="width:100%;max-width:900px;">
         <h1 class="page__title">合作<span class="accent">品牌</span></h1>
         <div class="about-grid">
           <div class="about-text">
@@ -1509,7 +1502,6 @@
   // 绑在 document 捕获阶段，确保任何位置都能收到滚轮事件
   var wheelAccum = 0;
   var wheelRAF = null;
-  var scrollCooldown = false;
   var boundaryCooldown = null;
 
   document.addEventListener('wheel', function(e) {
@@ -1561,16 +1553,15 @@
       return;
     }
 
-    if (scrollCooldown) return;
     e.preventDefault();
-    scrollCooldown = true;
-    var delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-    if (delta > 0) {
-      scrollToPage(Math.min(currentPage + 1, PAGE_COUNT - 1));
-    } else if (delta < 0) {
-      scrollToPage(Math.max(currentPage - 1, 0));
+    wheelAccum += e.deltaY * 3;
+    if (!wheelRAF) {
+      wheelRAF = requestAnimationFrame(function() {
+        mainContent.scrollLeft += wheelAccum;
+        wheelAccum = 0;
+        wheelRAF = null;
+      });
     }
-    setTimeout(function() { scrollCooldown = false; }, 800);
 
   }, { passive: false, capture: true });
 
