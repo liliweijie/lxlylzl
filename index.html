@@ -49,7 +49,7 @@
   /* ========== PAGE WRAPPER — below nav, max size ========== */
   .page-wrapper {
     position: fixed;
-    top: 52px; left: 72px; right: 72px; bottom: 72px;
+    top: 62px; left: 72px; right: 72px; bottom: 62px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -247,8 +247,7 @@
 
   .glass-frame {
     width: 100%;
-    height: auto;
-    max-height: 100%;
+    height: 100%;
     background: var(--glass-bg);
     backdrop-filter: blur(32px) saturate(1.2);
     -webkit-backdrop-filter: blur(32px) saturate(1.2);
@@ -964,7 +963,7 @@
   /* ========== MOBILE (≤768px): hide desktop, show mobile ========== */
   @media (max-width: 768px) {
     .top-nav { display: none !important; }
-    .page-wrapper { top: 0; left: 0; right: 0; bottom: 0; }
+    .page-wrapper { top: 8px; left: 8px; right: 8px; bottom: 8px; }
     .glass-frame { margin: 58px 10px 24px 10px; border-radius: 22px; }
     .main-content { display: none !important; }
     .vertical-framework { display: none !important; }
