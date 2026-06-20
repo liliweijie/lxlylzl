@@ -1501,68 +1501,29 @@
   // ========== WHEEL HANDLER — 边界链式滚动 ==========
   // 绑在 document 捕获阶段，确保任何位置都能收到滚轮事件
   var wheelAccum = 0;
+    var scrollCooldown = false;
   var wheelRAF = null;
   var boundaryCooldown = null;
 
   document.addEventListener('wheel', function(e) {
     if (inVerticalFramework) return;
     if (e.ctrlKey) return;
-
-    var pages = mainContent.querySelectorAll('.page');
-    var currentPageEl = pages[currentPage];
-    if (!currentPageEl) return;
-
-    var hasOverflow = currentPageEl.scrollHeight > currentPageEl.clientHeight + 1;
-
-    if (hasOverflow) {
-      var atBottom = currentPageEl.scrollTop + currentPageEl.clientHeight >= currentPageEl.scrollHeight - 5;
-      var atTop    = currentPageEl.scrollTop <= 5;
-
-      if (e.deltaY > 0 && atBottom) {
-        e.preventDefault();
-        if (boundaryCooldown) return;
-        boundaryCooldown = setTimeout(function() { boundaryCooldown = null; }, 900);
-        if (currentPage < pages.length - 1) {
-          scrollToPage(currentPage + 1);
-        } else {
-          enterVerticalFramework();
-        }
-        return;
-      }
-
-      if (e.deltaY < 0 && atTop) {
-        e.preventDefault();
-        if (boundaryCooldown) return;
-        boundaryCooldown = setTimeout(function() { boundaryCooldown = null; }, 900);
-        if (currentPage > 0) {
-          scrollToPage(currentPage - 1);
-        }
-        return;
-      }
-
-      // 不在边界：让页面内部正常竖向滚动（不拦截）
-      return;
-    }
-
-    // 内容不溢出：最后一页往下滚 → 进竖屏；其他情况 → 横向滚动切页
-    if (currentPage >= pages.length - 1 && e.deltaY > 0) {
-      e.preventDefault();
-      if (boundaryCooldown) return;
-      boundaryCooldown = setTimeout(function() { boundaryCooldown = null; }, 900);
-      enterVerticalFramework();
-      return;
-    }
-
+    if (scrollCooldown) return;
     e.preventDefault();
-    wheelAccum += e.deltaY * 3;
-    if (!wheelRAF) {
-      wheelRAF = requestAnimationFrame(function() {
-        mainContent.scrollLeft += wheelAccum;
-        wheelAccum = 0;
-        wheelRAF = null;
-      });
+    scrollCooldown = true;
+    setTimeout(function() { scrollCooldown = false; }, 800);
+    var delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+    if (delta > 15) {
+      if (currentPage < PAGE_COUNT - 1) {
+        scrollToPage(currentPage + 1);
+      } else {
+        enterVerticalFramework();
+      }
+    } else if (delta < -15) {
+      if (currentPage > 0) {
+        scrollToPage(currentPage - 1);
+      }
     }
-
   }, { passive: false, capture: true });
 
   // Vertical framework: wheel up at top to exit back to horizontal
