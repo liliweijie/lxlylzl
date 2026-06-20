@@ -80,42 +80,54 @@
       }
       mainContent.addEventListener("scroll", updateCurrentPageFromScroll);
 
-      // ========== HORIZONTAL SCROLL ==========
+      // ========== HORIZONTAL SCROLL (wheel on document to catch all events) ==========
       var scrollCooldown = false;
       var SCROLL_DEBOUNCE_MS = 800;
 
-      mainContent.addEventListener("wheel", function (e) {
+      // Use document with capture to intercept ALL wheel events
+      document.addEventListener("wheel", function (e) {
+        // Ignore if vertical framework is active
         if (inVerticalFramework) return;
+
+        // Ignore if the event target is inside the vertical framework
+        if (verticalFw && verticalFw.contains(e.target)) return;
+
+        // Ignore if vertical framework is visible (user is scrolling inside it)
+        if (verticalFw && verticalFw.classList.contains("is-visible")) return;
+
         if (scrollCooldown) return;
 
-        // Determine scroll direction: prefer deltaX (trackpad/horizontal wheel),
-        // fall back to deltaY (vertical mouse wheel → horizontal navigation)
-        var delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+        // Determine scroll direction
+        // deltaY < 0 → wheel up   → previous page
+        // deltaY > 0 → wheel down → next page
+        // deltaX < 0 → swipe left  → previous page
+        // deltaX > 0 → swipe right → next page
+        var primaryDelta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
 
         // Check if we are at the very end of horizontal scroll
         var maxScroll = mainContent.scrollWidth - mainContent.clientWidth;
         var atEnd = mainContent.scrollLeft >= maxScroll - 2;
 
         // On last page + scroll down/right + at end => enter vertical framework
-        if (atEnd && delta > 0) {
+        if (atEnd && primaryDelta > 0) {
           e.preventDefault();
           enterVerticalFramework();
           return;
         }
 
         // On first page + scroll up/left => ignore
-        if (currentPage === 0 && delta < 0) return;
+        if (currentPage === 0 && primaryDelta < 0) return;
 
         // Snap to next/previous page
         e.preventDefault();
         scrollCooldown = true;
-        if (delta > 0) {
+        if (primaryDelta > 0) {
           scrollToPage(currentPage + 1);
         } else {
           scrollToPage(currentPage - 1);
         }
         setTimeout(function () { scrollCooldown = false; }, SCROLL_DEBOUNCE_MS);
-      }, { passive: false });
+      }, { passive: false, capture: true });
 
       // ========== VERTICAL SCROLL ==========
       verticalFw.addEventListener("wheel", function (e) {
@@ -188,6 +200,51 @@
           if (Number.isInteger(p) && p >= 0) scrollToPage(p);
         });
       });
+
+      // ========== TOUCH SWIPE SUPPORT ==========
+      var touchStartX = 0;
+      var touchStartY = 0;
+      var touchInProgress = false;
+
+      document.addEventListener("touchstart", function (e) {
+        if (inVerticalFramework) return;
+        if (verticalFw && verticalFw.contains(e.target)) return;
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        touchInProgress = true;
+      }, { passive: true });
+
+      document.addEventListener("touchend", function (e) {
+        if (!touchInProgress) return;
+        touchInProgress = false;
+        if (inVerticalFramework) return;
+
+        var endX = e.changedTouches[0].clientX;
+        var endY = e.changedTouches[0].clientY;
+        var diffX = touchStartX - endX;
+        var diffY = touchStartY - endY;
+
+        // Only handle horizontal swipes
+        if (Math.abs(diffX) < Math.abs(diffY)) return;
+
+        var maxScroll = mainContent.scrollWidth - mainContent.clientWidth;
+        var atEnd = mainContent.scrollLeft >= maxScroll - 2;
+
+        if (atEnd && diffX > 50) {
+          enterVerticalFramework();
+          return;
+        }
+
+        if (currentPage === 0 && diffX < -50) return;
+
+        if (Math.abs(diffX) > 50) {
+          if (diffX > 0) {
+            scrollToPage(currentPage + 1);
+          } else {
+            scrollToPage(currentPage - 1);
+          }
+        }
+      }, { passive: true });
 
       // ========== KEYBOARD ==========
       document.addEventListener("keydown", function (e) {
