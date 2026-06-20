@@ -1502,6 +1502,7 @@
   // 绑在 document 捕获阶段，确保任何位置都能收到滚轮事件
   var wheelAccum = 0;
   var wheelRAF = null;
+  var scrollCooldown = false;
   var boundaryCooldown = null;
 
   document.addEventListener('wheel', function(e) {
@@ -1553,15 +1554,16 @@
       return;
     }
 
+    if (scrollCooldown) return;
     e.preventDefault();
-    wheelAccum += e.deltaY * 3;
-    if (!wheelRAF) {
-      wheelRAF = requestAnimationFrame(function() {
-        mainContent.scrollLeft += wheelAccum;
-        wheelAccum = 0;
-        wheelRAF = null;
-      });
+    scrollCooldown = true;
+    var delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+    if (delta > 0) {
+      scrollToPage(Math.min(currentPage + 1, PAGE_COUNT - 1));
+    } else if (delta < 0) {
+      scrollToPage(Math.max(currentPage - 1, 0));
     }
+    setTimeout(function() { scrollCooldown = false; }, 800);
 
   }, { passive: false, capture: true });
 
