@@ -137,12 +137,11 @@
 
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 5px;
-    padding: 0 40px;
-
-    max-width: 680px;
+    padding: 12px 40px 8px;
 
     width: 100%;
+
+    box-sizing: border-box;
 
   }
 
@@ -554,7 +553,9 @@
 
     top: 0; left: 0;
 
-    width: 100%; height: 100%;
+    width: 100%; flex: 1;
+
+    min-height: 0;
 
     overflow-x: auto;
 
@@ -1999,7 +2000,28 @@
 <!-- ========== THREE-SECTION TOP NAV (desktop only) ========== -->
 
 <div class="site-frame">
-    <nav class="top-nav">
+    
+
+
+
+<!-- ========== PAGE WRAPPER (glass frame) ========== -->
+
+<div class="page-wrapper">
+
+
+
+
+
+
+
+
+
+<!-- ========== GLASS FRAME — contains all content ========== -->
+
+<div class="app-container">
+
+  <div class="glass-frame">
+<nav class="top-nav">
 
   <div class="nav-section nav-left">
 
@@ -2131,25 +2153,6 @@
 
 </nav>
 
-
-
-<!-- ========== PAGE WRAPPER (glass frame) ========== -->
-
-<div class="page-wrapper">
-
-
-
-
-
-
-
-
-
-<!-- ========== GLASS FRAME — contains all content ========== -->
-
-<div class="app-container">
-
-  <div class="glass-frame">
 
 
 
