@@ -18,6 +18,8 @@
     --text-muted: #5a5a6a;
     --bg-primary: #0e0e12;
     --nav-bg: rgba(18,18,24,0.6);
+    --page-bg: rgba(28,28,38,0.82);
+    --card-bg: rgba(255,255,255,0.03);
   }
 
   [data-theme="light"] {
@@ -27,7 +29,9 @@
     --text-secondary: #6a6a7a;
     --text-muted: #a0a0b0;
     --bg-primary: #f5f0e8;
-    --nav-bg: rgba(255,255,255,0.6);
+    --nav-bg: rgba(255,255,255,0.6)
+;    --page-bg: rgba(245,240,230,0.75);
+    --card-bg: rgba(0,0,0,0.03);
   }
 
   html { font-size: 16px; scroll-behavior: smooth; }
@@ -87,13 +91,12 @@
   .nav-right { position: absolute; top: 50%; right: 0; transform: translateY(-50%); }
 
   .nav-logo {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: var(--accent);
+    height: 26px;
+    width: auto;
     cursor: pointer;
-    letter-spacing: -0.02em;
     user-select: none;
     transition: opacity 0.2s;
+    object-fit: contain;
   }
   .nav-logo:hover { opacity: 0.7; }
 
@@ -273,8 +276,7 @@
   .page__bg {
     position: absolute;
     inset: 0;
-    background: #2a2a2a;
-    opacity: 0.8;
+    background: var(--page-bg);
   }
 
   .page__content {
@@ -349,15 +351,7 @@
     line-height: 1.8;
   }
 
-  /* ========== SCROLL HINT ========== */
-@keyframes hintBounce {
-    0%, 100% { transform: translateX(0); }
-    50% { transform: translateX(6px); }
-  }
-
-  @keyframes hintBounceDown {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(6px); }
+      50% { transform: translateY(6px); }
   }
 
   /* ========== PAGE INDICATOR ========== */
@@ -382,7 +376,7 @@
 
   .work-card {
     aspect-ratio: 3/4;
-    background: rgba(255,255,255,0.03);
+    background: var(--card-bg);
     border: 1px solid var(--glass-border);
     border-radius: 16px;
     overflow: hidden;
@@ -459,7 +453,7 @@
 
   .service-card {
     padding: 28px 24px;
-    background: rgba(255,255,255,0.03);
+    background: var(--card-bg);
     border: 1px solid var(--glass-border);
     border-radius: 16px;
     text-align: left;
@@ -496,7 +490,7 @@
     display: flex;
     gap: 20px;
     padding: 24px;
-    background: rgba(255,255,255,0.03);
+    background: var(--card-bg);
     border: 1px solid var(--glass-border);
     border-radius: 16px;
     text-align: left;
@@ -535,7 +529,7 @@
 
   .contact-card {
     padding: 28px;
-    background: rgba(255,255,255,0.03);
+    background: var(--card-bg);
     border: 1px solid var(--glass-border);
     border-radius: 16px;
     text-align: center;
@@ -556,7 +550,7 @@
     display: flex;
     gap: 24px;
     padding: 24px;
-    background: rgba(255,255,255,0.03);
+    background: var(--card-bg);
     border: 1px solid var(--glass-border);
     border-radius: 16px;
     text-align: left;
@@ -599,7 +593,7 @@
 
   .skill-bar {
     height: 4px;
-    background: rgba(255,255,255,0.08);
+    background: var(--card-bg);
     border-radius: 2px;
     overflow: hidden;
   }
@@ -620,7 +614,7 @@
 
   .tool-tag {
     padding: 8px 18px;
-    background: rgba(255,255,255,0.04);
+    background: var(--card-bg);
     border: 1px solid var(--glass-border);
     border-radius: 100px;
     font-size: 0.88rem;
@@ -714,7 +708,7 @@
 <!-- ========== THREE-SECTION TOP NAV ========== -->
 <nav class="top-nav">
   <div class="nav-section nav-left">
-    <div class="nav-logo" id="logoBtn" title="回到首页">LX</div>
+    <img class="nav-logo" id="logoBtn" src="logo.svg" alt="LX Logo" title="回到首页">
   </div>
 
   <div class="nav-section nav-center">
@@ -1002,9 +996,6 @@
 
 </div><!-- /page-wrapper -->
 
-<!-- ========== SCROLL HINT (viewport-fixed) ========== -->
-
-
 <!-- ========== PAGE INDICATOR ========== -->
 <div class="page-indicator" id="pageIndicator">01 / 05</div>
 
@@ -1017,7 +1008,6 @@
   var navLinks = document.querySelectorAll('.nav-link');
   var themeBtn = document.getElementById('themeBtn');
   var logoBtn = document.getElementById('logoBtn');
-  var scrollHint = document.getElementById('scrollHint');
   var pageIndicator = document.getElementById('pageIndicator');
 
   var PAGE_COUNT = 7;
@@ -1069,6 +1059,19 @@
     }
   }
 
+  // Switch logo image based on theme
+  var logoImg = document.getElementById('logoBtn');
+  function switchLogo(theme) {
+    if (!logoImg || !logoImg.tagName || logoImg.tagName.toLowerCase() !== 'img') return;
+    logoImg.src = theme === 'light' ? 'logo-light.svg' : 'logo.svg';
+  }
+  // Store original applyTheme and wrap it
+  var _origApplyTheme = applyTheme;
+  applyTheme = function(theme) {
+    _origApplyTheme(theme);
+    switchLogo(theme);
+  };
+
   applyTheme(getPreferredTheme());
 
   themeBtn.addEventListener('click', function() {
@@ -1084,24 +1087,11 @@
     mainContent.scrollTo({ left: idx * pageWidth, behavior: 'smooth' });
     updateNavState();
     updatePageIndicator();
-    updateScrollHintArrow();
   }
 
   function updatePageIndicator() {
     var num = String(currentPage + 1).padStart(2, '0');
     pageIndicator.textContent = num + ' / 07';
-  }
-
-  function updateScrollHintArrow() {
-    var arrow = document.getElementById('scrollHintArrow');
-    if (!arrow) return;
-    if (inVerticalFramework) {
-      arrow.textContent = '↓';
-      arrow.style.animation = 'hintBounceDown 2s ease-in-out infinite';
-    } else {
-      arrow.textContent = '→';
-      arrow.style.animation = 'hintBounce 2s ease-in-out infinite';
-    }
   }
 
   // ========== WHEEL HANDLER — vertical wheel → horizontal scroll ==========
@@ -1114,19 +1104,28 @@
     if (e.ctrlKey) return;
     e.preventDefault();
 
-    // Batch into next animation frame
-    wheelAccum += e.deltaY * 3;
+    // Accumulate delta until threshold, then snap to page
+    wheelAccum += e.deltaY;
     if (!wheelRAF) {
       wheelRAF = requestAnimationFrame(function() {
-        mainContent.scrollLeft += wheelAccum;
+        if (Math.abs(wheelAccum) >= 50) {
+          var targetPage = currentPage;
+          if (wheelAccum > 0) {
+            targetPage = Math.min(currentPage + 1, PAGE_COUNT - 1);
+          } else {
+            targetPage = Math.max(currentPage - 1, 0);
+          }
+          if (targetPage !== currentPage) {
+            scrollToPage(targetPage);
+          }
+        }
         wheelAccum = 0;
         wheelRAF = null;
       });
     }
 
-    // Scroll past last page → enter vertical framework
-    var maxScroll = mainContent.scrollWidth - mainContent.clientWidth;
-    if (maxScroll - mainContent.scrollLeft <= 4 && e.deltaY > 0) {
+    // On last page, scroll down → enter vertical framework
+    if (currentPage === PAGE_COUNT - 1 && e.deltaY > 0) {
       if (lastPageWheelTimeout) return;
       lastPageWheelTimeout = setTimeout(function() { lastPageWheelTimeout = null; }, 1000);
       enterVerticalFramework();
@@ -1168,7 +1167,6 @@
       verticalFw.classList.add('is-visible');
       verticalFw.scrollTop = 0;
       updateNavState();
-      updateScrollHintArrow();
       if (done) done();
     }, 800);
   }
@@ -1182,7 +1180,6 @@
     setTimeout(function() {
       mainContent.classList.remove('faded');
       updateNavState();
-      updateScrollHintArrow();
       if (done) done();
     }, 800);
   }
@@ -1255,7 +1252,6 @@
         '来自客户们的真实反馈，是对我工作最大的肯定。'
       ],
       vfTitles: ['取得联系', '博客随笔', '关于我', '专业技能', '工作流程'],
-      scrollHint: '滚动探索'
     },
     en: {
       nav: ['Home', 'Works', 'About', 'Services', 'Cases', 'Contact', 'Blog', 'About Me', 'Skills', 'Process'],
@@ -1268,7 +1264,6 @@
         'Real feedback from clients is the greatest affirmation of my work.'
       ],
       vfTitles: ['Get in Touch', 'Blog', 'About Me', 'Skills', 'Process'],
-      scrollHint: 'Scroll to Explore'
     }
   };
 
@@ -1323,8 +1318,6 @@
       if (t.vfTitles[i]) el.textContent = t.vfTitles[i];
     });
 
-    // Scroll hint
-    if (hintText) hintText.textContent = t.scrollHint;
 
     // Re-bind char hover
     bindCharHover();
@@ -1353,7 +1346,6 @@
   // Init
   updatePageIndicator();
   updateNavState();
-  updateScrollHintArrow();
 
 })();
 </script>
