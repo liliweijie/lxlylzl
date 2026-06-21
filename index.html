@@ -290,19 +290,16 @@
   }
 
   /* ========== HORIZONTAL PAGES ========== */
-  .page {
-    min-width: 100vw;
-    height: 100%;
-    position: relative;
-    overflow-y: auto;
-    scroll-snap-align: start;
-    /* 内容从顶部开始，溢出时可竖向滚动 */
-    /* 内容垂直居中 */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
+  .page {
+    min-width: 100vw;
+    height: 100%;
+    position: relative;
+    overflow-y: auto;
+    scroll-snap-align: start;
+    /* CSS Grid 垂直+水平居中（比 flex 更可靠） */
+    display: grid;
+    place-items: center;
+    padding: 0;
   }
 
   .page__bg {
@@ -316,7 +313,7 @@
     position: relative;
     z-index: 2;
     text-align: center;
-    padding: 40px;
+    padding: 24px 40px;
     max-width: 680px;
     margin: 0 auto;
     width: 100%;
