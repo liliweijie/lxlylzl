@@ -354,18 +354,6 @@
       50% { transform: translateY(6px); }
   }
 
-  /* ========== PAGE INDICATOR ========== */
-  .page-indicator {
-    position: fixed;
-    bottom: 32px;
-    right: 32px;
-    z-index: 100;
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    letter-spacing: 0.08em;
-    font-variant-numeric: tabular-nums;
-  }
-
   /* ========== CONTENT STYLES ========== */
   .works-grid {
     display: grid;
@@ -996,9 +984,6 @@
 
 </div><!-- /page-wrapper -->
 
-<!-- ========== PAGE INDICATOR ========== -->
-<div class="page-indicator" id="pageIndicator">01 / 05</div>
-
 <script>
 (function() {
   'use strict';
@@ -1008,7 +993,6 @@
   var navLinks = document.querySelectorAll('.nav-link');
   var themeBtn = document.getElementById('themeBtn');
   var logoBtn = document.getElementById('logoBtn');
-  var pageIndicator = document.getElementById('pageIndicator');
 
   var PAGE_COUNT = 7;
   var currentPage = 0;
@@ -1086,13 +1070,7 @@
     var pageWidth = mainContent.clientWidth;
     mainContent.scrollTo({ left: idx * pageWidth, behavior: 'smooth' });
     updateNavState();
-    updatePageIndicator();
-  }
-
-  function updatePageIndicator() {
-    var num = String(currentPage + 1).padStart(2, '0');
-    pageIndicator.textContent = num + ' / 07';
-  }
+      }
 
   // ========== WHEEL HANDLER — vertical wheel → horizontal scroll ==========
   var wheelAccum = 0;
@@ -1153,8 +1131,7 @@
     if (newPage !== currentPage) {
       currentPage = Math.min(newPage, PAGE_COUNT - 1);
       updateNavState();
-      updatePageIndicator();
-    }
+          }
   });
 
   // ========== FRAMEWORK TRANSITION ==========
@@ -1235,7 +1212,6 @@
     });
 
     // Hide page indicator in vertical mode
-    pageIndicator.style.opacity = inVerticalFramework ? '0' : '';
   }
 
   // ========== LANGUAGE TOGGLE ==========
@@ -1344,8 +1320,7 @@
   });
 
   // Init
-  updatePageIndicator();
-  updateNavState();
+    updateNavState();
 
 })();
 </script>
