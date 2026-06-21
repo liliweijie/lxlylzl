@@ -3658,6 +3658,35 @@
 
 </script>
 
+
+  <script>
+  // Force vertical centering of .page__content within .page
+  function fixVerticalCenter() {
+    var pages = document.querySelectorAll('.page');
+    for (var i = 0; i < pages.length; i++) {
+      var page = pages[i];
+      var content = page.querySelector('.page__content');
+      if (!content) continue;
+      var pageH = page.offsetHeight;
+      var contentH = content.offsetHeight;
+      if (pageH > contentH) {
+        var gap = (pageH - contentH) / 2;
+        content.style.marginTop = gap + 'px';
+        content.style.marginBottom = '0';
+      }
+    }
+  }
+  // Run on load and on resize
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', fixVerticalCenter);
+  } else {
+    fixVerticalCenter();
+  }
+  window.addEventListener('resize', fixVerticalCenter);
+  // Also run after a short delay (for fonts/images to load)
+  setTimeout(fixVerticalCenter, 100);
+  setTimeout(fixVerticalCenter, 500);
+  </script>
 </body>
 
 </html>
