@@ -301,7 +301,6 @@
     line-height: 1.7;
   }
 
-
   /* ========== VERTICAL FRAMEWORK — inside page-wrapper ========== */
   .vertical-framework {
     position: absolute;
@@ -351,30 +350,7 @@
   }
 
   /* ========== SCROLL HINT ========== */
-  .scroll-hint {
-    position: fixed;
-    bottom: 32px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 100;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    opacity: 1;
-    transition: opacity 0.4s;
-  }
-
-  .scroll-hint.hidden { opacity: 0; pointer-events: none; }
-
-  .scroll-hint__arrow {
-    font-size: 1.4rem;
-    color: var(--text-muted);
-    animation: hintBounce 2s ease-in-out infinite;
-    transition: color 0.3s;
-  }
-
-  @keyframes hintBounce {
+@keyframes hintBounce {
     0%, 100% { transform: translateX(0); }
     50% { transform: translateX(6px); }
   }
@@ -806,9 +782,6 @@
 <!-- ========== PAGE WRAPPER (glass frame) ========== -->
 <div class="page-wrapper">
 
-
-
-
 <!-- ========== GLASS FRAME — contains all content ========== -->
 <div class="app-container">
   <div class="glass-frame">
@@ -1029,7 +1002,6 @@
 
 </div><!-- /page-wrapper -->
 
-
 <!-- ========== SCROLL HINT (viewport-fixed) ========== -->
 <div class="scroll-hint" id="scrollHint">
   <div class="scroll-hint__arrow" id="scrollHintArrow">→</div>
@@ -1037,7 +1009,6 @@
 
 <!-- ========== PAGE INDICATOR ========== -->
 <div class="page-indicator" id="pageIndicator">01 / 05</div>
-
 
 <script>
 (function() {
@@ -1198,7 +1169,6 @@
     setTimeout(function() {
       verticalFw.classList.add('is-visible');
       verticalFw.scrollTop = 0;
-      scrollHint.classList.add('hidden');
       updateNavState();
       updateScrollHintArrow();
       if (done) done();
@@ -1213,7 +1183,6 @@
     // Wait for fade-out to complete, then restore horizontal content (slower)
     setTimeout(function() {
       mainContent.classList.remove('faded');
-      scrollHint.classList.remove('hidden');
       updateNavState();
       updateScrollHintArrow();
       if (done) done();
@@ -1357,7 +1326,6 @@
     });
 
     // Scroll hint
-    var hintText = document.querySelector('.scroll-hint__text');
     if (hintText) hintText.textContent = t.scrollHint;
 
     // Re-bind char hover
