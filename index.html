@@ -1982,7 +1982,23 @@
   /* ===== NAV SECTION ALIGN WITH CONTENT ===== */
   .nav-left .nav-section { padding-left: 0; }
   .nav-right .nav-section { padding-right: 0; }
-  </style>
+  
+  /* Align nav items with content module edges */
+  .nav-left {
+    padding-left: 0 !important;
+  }
+  .nav-right {
+    padding-right: 0 !important;
+    justify-content: flex-end;
+  }
+  .nav-left .nav-section:first-child {
+    padding-left: 0 !important;
+  }
+  .nav-right .nav-section:last-child {
+    padding-right: 0 !important;
+    margin-left: auto;
+  }
+</style>
 
 </head>
 
