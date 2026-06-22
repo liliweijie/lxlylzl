@@ -29,8 +29,8 @@
     --text-secondary: #6a6a7a;
     --text-muted: #a0a0b0;
     --bg-primary: #f5f0e8;
-    --nav-bg: rgba(255,255,255,0.6)
-;    --page-bg: rgba(245,240,230,0.75);
+    --nav-bg: rgba(255,255,255,0.6);
+    --page-bg: rgba(245,240,230,0.75);
     --card-bg: rgba(0,0,0,0.03);
   }
 
@@ -42,45 +42,28 @@
     color: var(--text-primary);
     overflow: hidden;
     height: 100vh;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     transition: background 0.45s cubic-bezier(0.4,0,0.2,1), color 0.45s cubic-bezier(0.4,0,0.2,1);
   }
 
   /* ========== PAGE WRAPPER — below nav, max size ========== */
   .page-wrapper {
+    position: fixed;
+    top: 52px; left: 72px; right: 72px; bottom: 72px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
   }
 
-  /* ========== SITE FRAME — centers nav + content ========== */
-  .site-frame {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    padding: 16px 72px 56px 72px;
-    box-sizing: border-box;
-    width: calc(100vw);
-    max-height: 100vh;
-  }
-
-  /* ========== TOP NAV — inside site-frame ========== */
+  /* ========== TOP NAV — fixed at viewport top ========== */
   .top-nav {
-    position: relative;
-    width: calc(100vw - 144px);
-    max-width: calc(100vw - 144px);
+    position: fixed;
+    top: 2px; left: 72px; right: 72px;
     height: 47px;
     z-index: 1000;
     pointer-events: none;
     display: flex;
     align-items: center;
-    margin-bottom: 5px;
-    box-sizing: border-box;
   }
 
   .top-nav * { pointer-events: auto; }
@@ -237,8 +220,7 @@
 
   .glass-frame {
     width: 100%;
-    flex: 1;
-    min-height: 0;
+    height: 100%;
     background: var(--glass-bg);
     backdrop-filter: blur(32px) saturate(1.2);
     -webkit-backdrop-filter: blur(32px) saturate(1.2);
@@ -253,9 +235,9 @@
   }
 
   .main-content {
-    flex: 1;
-    min-height: 0;
-    width: 100%;
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
     overflow-x: auto;
     overflow-y: hidden;
     scroll-snap-type: x proximity;
@@ -283,7 +265,6 @@
   .page {
     min-width: 100vw;
     height: 100%;
-    flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -373,25 +354,12 @@
       50% { transform: translateY(6px); }
   }
 
-  /* ========== PAGE INDICATOR ========== */
-  .page-indicator {
-    position: fixed;
-    bottom: 32px;
-    right: 32px;
-    z-index: 100;
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    letter-spacing: 0.08em;
-    font-variant-numeric: tabular-nums;
-  }
-
   /* ========== CONTENT STYLES ========== */
   .works-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
     margin-top: 32px;
-    width: 100%;
   }
 
   .work-card {
@@ -721,12 +689,19 @@
     .page__content { padding: 24px; }
     .vf-page { padding: 40px 20px; }
   }
-</style>
+
+  /* ========== HOVER FIXES ========== */
+  .nav-link:hover { color: var(--accent) !important; }
+  .work-card:hover { transform: translateY(-6px) !important; box-shadow: 0 8px 30px rgba(0,0,0,0.18); }
+  .hero-cta:hover { transform: scale(1.06) !important; }
+  .service-card:hover { transform: translateY(-4px); }
+  .blog-post:hover { transform: translateY(-3px); }
+
+  </style>
 </head>
 <body>
 
 <!-- ========== THREE-SECTION TOP NAV ========== -->
-<div class="site-frame">
 <nav class="top-nav">
   <div class="nav-section nav-left">
     <img class="nav-logo" id="logoBtn" src="logo.svg" alt="LX Logo" title="回到首页">
@@ -734,9 +709,14 @@
 
   <div class="nav-section nav-center">
     <div class="nav-links" id="navLinksHorizontal">
-      <div class="nav-link active" data-target="page" data-index="0">
-        <span class="char">首</span><span class="char">页</span>
-      </div>
+<div class="nav-link" data-target="page" data-index="0">首页</div>
+          <div class="nav-link" data-target="page" data-index="1">作品集</div>
+          <div class="nav-link" data-target="page" data-index="2">关于</div>
+          <div class="nav-link" data-target="page" data-index="3">服务</div>
+          <div class="nav-link" data-target="page" data-index="4">案例</div>
+          <div class="nav-link" data-target="page" data-index="5">联系</div>
+          <div class="nav-link" data-target="vf">博客</div>
+        </div>
       <div class="nav-link" data-target="page" data-index="1">
         <span class="char">作</span><span class="char">品</span><span class="char">集</span>
       </div>
@@ -794,7 +774,6 @@
   </div>
 </nav>
 
-
 <!-- ========== PAGE WRAPPER (glass frame) ========== -->
 <div class="page-wrapper">
 
@@ -811,6 +790,19 @@
       <div class="page__content">
         <h1 class="page__title">用设计讲述<span class="accent">品牌故事</span></h1>
         <p class="page__desc">平面设计师 · 视觉策划 · 品牌顾问<br>将每一个创意转化为打动人心的视觉语言</p>
+        <a href="#page5" class="hero-cta" onclick="event.preventDefault();scrollToPage(5);" style="
+          display: inline-block;
+          margin-top: 28px;
+          padding: 12px 36px;
+          background: var(--accent);
+          color: #fff;
+          border-radius: 100px;
+          font-weight: 600;
+          font-size: 1rem;
+          text-decoration: none;
+          transition: transform 0.2s, box-shadow 0.2s;
+          cursor: pointer;
+        " onmouseover="this.style.transform='scale(1.05)';this.style.boxShadow='0 4px 20px var(--accent-glow)'" onmouseout="this.style.transform='';this.style.boxShadow=''">立即联系</a>
       </div>
     </section>
 
@@ -1018,10 +1010,6 @@
 
 </div><!-- /page-wrapper -->
 
-<!-- ========== PAGE INDICATOR ========== -->
-<div class="page-indicator" id="pageIndicator">01 / 05</div>
-</div>
-</div>
 <script>
 (function() {
   'use strict';
@@ -1031,7 +1019,6 @@
   var navLinks = document.querySelectorAll('.nav-link');
   var themeBtn = document.getElementById('themeBtn');
   var logoBtn = document.getElementById('logoBtn');
-  var pageIndicator = document.getElementById('pageIndicator');
 
   var PAGE_COUNT = 7;
   var currentPage = 0;
@@ -1109,13 +1096,7 @@
     var pageWidth = mainContent.clientWidth;
     mainContent.scrollTo({ left: idx * pageWidth, behavior: 'smooth' });
     updateNavState();
-    updatePageIndicator();
-  }
-
-  function updatePageIndicator() {
-    var num = String(currentPage + 1).padStart(2, '0');
-    pageIndicator.textContent = num + ' / 07';
-  }
+      }
 
   // ========== WHEEL HANDLER — vertical wheel → horizontal scroll ==========
   var wheelAccum = 0;
@@ -1176,8 +1157,7 @@
     if (newPage !== currentPage) {
       currentPage = Math.min(newPage, PAGE_COUNT - 1);
       updateNavState();
-      updatePageIndicator();
-    }
+          }
   });
 
   // ========== FRAMEWORK TRANSITION ==========
@@ -1258,7 +1238,6 @@
     });
 
     // Hide page indicator in vertical mode
-    pageIndicator.style.opacity = inVerticalFramework ? '0' : '';
   }
 
   // ========== LANGUAGE TOGGLE ==========
@@ -1367,8 +1346,7 @@
   });
 
   // Init
-  updatePageIndicator();
-  updateNavState();
+    updateNavState();
 
 })();
 </script>
