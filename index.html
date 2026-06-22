@@ -1139,28 +1139,104 @@
   // ========== WHEEL HANDLER — vertical wheel → continuous horizontal scroll ==========
   var lastPageWheelTimeout = null;
 
+  // ========== WHEEL HANDLER — 惯性滚动 + 边缘回弹 ==========
+  var scrollVelocity = 0;
+  var isScrolling = false;
+  var lastWheelTime = 0;
+  var bounceSpring = null;
+
+  function getMaxScroll() {
+    return mainContent.scrollWidth - mainContent.clientWidth;
+  }
+
+  function animateScroll() {
+    if (Math.abs(scrollVelocity) < 0.5 && bounceSpring === null) {
+      scrollVelocity = 0;
+      isScrolling = false;
+      return;
+    }
+
+    isScrolling = true;
+
+    // 弹性回弹（优先级高于惯性）
+    if (bounceSpring !== null) {
+      bounceSpring.progress += 0.08;
+      if (bounceSpring.progress >= 1) {
+        mainContent.scrollLeft = bounceSpring.target;
+        bounceSpring = null;
+        scrollVelocity = 0;
+        isScrolling = false;
+        return;
+      }
+      // easeOutElastic 回弹曲线
+      var p = bounceSpring.progress;
+      var ease = 1 - Math.pow(1 - p, 3); // cubic ease out
+      mainContent.scrollLeft = bounceSpring.start + (bounceSpring.target - bounceSpring.start) * ease;
+      requestAnimationFrame(animateScroll);
+      return;
+    }
+
+    // 应用惯性速度
+    mainContent.scrollLeft += scrollVelocity;
+
+    // 边界检测 + 回弹
+    var maxScroll = getMaxScroll();
+    if (mainContent.scrollLeft < 0) {
+      var overscroll = -mainContent.scrollLeft;
+      mainContent.scrollLeft = 0;
+      // 启动回弹动画
+      bounceSpring = { start: -Math.min(overscroll * 0.6, 60), target: 0, progress: 0 };
+      scrollVelocity = 0;
+      requestAnimationFrame(animateScroll);
+      return;
+    }
+    if (mainContent.scrollLeft > maxScroll) {
+      var overscroll = mainContent.scrollLeft - maxScroll;
+      mainContent.scrollLeft = maxScroll;
+      bounceSpring = { start: maxScroll + Math.min(overscroll * 0.6, 60), target: maxScroll, progress: 0 };
+      scrollVelocity = 0;
+      requestAnimationFrame(animateScroll);
+      return;
+    }
+
+    // 惯性衰减
+    scrollVelocity *= 0.92;
+    requestAnimationFrame(animateScroll);
+  }
+
   mainContent.addEventListener('wheel', function(e) {
     if (inVerticalFramework) return;
     if (e.ctrlKey) return;
     e.preventDefault();
 
-    // 自由横向滚动，无吸附
-    mainContent.scrollLeft += e.deltaY * 2.5;
-  }, { passive: false });
+    // 累加速度（灵敏度更高）
+    var delta = e.deltaY * 4.5;
+    scrollVelocity += delta;
 
-  // 实时更新 currentPage（无吸附，仅更新导航高亮）
-  var scrollUpdateTimer = null;
-  mainContent.addEventListener('scroll', function() {
-    if (inVerticalFramework) return;
-    var pageWidth = mainContent.clientWidth;
-    if (pageWidth === 0) return;
-    var newPage = Math.floor((mainContent.scrollLeft + pageWidth / 2) / pageWidth);
-    newPage = Math.max(0, Math.min(newPage, PAGE_COUNT - 1));
-    if (newPage !== currentPage) {
-      currentPage = newPage;
-      updateNavState();
+    // 限制最大速度
+    var maxVel = 120;
+    scrollVelocity = Math.max(-maxVel, Math.min(maxVel, scrollVelocity));
+
+    lastWheelTime = Date.now();
+
+    if (!isScrolling) {
+      isScrolling = true;
+      requestAnimationFrame(animateScroll);
     }
-  });
+
+    // 更新 currentPage（节流）
+    clearTimeout(window._navUpdateTimer);
+    window._navUpdateTimer = setTimeout(function() {
+      var pageWidth = mainContent.clientWidth;
+      if (pageWidth === 0) return;
+      var newPage = Math.floor((mainContent.scrollLeft + pageWidth / 2) / pageWidth);
+      newPage = Math.max(0, Math.min(newPage, PAGE_COUNT - 1));
+      if (newPage !== currentPage) {
+        currentPage = newPage;
+        updateNavState();
+      }
+    }, 80);
+  }, { passive: false });
 
   // 最后一页向下滚 → 进入竖向框架
   var lastPageEnterTimer = null;
@@ -1168,25 +1244,14 @@
     if (inVerticalFramework) return;
     if (currentPage !== PAGE_COUNT - 1) return;
     if (e.deltaY < 0) return;
-    var atEnd = mainContent.scrollLeft + mainContent.clientWidth >= mainContent.scrollWidth - 10;
+    var maxScroll = getMaxScroll();
+    var atEnd = mainContent.scrollLeft >= maxScroll - 5;
     if (atEnd) {
       if (lastPageEnterTimer) return;
       lastPageEnterTimer = setTimeout(function() { lastPageEnterTimer = null; }, 1500);
       enterVerticalFramework();
     }
   }, { passive: true });
-
-  // Track scroll position to update currentPage
-  mainContent.addEventListener('scroll', function() {
-    if (inVerticalFramework) return;
-    var pageWidth = mainContent.clientWidth;
-    if (pageWidth === 0) return;
-    var newPage = Math.round(mainContent.scrollLeft / pageWidth);
-    if (newPage !== currentPage) {
-      currentPage = Math.min(newPage, PAGE_COUNT - 1);
-      updateNavState();
-          }
-  });
 
   // ========== FRAMEWORK TRANSITION ==========
   function enterVerticalFramework(done) {
