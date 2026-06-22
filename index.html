@@ -1136,72 +1136,30 @@
     updateNavState();
       }
 
-  // ========== WHEEL HANDLER — vertical wheel → continuous horizontal scroll ==========
-  var lastPageWheelTimeout = null;
-
-  // ========== WHEEL HANDLER — 惯性滚动 + 边缘回弹 ==========
-  var scrollVelocity = 0;
-  var isScrolling = false;
+  // ========== WHEEL HANDLER — 平滑跟手横向滚动 ==========
+  var targetScrollLeft = -1;
+  var isAnimating = false;
   var lastWheelTime = 0;
-  var bounceSpring = null;
 
   function getMaxScroll() {
     return mainContent.scrollWidth - mainContent.clientWidth;
   }
 
-  function animateScroll() {
-    if (Math.abs(scrollVelocity) < 0.5 && bounceSpring === null) {
-      scrollVelocity = 0;
-      isScrolling = false;
+  function clampVal(v) {
+    return Math.max(0, Math.min(v, getMaxScroll()));
+  }
+
+  function smoothStep() {
+    if (targetScrollLeft < 0) { isAnimating = false; return; }
+    var diff = targetScrollLeft - mainContent.scrollLeft;
+    if (Math.abs(diff) < 0.5) {
+      mainContent.scrollLeft = targetScrollLeft;
+      isAnimating = false;
       return;
     }
-
-    isScrolling = true;
-
-    // 弹性回弹（优先级高于惯性）
-    if (bounceSpring !== null) {
-      bounceSpring.progress += 0.08;
-      if (bounceSpring.progress >= 1) {
-        mainContent.scrollLeft = bounceSpring.target;
-        bounceSpring = null;
-        scrollVelocity = 0;
-        isScrolling = false;
-        return;
-      }
-      // easeOutElastic 回弹曲线
-      var p = bounceSpring.progress;
-      var ease = 1 - Math.pow(1 - p, 3); // cubic ease out
-      mainContent.scrollLeft = bounceSpring.start + (bounceSpring.target - bounceSpring.start) * ease;
-      requestAnimationFrame(animateScroll);
-      return;
-    }
-
-    // 应用惯性速度
-    mainContent.scrollLeft += scrollVelocity;
-
-    // 边界检测 + 回弹
-    var maxScroll = getMaxScroll();
-    if (mainContent.scrollLeft < 0) {
-      var overscroll = -mainContent.scrollLeft;
-      mainContent.scrollLeft = 0;
-      // 启动回弹动画
-      bounceSpring = { start: -Math.min(overscroll * 0.6, 60), target: 0, progress: 0 };
-      scrollVelocity = 0;
-      requestAnimationFrame(animateScroll);
-      return;
-    }
-    if (mainContent.scrollLeft > maxScroll) {
-      var overscroll = mainContent.scrollLeft - maxScroll;
-      mainContent.scrollLeft = maxScroll;
-      bounceSpring = { start: maxScroll + Math.min(overscroll * 0.6, 60), target: maxScroll, progress: 0 };
-      scrollVelocity = 0;
-      requestAnimationFrame(animateScroll);
-      return;
-    }
-
-    // 惯性衰减（0.97 = 滑行非常远，几乎不停）
-    scrollVelocity *= 0.97;
-    requestAnimationFrame(animateScroll);
+    // lerp 系数 0.28 = 跟手感强，越大越跟手（上限1.0=无平滑）
+    mainContent.scrollLeft += diff * 0.30;
+    requestAnimationFrame(smoothStep);
   }
 
   mainContent.addEventListener('wheel', function(e) {
@@ -1209,44 +1167,33 @@
     if (e.ctrlKey) return;
     e.preventDefault();
 
-    // 累加速度（灵敏度：滚1次滚轮即可切换一页）
-    var delta = e.deltaY * 25;
-    scrollVelocity += delta;
+    // 初始化 targetScrollLeft
+    if (targetScrollLeft < 0) targetScrollLeft = mainContent.scrollLeft;
 
-    // 限制最大速度
-    var maxVel = 800;
-    scrollVelocity = Math.max(-maxVel, Math.min(maxVel, scrollVelocity));
+    // 滚轮直接映射为位移（灵敏度：滚1次≈翻1页）
+    targetScrollLeft = clampVal(targetScrollLeft + e.deltaY * 22);
 
-    lastWheelTime = Date.now();
-
-    if (!isScrolling) {
-      isScrolling = true;
-      requestAnimationFrame(animateScroll);
-    }
-
-    // 更新 currentPage（节流）
+    // 导航高亮（节流60ms）
     clearTimeout(window._navUpdateTimer);
     window._navUpdateTimer = setTimeout(function() {
-      var pageWidth = mainContent.clientWidth;
-      if (pageWidth === 0) return;
-      var newPage = Math.floor((mainContent.scrollLeft + pageWidth / 2) / pageWidth);
-      newPage = Math.max(0, Math.min(newPage, PAGE_COUNT - 1));
-      if (newPage !== currentPage) {
-        currentPage = newPage;
-        updateNavState();
-      }
-    }, 80);
+      var pw = mainContent.clientWidth;
+      if (pw === 0) return;
+      var np = Math.floor((mainContent.scrollLeft + pw / 2) / pw);
+      np = Math.max(0, Math.min(np, PAGE_COUNT - 1));
+      if (np !== currentPage) { currentPage = np; updateNavState(); }
+    }, 60);
+
+    if (!isAnimating) { isAnimating = true; requestAnimationFrame(smoothStep); }
+    lastWheelTime = Date.now();
   }, { passive: false });
 
-  // 最后一页向下滚 → 进入竖向框架
+  // 最后一页滚到底 → 进入竖向框架
   var lastPageEnterTimer = null;
   mainContent.addEventListener('wheel', function(e) {
     if (inVerticalFramework) return;
     if (currentPage !== PAGE_COUNT - 1) return;
     if (e.deltaY < 0) return;
-    var maxScroll = getMaxScroll();
-    var atEnd = mainContent.scrollLeft >= maxScroll - 5;
-    if (atEnd) {
+    if (mainContent.scrollLeft >= getMaxScroll() - 5) {
       if (lastPageEnterTimer) return;
       lastPageEnterTimer = setTimeout(function() { lastPageEnterTimer = null; }, 1500);
       enterVerticalFramework();
