@@ -1144,51 +1144,39 @@
   mainContent.addEventListener('wheel', function(e) {
     if (inVerticalFramework) return;
     if (e.ctrlKey) return;
-
     e.preventDefault();
 
-    // Directly translate vertical wheel delta into horizontal scroll
-    var scrollAmount = e.deltaY * 3;  // multiplier for sensitivity
-    mainContent.scrollLeft += scrollAmount;
-
-    // On last page, scroll down → enter vertical framework
-    if (currentPage === PAGE_COUNT - 1 && e.deltaY > 0) {
-      // only trigger if we're near the end of horizontal scroll
-      var atEnd = mainContent.scrollLeft + mainContent.clientWidth >= mainContent.scrollWidth - 20;
-      if (atEnd) {
-        if (lastPageWheelTimeout) return;
-        lastPageWheelTimeout = setTimeout(function() { lastPageWheelTimeout = null; }, 1500);
-        enterVerticalFramework();
-      }
-    }
+    // 自由横向滚动，无吸附
+    mainContent.scrollLeft += e.deltaY * 2.5;
   }, { passive: false });
 
-  // Snap to nearest page after wheel stops (debounced)
-  var snapTimer = null;
+  // 实时更新 currentPage（无吸附，仅更新导航高亮）
+  var scrollUpdateTimer = null;
   mainContent.addEventListener('scroll', function() {
     if (inVerticalFramework) return;
-    clearTimeout(snapTimer);
-    snapTimer = setTimeout(function() {
-      var pageWidth = mainContent.clientWidth;
-      var newPage = Math.round(mainContent.scrollLeft / pageWidth);
-      newPage = Math.max(0, Math.min(newPage, PAGE_COUNT - 1));
-      if (newPage !== currentPage) {
-        scrollToPage(newPage);
-      }
-    }, 300);
+    var pageWidth = mainContent.clientWidth;
+    if (pageWidth === 0) return;
+    var newPage = Math.floor((mainContent.scrollLeft + pageWidth / 2) / pageWidth);
+    newPage = Math.max(0, Math.min(newPage, PAGE_COUNT - 1));
+    if (newPage !== currentPage) {
+      currentPage = newPage;
+      updateNavState();
+    }
   });
 
-  // Vertical framework: wheel up at top to exit back to horizontal
-  var vfWheelTimeout = null;
-  verticalFw.addEventListener('wheel', function(e) {
-    if (!inVerticalFramework) return;
-    if (verticalFw.scrollTop <= 0 && e.deltaY < 0) {
-      e.preventDefault();
-      if (vfWheelTimeout) return;
-      vfWheelTimeout = setTimeout(function() { vfWheelTimeout = null; }, 900);
-      exitVerticalFramework();
+  // 最后一页向下滚 → 进入竖向框架
+  var lastPageEnterTimer = null;
+  mainContent.addEventListener('wheel', function(e) {
+    if (inVerticalFramework) return;
+    if (currentPage !== PAGE_COUNT - 1) return;
+    if (e.deltaY < 0) return;
+    var atEnd = mainContent.scrollLeft + mainContent.clientWidth >= mainContent.scrollWidth - 10;
+    if (atEnd) {
+      if (lastPageEnterTimer) return;
+      lastPageEnterTimer = setTimeout(function() { lastPageEnterTimer = null; }, 1500);
+      enterVerticalFramework();
     }
-  }, { passive: false });
+  }, { passive: true });
 
   // Track scroll position to update currentPage
   mainContent.addEventListener('scroll', function() {
