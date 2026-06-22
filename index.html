@@ -1143,7 +1143,7 @@
 
     // 直接设置 scrollLeft，无动画，像普通竖向滚动一样即滚即停
     var maxScroll = mainContent.scrollWidth - mainContent.clientWidth;
-    mainContent.scrollLeft = Math.max(0, Math.min(mainContent.scrollLeft + e.deltaY * 18, maxScroll));
+    mainContent.scrollLeft = Math.max(0, Math.min(mainContent.scrollLeft + e.deltaY * 8, maxScroll));
 
     // 导航高亮（节流）
     clearTimeout(_navUpdateTimer);
