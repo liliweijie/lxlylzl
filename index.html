@@ -694,8 +694,6 @@
   .nav-link:hover { color: var(--accent) !important; }
   .work-card:hover { transform: translateY(-6px) !important; box-shadow: 0 8px 30px rgba(0,0,0,0.18); }
   .hero-cta:hover { transform: scale(1.06) !important; }
-  .service-card:hover { transform: translateY(-4px); }
-  .blog-post:hover { transform: translateY(-3px); }
 
   </style>
 </head>
@@ -709,14 +707,9 @@
 
   <div class="nav-section nav-center">
     <div class="nav-links" id="navLinksHorizontal">
-<div class="nav-link" data-target="page" data-index="0">首页</div>
-          <div class="nav-link" data-target="page" data-index="1">作品集</div>
-          <div class="nav-link" data-target="page" data-index="2">关于</div>
-          <div class="nav-link" data-target="page" data-index="3">服务</div>
-          <div class="nav-link" data-target="page" data-index="4">案例</div>
-          <div class="nav-link" data-target="page" data-index="5">联系</div>
-          <div class="nav-link" data-target="vf">博客</div>
-        </div>
+      <div class="nav-link active" data-target="page" data-index="0">
+        <span class="char">首</span><span class="char">页</span>
+      </div>
       <div class="nav-link" data-target="page" data-index="1">
         <span class="char">作</span><span class="char">品</span><span class="char">集</span>
       </div>
@@ -729,23 +722,12 @@
       <div class="nav-link" data-target="page" data-index="4">
         <span class="char">案</span><span class="char">例</span>
       </div>
-
       <div class="nav-v-divider"></div>
-
       <div class="nav-link" data-target="vertical" data-index="0">
         <span class="char">联</span><span class="char">系</span>
       </div>
       <div class="nav-link" data-target="vertical" data-index="1">
         <span class="char">博</span><span class="char">客</span>
-      </div>
-      <div class="nav-link" data-target="vertical" data-index="2">
-        <span class="char">关</span><span class="char">于</span><span class="char">我</span>
-      </div>
-      <div class="nav-link" data-target="vertical" data-index="3">
-        <span class="char">技</span><span class="char">能</span>
-      </div>
-      <div class="nav-link" data-target="vertical" data-index="4">
-        <span class="char">流</span><span class="char">程</span>
       </div>
     </div>
   </div>
@@ -790,19 +772,7 @@
       <div class="page__content">
         <h1 class="page__title">用设计讲述<span class="accent">品牌故事</span></h1>
         <p class="page__desc">平面设计师 · 视觉策划 · 品牌顾问<br>将每一个创意转化为打动人心的视觉语言</p>
-        <a href="#page5" class="hero-cta" onclick="event.preventDefault();scrollToPage(5);" style="
-          display: inline-block;
-          margin-top: 28px;
-          padding: 12px 36px;
-          background: var(--accent);
-          color: #fff;
-          border-radius: 100px;
-          font-weight: 600;
-          font-size: 1rem;
-          text-decoration: none;
-          transition: transform 0.2s, box-shadow 0.2s;
-          cursor: pointer;
-        " onmouseover="this.style.transform='scale(1.05)';this.style.boxShadow='0 4px 20px var(--accent-glow)'" onmouseout="this.style.transform='';this.style.boxShadow=''">立即联系</a>
+        <a href="#page5" class="hero-cta" onclick="event.preventDefault()" style="display:inline-block;margin-top:28px;padding:12px 36px;background:var(--accent);color:#fff;border-radius:100px;font-weight:600;font-size:1rem;text-decoration:none;transition:transform 0.2s,box-shadow 0.2s;cursor:pointer">立即联系</a>
       </div>
     </section>
 
@@ -811,9 +781,9 @@
       <div class="page__content" style="width:100%;max-width:900px;">
         <h1 class="page__title"><span class="accent">作品集</span></h1>
         <div class="works-grid">
-          <div class="work-card"><div class="work-card__img">&#x1F3A8;</div><div class="work-card__info"><div class="work-card__title">品牌视觉升级</div><div class="work-card__cat">品牌设计 · 2024</div></div></div>
-          <div class="work-card"><div class="work-card__img">&#x1F4E6;</div><div class="work-card__info"><div class="work-card__title">包装设计系列</div><div class="work-card__cat">包装设计 · 2024</div></div></div>
-          <div class="work-card"><div class="work-card__img">&#x1F4F1;</div><div class="work-card__info"><div class="work-card__title">电商详情页</div><div class="work-card__cat">电商设计 · 2023</div></div></div>
+          <div class="work-card"><div class="work-card__img"><div style="width:100%;height:100%;background:linear-gradient(135deg,#c0392b,#e74c3c,#f39c12);display:flex;align-items:center;justify-content:center;font-size:3rem;color:white;text-shadow:0 2px 10px rgba(0,0,0,0.3)">🎨</div>&#x1F3A8;<div class="work-card__info"><div class="work-card__title">品牌视觉升级</div><div class="work-card__cat">品牌设计 · 2024</div></div></div>
+          <div class="work-card"><div class="work-card__img"><div style="width:100%;height:100%;background:linear-gradient(135deg,#2c3e50,#3498db,#1abc9c);display:flex;align-items:center;justify-content:center;font-size:3rem;color:white;text-shadow:0 2px 10px rgba(0,0,0,0.3)">🎨</div>&#x1F4E6;<div class="work-card__info"><div class="work-card__title">包装设计系列</div><div class="work-card__cat">包装设计 · 2024</div></div></div>
+          <div class="work-card"><div class="work-card__img"><div style="width:100%;height:100%;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;font-size:3rem;color:white;text-shadow:0 2px 10px rgba(0,0,0,0.3)">🎨</div>&#x1F4F1;<div class="work-card__info"><div class="work-card__title">电商详情页</div><div class="work-card__cat">电商设计 · 2023</div></div></div>
         </div>
       </div>
     </section>
@@ -901,9 +871,9 @@
       <div class="page__content" style="width:100%;max-width:900px;">
         <h1 class="page__title">更多<span class="accent">案例</span></h1>
         <div class="works-grid">
-          <div class="work-card"><div class="work-card__img">&#x1F3AD;</div><div class="work-card__info"><div class="work-card__title">品牌IP形象设计</div><div class="work-card__cat">品牌设计 · 2024</div></div></div>
-          <div class="work-card"><div class="work-card__img">&#x1F4E2;</div><div class="work-card__info"><div class="work-card__title">企业画册设计</div><div class="work-card__cat">画册设计 · 2023</div></div></div>
-          <div class="work-card"><div class="work-card__img">&#x1F3A8;</div><div class="work-card__info"><div class="work-card__title">社交媒体视觉</div><div class="work-card__cat">社媒设计 · 2024</div></div></div>
+          <div class="work-card"><div class="work-card__img"><div style="width:100%;height:100%;background:linear-gradient(135deg,#f093fb,#f5576c);display:flex;align-items:center;justify-content:center;font-size:3rem;color:white;text-shadow:0 2px 10px rgba(0,0,0,0.3)">🎨</div>&#x1F3AD;<div class="work-card__info"><div class="work-card__title">品牌IP形象设计</div><div class="work-card__cat">品牌设计 · 2024</div></div></div>
+          <div class="work-card"><div class="work-card__img"><div style="width:100%;height:100%;background:linear-gradient(135deg,#4facfe,#00f2fe);display:flex;align-items:center;justify-content:center;font-size:3rem;color:white;text-shadow:0 2px 10px rgba(0,0,0,0.3)">🎨</div>&#x1F4E2;<div class="work-card__info"><div class="work-card__title">企业画册设计</div><div class="work-card__cat">画册设计 · 2023</div></div></div>
+          <div class="work-card"><div class="work-card__img"><div style="width:100%;height:100%;background:linear-gradient(135deg,#43e97b,#38f9d7);display:flex;align-items:center;justify-content:center;font-size:3rem;color:white;text-shadow:0 2px 10px rgba(0,0,0,0.3)">🎨</div>&#x1F3A8;<div class="work-card__info"><div class="work-card__title">社交媒体视觉</div><div class="work-card__cat">社媒设计 · 2024</div></div></div>
         </div>
       </div>
     </section>
@@ -1244,7 +1214,7 @@
   var currentLang = 'zh';
   var i18n = {
     zh: {
-      nav: ['首页', '作品集', '关于', '服务', '案例', '联系', '博客', '关于我', '技能', '流程'],
+      nav: ['首页', '作品集', '关于', '服务', '案例', '联系', '博客'],
       pageTitle: ['创意设计，触手可及', '精选作品集', '关于我', '我的服务', '客户评价'],
       pageDesc: [
         '用极简主义的设计语言，为品牌注入灵魂。每一个像素，都是对美的极致追求。',
@@ -1256,7 +1226,7 @@
       vfTitles: ['取得联系', '博客随笔', '关于我', '专业技能', '工作流程'],
     },
     en: {
-      nav: ['Home', 'Works', 'About', 'Services', 'Cases', 'Contact', 'Blog', 'About Me', 'Skills', 'Process'],
+      nav: ['Home', 'Works', 'About', 'Services', 'Cases', 'Contact', 'Blog'],
       pageTitle: ['Creative Design at Your Fingertips', 'Selected Works', 'About Me', 'My Services', 'Testimonials'],
       pageDesc: [
         'Using minimalist design language to inject soul into brands. Every pixel is a pursuit of beauty.',
