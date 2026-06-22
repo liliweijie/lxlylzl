@@ -448,6 +448,19 @@
 
   .stat-label { font-size: 0.85rem; color: var(--text-secondary); }
 
+  /* ========== BRANDS PAGE — centered layout ========== */
+  .brands-text {
+    font-size: 1rem; color: var(--text-secondary); line-height: 1.9;
+    text-align: left; max-width: 680px;
+  }
+  .stats-grid-center {
+    display: flex; flex-wrap: wrap; gap: 24px 48px;
+    justify-content: center; margin-top: 36px;
+  }
+  .stat-item-c { display: flex; flex-direction: column; gap: 4px; align-items: center; }
+  .stat-num-c { font-size: 2rem; font-weight: 800; color: var(--accent); }
+  .stat-lbl-c { font-size: 0.85rem; color: var(--text-secondary); }
+
   .services-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -932,34 +945,24 @@
 
     <section class="page page--brands" id="page6">
       <div class="page__bg"></div>
-      <div class="page__content" style="width:100%;max-width:900px;"><div class="page__scroll-frame">
+      <div class="page__content">
         <h1 class="page__title">合作<span class="accent">品牌</span></h1>
-        <div style="max-width:680px;margin:0 auto;text-align:left;">
-          <p style="font-size:1rem;color:var(--text-secondary);line-height:1.9;">
-            多年来与各行各业的企业建立了长期合作关系，涵盖快消、科技、文化、教育等多个领域。每一个合作品牌都是一段故事，我很荣幸能用设计讲述它们的故事。
-          </p>
-          <p style="font-size:1rem;color:var(--text-secondary);line-height:1.9;margin-top:16px;">
-            从初创品牌到成熟企业，我始终以「让每一个像素都有意义」为准则，为每个客户量身定制符合其品牌调性与市场定位的视觉方案。
-          </p>
-          <p style="font-size:1rem;color:var(--text-secondary);line-height:1.9;margin-top:16px;">
-            设计不仅是美学，更是沟通——通过视觉语言连接品牌与受众，让每一次传播都精准触达人心。无论是品牌从0到1的完整构建，还是成熟品牌的视觉升级，我都能提供专业、系统且富有创意的解决方案。
-          </p>
-          <p style="font-size:1rem;color:var(--text-secondary);line-height:1.9;margin-top:16px;">
-            期待与你的品牌相遇，一起创造下一个精彩故事。
-          </p>
-          <div style="display:flex;flex-wrap:wrap;gap:24px 48px;justify-content:center;margin-top:36px;">
-            <div style="display:flex;flex-direction:column;gap:4px;"><div style="font-size:2rem;font-weight:800;color:var(--accent)">30+</div><div style="font-size:0.85rem;color:var(--text-secondary)">合作品牌</div></div>
-            <div style="display:flex;flex-direction:column;gap:4px;"><div style="font-size:2rem;font-weight:800;color:var(--accent)">8年</div><div style="font-size:0.85rem;color:var(--text-secondary)">设计经验</div></div>
-            <div style="display:flex;flex-direction:column;gap:4px;"><div style="font-size:2rem;font-weight:800;color:var(--accent)">120+</div><div style="font-size:0.85rem;color:var(--text-secondary)">完成项目</div></div>
-            <div style="display:flex;flex-direction:column;gap:4px;"><div style="font-size:2rem;font-weight:800;color:var(--accent)">98%</div><div style="font-size:0.85rem;color:var(--text-secondary)">复购率</div></div>
-            <div style="display:flex;flex-direction:column;gap:4px;"><div style="font-size:2rem;font-weight:800;color:var(--accent)">15+</div><div style="font-size:0.85rem;color:var(--text-secondary)">行业奖项</div></div>
-            <div style="display:flex;flex-direction:column;gap:4px;"><div style="font-size:2rem;font-weight:800;color:var(--accent)">∞</div><div style="font-size:0.85rem;color:var(--text-secondary)">创意热情</div></div>
-            <div style="display:flex;flex-direction:column;gap:4px;"><div style="font-size:2rem;font-weight:800;color:var(--accent)">50+</div><div style="font-size:0.85rem;color:var(--text-secondary)">包装设计</div></div>
-            <div style="display:flex;flex-direction:column;gap:4px;"><div style="font-size:2rem;font-weight:800;color:var(--accent)">40+</div><div style="font-size:0.85rem;color:var(--text-secondary)">VI项目</div></div>
-            <div style="display:flex;flex-direction:column;gap:4px;"><div style="font-size:2rem;font-weight:800;color:var(--accent)">20+</div><div style="font-size:0.85rem;color:var(--text-secondary)">画册设计</div></div>
-          </div>
+        <p class="brands-text">多年来与各行各业的企业建立了长期合作关系，涵盖快消、科技、文化、教育等多个领域。每一个合作品牌都是一段故事，我很荣幸能用设计讲述它们的故事。</p>
+        <p class="brands-text">从初创品牌到成熟企业，我始终以「让每一个像素都有意义」为准则，为每个客户量身定制符合其品牌调性与市场定位的视觉方案。</p>
+        <p class="brands-text">设计不仅是美学，更是沟通——通过视觉语言连接品牌与受众，让每一次传播都精准触达人心。无论是品牌从0到1的完整构建，还是成熟品牌的视觉升级，我都能提供专业、系统且富有创意的解决方案。</p>
+        <p class="brands-text">期待与你的品牌相遇，一起创造下一个精彩故事。</p>
+        <div class="stats-grid-center">
+          <div class="stat-item-c"><span class="stat-num-c">30+</span><span class="stat-lbl-c">合作品牌</span></div>
+          <div class="stat-item-c"><span class="stat-num-c">8年</span><span class="stat-lbl-c">设计经验</span></div>
+          <div class="stat-item-c"><span class="stat-num-c">120+</span><span class="stat-lbl-c">完成项目</span></div>
+          <div class="stat-item-c"><span class="stat-num-c">98%</span><span class="stat-lbl-c">复购率</span></div>
+          <div class="stat-item-c"><span class="stat-num-c">15+</span><span class="stat-lbl-c">行业奖项</span></div>
+          <div class="stat-item-c"><span class="stat-num-c">∞</span><span class="stat-lbl-c">创意热情</span></div>
+          <div class="stat-item-c"><span class="stat-num-c">50+</span><span class="stat-lbl-c">包装设计</span></div>
+          <div class="stat-item-c"><span class="stat-num-c">40+</span><span class="stat-lbl-c">VI项目</span></div>
+          <div class="stat-item-c"><span class="stat-num-c">20+</span><span class="stat-lbl-c">画册设计</span></div>
         </div>
-      </div></div>
+      </div>
     </section>
 
     </div>
