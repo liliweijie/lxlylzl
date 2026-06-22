@@ -34,7 +34,7 @@
     --card-bg: rgba(0,0,0,0.03);
   }
 
-  html { font-size: 16px; scroll-behavior: smooth; }
+  html { font-size: 16px; }
 
   body {
     font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
@@ -240,7 +240,6 @@
     width: 100%; height: 100%;
     overflow-x: auto;
     overflow-y: hidden;
-    scroll-behavior: smooth;
     z-index: 1;
     transition: opacity 0.8s ease;
   }
@@ -323,7 +322,6 @@
     visibility: hidden;
     transition: opacity 0.8s, visibility 0.8s;
     z-index: 0;
-    scroll-behavior: smooth;
     border-radius: 28px;
   }
 
@@ -710,7 +708,6 @@
     top: 0; left: 0; right: 0; bottom: 0;
     overflow-y: auto;
     overflow-x: hidden;
-    scroll-behavior: smooth;
     border-radius: 28px;
   }
     .page__content { padding: 24px; }
@@ -1136,55 +1133,27 @@
     updateNavState();
       }
 
-  // ========== WHEEL HANDLER — 平滑跟手横向滚动 ==========
-  var targetScrollLeft = -1;
-  var isAnimating = false;
-  var lastWheelTime = 0;
-
-  function getMaxScroll() {
-    return mainContent.scrollWidth - mainContent.clientWidth;
-  }
-
-  function clampVal(v) {
-    return Math.max(0, Math.min(v, getMaxScroll()));
-  }
-
-  function smoothStep() {
-    if (targetScrollLeft < 0) { isAnimating = false; return; }
-    var diff = targetScrollLeft - mainContent.scrollLeft;
-    if (Math.abs(diff) < 0.5) {
-      mainContent.scrollLeft = targetScrollLeft;
-      isAnimating = false;
-      return;
-    }
-    // lerp 系数 0.28 = 跟手感强，越大越跟手（上限1.0=无平滑）
-    mainContent.scrollLeft += diff * 0.30;
-    requestAnimationFrame(smoothStep);
-  }
+  // ========== WHEEL HANDLER — 直接映射滚轮到横向滚动（无惯性无平滑） ==========
+  var _navUpdateTimer = null;
 
   mainContent.addEventListener('wheel', function(e) {
     if (inVerticalFramework) return;
     if (e.ctrlKey) return;
     e.preventDefault();
 
-    // 初始化 targetScrollLeft
-    if (targetScrollLeft < 0) targetScrollLeft = mainContent.scrollLeft;
+    // 直接设置 scrollLeft，无动画，像普通竖向滚动一样即滚即停
+    var maxScroll = mainContent.scrollWidth - mainContent.clientWidth;
+    mainContent.scrollLeft = Math.max(0, Math.min(mainContent.scrollLeft + e.deltaY * 18, maxScroll));
 
-    // 滚轮直接映射为位移（灵敏度：滚1次≈翻1页）
-    targetScrollLeft = clampVal(targetScrollLeft + e.deltaY * 22);
-
-    // 导航高亮（节流60ms）
-    clearTimeout(window._navUpdateTimer);
-    window._navUpdateTimer = setTimeout(function() {
+    // 导航高亮（节流）
+    clearTimeout(_navUpdateTimer);
+    _navUpdateTimer = setTimeout(function() {
       var pw = mainContent.clientWidth;
       if (pw === 0) return;
       var np = Math.floor((mainContent.scrollLeft + pw / 2) / pw);
       np = Math.max(0, Math.min(np, PAGE_COUNT - 1));
       if (np !== currentPage) { currentPage = np; updateNavState(); }
     }, 60);
-
-    if (!isAnimating) { isAnimating = true; requestAnimationFrame(smoothStep); }
-    lastWheelTime = Date.now();
   }, { passive: false });
 
   // 最后一页滚到底 → 进入竖向框架
@@ -1193,7 +1162,8 @@
     if (inVerticalFramework) return;
     if (currentPage !== PAGE_COUNT - 1) return;
     if (e.deltaY < 0) return;
-    if (mainContent.scrollLeft >= getMaxScroll() - 5) {
+    var maxScroll = mainContent.scrollWidth - mainContent.clientWidth;
+    if (mainContent.scrollLeft >= maxScroll - 5) {
       if (lastPageEnterTimer) return;
       lastPageEnterTimer = setTimeout(function() { lastPageEnterTimer = null; }, 1500);
       enterVerticalFramework();
