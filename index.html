@@ -1199,8 +1199,8 @@
       return;
     }
 
-    // 惯性衰减
-    scrollVelocity *= 0.92;
+    // 惯性衰减（0.95 = 滑行更远；越接近1滑行越远）
+    scrollVelocity *= 0.95;
     requestAnimationFrame(animateScroll);
   }
 
@@ -1209,12 +1209,12 @@
     if (e.ctrlKey) return;
     e.preventDefault();
 
-    // 累加速度（灵敏度更高）
-    var delta = e.deltaY * 4.5;
+    // 累加速度（灵敏度：滚约2次滚轮切换一页）
+    var delta = e.deltaY * 10;
     scrollVelocity += delta;
 
     // 限制最大速度
-    var maxVel = 120;
+    var maxVel = 300;
     scrollVelocity = Math.max(-maxVel, Math.min(maxVel, scrollVelocity));
 
     lastWheelTime = Date.now();
