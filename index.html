@@ -269,7 +269,7 @@
     align-items: center;
     justify-content: center;
     position: relative;
-    overflow-y: auto;
+    overflow: hidden;
     scroll-snap-align: start;
   }
 
@@ -285,6 +285,24 @@
     text-align: center;
     padding: 40px;
     max-width: 680px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  /* ========== PAGE SCROLL FRAME ========== */
+  .page__scroll-frame {
+    width: 100%;
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 8px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .page__scroll-frame::-webkit-scrollbar {
+    display: none;
   }
 
   .page__title {
@@ -769,11 +787,11 @@
 
     <section class="page page--hero" id="page0">
       <div class="page__bg"></div>
-      <div class="page__content">
+      <div class="page__content"><div class="page__scroll-frame">
         <h1 class="page__title">用设计讲述<span class="accent">品牌故事</span></h1>
         <p class="page__desc">平面设计师 · 视觉策划 · 品牌顾问<br>将每一个创意转化为打动人心的视觉语言</p>
         <a href="#page5" class="hero-cta" onclick="event.preventDefault()" style="display:inline-block;margin-top:28px;padding:12px 36px;background:var(--accent);color:#fff;border-radius:100px;font-weight:600;font-size:1rem;text-decoration:none;transition:transform 0.2s,box-shadow 0.2s;cursor:pointer">立即联系</a>
-      </div>
+      </div></div>
     </section>
 
     <section class="page page--works" id="page1">
@@ -790,7 +808,7 @@
 
     <section class="page page--about" id="page2">
       <div class="page__bg"></div>
-      <div class="page__content" style="width:100%;max-width:900px;">
+      <div class="page__content" style="width:100%;max-width:900px;"><div class="page__scroll-frame">
         <h1 class="page__title">关于<span class="accent">我</span></h1>
         <div class="about-grid">
           <div class="about-text">
@@ -802,24 +820,24 @@
             <div class="stat-item"><div class="stat-number">30+</div><div class="stat-label">合作品牌</div></div>
           </div>
         </div>
-      </div>
+      </div></div>
     </section>
 
     <section class="page page--services" id="page3">
       <div class="page__bg"></div>
-      <div class="page__content" style="width:100%;max-width:900px;">
+      <div class="page__content" style="width:100%;max-width:900px;"><div class="page__scroll-frame">
         <h1 class="page__title">设计<span class="accent">服务</span></h1>
         <div class="services-grid">
           <div class="service-card"><div class="service-icon">&#x1F3AF;</div><div class="service-title">品牌视觉设计</div><div class="service-desc">Logo设计、VI系统、品牌手册、视觉规范制定</div></div>
           <div class="service-card"><div class="service-icon">&#x1F4E6;</div><div class="service-title">包装设计</div><div class="service-desc">产品包装、礼盒设计、包装结构、材质选配</div></div>
           <div class="service-card"><div class="service-icon">&#x1F4E2;</div><div class="service-title">电商视觉</div><div class="service-desc">详情页设计、主图策划、店铺视觉、营销素材</div></div>
         </div>
-      </div>
+      </div></div>
     </section>
 
     <section class="page page--testimonials" id="page4">
       <div class="page__bg"></div>
-      <div class="page__content" style="width:100%;max-width:900px;">
+      <div class="page__content" style="width:100%;max-width:900px;"><div class="page__scroll-frame">
         <h1 class="page__title">客户<span class="accent">评价</span></h1>
         <div class="testimonials-list">
           <div class="testimonial-item">
@@ -863,12 +881,12 @@
             </div>
           </div>
         </div>
-      </div>
+      </div></div>
     </section>
 
     <section class="page page--cases-extra" id="page5">
       <div class="page__bg"></div>
-      <div class="page__content" style="width:100%;max-width:900px;">
+      <div class="page__content" style="width:100%;max-width:900px;"><div class="page__scroll-frame">
         <h1 class="page__title">更多<span class="accent">案例</span></h1>
         <div class="works-grid">
           <div class="work-card"><div class="work-card__img"><div style="width:100%;height:100%;background:linear-gradient(135deg,#f093fb,#f5576c);display:flex;align-items:center;justify-content:center;font-size:3rem;color:white;text-shadow:0 2px 10px rgba(0,0,0,0.3)">🎨</div>&#x1F3AD;<div class="work-card__info"><div class="work-card__title">品牌IP形象设计</div><div class="work-card__cat">品牌设计 · 2024</div></div></div>
@@ -880,7 +898,7 @@
 
     <section class="page page--brands" id="page6">
       <div class="page__bg"></div>
-      <div class="page__content" style="width:100%;max-width:900px;">
+      <div class="page__content" style="width:100%;max-width:900px;"><div class="page__scroll-frame">
         <h1 class="page__title">合作<span class="accent">品牌</span></h1>
         <div class="about-grid">
           <div class="about-text">
@@ -892,7 +910,7 @@
             <div class="stat-item"><div class="stat-number">120+</div><div class="stat-label">完成项目</div></div>
           </div>
         </div>
-      </div>
+      </div></div>
     </section>
 
     </div>
@@ -975,7 +993,7 @@
 
 </div>
 
-  </div><!-- /glass-frame -->
+  </div></div><!-- /glass-frame -->
 </div><!-- /app-container -->
 
 </div><!-- /page-wrapper -->
@@ -1076,6 +1094,36 @@
   mainContent.addEventListener('wheel', function(e) {
     if (inVerticalFramework) return;
     if (e.ctrlKey) return;
+
+    // Check if inside a scroll frame — allow content scroll, page-turn only at edges
+    var scrollFrame = e.target.closest ? e.target.closest('.page__scroll-frame') : null;
+    if (scrollFrame) {
+      var atTop = scrollFrame.scrollTop <= 0;
+      var atBottom = scrollFrame.scrollTop + scrollFrame.clientHeight >= scrollFrame.scrollHeight - 2;
+      if ((e.deltaY < 0 && atTop) || (e.deltaY > 0 && atBottom)) {
+        e.preventDefault();
+        wheelAccum += e.deltaY;
+        if (!wheelRAF) {
+          wheelRAF = requestAnimationFrame(function() {
+            if (Math.abs(wheelAccum) >= 50) {
+              var targetPage = currentPage;
+              if (wheelAccum > 0) {
+                targetPage = Math.min(currentPage + 1, PAGE_COUNT - 1);
+              } else {
+                targetPage = Math.max(currentPage - 1, 0);
+              }
+              if (targetPage !== currentPage) {
+                scrollToPage(targetPage);
+              }
+            }
+            wheelAccum = 0;
+            wheelRAF = null;
+          });
+        }
+      }
+      return;
+    }
+
     e.preventDefault();
 
     // Accumulate delta until threshold, then snap to page
