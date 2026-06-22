@@ -1199,8 +1199,8 @@
       return;
     }
 
-    // 惯性衰减（0.95 = 滑行更远；越接近1滑行越远）
-    scrollVelocity *= 0.95;
+    // 惯性衰减（0.97 = 滑行非常远，几乎不停）
+    scrollVelocity *= 0.97;
     requestAnimationFrame(animateScroll);
   }
 
@@ -1209,12 +1209,12 @@
     if (e.ctrlKey) return;
     e.preventDefault();
 
-    // 累加速度（灵敏度：滚约2次滚轮切换一页）
-    var delta = e.deltaY * 10;
+    // 累加速度（灵敏度：滚1次滚轮即可切换一页）
+    var delta = e.deltaY * 25;
     scrollVelocity += delta;
 
     // 限制最大速度
-    var maxVel = 300;
+    var maxVel = 800;
     scrollVelocity = Math.max(-maxVel, Math.min(maxVel, scrollVelocity));
 
     lastWheelTime = Date.now();
