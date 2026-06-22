@@ -1138,9 +1138,7 @@
     updateNavState();
       }
 
-  // ========== WHEEL HANDLER — vertical wheel → horizontal scroll ==========
-  var wheelAccum = 0;
-  var wheelRAF = null;
+  // ========== WHEEL HANDLER — vertical wheel → continuous horizontal scroll ==========
   var lastPageWheelTimeout = null;
 
   mainContent.addEventListener('wheel', function(e) {
@@ -1149,33 +1147,36 @@
 
     e.preventDefault();
 
-    // Accumulate delta until threshold, then snap to page
-    wheelAccum += e.deltaY;
-    if (!wheelRAF) {
-      wheelRAF = requestAnimationFrame(function() {
-        if (Math.abs(wheelAccum) >= 50) {
-          var targetPage = currentPage;
-          if (wheelAccum > 0) {
-            targetPage = Math.min(currentPage + 1, PAGE_COUNT - 1);
-          } else {
-            targetPage = Math.max(currentPage - 1, 0);
-          }
-          if (targetPage !== currentPage) {
-            scrollToPage(targetPage);
-          }
-        }
-        wheelAccum = 0;
-        wheelRAF = null;
-      });
-    }
+    // Directly translate vertical wheel delta into horizontal scroll
+    var scrollAmount = e.deltaY * 3;  // multiplier for sensitivity
+    mainContent.scrollLeft += scrollAmount;
 
     // On last page, scroll down → enter vertical framework
     if (currentPage === PAGE_COUNT - 1 && e.deltaY > 0) {
-      if (lastPageWheelTimeout) return;
-      lastPageWheelTimeout = setTimeout(function() { lastPageWheelTimeout = null; }, 1500);
-      enterVerticalFramework();
+      // only trigger if we're near the end of horizontal scroll
+      var atEnd = mainContent.scrollLeft + mainContent.clientWidth >= mainContent.scrollWidth - 20;
+      if (atEnd) {
+        if (lastPageWheelTimeout) return;
+        lastPageWheelTimeout = setTimeout(function() { lastPageWheelTimeout = null; }, 1500);
+        enterVerticalFramework();
+      }
     }
   }, { passive: false });
+
+  // Snap to nearest page after wheel stops (debounced)
+  var snapTimer = null;
+  mainContent.addEventListener('scroll', function() {
+    if (inVerticalFramework) return;
+    clearTimeout(snapTimer);
+    snapTimer = setTimeout(function() {
+      var pageWidth = mainContent.clientWidth;
+      var newPage = Math.round(mainContent.scrollLeft / pageWidth);
+      newPage = Math.max(0, Math.min(newPage, PAGE_COUNT - 1));
+      if (newPage !== currentPage) {
+        scrollToPage(newPage);
+      }
+    }, 300);
+  });
 
   // Vertical framework: wheel up at top to exit back to horizontal
   var vfWheelTimeout = null;
