@@ -294,15 +294,9 @@
   /* ========== PAGE SCROLL FRAME ========== */
   .page__scroll-frame {
     width: 100%;
-    max-height: calc(100vh - 200px);
-    overflow-y: auto;
+    overflow-y: hidden !important;
     overflow-x: hidden;
     padding-right: 8px;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-  .page__scroll-frame::-webkit-scrollbar {
-    display: none;
   }
 
   .page__title {
@@ -380,43 +374,47 @@
     margin-top: 32px;
   }
 
+  /* 紧凑型作品卡片 — 类似服务页面的风格，不超出视口 */
   .work-card {
-    aspect-ratio: 3/4;
+    padding: 28px 24px;
     background: var(--card-bg);
     border: 1px solid var(--glass-border);
     border-radius: 16px;
-    overflow: hidden;
-    position: relative;
-    cursor: pointer;
-    transition: transform 0.3s, border-color 0.3s;
+    text-align: left;
+    transition: border-color 0.3s, transform 0.3s;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
   }
 
   .work-card:hover {
-    transform: translateY(-4px);
     border-color: var(--accent);
+    transform: translateY(-2px);
   }
 
   .work-card__img {
-    width: 100%;
-    height: 70%;
-    background: linear-gradient(135deg, rgba(192,57,43,0.2), rgba(192,57,43,0.05));
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 2rem;
-  }
-
-  .work-card__info { padding: 16px; }
-
-  .work-card__title {
-    font-size: 0.95rem;
-    font-weight: 600;
+    font-size: 1.6rem;
     margin-bottom: 4px;
   }
 
+  .work-card__info { padding: 0; }
+
+  .work-card__title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
   .work-card__cat {
-    font-size: 0.78rem;
-    color: var(--text-muted);
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
   }
 
   .about-grid {
@@ -799,9 +797,27 @@
       <div class="page__content" style="width:100%;max-width:900px;">
         <h1 class="page__title"><span class="accent">作品集</span></h1>
         <div class="works-grid">
-          <div class="work-card"><div class="work-card__img"><div style="width:100%;height:100%;background:linear-gradient(135deg,#c0392b,#e74c3c,#f39c12);display:flex;align-items:center;justify-content:center;font-size:3rem;color:white;text-shadow:0 2px 10px rgba(0,0,0,0.3)">🎨</div>&#x1F3A8;<div class="work-card__info"><div class="work-card__title">品牌视觉升级</div><div class="work-card__cat">品牌设计 · 2024</div></div></div>
-          <div class="work-card"><div class="work-card__img"><div style="width:100%;height:100%;background:linear-gradient(135deg,#2c3e50,#3498db,#1abc9c);display:flex;align-items:center;justify-content:center;font-size:3rem;color:white;text-shadow:0 2px 10px rgba(0,0,0,0.3)">🎨</div>&#x1F4E6;<div class="work-card__info"><div class="work-card__title">包装设计系列</div><div class="work-card__cat">包装设计 · 2024</div></div></div>
-          <div class="work-card"><div class="work-card__img"><div style="width:100%;height:100%;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;font-size:3rem;color:white;text-shadow:0 2px 10px rgba(0,0,0,0.3)">🎨</div>&#x1F4F1;<div class="work-card__info"><div class="work-card__title">电商详情页</div><div class="work-card__cat">电商设计 · 2023</div></div></div>
+          <div class="work-card">
+            <div class="work-card__img" style="background: linear-gradient(135deg, #c0392b, #e74c3c);">🎨</div>
+            <div class="work-card__info">
+              <div class="work-card__title">品牌视觉升级</div>
+              <div class="work-card__cat">从品牌策略到视觉落地的全案升级，涵盖 Logo、VI、品牌手册及全套视觉规范体系。</div>
+            </div>
+          </div>
+          <div class="work-card">
+            <div class="work-card__img" style="background: linear-gradient(135deg, #2c3e50, #3498db);">📦</div>
+            <div class="work-card__info">
+              <div class="work-card__title">包装设计系列</div>
+              <div class="work-card__cat">产品包装、礼盒结构、材质工艺选配，兼顾货架视觉冲击与开箱体验。</div>
+            </div>
+          </div>
+          <div class="work-card">
+            <div class="work-card__img" style="background: linear-gradient(135deg, #667eea, #764ba2);">📱</div>
+            <div class="work-card__info">
+              <div class="work-card__title">电商视觉策划</div>
+              <div class="work-card__cat">详情页设计、主图视频策划、店铺整体视觉与营销素材系统化输出。</div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -889,11 +905,29 @@
       <div class="page__content" style="width:100%;max-width:900px;"><div class="page__scroll-frame">
         <h1 class="page__title">更多<span class="accent">案例</span></h1>
         <div class="works-grid">
-          <div class="work-card"><div class="work-card__img"><div style="width:100%;height:100%;background:linear-gradient(135deg,#f093fb,#f5576c);display:flex;align-items:center;justify-content:center;font-size:3rem;color:white;text-shadow:0 2px 10px rgba(0,0,0,0.3)">🎨</div>&#x1F3AD;<div class="work-card__info"><div class="work-card__title">品牌IP形象设计</div><div class="work-card__cat">品牌设计 · 2024</div></div></div>
-          <div class="work-card"><div class="work-card__img"><div style="width:100%;height:100%;background:linear-gradient(135deg,#4facfe,#00f2fe);display:flex;align-items:center;justify-content:center;font-size:3rem;color:white;text-shadow:0 2px 10px rgba(0,0,0,0.3)">🎨</div>&#x1F4E2;<div class="work-card__info"><div class="work-card__title">企业画册设计</div><div class="work-card__cat">画册设计 · 2023</div></div></div>
-          <div class="work-card"><div class="work-card__img"><div style="width:100%;height:100%;background:linear-gradient(135deg,#43e97b,#38f9d7);display:flex;align-items:center;justify-content:center;font-size:3rem;color:white;text-shadow:0 2px 10px rgba(0,0,0,0.3)">🎨</div>&#x1F3A8;<div class="work-card__info"><div class="work-card__title">社交媒体视觉</div><div class="work-card__cat">社媒设计 · 2024</div></div></div>
+          <div class="work-card">
+            <div class="work-card__img" style="background: linear-gradient(135deg, #f093fb, #f5576c);">🎭</div>
+            <div class="work-card__info">
+              <div class="work-card__title">品牌IP形象设计</div>
+              <div class="work-card__cat">从角色设定到延展应用，打造有记忆点的品牌 IP 形象体系。</div>
+            </div>
+          </div>
+          <div class="work-card">
+            <div class="work-card__img" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">📖</div>
+            <div class="work-card__info">
+              <div class="work-card__title">企业画册设计</div>
+              <div class="work-card__cat">企业宣传册、产品手册、年度报告等平面出版物的版式与视觉设计。</div>
+            </div>
+          </div>
+          <div class="work-card">
+            <div class="work-card__img" style="background: linear-gradient(135deg, #43e97b, #38f9d7);">🖼️</div>
+            <div class="work-card__info">
+              <div class="work-card__title">社交媒体视觉</div>
+              <div class="work-card__cat">公众号排版、小红书种草图、Instagram 视觉等社交平台内容设计。</div>
+            </div>
+          </div>
         </div>
-      </div>
+      </div></div>
     </section>
 
     <section class="page page--brands" id="page6">
@@ -902,12 +936,16 @@
         <h1 class="page__title">合作<span class="accent">品牌</span></h1>
         <div class="about-grid">
           <div class="about-text">
-            多年来与各行各业的企业建立了长期合作关系，涵盖快消、科技、文化、教育等多个领域。每一个合作品牌都是一段故事，我很荣幸能用设计讲述它们的故事。
+            多年来与各行各业的企业建立了长期合作关系，涵盖快消、科技、文化、教育等多个领域。每一个合作品牌都是一段故事，我很荣幸能用设计讲述它们的故事。<br><br>
+            从初创品牌到成熟企业，我始终以「让每一个像素都有意义」为准则，为每个客户量身定制符合其品牌调性与市场定位的视觉方案。
           </div>
           <div class="about-stats">
             <div class="stat-item"><div class="stat-number">30+</div><div class="stat-label">合作品牌</div></div>
             <div class="stat-item"><div class="stat-number">8年</div><div class="stat-label">设计经验</div></div>
             <div class="stat-item"><div class="stat-number">120+</div><div class="stat-label">完成项目</div></div>
+            <div class="stat-item"><div class="stat-number">98%</div><div class="stat-label">复购率</div></div>
+            <div class="stat-item"><div class="stat-number">15+</div><div class="stat-label">行业奖项</div></div>
+            <div class="stat-item"><div class="stat-number">∞</div><div class="stat-label">创意热情</div></div>
           </div>
         </div>
       </div></div>
@@ -1095,35 +1133,6 @@
     if (inVerticalFramework) return;
     if (e.ctrlKey) return;
 
-    // Check if inside a scroll frame — allow content scroll, page-turn only at edges
-    var scrollFrame = e.target.closest ? e.target.closest('.page__scroll-frame') : null;
-    if (scrollFrame) {
-      var atTop = scrollFrame.scrollTop <= 0;
-      var atBottom = scrollFrame.scrollTop + scrollFrame.clientHeight >= scrollFrame.scrollHeight - 2;
-      if ((e.deltaY < 0 && atTop) || (e.deltaY > 0 && atBottom)) {
-        e.preventDefault();
-        wheelAccum += e.deltaY;
-        if (!wheelRAF) {
-          wheelRAF = requestAnimationFrame(function() {
-            if (Math.abs(wheelAccum) >= 50) {
-              var targetPage = currentPage;
-              if (wheelAccum > 0) {
-                targetPage = Math.min(currentPage + 1, PAGE_COUNT - 1);
-              } else {
-                targetPage = Math.max(currentPage - 1, 0);
-              }
-              if (targetPage !== currentPage) {
-                scrollToPage(targetPage);
-              }
-            }
-            wheelAccum = 0;
-            wheelRAF = null;
-          });
-        }
-      }
-      return;
-    }
-
     e.preventDefault();
 
     // Accumulate delta until threshold, then snap to page
@@ -1149,7 +1158,7 @@
     // On last page, scroll down → enter vertical framework
     if (currentPage === PAGE_COUNT - 1 && e.deltaY > 0) {
       if (lastPageWheelTimeout) return;
-      lastPageWheelTimeout = setTimeout(function() { lastPageWheelTimeout = null; }, 1000);
+      lastPageWheelTimeout = setTimeout(function() { lastPageWheelTimeout = null; }, 1500);
       enterVerticalFramework();
     }
   }, { passive: false });
