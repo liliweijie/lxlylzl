@@ -73,12 +73,12 @@
     align-items: center;
     gap: 6px;
     padding: 6px 18px;
-    background: var(--nav-bg);
-    backdrop-filter: blur(32px) saturate(1.2);
-    -webkit-backdrop-filter: blur(32px) saturate(1.2);
-    border: 1px solid var(--glass-border);
-    border-radius: 100px;
-    transition: background 0.3s, border-color 0.3s;
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border: none;
+    border-radius: 0;
+    transition: none;
     box-sizing: border-box;
     height: 42px;
   }
@@ -113,10 +113,12 @@
     color: var(--text-secondary);
     cursor: pointer;
     padding: 6px 14px;
-    border-radius: 100px;
+    border-radius: 0;
+    border: 1px solid var(--text-muted);
+    background: transparent;
     user-select: none;
     white-space: nowrap;
-    transition: color 0.2s;
+    transition: color 0.2s, background 0.2s, border-color 0.2s;
   }
 
   .nav-link .char {
@@ -133,17 +135,25 @@
 
   .nav-link.active .char {
     font-weight: 700;
-    color: var(--text-primary);
+    color: #fff;
   }
 
   .nav-link.active {
-    color: var(--accent);
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+    font-weight: 400;
   }
 
-  .nav-divider {
+  .nav-link:hover:not(.active) {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .nav-v-divider {
     width: 1px;
     height: 18px;
-    background: var(--glass-border);
+    background: var(--text-muted);
     margin: 0 4px;
   }
 
@@ -221,17 +231,17 @@
   .glass-frame {
     width: 100%;
     height: 100%;
-    background: var(--glass-bg);
-    backdrop-filter: blur(32px) saturate(1.2);
-    -webkit-backdrop-filter: blur(32px) saturate(1.2);
-    border: 1px solid var(--glass-border);
-    border-radius: 28px;
     overflow: hidden;
     position: relative;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 24px 80px rgba(0,0,0,0.4);
-    transition: background 0.45s cubic-bezier(0.4,0,0.2,1), border-color 0.45s cubic-bezier(0.4,0,0.2,1);
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    transition: none;
   }
 
   .main-content {
@@ -271,9 +281,7 @@
   }
 
   .page__bg {
-    position: absolute;
-    inset: 0;
-    background: var(--page-bg);
+    display: none;
   }
 
   .page__content {
