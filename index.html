@@ -373,9 +373,7 @@
     color: var(--text-secondary);
     line-height: 1.8;
   }
-
-      50% { transform: translateY(6px); }
-  }
+}
 
   /* ========== CONTENT STYLES ========== */
   .works-grid {
@@ -1213,7 +1211,8 @@
       e.preventDefault();
       if (_vfWheelTimer) return;
       _vfWheelTimer = setTimeout(function() { _vfWheelTimer = null; }, 1200);
-        exitVerticalFramework(function() {
+
+      exitVerticalFramework(function() {
           scrollToPage(lastHorizontalPage);
         });
     }
