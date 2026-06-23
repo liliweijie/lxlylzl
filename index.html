@@ -12,6 +12,8 @@
     --accent: #c0392b;
     --accent-glow: rgba(192,57,43,0.25);
     --accent-text: #fff;
+    --nav-active-bg: #f0ece4;
+    --nav-active-text: #0e0e12;
     --glass-bg: rgba(18,18,24,0.72);
     --glass-border: rgba(255,255,255,0.08);
     --text-primary: #f0ece4;
@@ -34,6 +36,8 @@
     --page-bg: rgba(245,240,230,0.75);
     --card-bg: rgba(0,0,0,0.03);
     --accent-text: #fff;
+    --nav-active-bg: #1a1a2e;
+    --nav-active-text: #fff;
   }
 
   html { font-size: 16px; }
@@ -138,13 +142,13 @@
   .nav-link.active .char,
   .nav-link.active .char.bold {
     font-weight: 700;
-    color: var(--accent-text, #fff);
+    color: var(--nav-active-text, #0e0e12);
   }
 
   .nav-link.active {
-    background: var(--accent);
-    color: var(--accent-text, #fff);
-    border-color: var(--accent);
+    background: var(--nav-active-bg, #f0ece4);
+    color: var(--nav-active-text, #0e0e12);
+    border-color: var(--nav-active-bg, #f0ece4);
     font-weight: 400;
   }
 
