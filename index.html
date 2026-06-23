@@ -1199,6 +1199,22 @@
     }, 800);
   }
 
+  // Wheel handler INSIDE vertical framework: scroll up at top → exit back to last horizontal page
+  var _vfWheelTimer = null;
+  verticalFw.addEventListener('wheel', function(e) {
+    if (!inVerticalFramework) return;
+    if (e.ctrlKey) return;
+    // At top and scrolling up → exit to last horizontal page (案例 = page4)
+    if (verticalFw.scrollTop <= 0 && e.deltaY < 0) {
+      e.preventDefault();
+      if (_vfWheelTimer) return;
+      _vfWheelTimer = setTimeout(function() { _vfWheelTimer = null; }, 1200);
+      exitVerticalFramework(function() {
+        scrollToPage(PAGE_COUNT - 2); // last horizontal page = 案例
+      });
+    }
+  }, { passive: false });
+
   function exitVerticalFramework(done) {
     if (!inVerticalFramework) { if (done) done(); return; }
     inVerticalFramework = false;
