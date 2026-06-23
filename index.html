@@ -1155,12 +1155,14 @@
   mainContent.addEventListener('wheel', function(e) {
     if (inVerticalFramework) return;
     if (e.ctrlKey) return;
+    // 过滤微小滚动（触控板抖动）
+    if (Math.abs(e.deltaY) < 1.5 && Math.abs(e.deltaX) < 1.5) return;
     e.preventDefault();
 
     // 直接设置 scrollLeft，无动画，像普通竖向滚动一样即滚即停
     var maxScroll = mainContent.scrollWidth - mainContent.clientWidth;
-    mainContent.scrollLeft = Math.max(0, Math.min(mainContent.scrollLeft + e.deltaY * 8, maxScroll));
-
+    mainContent.scrollLeft = Math.max(0, Math.min(mainContent.scrollLeft + e.deltaY * 3, maxScroll));
+    
     // 导航高亮（节流）
     clearTimeout(_navUpdateTimer);
     _navUpdateTimer = setTimeout(function() {
