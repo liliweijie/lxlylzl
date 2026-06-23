@@ -1073,6 +1073,7 @@
   var PAGE_COUNT = 7;
   var currentPage = 0;
   var inVerticalFramework = false;
+  var lastHorizontalPage = 0;  // 记住进入竖向框架前的横向页面
 
   // ========== PER-CHARACTER HOVER BOLD ==========
   navLinks.forEach(function(link) {
@@ -1189,6 +1190,7 @@
   function enterVerticalFramework(done) {
     if (inVerticalFramework) { if (done) done(); return; }
     inVerticalFramework = true;
+    lastHorizontalPage = currentPage;  // 记住当前横向页面
     mainContent.classList.add('faded');
     // Wait for fade-out transition, then show vertical framework (slower)
     setTimeout(function() {
@@ -1209,9 +1211,9 @@
       e.preventDefault();
       if (_vfWheelTimer) return;
       _vfWheelTimer = setTimeout(function() { _vfWheelTimer = null; }, 1200);
-      exitVerticalFramework(function() {
-        scrollToPage(PAGE_COUNT - 2); // last horizontal page = 案例
-      });
+        exitVerticalFramework(function() {
+          scrollToPage(lastHorizontalPage);
+        });
     }
   }, { passive: false });
 
