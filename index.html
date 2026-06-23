@@ -13,28 +13,20 @@
     --accent-glow: rgba(192,57,43,0.25);
     --accent-text: #fff;
     --nav-active-bg: #f0ece4;
-    --nav-active-text: #0e0e12;
-    --glass-bg: rgba(18,18,24,0.72);
-    --glass-border: rgba(255,255,255,0.08);
+    --nav-active-text: #0e0e12;    --glass-border: rgba(255,255,255,0.08);
     --text-primary: #f0ece4;
     --text-secondary: #9898a8;
     --text-muted: #5a5a6a;
     --bg-primary: #0e0e12;
-    --nav-bg: rgba(18,18,24,0.6);
-    --page-bg: rgba(28,28,38,0.82);
-    --card-bg: rgba(255,255,255,0.03);
+    --nav-bg: rgba(18,18,24,0.6);    --card-bg: rgba(255,255,255,0.03);
   }
 
-  [data-theme="light"] {
-    --glass-bg: rgba(255,255,255,0.72);
-    --glass-border: rgba(0,0,0,0.08);
+  [data-theme="light"] {    --glass-border: rgba(0,0,0,0.08);
     --text-primary: #1a1a2e;
     --text-secondary: #6a6a7a;
     --text-muted: #a0a0b0;
     --bg-primary: #f5f0e8;
-    --nav-bg: rgba(255,255,255,0.6);
-    --page-bg: rgba(245,240,230,0.75);
-    --card-bg: rgba(0,0,0,0.03);
+    --nav-bg: rgba(255,255,255,0.6);    --card-bg: rgba(0,0,0,0.03);
     --accent-text: #fff;
     --nav-active-bg: #1a1a2e;
     --nav-active-text: #fff;
@@ -306,7 +298,7 @@
   /* ========== PAGE SCROLL FRAME ========== */
   .page__scroll-frame {
     width: 100%;
-    overflow-y: hidden !important;
+    overflow-y: hidden ;
     overflow-x: hidden;
     padding-right: 8px;
   }
@@ -728,9 +720,9 @@
   }
 
   /* ========== HOVER FIXES ========== */
-  .nav-link:hover { color: var(--accent) !important; }
-  .work-card:hover { transform: translateY(-6px) !important; box-shadow: 0 8px 30px rgba(0,0,0,0.18); }
-  .hero-cta:hover { transform: scale(1.06) !important; }
+  .nav-link:hover { color: var(--accent) ; }
+  .work-card:hover { transform: translateY(-6px) ; box-shadow: 0 8px 30px rgba(0,0,0,0.18); }
+  .hero-cta:hover { transform: scale(1.06) ; }
 
   </style>
 </head>
@@ -739,7 +731,7 @@
 <!-- ========== THREE-SECTION TOP NAV ========== -->
 <nav class="top-nav">
   <div class="nav-section nav-left">
-    <img class="nav-logo" id="logoBtn" src="logo.svg" alt="LX Logo" title="回到首页">
+    <img class="nav-logo" id="logoBtn" src="logo.svg" alt="LX Logo" title="回到首页" role="button" tabindex="0">
   </div>
 
   <div class="nav-section nav-center">
@@ -747,23 +739,23 @@
       <div class="nav-link active" data-target="page" data-index="0">
         <span class="char">首</span><span class="char">页</span>
       </div>
-      <div class="nav-link" data-target="page" data-index="1">
+      <div class="nav-link" data-target="page" data-index="1" role="button" tabindex="0">
         <span class="char">作</span><span class="char">品</span><span class="char">集</span>
       </div>
-      <div class="nav-link" data-target="page" data-index="2">
+      <div class="nav-link" data-target="page" data-index="2" role="button" tabindex="0">
         <span class="char">关</span><span class="char">于</span>
       </div>
-      <div class="nav-link" data-target="page" data-index="3">
+      <div class="nav-link" data-target="page" data-index="3" role="button" tabindex="0">
         <span class="char">服</span><span class="char">务</span>
       </div>
-      <div class="nav-link" data-target="page" data-index="4">
+      <div class="nav-link" data-target="page" data-index="4" role="button" tabindex="0">
         <span class="char">案</span><span class="char">例</span>
       </div>
       <div class="nav-v-divider"></div>
-      <div class="nav-link" data-target="vertical" data-index="0">
+      <div class="nav-link" data-target="vertical" data-index="0" role="button" tabindex="0">
         <span class="char">联</span><span class="char">系</span>
       </div>
-      <div class="nav-link" data-target="vertical" data-index="1">
+      <div class="nav-link" data-target="vertical" data-index="1" role="button" tabindex="0">
         <span class="char">博</span><span class="char">客</span>
       </div>
     </div>
@@ -1059,6 +1051,7 @@
 </div><!-- /page-wrapper -->
 
 <script>
+  'use strict';
 (function() {
   'use strict';
 
@@ -1212,7 +1205,7 @@
       if (_vfWheelTimer) return;
       _vfWheelTimer = setTimeout(function() { _vfWheelTimer = null; }, 1200);
 
-      exitVerticalFramework(function() {
+            exitVerticalFramework(function() {
           scrollToPage(lastHorizontalPage);
         });
     }
@@ -1268,7 +1261,21 @@
     }
   });
 
-  // ========== NAV STATE ==========
+  
+  // ========== 键盘可访问性：role=button 元素响应 Enter/Space ==========
+  (function() {
+    function handleKey(e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        e.currentTarget.click();
+      }
+    }
+    document.querySelectorAll('[role="button"]').forEach(function(el) {
+      el.addEventListener('keydown', handleKey);
+    });
+  })();
+
+// ========== NAV STATE ==========
   function updateNavState() {
     navLinks.forEach(function(item) {
       var isHorizontal = item.dataset.target === 'page';
