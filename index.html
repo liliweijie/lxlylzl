@@ -11,6 +11,7 @@
   :root {
     --accent: #c0392b;
     --accent-glow: rgba(192,57,43,0.25);
+    --accent-text: #fff;
     --glass-bg: rgba(18,18,24,0.72);
     --glass-border: rgba(255,255,255,0.08);
     --text-primary: #f0ece4;
@@ -32,6 +33,7 @@
     --nav-bg: rgba(255,255,255,0.6);
     --page-bg: rgba(245,240,230,0.75);
     --card-bg: rgba(0,0,0,0.03);
+    --accent-text: #fff;
   }
 
   html { font-size: 16px; }
@@ -133,14 +135,15 @@
     color: var(--text-primary);
   }
 
-  .nav-link.active .char {
+  .nav-link.active .char,
+  .nav-link.active .char.bold {
     font-weight: 700;
-    color: #fff;
+    color: var(--accent-text, #fff);
   }
 
   .nav-link.active {
     background: var(--accent);
-    color: #fff;
+    color: var(--accent-text, #fff);
     border-color: var(--accent);
     font-weight: 400;
   }
