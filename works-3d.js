@@ -1,31 +1,29 @@
-/* ===== 3D Cards for Works Page — clean rewrite ===== */
-/*  coordinate system (simple):
- *    stage holds all cards, positioned via transform
- *    stagePos = 0  →  card0 at left viewport edge
- *    stagePos > 0  →  stage moved left → cards appear to move RIGHT
- *    wheel down (deltaY > 0) → stagePos += delta → cards move RIGHT  ✅
+/* ===== 3D Cards for Works Page — fixed coordinate system ===== */
+/*  SIMPLE: no stage transform. Each card is positioned individually.
+ *  scroll down (deltaY > 0) → _wPos increases → cards move LEFT  ✓
+ *  scroll up   (deltaY < 0) → _wPos decreases → cards move RIGHT ✓
  */
 
 var _wCards = [];
 var _wView, _wStage;
-var _wPos = 0, _wTarget = 0;      // stagePos, positive = rightward movement
+var _wPos = 0, _wTarget = 0;
 var _wHovered = -1;
 var _wMouseX = 0;
 var _wViewW = 0;
-var _wCenter = 0;
 var _wRAF = null;
 var _wActive = false;
 var _wWheelFn = null, _wMoveFn = null, _wLeaveFn = null;
 
 var W_NUM  = 20;
-var W_W    = 260;   // card width
-var W_GAP  = 340;   // px between card centers
-var W_MAX  = 0;    // computed at init
+var W_W    = 260;    // card width
+var W_GAP  = 340;    // px between card left edges
+var W_MAX  = 0;
 
-var W_MAX_Z = 150;
-var W_MIN_Z = -250;
-var W_FOCUS = 650;
-var W_FISH  = 0.20;
+// depth / fisheye
+var W_MAX_Z = 120;
+var W_MIN_Z = -200;
+var W_FOCUS = 600;
+var W_FISH  = 0.18;
 
 var W_DATA = [
   {t:"品牌视觉",  i:"Logo / VI / 品牌手册",             f:"案例"},
@@ -83,14 +81,19 @@ function initWorks3D() {
   if (_wView.offsetWidth < 10) { setTimeout(initWorks3D, 200); return; }
 
   _wViewW = _wView.offsetWidth;
-  _wCenter = _wViewW / 2;
-  _wMouseX = 80;           // start near left edge
+  _wMouseX = 80;
   _wPos     = 0;
   _wTarget  = 0;
   _wActive  = true;
   window._worksPageActive = true;
 
-  W_MAX = Math.max(W_NUM * W_GAP - _wViewW * 0.7, 2000);
+  // W_MAX: total scrollable distance
+  // Last card should be centered near right edge when _wPos = W_MAX
+  // Card i position on screen = i*GAP - _wPos + 80
+  // When _wPos = W_MAX, last card (i=19) should be near right edge
+  // 19*340 - W_MAX + 80 ≈ _wViewW - W_W/2
+  W_MAX = W_NUM * W_GAP - _wViewW * 0.65;
+  if (W_MAX < 800) W_MAX = 800;
 
   // build cards
   var themes = _wGetThemes();
@@ -102,15 +105,24 @@ function initWorks3D() {
     el.dataset.idx = i;
     el.style.background = bg;
     el.style.color      = '#f0ece4';
+    el.style.position   = 'absolute';
+    el.style.left       = '0';
+    el.style.top        = '50%';
+    el.style.width      = W_W + 'px';
+    el.style.height     = '420px';
+    el.style.borderRadius = '14px';
+    el.style.overflow   = 'hidden';
+    el.style.cursor     = 'pointer';
+    el.style.transition = 'box-shadow 0.3s ease';
     if (document.documentElement.getAttribute('data-theme') === 'light') el.style.color = '#1a1a2e';
     el.innerHTML =
-      '<div class="card-inner">' +
-        '<span class="card-label">' + bg.toUpperCase() + '</span>' +
-        '<div class="card-title-area"><span class="card-title">' + d.t + '</span></div>' +
-        '<div class="card-num">' + (i + 1) + '</div>' +
-        '<div class="card-line"></div>' +
-        '<span class="card-info">' + d.i + '</span>' +
-        '<span class="card-footer">' + d.f + '</span>' +
+      '<div class="card-inner" style="padding:32px 28px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;">' +
+        '<span class="card-label" style="font-size:0.68rem;letter-spacing:0.12em;text-transform:uppercase;opacity:0.5;display:block;margin-bottom:12px;">' + bg.toUpperCase() + '</span>' +
+        '<div class="card-title-area"><span class="card-title" style="font-size:1.5rem;font-weight:800;letter-spacing:-0.02em;display:block;margin-bottom:8px;">' + d.t + '</span></div>' +
+        '<div class="card-num" style="font-size:3.2rem;font-weight:900;opacity:0.08;position:absolute;bottom:20px;right:24px;line-height:1;">' + (i + 1) + '</div>' +
+        '<div class="card-line" style="width:32px;height:2px;background:currentColor;opacity:0.25;margin:14px 0;"></div>' +
+        '<span class="card-info" style="font-size:0.78rem;opacity:0.55;display:block;margin-bottom:6px;">' + d.i + '</span>' +
+        '<span class="card-footer" style="font-size:0.72rem;opacity:0.4;display:block;">' + d.f + '</span>' +
       '</div>';
     _wStage.appendChild(el);
 
@@ -123,12 +135,15 @@ function initWorks3D() {
     _wCards.push(el);
   }
 
+  // stage: no transform needed (cards positioned individually)
+  _wStage.style.transform = 'translateY(-50%)';
+
   // ---- wheel ----
   _wWheelFn = function(e) {
     if (!_wActive) return;
     e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
 
-    // If already at left edge AND user scrolls up → go to previous page
+    // At left edge (first card at left) + scroll up → previous page
     if (_wTarget <= 0 && e.deltaY < 0) {
       if (window.scrollToPage && window.getCurrentPage) {
         window.scrollToPage(window.getCurrentPage() - 1);
@@ -136,7 +151,7 @@ function initWorks3D() {
       return;
     }
 
-    // If already at right edge AND user scrolls down → exit animation then next page
+    // At right edge (last card at right) + scroll down → next page
     if (_wTarget >= W_MAX && e.deltaY > 0) {
       _wPlayExit(function() {
         if (window.scrollToPage && window.getCurrentPage) {
@@ -146,8 +161,10 @@ function initWorks3D() {
       return;
     }
 
-    // Normal card scrolling
-    _wTarget += e.deltaY * 2.0;
+    // DIRECTION: true  = scroll down → cards move LEFT  (default, matches user req)
+    //            false = scroll down → cards move RIGHT
+    var DIR = true;
+    _wTarget += (DIR ? 1 : -1) * e.deltaY * 1.8;
     if (_wTarget < 0)     _wTarget = 0;
     if (_wTarget > W_MAX) _wTarget = W_MAX;
   };
@@ -159,7 +176,7 @@ function initWorks3D() {
   };
   _wView.addEventListener('mousemove', _wMoveFn);
 
-  _wLeaveFn = function() { _wMouseX = _wCenter; };
+  _wLeaveFn = function() { _wMouseX = _wViewW * 0.5; };
   _wView.addEventListener('mouseleave', _wLeaveFn);
 
   // popup overlay
@@ -190,19 +207,18 @@ function initWorks3D() {
   console.log('[works-3d] init ok, W_MAX=' + W_MAX);
 }
 
-/* ---- exit animation: cards drift LEFT then transition ---- */
+/* ---- exit: cards drift left ---- */
 function _wPlayExit(cb) {
   var start = Date.now();
-  var dur  = 550;
+  var dur  = 500;
   (function step() {
     var t = Math.min((Date.now() - start) / dur, 1);
     var ease = 1 - Math.pow(1 - t, 3);
     for (var i = 0; i < _wCards.length; i++) {
       var el = _wCards[i];
-      // cards drift left (negative X shift proportional to index)
-      var shift = -ease * (_wViewW * 0.6 + i * 25);
-      el.style.transform += ' translateX(' + shift + 'px)';
-      el.style.opacity = (1 - ease * 1.2) + '';
+      var shift = -ease * (_wViewW * 0.5 + i * 20);
+      el.style.transform = el.style.transform.split(' translateX')[0] + ' translateX(' + shift + 'px)';
+      el.style.opacity = (1 - ease * 1.1) + '';
     }
     if (t < 1) { requestAnimationFrame(step); }
     else { cb(); }
@@ -232,59 +248,54 @@ function _wRender() {
   if (!_wActive) return;
 
   // smooth lerp
-  _wPos += (_wTarget - _wPos) * 0.10;
-  if (Math.abs(_wPos - _wTarget) < 0.5) _wPos = _wTarget;
+  _wPos += (_wTarget - _wPos) * 0.12;
+  if (Math.abs(_wPos - _wTarget) < 0.3) _wPos = _wTarget;
 
   // clamp
   if (_wPos < 0)     _wPos = 0;
   if (_wPos > W_MAX) _wPos = W_MAX;
 
-  // update stage transform:
-  //   _wPos = 0 → stage at start (card0 at left viewport edge)
-  //   stage moves left as _wPos increases → cards appear to move right
-  _wStage.style.transform = 'translateX(' + (-_wPos) + 'px) translateY(-50%)';
-
-  // position each card within the stage
+  // update each card
   for (var i = 0; i < W_NUM; i++) {
     var el = _wCards[i];
-    // card's x position within the stage (horizontal layout)
-    var cardStageX = i * W_GAP;
-    // how far is this card from the current viewport left edge?
-    var viewLeft = _wPos;
-    var relX = cardStageX - viewLeft;            // positive = to the right of viewport left edge
-    var screenX = 80 + relX;                    // 80px left margin
 
-    // fish-eye depth based on mouse distance
-    var fv  = _wFisheye(relX - _wMouseX + 80);
+    // Card position on screen:
+    //   screenX = (card's index position) - (scroll offset) + (left margin)
+    // When _wPos=0:   card0 at 80px (left margin)
+    //                 card1 at 80+340=420px
+    // When _wPos=340: card0 at 80-340=-260px (off-screen left) ← scrolled left
+    //                 card1 at 80+340-340=80px (now at left margin) ← this is correct
+    var screenX = i * W_GAP - _wPos + 80;
+
+    // depth / fisheye based on distance from mouse
     var dist = Math.abs(screenX - _wMouseX);
     var z = W_MIN_Z;
     if (dist < W_FOCUS) {
       var t = 1 - dist / W_FOCUS;
       z = W_MIN_Z + (W_MAX_Z - W_MIN_Z) * Math.pow(t, 1.3);
     }
-    if (i === _wHovered) z += 35;
+    if (i === _wHovered) z += 30;
 
-    // skip off-screen cards
-    if (screenX < -300 || screenX > _wViewW + 300) {
+    // skip off-screen
+    if (screenX < -W_W - 60 || screenX > _wViewW + 60) {
       el.style.opacity = '0';
       el.style.pointerEvents = 'none';
       continue;
     }
     el.style.opacity = '1';
     el.style.pointerEvents = '';
-    el.style.width = W_W + 'px';
     el.style.zIndex = Math.round(-z + 1000);
 
-    // final transform: position card on screen + depth
+    // apply transform: position + depth (NO stage transform)
     el.style.transform =
       'translateX(' + screenX + 'px)' +
       ' translateY(-50%)' +
       ' translateZ(' + z + 'px)';
 
-    if (dist < W_FOCUS * 0.4) {
-      el.style.boxShadow = '-4px 2px 20px rgba(0,0,0,0.3)';
+    if (dist < W_FOCUS * 0.35) {
+      el.style.boxShadow = '-6px 3px 24px rgba(0,0,0,0.35)';
     } else {
-      el.style.boxShadow = '0 1px 8px rgba(0,0,0,0.12)';
+      el.style.boxShadow = '0 1px 6px rgba(0,0,0,0.10)';
     }
   }
 
@@ -330,12 +341,12 @@ function _wClosePopup() {
     if (!vw) { setTimeout(check, 300); return; }
     var idx = Math.round(mc.scrollLeft / vw);
     var vis = (idx === 1);
-    if (vis && !_wActive) initWorks3D();
-    else if (!vis && _wActive) destroyWorks3D();
-    setTimeout(check, 300);
+    if (vis && !_wActive) { initWorks3D(); }
+    else if (!vis && _wActive) { destroyWorks3D(); }
+    setTimeout(check, 400);
   }
-  if (document.readyState === 'complete') check();
-  else window.addEventListener('load', check);
+  if (document.readyState === 'complete') { check(); }
+  else { window.addEventListener('load', check); }
 })();
 
 window.initWorks3D   = initWorks3D;
