@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>liliweijie - 撟喲?霈曇恣撣?/title>
+<title>liliweijie - 平面设计师</title>
 <style>
   /* ========== RESET & BASE ========== */
   *, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
@@ -11,25 +11,27 @@
   :root {
     --accent: #c0392b;
     --accent-glow: rgba(192,57,43,0.25);
-    --accent-text: #fff;
-    --nav-active-bg: #f0ece4;
-    --nav-active-text: #0e0e12;    --glass-border: rgba(255,255,255,0.08);
+    --glass-bg: rgba(18,18,24,0.72);
+    --glass-border: rgba(255,255,255,0.08);
     --text-primary: #f0ece4;
     --text-secondary: #9898a8;
     --text-muted: #5a5a6a;
     --bg-primary: #0e0e12;
-    --nav-bg: rgba(18,18,24,0.6);    --card-bg: rgba(255,255,255,0.03);
+    --nav-bg: rgba(18,18,24,0.6);
+    --page-bg: rgba(28,28,38,0.82);
+    --card-bg: rgba(255,255,255,0.03);
   }
 
-  [data-theme="light"] {    --glass-border: rgba(0,0,0,0.08);
+  [data-theme="light"] {
+    --glass-bg: rgba(255,255,255,0.72);
+    --glass-border: rgba(0,0,0,0.08);
     --text-primary: #1a1a2e;
     --text-secondary: #6a6a7a;
     --text-muted: #a0a0b0;
     --bg-primary: #f5f0e8;
-    --nav-bg: rgba(255,255,255,0.6);    --card-bg: rgba(0,0,0,0.03);
-    --accent-text: #fff;
-    --nav-active-bg: #1a1a2e;
-    --nav-active-text: #fff;
+    --nav-bg: rgba(255,255,255,0.6);
+    --page-bg: rgba(245,240,230,0.75);
+    --card-bg: rgba(0,0,0,0.03);
   }
 
   html { font-size: 16px; }
@@ -43,7 +45,7 @@
     transition: background 0.45s cubic-bezier(0.4,0,0.2,1), color 0.45s cubic-bezier(0.4,0,0.2,1);
   }
 
-  /* ========== PAGE WRAPPER �?below nav, max size ========== */
+  /* ========== PAGE WRAPPER — below nav, max size ========== */
   .page-wrapper {
     position: fixed;
     top: 52px; left: 72px; right: 72px; bottom: 72px;
@@ -53,7 +55,7 @@
     justify-content: flex-start;
   }
 
-  /* ========== TOP NAV �?fixed at viewport top ========== */
+  /* ========== TOP NAV — fixed at viewport top ========== */
   .top-nav {
     position: fixed;
     top: 2px; left: 72px; right: 72px;
@@ -71,12 +73,12 @@
     align-items: center;
     gap: 6px;
     padding: 6px 18px;
-    background: transparent;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    border: none;
-    border-radius: 0;
-    transition: none;
+    background: var(--nav-bg);
+    backdrop-filter: blur(32px) saturate(1.2);
+    -webkit-backdrop-filter: blur(32px) saturate(1.2);
+    border: 1px solid var(--glass-border);
+    border-radius: 100px;
+    transition: background 0.3s, border-color 0.3s;
     box-sizing: border-box;
     height: 42px;
   }
@@ -111,12 +113,10 @@
     color: var(--text-secondary);
     cursor: pointer;
     padding: 6px 14px;
-    border-radius: 0;
-    border: 1px solid var(--text-muted);
-    background: transparent;
+    border-radius: 100px;
     user-select: none;
     white-space: nowrap;
-    transition: color 0.2s, background 0.2s, border-color 0.2s;
+    transition: color 0.2s;
   }
 
   .nav-link .char {
@@ -131,28 +131,19 @@
     color: var(--text-primary);
   }
 
-  .nav-link.active .char,
-  .nav-link.active .char.bold {
+  .nav-link.active .char {
     font-weight: 700;
-    color: var(--nav-active-text, #0e0e12);
+    color: var(--text-primary);
   }
 
   .nav-link.active {
-    background: var(--nav-active-bg, #f0ece4);
-    color: var(--nav-active-text, #0e0e12);
-    border-color: var(--nav-active-bg, #f0ece4);
-    font-weight: 400;
-  }
-
-  .nav-link:hover:not(.active) {
     color: var(--accent);
-    border-color: var(--accent);
   }
 
-  .nav-v-divider {
+  .nav-divider {
     width: 1px;
     height: 18px;
-    background: var(--text-muted);
+    background: var(--glass-border);
     margin: 0 4px;
   }
 
@@ -213,7 +204,7 @@
   }
   .lang-btn:hover { color: var(--accent); }
 
-  /* ========== GLASS FRAME CONTAINER �?fills page-wrapper ========== */
+  /* ========== GLASS FRAME CONTAINER — fills page-wrapper ========== */
   .app-container {
     position: relative;
     width: 100%;
@@ -230,17 +221,17 @@
   .glass-frame {
     width: 100%;
     height: 100%;
+    background: var(--glass-bg);
+    backdrop-filter: blur(32px) saturate(1.2);
+    -webkit-backdrop-filter: blur(32px) saturate(1.2);
+    border: 1px solid var(--glass-border);
+    border-radius: 28px;
     overflow: hidden;
     position: relative;
     display: flex;
     flex-direction: column;
-    background: transparent;
-    border: none;
-    border-radius: 0;
-    box-shadow: none;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    transition: none;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.4);
+    transition: background 0.45s cubic-bezier(0.4,0,0.2,1), border-color 0.45s cubic-bezier(0.4,0,0.2,1);
   }
 
   .main-content {
@@ -280,7 +271,9 @@
   }
 
   .page__bg {
-    display: none;
+    position: absolute;
+    inset: 0;
+    background: var(--page-bg);
   }
 
   .page__content {
@@ -298,7 +291,7 @@
   /* ========== PAGE SCROLL FRAME ========== */
   .page__scroll-frame {
     width: 100%;
-    overflow-y: hidden ;
+    overflow-y: hidden !important;
     overflow-x: hidden;
     padding-right: 8px;
   }
@@ -319,7 +312,7 @@
     line-height: 1.7;
   }
 
-  /* ========== VERTICAL FRAMEWORK �?inside page-wrapper ========== */
+  /* ========== VERTICAL FRAMEWORK — inside page-wrapper ========== */
   .vertical-framework {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
@@ -329,7 +322,7 @@
     visibility: hidden;
     transition: opacity 0.8s, visibility 0.8s;
     z-index: 0;
-    border-radius: 0;
+    border-radius: 28px;
   }
 
   .vertical-framework.is-visible {
@@ -365,7 +358,9 @@
     color: var(--text-secondary);
     line-height: 1.8;
   }
-}
+
+      50% { transform: translateY(6px); }
+  }
 
   /* ========== CONTENT STYLES ========== */
   .works-grid {
@@ -375,54 +370,7 @@
     margin-top: 32px;
   }
 
-  /* 3D Cards in works page */
-  .works-3d-view .card-3d {
-    position: absolute;
-    top: 50%;
-    width: 150px;
-    height: 1050px;
-    border-radius: 5px;
-    cursor: pointer;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    padding: 18px 10px;
-    transform-style: preserve-3d;
-    transition: filter 0.35s ease, box-shadow 0.35s ease;
-  }
-  .works-3d-view .card-3d .card-inner {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .works-3d-view .card-3d .card-label {
-    font-size: 7px;
-    font-weight: 600;
-    opacity: 0.55;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    align-self: flex-start;
-  }
-  .works-3d-view .card-3d .card-title-area { flex:1; display:flex; align-items:center; justify-content:center; }
-  .works-3d-view .card-3d .card-title {
-    font-size: 9px;
-    font-weight: 800;
-    letter-spacing: 0.12em;
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
-  }
-  .works-3d-view .card-3d .card-num { font-size: 38px; font-weight: 900; line-height: 1; margin: 14px 0 10px; }
-  .works-3d-view .card-3d .card-line { width: 100%; height: 1px; margin: 8px 0; opacity: 0.15; background: currentColor; }
-  .works-3d-view .card-3d .card-info { font-size: 7px; font-weight: 700; opacity: 0.35; letter-spacing: 0.06em; }
-  .works-3d-view .card-3d .card-footer { font-size: 7px; font-weight: 800; letter-spacing: 0.08em; margin-top: auto; }
-
-  /* 蝝批��?��??�?�?蝐颱撮�??憿菟?�?��潘�銝?��箄��?*/
+  /* 紧凑型作品卡片 — 类似服务页面的风格，不超出视口 */
   .work-card {
     padding: 28px 24px;
     background: var(--card-bg);
@@ -496,7 +444,7 @@
 
   .stat-label { font-size: 0.85rem; color: var(--text-secondary); }
 
-  /* ========== BRANDS PAGE �?centered layout ========== */
+  /* ========== BRANDS PAGE — centered layout ========== */
   .brands-text {
     font-size: 1rem; color: var(--text-secondary); line-height: 1.9;
     text-align: left; max-width: 680px;
@@ -748,7 +696,7 @@
   @media (max-width: 768px) {
     .top-nav { left: 16px; right: 16px; }
     .page-wrapper { top: 48px; left: 16px; right: 16px; bottom: 16px; }
-    .glass-frame { border-radius: 0; }
+    .glass-frame { border-radius: 20px; }
     .nav-section { padding: 6px 12px; }
     .nav-link { padding: 5px 7px; font-size: 0.82rem; }
     .nav-v-divider { margin: 0 3px; }
@@ -760,16 +708,16 @@
     top: 0; left: 0; right: 0; bottom: 0;
     overflow-y: auto;
     overflow-x: hidden;
-    border-radius: 0;
+    border-radius: 28px;
   }
     .page__content { padding: 24px; }
     .vf-page { padding: 40px 20px; }
   }
 
   /* ========== HOVER FIXES ========== */
-  .nav-link:hover { color: var(--accent) ; }
-  .work-card:hover { transform: translateY(-6px) ; box-shadow: 0 8px 30px rgba(0,0,0,0.18); }
-  .hero-cta:hover { transform: scale(1.06) ; }
+  .nav-link:hover { color: var(--accent) !important; }
+  .work-card:hover { transform: translateY(-6px) !important; box-shadow: 0 8px 30px rgba(0,0,0,0.18); }
+  .hero-cta:hover { transform: scale(1.06) !important; }
 
   </style>
 </head>
@@ -778,39 +726,39 @@
 <!-- ========== THREE-SECTION TOP NAV ========== -->
 <nav class="top-nav">
   <div class="nav-section nav-left">
-    <img class="nav-logo" id="logoBtn" src="logo.svg" alt="LX Logo" title="�??擐?△" role="button" tabindex="0">
+    <img class="nav-logo" id="logoBtn" src="logo.svg" alt="LX Logo" title="回到首页">
   </div>
 
   <div class="nav-section nav-center">
     <div class="nav-links" id="navLinksHorizontal">
       <div class="nav-link active" data-target="page" data-index="0">
-        <span class="char">擐?/span><span class="char">憿?/span>
+        <span class="char">首</span><span class="char">页</span>
       </div>
-      <div class="nav-link" data-target="page" data-index="1" role="button" tabindex="0">
-        <span class="char">雿?/span><span class="char">�?/span><span class="char">�?/span>
+      <div class="nav-link" data-target="page" data-index="1">
+        <span class="char">作</span><span class="char">品</span><span class="char">集</span>
       </div>
-      <div class="nav-link" data-target="page" data-index="2" role="button" tabindex="0">
-        <span class="char">�?/span><span class="char">鈭?/span>
+      <div class="nav-link" data-target="page" data-index="2">
+        <span class="char">关</span><span class="char">于</span>
       </div>
-      <div class="nav-link" data-target="page" data-index="3" role="button" tabindex="0">
-        <span class="char">�?/span><span class="char">�?/span>
+      <div class="nav-link" data-target="page" data-index="3">
+        <span class="char">服</span><span class="char">务</span>
       </div>
-      <div class="nav-link" data-target="page" data-index="4" role="button" tabindex="0">
-        <span class="char">獢?/span><span class="char">靘?/span>
+      <div class="nav-link" data-target="page" data-index="4">
+        <span class="char">案</span><span class="char">例</span>
       </div>
       <div class="nav-v-divider"></div>
-      <div class="nav-link" data-target="vertical" data-index="0" role="button" tabindex="0">
-        <span class="char">�?/span><span class="char">蝟?/span>
+      <div class="nav-link" data-target="vertical" data-index="0">
+        <span class="char">联</span><span class="char">系</span>
       </div>
-      <div class="nav-link" data-target="vertical" data-index="1" role="button" tabindex="0">
-        <span class="char">�?/span><span class="char">摰?/span>
+      <div class="nav-link" data-target="vertical" data-index="1">
+        <span class="char">博</span><span class="char">客</span>
       </div>
     </div>
   </div>
 
   <div class="nav-section nav-right">
     <div class="nav-actions">
-      <button class="theme-btn" id="themeBtn" aria-label="�??�?�璅∪�">
+      <button class="theme-btn" id="themeBtn" aria-label="切换明暗模式">
         <svg class="icon-sun" viewBox="0 0 24 24" style="display:none;">
           <circle cx="12" cy="12" r="5"/>
           <line x1="12" y1="1" x2="12" y2="3"/>
@@ -827,7 +775,7 @@
         </svg>
       </button>
       <div class="nav-actions-divider"></div>
-      <button class="lang-btn" id="langBtn" aria-label="�??霂剛�">銝?EN</button>
+      <button class="lang-btn" id="langBtn" aria-label="切换语言">中/EN</button>
     </div>
   </div>
 </nav>
@@ -835,7 +783,7 @@
 <!-- ========== PAGE WRAPPER (glass frame) ========== -->
 <div class="page-wrapper">
 
-<!-- ========== GLASS FRAME �?contains all content ========== -->
+<!-- ========== GLASS FRAME — contains all content ========== -->
 <div class="app-container">
   <div class="glass-frame">
 
@@ -846,33 +794,54 @@
     <section class="page page--hero" id="page0">
       <div class="page__bg"></div>
       <div class="page__content"><div class="page__scroll-frame">
-        <h1 class="page__title">�刻挽霈∟挈餈?span class="accent">�?��?�</span></h1>
-        <p class="page__desc">撟喲?霈曇恣撣?繚 閫?�蝑?� 繚 �?�憿暸?<br>撠?�銝銝芸��?蓮�?蛹�??鈭箏��?�閫?祗閮</p>
-        <a href="#page5" class="hero-cta" onclick="event.preventDefault()" style="display:inline-block;margin-top:28px;padding:12px 36px;background:var(--accent);color:#fff;border-radius:0;font-weight:600;font-size:1rem;text-decoration:none;transition:transform 0.2s,box-shadow 0.2s;cursor:pointer">蝡??�?頂</a>
+        <h1 class="page__title">用设计讲述<span class="accent">品牌故事</span></h1>
+        <p class="page__desc">平面设计师 · 视觉策划 · 品牌顾问<br>将每一个创意转化为打动人心的视觉语言</p>
+        <a href="#page5" class="hero-cta" onclick="event.preventDefault()" style="display:inline-block;margin-top:28px;padding:12px 36px;background:var(--accent);color:#fff;border-radius:100px;font-weight:600;font-size:1rem;text-decoration:none;transition:transform 0.2s,box-shadow 0.2s;cursor:pointer">立即联系</a>
       </div></div>
     </section>
 
     <section class="page page--works" id="page1">
       <div class="page__bg"></div>
-      <div class="page__content works-3d-page" style="width:100%;height:100%;max-width:none;padding:48px 40px 48px;position:relative;">
-        <div class="works-3d-view" style="width:100%;height:100%;perspective:750px;perspective-origin:50% 50%;position:relative;overflow:hidden;">
-          <div class="works-3d-stage" style="position:absolute;top:50%;left:50%;transform-style:preserve-3d;will-change:transform;"></div>
+      <div class="page__content" style="width:100%;max-width:900px;">
+        <h1 class="page__title"><span class="accent">作品集</span></h1>
+        <div class="works-grid">
+          <div class="work-card">
+            <div class="work-card__img" style="background: linear-gradient(135deg, #c0392b, #e74c3c);">🎨</div>
+            <div class="work-card__info">
+              <div class="work-card__title">品牌视觉升级</div>
+              <div class="work-card__cat">从品牌策略到视觉落地的全案升级，涵盖 Logo、VI、品牌手册及全套视觉规范体系。</div>
+            </div>
+          </div>
+          <div class="work-card">
+            <div class="work-card__img" style="background: linear-gradient(135deg, #2c3e50, #3498db);">📦</div>
+            <div class="work-card__info">
+              <div class="work-card__title">包装设计系列</div>
+              <div class="work-card__cat">产品包装、礼盒结构、材质工艺选配，兼顾货架视觉冲击与开箱体验。</div>
+            </div>
+          </div>
+          <div class="work-card">
+            <div class="work-card__img" style="background: linear-gradient(135deg, #667eea, #764ba2);">📱</div>
+            <div class="work-card__info">
+              <div class="work-card__title">电商视觉策划</div>
+              <div class="work-card__cat">详情页设计、主图视频策划、店铺整体视觉与营销素材系统化输出。</div>
+            </div>
+          </div>
         </div>
-        <div class="works-scroll-hint" style="position:absolute;bottom:20px;left:50%;transform:translateX(-50%);font-size:0.72rem;color:var(--text-secondary);opacity:0.4;letter-spacing:0.06em;pointer-events:none;">�?皛??曌?�皛?蔭璅芸�瘚?� �?/div>
       </div>
     </section>
 
     <section class="page page--about" id="page2">
       <div class="page__bg"></div>
       <div class="page__content" style="width:100%;max-width:900px;"><div class="page__scroll-frame">
-        <h1 class="page__title">�喃�<span class="accent">�?/span></h1>
+        <h1 class="page__title">关于<span class="accent">我</span></h1>
         <div class="about-grid">
           <div class="about-text">
-            瘥?�鈭?葉憭桃��臬郎�Ｚ�閫?�颲曆�銝?��交�8撟游像�Ｚ挽霈∠�撉???�??鈭??霈胯?��?歲�函��亙�隡?�嚗?��踹��?�閫?挽霈～?�鋆?挽霈∪��萄�閫?�蝑?��?挽霈∠�敹菜?�?悟瘥?�銝芸�蝝??�?�銋??�瘜券�蝏?�銝??雿?�閫?祗閮�?�銝�?          </div>
+            毕业于中央美术学院视觉传达专业，拥有8年平面设计经验。曾服务于腾讯、字节跳动等知名企业，擅长品牌视觉设计、包装设计和电商视觉策划。设计理念是「让每一个像素都有意义」，注重细节与整体视觉语言的统一。
+          </div>
           <div class="about-stats">
-            <div class="stat-item"><div class="stat-number">8+</div><div class="stat-label">撟渲挽霈∠�撉?/div></div>
-            <div class="stat-item"><div class="stat-number">120+</div><div class="stat-label">摰?�憿寧?</div></div>
-            <div class="stat-item"><div class="stat-number">30+</div><div class="stat-label">�?��?�</div></div>
+            <div class="stat-item"><div class="stat-number">8+</div><div class="stat-label">年设计经验</div></div>
+            <div class="stat-item"><div class="stat-number">120+</div><div class="stat-label">完成项目</div></div>
+            <div class="stat-item"><div class="stat-number">30+</div><div class="stat-label">合作品牌</div></div>
           </div>
         </div>
       </div></div>
@@ -881,11 +850,11 @@
     <section class="page page--services" id="page3">
       <div class="page__bg"></div>
       <div class="page__content" style="width:100%;max-width:900px;"><div class="page__scroll-frame">
-        <h1 class="page__title">霈曇恣<span class="accent">�??</span></h1>
+        <h1 class="page__title">设计<span class="accent">服务</span></h1>
         <div class="services-grid">
-          <div class="service-card"><div class="service-icon">&#x1F3AF;</div><div class="service-title">�?�閫?�霈曇恣</div><div class="service-desc">Logo霈曇恣�?I蝟餌��?��?��??�閫?��??摰?/div></div>
-          <div class="service-card"><div class="service-icon">&#x1F4E6;</div><div class="service-title">�?�霈曇恣</div><div class="service-desc">鈭批��?��?兮�?挽霈～?�鋆?��??�韐券?�</div></div>
-          <div class="service-card"><div class="service-icon">&#x1F4E2;</div><div class="service-title">�萄�閫?�</div><div class="service-desc">霂行�憿菔挽霈～?蜓�曄��??��箄�閫???�蝝?�</div></div>
+          <div class="service-card"><div class="service-icon">&#x1F3AF;</div><div class="service-title">品牌视觉设计</div><div class="service-desc">Logo设计、VI系统、品牌手册、视觉规范制定</div></div>
+          <div class="service-card"><div class="service-icon">&#x1F4E6;</div><div class="service-title">包装设计</div><div class="service-desc">产品包装、礼盒设计、包装结构、材质选配</div></div>
+          <div class="service-card"><div class="service-icon">&#x1F4E2;</div><div class="service-title">电商视觉</div><div class="service-desc">详情页设计、主图策划、店铺视觉、营销素材</div></div>
         </div>
       </div></div>
     </section>
@@ -893,46 +862,46 @@
     <section class="page page--testimonials" id="page4">
       <div class="page__bg"></div>
       <div class="page__content" style="width:100%;max-width:900px;"><div class="page__scroll-frame">
-        <h1 class="page__title">摰Ｘ?<span class="accent">霂?遠</span></h1>
+        <h1 class="page__title">客户<span class="accent">评价</span></h1>
         <div class="testimonials-list">
           <div class="testimonial-item">
             <div class="testimonial-avatar">&#x738B;</div>
             <div class="testimonial-content">
-              <div class="testimonial-text">&#x300C;銝?ili�?�鈭?銝芷★�殷�瘥?活�質?蝎曉��??�?�靚?改�霈曇恣颲??頞??憸?��??�急?�?�霈曇恣嚗?�撣?���?��?�40%�?#x300D;</div>
+              <div class="testimonial-text">&#x300C;与Lili合作了3个项目，每次都能精准把握品牌调性，设计输出超出预期。特别是包装设计，上市后销量提升了40%。&#x300D;</div>
               <div class="testimonial-name">&#x738B;&#x7ECF;&#x7406;</div>
-              <div class="testimonial-role">&#x67D0;&#x65B0;&#x6D88;&#x8D39;&#x54C1;&#x724C; 繚 &#x5E02;&#x573A;&#x603B;&#x76D1;</div>
+              <div class="testimonial-role">&#x67D0;&#x65B0;&#x6D88;&#x8D39;&#x54C1;&#x724C; · &#x5E02;&#x573A;&#x603B;&#x76D1;</div>
             </div>
           </div>
           <div class="testimonial-item">
             <div class="testimonial-avatar">&#x674E;</div>
             <div class="testimonial-content">
-              <div class="testimonial-text">&#x300C;銝?��?��??�摰∠��?ili撖寧��?��??霈拐犖�曉�嚗?�甈∩耨�寥?�賢翰�?�閫��瘙?僎蝏??�游末�??獢??#x300D;</div>
+              <div class="testimonial-text">&#x300C;专业、高效、有审美。Lili对细节的把控让人放心，每次修改都能快速理解需求并给出更好的方案。&#x300D;</div>
               <div class="testimonial-name">&#x674E;&#x603B;</div>
-              <div class="testimonial-role">&#x67D0;&#x79D1;&#x6280;&#x516C;&#x53F8; 繚 CEO</div>
+              <div class="testimonial-role">&#x67D0;&#x79D1;&#x6280;&#x516C;&#x53F8; · CEO</div>
             </div>
           </div>
           <div class="testimonial-item">
             <div class="testimonial-avatar">&#x9648;</div>
             <div class="testimonial-content">
-              <div class="testimonial-text">&#x300C;蝚砌�甈⊥?�芰?霈曇恣撣?��寞�敹?�雿?ili�?�銝?�摨血��其�颲?挽霈∪?�詻?��?◇�?�鈭支��??嚗?�蝏剛�銝餃?頝?�摨??�?��?#x300D;</div>
+              <div class="testimonial-text">&#x300C;第一次找自由设计师有点担心，但Lili的专业程度完全不输设计公司。沟通顺畅，交付及时，后续还主动跟进应用效果。&#x300D;</div>
               <div class="testimonial-name">&#x9648;&#x5C0F;&#x59D0;</div>
-              <div class="testimonial-role">&#x72EC;&#x7ACB;&#x8377;&#x724C;&#x521B;&#x59CB;&#x4EBA; 繚 &#x54C1;&#x724C;&#x4E3B;&#x7406;</div>
+              <div class="testimonial-role">&#x72EC;&#x7ACB;&#x8377;&#x724C;&#x521B;&#x59CB;&#x4EBA; · &#x54C1;&#x724C;&#x4E3B;&#x7406;</div>
             </div>
           </div>
           <div class="testimonial-item">
             <div class="testimonial-avatar">&#x5F20;</div>
             <div class="testimonial-content">
-              <div class="testimonial-text">&#x300C;Lili�?挽霈⊥�銝蝘??�憟賬?��?站�???�隡?�摨西挽霈∴�銋?�隡?像摨詻?�蝘?��嗉?移�?�摰∠�嚗?迤�舀�隞砍��?�閬?��?#x300D;</div>
+              <div class="testimonial-text">&#x300C;Lili的设计有一种「刚好」的分寸感——不会过度设计，也不会平庸。这种克制而精准的审美，正是我们品牌需要的。&#x300D;</div>
               <div class="testimonial-name">&#x5F20;&#x5148;&#x751F;</div>
-              <div class="testimonial-role">&#x5F00;&#x5E97;&#x751F;&#x6D3B;&#x9986; 繚 &#x521B;&#x59CB;&#x4EBA;</div>
+              <div class="testimonial-role">&#x5F00;&#x5E97;&#x751F;&#x6D3B;&#x9986; · &#x521B;&#x59CB;&#x4EBA;</div>
             </div>
           </div>
           <div class="testimonial-item">
             <div class="testimonial-avatar">&#x5218;</div>
             <div class="testimonial-content">
-              <div class="testimonial-text">&#x300C;�?�餈?��?��?挽霈∪��?rief 銝霂游停�?��?阮撠梯?�剁��箸?銝??憭扳?�?�蝘?挽霈⊥��?漲嚗??憭?僑蝘舐敞�箸?�??#x300D;</div>
+              <div class="testimonial-text">&#x300C;合作过最省心的设计师。brief 一说就懂，初稿就能用，基本不用大改。这种设计敏感度，是多年积累出来的。&#x300D;</div>
               <div class="testimonial-name">&#x5218;&#x7ECF;&#x7406;</div>
-              <div class="testimonial-role">&#x5FEB;&#x6D88;&#x54C1;&#x724C; 繚 &#x5E02;&#x573A;&#x90E8;&#x95E8;</div>
+              <div class="testimonial-role">&#x5FEB;&#x6D88;&#x54C1;&#x724C; · &#x5E02;&#x573A;&#x90E8;&#x95E8;</div>
             </div>
           </div>
         </div>
@@ -942,27 +911,27 @@
     <section class="page page--cases-extra" id="page5">
       <div class="page__bg"></div>
       <div class="page__content" style="width:100%;max-width:900px;"><div class="page__scroll-frame">
-        <h1 class="page__title">�游�<span class="accent">獢?�</span></h1>
+        <h1 class="page__title">更多<span class="accent">案例</span></h1>
         <div class="works-grid">
           <div class="work-card">
-            <div class="work-card__img" style="background: linear-gradient(135deg, #f093fb, #f5576c);">�?</div>
+            <div class="work-card__img" style="background: linear-gradient(135deg, #f093fb, #f5576c);">🎭</div>
             <div class="work-card__info">
-              <div class="work-card__title">�?�IP敶Ｚ情霈曇恣</div>
-              <div class="work-card__cat">隞?��脰挽摰??撱嗅�摨??嚗?��?�霈啣��寧��?� IP 敶Ｚ情雿?頂�?/div>
+              <div class="work-card__title">品牌IP形象设计</div>
+              <div class="work-card__cat">从角色设定到延展应用，打造有记忆点的品牌 IP 形象体系。</div>
             </div>
           </div>
           <div class="work-card">
-            <div class="work-card__img" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">��</div>
+            <div class="work-card__img" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">📖</div>
             <div class="work-card__info">
-              <div class="work-card__title">隡?��餃�霈曇恣</div>
-              <div class="work-card__cat">隡?�摰���??漣�?��??僑摨行?�?�撟喲?�箇��拍��?�銝?�閫?挽霈～?/div>
+              <div class="work-card__title">企业画册设计</div>
+              <div class="work-card__cat">企业宣传册、产品手册、年度报告等平面出版物的版式与视觉设计。</div>
             </div>
           </div>
           <div class="work-card">
-            <div class="work-card__img" style="background: linear-gradient(135deg, #43e97b, #38f9d7);">�?儭?/div>
+            <div class="work-card__img" style="background: linear-gradient(135deg, #43e97b, #38f9d7);">🖼️</div>
             <div class="work-card__info">
-              <div class="work-card__title">蝷曆漱慦?�閫?�</div>
-              <div class="work-card__cat">�砌��瑟��??�蝥Ｖ髡蝘?��整?nstagram 閫?�蝑?冗鈭文像�啣�摰寡挽霈～?/div>
+              <div class="work-card__title">社交媒体视觉</div>
+              <div class="work-card__cat">公众号排版、小红书种草图、Instagram 视觉等社交平台内容设计。</div>
             </div>
           </div>
         </div>
@@ -972,21 +941,21 @@
     <section class="page page--brands" id="page6">
       <div class="page__bg"></div>
       <div class="page__content">
-        <h1 class="page__title">�?�<span class="accent">�?�</span></h1>
-        <p class="brands-text">憭?僑�乩��?��?��?�銝?遣蝡?��踵��?��喟頂嚗?項�?翰瘨??���?��??��脩�憭?葵憸?��?�銝銝芸�雿?��??�臭�畾菜�鈭?��?���兢�賜?霈曇恣霈脰膩摰?賑�?�鈭??/p>
-        <p class="brands-text">隞?��?��??�?�隡?�嚗?�憪?�隞乓?悟瘥?�銝芸�蝝??�?�銋??蛹�?�嚗?蛹瘥?葵摰Ｘ?�?澈摰??蝚血��嗅��?��找�撣??摰?��?�閫??獢??/p>
-        <p class="brands-text">霈曇恣銝?��舐�摮佗��湔?瘝?????�閫?�霂剛�餈??�?�銝?�隡?�霈拇�銝甈∩��剝?蝎曉�閫西噢鈭箏��?�霈箸?�?�隞?�?�?��湔�撱綽�餈??�?��?��?�閫?�蝥改��??�賣�靘?�銝??頂蝏?�撖?��?��?圾�單?獢??/p>
-        <p class="brands-text">�?�銝?��?��??�?�銝韏瑕��?�銝銝芰移敶拇�鈭??/p>
+        <h1 class="page__title">合作<span class="accent">品牌</span></h1>
+        <p class="brands-text">多年来与各行各业的企业建立了长期合作关系，涵盖快消、科技、文化、教育等多个领域。每一个合作品牌都是一段故事，我很荣幸能用设计讲述它们的故事。</p>
+        <p class="brands-text">从初创品牌到成熟企业，我始终以「让每一个像素都有意义」为准则，为每个客户量身定制符合其品牌调性与市场定位的视觉方案。</p>
+        <p class="brands-text">设计不仅是美学，更是沟通——通过视觉语言连接品牌与受众，让每一次传播都精准触达人心。无论是品牌从0到1的完整构建，还是成熟品牌的视觉升级，我都能提供专业、系统且富有创意的解决方案。</p>
+        <p class="brands-text">期待与你的品牌相遇，一起创造下一个精彩故事。</p>
         <div class="stats-grid-center">
-          <div class="stat-item-c"><span class="stat-num-c">30+</span><span class="stat-lbl-c">�?��?�</span></div>
-          <div class="stat-item-c"><span class="stat-num-c">8撟?/span><span class="stat-lbl-c">霈曇恣蝏?�</span></div>
-          <div class="stat-item-c"><span class="stat-num-c">120+</span><span class="stat-lbl-c">摰?�憿寧?</span></div>
-          <div class="stat-item-c"><span class="stat-num-c">98%</span><span class="stat-lbl-c">憭?揚�?/span></div>
-          <div class="stat-item-c"><span class="stat-num-c">15+</span><span class="stat-lbl-c">銵?�憟?★</span></div>
-          <div class="stat-item-c"><span class="stat-num-c">�?/span><span class="stat-lbl-c">�?��剜�</span></div>
-          <div class="stat-item-c"><span class="stat-num-c">50+</span><span class="stat-lbl-c">�?�霈曇恣</span></div>
-          <div class="stat-item-c"><span class="stat-num-c">40+</span><span class="stat-lbl-c">VI憿寧?</span></div>
-          <div class="stat-item-c"><span class="stat-num-c">20+</span><span class="stat-lbl-c">�餃�霈曇恣</span></div>
+          <div class="stat-item-c"><span class="stat-num-c">30+</span><span class="stat-lbl-c">合作品牌</span></div>
+          <div class="stat-item-c"><span class="stat-num-c">8年</span><span class="stat-lbl-c">设计经验</span></div>
+          <div class="stat-item-c"><span class="stat-num-c">120+</span><span class="stat-lbl-c">完成项目</span></div>
+          <div class="stat-item-c"><span class="stat-num-c">98%</span><span class="stat-lbl-c">复购率</span></div>
+          <div class="stat-item-c"><span class="stat-num-c">15+</span><span class="stat-lbl-c">行业奖项</span></div>
+          <div class="stat-item-c"><span class="stat-num-c">∞</span><span class="stat-lbl-c">创意热情</span></div>
+          <div class="stat-item-c"><span class="stat-num-c">50+</span><span class="stat-lbl-c">包装设计</span></div>
+          <div class="stat-item-c"><span class="stat-num-c">40+</span><span class="stat-lbl-c">VI项目</span></div>
+          <div class="stat-item-c"><span class="stat-num-c">20+</span><span class="stat-lbl-c">画册设计</span></div>
         </div>
       </div>
     </section>
@@ -999,7 +968,7 @@
 
   <section class="vf-page">
     <div class="vf-inner">
-      <h2 class="vf-title">&#x8054;&#x7CFB;繚<span class="accent">&#x5408;&#x4F5C;</span></h2>
+      <h2 class="vf-title">&#x8054;&#x7CFB;·<span class="accent">&#x5408;&#x4F5C;</span></h2>
       <div class="contact-cards">
         <div class="contact-card"><div class="contact-icon">&#x1F4E7;</div><div class="contact-label">&#x90AE;&#x7BB1;</div><div class="contact-value">hello@liliweijie.com</div></div>
         <div class="contact-card"><div class="contact-icon">&#x1F4AC;</div><div class="contact-label">&#x5FAE;&#x4FE1;</div><div class="contact-value">liliweijie_design</div></div>
@@ -1020,12 +989,12 @@
 
   <section class="vf-page">
     <div class="vf-inner">
-      <h2 class="vf-title">&#x5173;&#x4E8E;&#x6211;繚<span class="accent">&#x66F4;&#x591A;&#x4FE1;&#x606F;</span></h2>
+      <h2 class="vf-title">&#x5173;&#x4E8E;&#x6211;·<span class="accent">&#x66F4;&#x591A;&#x4FE1;&#x606F;</span></h2>
       <div class="about-grid">
         <div class="about-text">
           <p style="margin-bottom:16px;">&#x8BBE;&#x8BA1;&#x7406;&#x5FF5;&#xFF1A;&#x300C;&#x8BA9;&#x6BCF;&#x4E00;&#x4E2A;&#x50CF;&#x7D20;&#x90FD;&#x6709;&#x610F;&#x4E49;&#x300D;&#x3002;&#x6211;&#x76F8;&#x4FE1;&#x597D;&#x7684;&#x8BBE;&#x8BA1;&#x4E0D;&#x4EC5;&#x662F;&#x597D;&#x770B;&#xFF0C;&#x66F4;&#x8981;&#x80FD;&#x4F20;&#x8FBE;&#x4FE1;&#x606F;&#x3001;&#x5F15;&#x53D1;&#x5171;&#x9E23;&#x3002;</p>
           <p style="margin-bottom:16px;">&#x5DE5;&#x4F5C;&#x7ECF;&#x5386;&#xFF1A;&#x817E;&#x8BAF;&#x8BBE;&#x8BA1;&#x90E8;&#xFF08;2018-2021&#xFF09;| &#x5B57;&#x8282;&#x8DF3;&#x52A8;&#x54C1;&#x724C;&#x56E2;&#x961F;&#xFF08;2021-2023&#xFF09;| &#x81EA;&#x7531;&#x8BBE;&#x8BA1;&#x5E08;&#xFF08;2023-&#x81F3;&#x4ECA;&#xFF09;</p>
-          <p>&#x6559;&#x80B2;&#x80CC;&#x666F;&#xFF1A;&#x4E2D;&#x592E;&#x7F8E;&#x672F;&#x5B66;&#x9662; 繚 &#x89C6;&#x89C9;&#x4F20;&#x8FBE;&#x8BBE;&#x8BA1; 繚 &#x672C;&#x79D1;&#xFF08;2014-2018&#xFF09;</p>
+          <p>&#x6559;&#x80B2;&#x80CC;&#x666F;&#xFF1A;&#x4E2D;&#x592E;&#x7F8E;&#x672F;&#x5B66;&#x9662; · &#x89C6;&#x89C9;&#x4F20;&#x8FBE;&#x8BBE;&#x8BA1; · &#x672C;&#x79D1;&#xFF08;2014-2018&#xFF09;</p>
         </div>
         <div class="about-stats">
           <div class="stat-item"><div class="stat-number">&#x4E2D;&#x592E;&#x7F8E;&#x9662;</div><div class="stat-label">&#x6BD5;&#x4E1A;&#x9662;&#x6821;</div></div>
@@ -1077,7 +1046,6 @@
 </div><!-- /page-wrapper -->
 
 <script>
-  'use strict';
 (function() {
   'use strict';
 
@@ -1090,7 +1058,6 @@
   var PAGE_COUNT = 7;
   var currentPage = 0;
   var inVerticalFramework = false;
-  var lastHorizontalPage = 0;  // 霈唬�餈??蝡?�獢??�?�璅芸�憿菟?
 
   // ========== PER-CHARACTER HOVER BOLD ==========
   navLinks.forEach(function(link) {
@@ -1160,66 +1127,36 @@
 
   // ========== SCROLL TO PAGE ==========
   function scrollToPage(idx) {
-    if (idx < 0 || idx >= PAGE_COUNT) return;
     currentPage = idx;
     var pageWidth = mainContent.clientWidth;
     mainContent.scrollTo({ left: idx * pageWidth, behavior: 'smooth' });
     updateNavState();
-
-    // Works 3D cards init/destroy
-    if (idx === 1) {
-      var tryInit = function() {
-        if (window.initWorks3D) window.initWorks3D();
-      };
-      // 如果 scrollend 不支持，用 setTimeout 兜底
-      var onScrollEnd = function() {
-        mainContent.removeEventListener('scrollend', onScrollEnd);
-        setTimeout(tryInit, 80);
-      };
-      if ('onscrollend' in mainContent) {
-        mainContent.addEventListener('scrollend', onScrollEnd);
       }
-      // 如果 scrollend 事件不支持，800ms 后兜底初始化
-      setTimeout(tryInit, 800);
-    } else {
-      if (window.destroyWorks3D) window.destroyWorks3D();
-    }
-  }
 
-  // ========== WHEEL HANDLER �?�湔?�?�皛?蔭�唳赤�?��剁��??�扳�撟單�嚗?==========
+  // ========== WHEEL HANDLER — 直接映射滚轮到横向滚动（无惯性无平滑） ==========
   var _navUpdateTimer = null;
 
   mainContent.addEventListener('wheel', function(e) {
     if (inVerticalFramework) return;
     if (e.ctrlKey) return;
-    // 餈?誘敺桀�皛??嚗?圻�扳?�??嚗?    if (Math.abs(e.deltaY) < 1.5 && Math.abs(e.deltaX) < 1.5) return;
-
     e.preventDefault();
 
-    // �湔?霈曄蔭 scrollLeft嚗?��函?嚗?��桅?��?��其��瑕?皛??�?    var maxScroll = mainContent.scrollWidth - mainContent.clientWidth;
-    mainContent.scrollLeft = Math.max(0, Math.min(mainContent.scrollLeft + e.deltaY * 3, maxScroll));
-    
-    // 撖潸?擃?漁嚗?�瘚?�
+    // 直接设置 scrollLeft，无动画，像普通竖向滚动一样即滚即停
+    var maxScroll = mainContent.scrollWidth - mainContent.clientWidth;
+    mainContent.scrollLeft = Math.max(0, Math.min(mainContent.scrollLeft - e.deltaY * 18, maxScroll));
+
+    // 导航高亮（节流）
     clearTimeout(_navUpdateTimer);
     _navUpdateTimer = setTimeout(function() {
       var pw = mainContent.clientWidth;
       if (pw === 0) return;
       var np = Math.floor((mainContent.scrollLeft + pw / 2) / pw);
       np = Math.max(0, Math.min(np, PAGE_COUNT - 1));
-      if (np !== currentPage) {
-        currentPage = np;
-        updateNavState();
-        // 皛?蔭皛??撖潸?�ａ△�塚��?郊�?��?�瘥?3D �∠�
-        if (np === 1) {
-          setTimeout(function() { if(window.initWorks3D) window.initWorks3D(); }, 120);
-        } else {
-          if(window.destroyWorks3D) window.destroyWorks3D();
-        }
-      }
+      if (np !== currentPage) { currentPage = np; updateNavState(); }
     }, 60);
   }, { passive: false });
 
-  // ��?�憿菜��啣� �?餈??蝡?�獢??
+  // 最后一页滚到底 → 进入竖向框架
   var lastPageEnterTimer = null;
   mainContent.addEventListener('wheel', function(e) {
     if (inVerticalFramework) return;
@@ -1237,7 +1174,6 @@
   function enterVerticalFramework(done) {
     if (inVerticalFramework) { if (done) done(); return; }
     inVerticalFramework = true;
-    lastHorizontalPage = currentPage;  // 霈唬�敶?�璅芸�憿菟?
     mainContent.classList.add('faded');
     // Wait for fade-out transition, then show vertical framework (slower)
     setTimeout(function() {
@@ -1247,23 +1183,6 @@
       if (done) done();
     }, 800);
   }
-
-  // Wheel handler INSIDE vertical framework: scroll up at top �?exit back to last horizontal page
-  var _vfWheelTimer = null;
-  verticalFw.addEventListener('wheel', function(e) {
-    if (!inVerticalFramework) return;
-    if (e.ctrlKey) return;
-    // At top and scrolling up �?exit to last horizontal page (獢?� = page4)
-    if (verticalFw.scrollTop <= 0 && e.deltaY < 0) {
-      e.preventDefault();
-      if (_vfWheelTimer) return;
-      _vfWheelTimer = setTimeout(function() { _vfWheelTimer = null; }, 1200);
-
-            exitVerticalFramework(function() {
-          scrollToPage(lastHorizontalPage);
-        });
-    }
-  }, { passive: false });
 
   function exitVerticalFramework(done) {
     if (!inVerticalFramework) { if (done) done(); return; }
@@ -1315,21 +1234,7 @@
     }
   });
 
-  
-  // ========== �桃��航挪�格改�role=button �?��?� Enter/Space ==========
-  (function() {
-    function handleKey(e) {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        e.currentTarget.click();
-      }
-    }
-    document.querySelectorAll('[role="button"]').forEach(function(el) {
-      el.addEventListener('keydown', handleKey);
-    });
-  })();
-
-// ========== NAV STATE ==========
+  // ========== NAV STATE ==========
   function updateNavState() {
     navLinks.forEach(function(item) {
       var isHorizontal = item.dataset.target === 'page';
@@ -1349,16 +1254,16 @@
   var currentLang = 'zh';
   var i18n = {
     zh: {
-      nav: ['首页', '作品集', '服务', '关于', '联系', '合作品牌', '更多案例'],
-      pageTitle: ['Home', 'Works', 'Services', 'About', 'Contact'],
+      nav: ['首页', '作品集', '关于', '服务', '案例', '联系', '博客'],
+      pageTitle: ['创意设计，触手可及', '精选作品集', '关于我', '我的服务', '客户评价'],
       pageDesc: [
-        '',
-        '',
-        '',
-        '',
-        ''
+        '用极简主义的设计语言，为品牌注入灵魂。每一个像素，都是对美的极致追求。',
+        '过去几年中，我为有雄心的品牌创造了令人难忘的视觉体验。',
+        '一名专注细节的平面设计师，擅长品牌识别、UI设计和印刷品设计。',
+        '从概念到落地，提供全流程设计服务，让每一个创意都精准传达。',
+        '来自客户们的真实反馈，是对我工作最大的肯定。'
       ],
-      vfTitles: ['Brand 1', 'Brand 2', 'Service', 'Brand 4', 'Brand 5'],
+      vfTitles: ['取得联系', '博客随笔', '关于我', '专业技能', '工作流程'],
     },
     en: {
       nav: ['Home', 'Works', 'About', 'Services', 'Cases', 'Contact', 'Blog'],
@@ -1446,315 +1351,14 @@
 
   langBtn.addEventListener('click', function() {
     currentLang = currentLang === 'zh' ? 'en' : 'zh';
-    langBtn.textContent = currentLang === 'zh' ? 'EN' : '中文/EN';
+    langBtn.textContent = currentLang === 'zh' ? '中/EN' : 'EN/中';
     applyLang();
   });
 
   // Init
     updateNavState();
 
-  // Expose to window for works-3d.js to use
-  /* === 3D Cards Inline === */
-/* ===== 3D Cards for Works Page ===== */
-/* Auto init/destroy via setInterval �?no hook needed */
-
-var worksCards = [];
-var worksView, worksStage;
-var worksScrollX = 0, worksTargetScrollX = 0;
-var worksHoveredIdx = -1;
-var worksMouseX = 0;
-var worksViewWidth = 0, worksViewCenter = 0;
-var worksAnimFrame = null;
-var worksInitialized = false;
-var worksWheelHandler = null;
-var worksMousemoveHandler = null;
-var worksMouseleaveHandler = null;
-
-var WORKS_NUM = 20;
-var WORKS_BASE_GAP = 150;
-var WORKS_MAX_Z = 150;
-var WORKS_MIN_Z = -400;
-var WORKS_FOCUS_RANGE = 900;
-var WORKS_FISHEYE = 0.25;
-
-var WORKS_CARDS_DATA = [
-    {title:"Work 1", info:"Info 1", footer:"Footer 1"},
-    {title:"Work 2", info:"Info 2", footer:"Footer 2"},
-    {title:"Work 3", info:"Info 3", footer:"Footer 3"},
-    {title:"Work 4", info:"Info 4", footer:"Footer 4"},
-    {title:"Work 5", info:"Info 5", footer:"Footer 5"},
-    {title:"Work 6", info:"Info 6", footer:"Footer 6"},
-    {title:"Work 7", info:"Info 7", footer:"Footer 7"},
-    {title:"Work 8", info:"Info 8", footer:"Footer 8"},
-    {title:"Work 9", info:"Info 9", footer:"Footer 9"},
-    {title:"Work 10", info:"Info 10", footer:"Footer 10"},
-    {title:"Work 11", info:"Info 11", footer:"Footer 11"},
-    {title:"Work 12", info:"Info 12", footer:"Footer 12"},
-    {title:"Work 13", info:"Info 13", footer:"Footer 13"},
-    {title:"Work 14", info:"Info 14", footer:"Footer 14"},
-    {title:"Work 15", info:"Info 15", footer:"Footer 15"},
-    {title:"Work 16", info:"Info 16", footer:"Footer 16"},
-    {title:"Work 17", info:"Info 17", footer:"Footer 17"},
-    {title:"Work 18", info:"Info 18", footer:"Footer 18"},
-    {title:"Work 19", info:"Info 19", footer:"Footer 19"},
-    {title:"Work 20", info:"Info 20", footer:"Footer 20"}
-  ];
-
-function getWorksThemes() {
-  var isLight = document.documentElement.getAttribute('data-theme') === 'light';
-  if (isLight) {
-    return [
-      {bg:'#e8e4dc',fg:'#1a1a2e'},{bg:'#d4cfc7',fg:'#1a1a2e'},{bg:'#c9c4b8',fg:'#1a1a2e'},
-      {bg:'#d8d3ca',fg:'#1a1a2e'},{bg:'#c5c0b5',fg:'#1a1a2e'},{bg:'#b8b3a8',fg:'#1a1a2e'},
-      {bg:'#ddd8ce',fg:'#1a1a2e'},{bg:'#cec9be',fg:'#1a1a2e'},{bg:'#bfbaae',fg:'#1a1a2e'},
-      {bg:'#d1ccbf',fg:'#1a1a2e'},{bg:'#e2ddd4',fg:'#1a1a2e'},{bg:'#d8d2c5',fg:'#1a1a2e'},
-      {bg:'#cdc7b8',fg:'#1a1a2e'},{bg:'#c3bdb0',fg:'#1a1a2e'},{bg:'#e5e0d6',fg:'#1a1a2e'},
-      {bg:'#dadbce',fg:'#1a1a2e'},{bg:'#cfcbc0',fg:'#1a1a2e'},{bg:'#c4bfb2',fg:'#1a1a2e'},
-      {bg:'#dad5ca',fg:'#1a1a2e'},{bg:'#d0cbc0',fg:'#1a1a2e'}
-    ];
-  }
-  return [
-    {bg:'#2c2c3e',fg:'#f0ece4'},{bg:'#3a3a4e',fg:'#f0ece4'},{bg:'#4a4a5e',fg:'#f0ece4'},
-    {bg:'#1e2d3d',fg:'#f0ece4'},{bg:'#2a3a4a',fg:'#f0ece4'},{bg:'#3a4a5a',fg:'#f0ece4'},
-    {bg:'#3e3a2e',fg:'#f0ece4'},{bg:'#4a3a2e',fg:'#f0ece4'},{bg:'#2e3a3a',fg:'#f0ece4'},
-    {bg:'#3a4a4a',fg:'#f0ece4'},{bg:'#4a2e2e',fg:'#f0ece4'},{bg:'#5a3a2e',fg:'#f0ece4'},
-    {bg:'#2e2e3a',fg:'#f0ece4'},{bg:'#3a3a4a',fg:'#f0ece4'},{bg:'#4a4a5e',fg:'#f0ece4'},
-    {bg:'#2e3a2e',fg:'#f0ece4'},{bg:'#3a4a3a',fg:'#f0ece4'},{bg:'#4a5a4a',fg:'#f0ece4'},
-    {bg:'#3a2e3a',fg:'#f0ece4'},{bg:'#4a3a4a',fg:'#f0ece4'}
-  ];
-}
-
-function initWorks3D() {
-  if (worksInitialized) return;
-  worksView = document.querySelector('.works-3d-view');
-  worksStage = document.querySelector('.works-3d-stage');
-  if (!worksView || !worksStage) return;
-
-  if (worksView.offsetWidth < 10 || worksView.offsetHeight < 10) {
-    setTimeout(initWorks3D, 200);
-    return;
-  }
-
-  worksViewWidth = worksView.offsetWidth;
-  worksViewCenter = worksViewWidth / 2;
-  worksMouseX = worksViewCenter;
-  worksInitialized = true;
-
-  for (var i = 0; i < WORKS_NUM; i++) {
-    var themes = getWorksThemes();
-    var theme = themes[i % themes.length];
-    var cardData = WORKS_CARDS_DATA[i];
-    var el = document.createElement('div');
-    el.className = 'card-3d';
-    el.dataset.idx = i;
-    el.style.background = theme.bg;
-    el.style.color = theme.fg;
-    el.innerHTML =
-      '<div class="card-inner">' +
-        '<span class="card-label">' + theme.bg.toUpperCase() + '</span>' +
-        '<div class="card-title-area"><span class="card-title">' + cardData.title + '</span></div>' +
-        '<div class="card-num">' + (i+1) + '</div>' +
-        '<div class="card-line"></div>' +
-        '<span class="card-info">' + cardData.info + '</span>' +
-        '<span class="card-footer">' + cardData.footer + '</span>' +
-      '</div>';
-    worksStage.appendChild(el);
-
-    (function(idx) {
-      el.addEventListener('mouseenter', function() { worksHoveredIdx = idx; });
-      el.addEventListener('mouseleave', function() { worksHoveredIdx = -1; });
-      el.addEventListener('click', function(e) {
-        e.stopPropagation();
-        openWorksPopup(idx);
-      });
-    })(i);
-
-    worksCards.push({el: el, idx: i});
-  }
-
-  worksWheelHandler = function(e) {
-    if (!worksInitialized) return;
-    var halfSpread = (WORKS_NUM - 1) * WORKS_BASE_GAP / 2;
-    var maxScroll = Math.max(halfSpread, worksViewWidth * 0.45);
-    var atLeft  = worksTargetScrollX <= -maxScroll + 2;
-    var atRight = worksTargetScrollX >=  maxScroll - 2;
-    var scrollingDown = e.deltaY > 0;
-    var scrollingUp   = e.deltaY < 0;
-
-    if ((atRight && scrollingDown) || (atLeft && scrollingUp)) {
-      e.preventDefault();
-      e.stopPropagation();
-      if (window.scrollToPage && window.getCurrentPage) {
-        var cp = window.getCurrentPage();
-        window.scrollToPage(scrollingDown ? cp + 1 : cp - 1);
-      }
-      return;
-    }
-
-    e.preventDefault();
-    e.stopPropagation();
-    worksTargetScrollX += e.deltaY * 3.5;
-  };
-  worksView.addEventListener('wheel', worksWheelHandler, {passive: false});
-
-  worksMousemoveHandler = function(e) {
-    var rect = worksView.getBoundingClientRect();
-    worksMouseX = e.clientX - rect.left;
-  };
-  worksView.addEventListener('mousemove', worksMousemoveHandler);
-
-  worksMouseleaveHandler = function() { worksMouseX = worksViewCenter; };
-  worksView.addEventListener('mouseleave', worksMouseleaveHandler);
-
-  if (!document.querySelector('.works-popup-overlay')) {
-    var overlay = document.createElement('div');
-    overlay.className = 'works-popup-overlay';
-    overlay.style.cssText = 'position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.92);opacity:0;visibility:hidden;transition:opacity 0.45s ease;pointer-events:none;';
-    overlay.innerHTML =
-      '<div class="works-popup-panel" style="position:absolute;top:0;right:0;width:60%;height:100%;background:var(--bg-primary);transform:translateX(100%);transition:transform 0.5s cubic-bezier(0.22,1,0.36,1);display:flex;flex-direction:column;overflow-y:auto;border-left:1px solid rgba(255,255,255,0.06);">' +
-        '<div style="padding:48px 52px 28px;display:flex;align-items:flex-start;justify-content:space-between;">' +
-          '<div><div style="font-size:0.72rem;color:var(--text-secondary);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px;">獢?�霂行�</div></div>' +
-          '<button class="works-popup-close" style="width:40px;height:40px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:var(--text-secondary);cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s;border-radius:6px;">�?/button>' +
-        '</div>' +
-        '<div style="padding:0 52px 60px;flex:1;">' +
-          '<h1 style="font-size:2.4rem;font-weight:900;letter-spacing:-0.03em;margin-bottom:16px;"></h1>' +
-          '<p style="font-size:0.92rem;line-height:1.75;color:var(--text-secondary);margin-bottom:18px;"></p>' +
-          '<div class="works-popup-preview" style="width:100%;aspect-ratio:16/10;border-radius:8px;margin:28px 0;display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:800;letter-spacing:0.04em;"></div>' +
-          '<p style="font-size:0.82rem;line-height:1.7;color:var(--text-secondary);">餈?��舀�靘?�霂衣��?膩�??隞亙?甇斗溶�?★�株��胯?挽霈∟�蝔??��舐��?��?捆�?/p>' +
-        '</div>' +
-      '</div>';
-    document.body.appendChild(overlay);
-    overlay.addEventListener('click', function(e) { if (e.target === overlay) closeWorksPopup(); });
-    overlay.querySelector('.works-popup-close').addEventListener('click', closeWorksPopup);
-  }
-
-  worksAnimFrame = requestAnimationFrame(updateWorks3D);
-  console.log('[works-3d] initialized');
-}
-
-function destroyWorks3D() {
-  if (worksAnimFrame) { cancelAnimationFrame(worksAnimFrame); worksAnimFrame = null; }
-  worksInitialized = false;
-  worksCards = [];
-  worksScrollX = 0; worksTargetScrollX = 0;
-
-  if (worksView) {
-    if (worksWheelHandler)     worksView.removeEventListener('wheel', worksWheelHandler);
-    if (worksMousemoveHandler) worksView.removeEventListener('mousemove', worksMousemoveHandler);
-    if (worksMouseleaveHandler) worksView.removeEventListener('mouseleave', worksMouseleaveHandler);
-  }
-  worksWheelHandler = null;
-  worksMousemoveHandler = null;
-  worksMouseleaveHandler = null;
-  worksView = null;
-
-  if (worksStage) { worksStage.innerHTML = ''; }
-  console.log('[works-3d] destroyed');
-}
-
-function worksFisheye(x) {
-  var absX = Math.abs(x);
-  if (absX > WORKS_FOCUS_RANGE) return x;
-  var t = 1 - absX / WORKS_FOCUS_RANGE;
-  var boost = 1 + WORKS_FISHEYE * t * t;
-  return x * boost;
-}
-
-function updateWorks3D() {
-  worksScrollX += (worksTargetScrollX - worksScrollX) * 0.05;
-  var halfSpread = (WORKS_NUM - 1) * WORKS_BASE_GAP / 2;
-  var maxScroll = Math.max(halfSpread, worksViewWidth * 0.45);
-  if (worksScrollX > maxScroll) worksScrollX = maxScroll;
-  if (worksScrollX < -maxScroll) worksScrollX = -maxScroll;
-  if (worksTargetScrollX > maxScroll) worksTargetScrollX = maxScroll;
-  if (worksTargetScrollX < -maxScroll) worksTargetScrollX = -maxScroll;
-
-  var positions = [];
-  for (var i = 0; i < WORKS_NUM; i++) {
-    var logicalX = (i - (WORKS_NUM - 1) / 2) * WORKS_BASE_GAP + worksScrollX;
-    var visualX = worksFisheye(logicalX);
-    var screenX = worksViewCenter + visualX;
-    var dist = Math.abs(screenX - worksMouseX);
-    var z = WORKS_MIN_Z;
-    if (dist < WORKS_FOCUS_RANGE) {
-      var t = 1 - dist / WORKS_FOCUS_RANGE;
-      z = WORKS_MIN_Z + (WORKS_MAX_Z - WORKS_MIN_Z) * Math.pow(t, 1.3);
-    }
-    positions.push({visualX: visualX, z: z, screenX: screenX});
-  }
-
-  var closestIdx = 0, closestDist = Infinity;
-  for (var i = 0; i < WORKS_NUM; i++) {
-    var d = Math.abs(positions[i].screenX - worksMouseX);
-    if (d < closestDist) { closestDist = d; closestIdx = i; }
-  }
-
-  for (var i = 0; i < WORKS_NUM; i++) {
-    var el = worksCards[i].el;
-    var pos = positions[i];
-    var tz = pos.z;
-    if (parseInt(el.dataset.idx) === worksHoveredIdx) tz += 30;
-    el.style.transform = 'translateX(' + pos.visualX + 'px) translateY(-50%) translateZ(' + tz + 'px)';
-    el.style.zIndex = Math.round(-tz + 1000);
-    if (i === closestIdx) {
-      el.style.boxShadow = '-4px 2px 20px rgba(0,0,0,0.3)';
-    } else {
-      el.style.boxShadow = '0 1px 8px rgba(0,0,0,0.12)';
-    }
-  }
-
-  worksAnimFrame = requestAnimationFrame(updateWorks3D);
-}
-
-function openWorksPopup(idx) {
-  var themes = getWorksThemes();
-  var theme = themes[idx % themes.length];
-  var cardData = WORKS_CARDS_DATA[idx];
-  var overlay = document.querySelector('.works-popup-overlay');
-  var panel = overlay.querySelector('.works-popup-panel');
-  panel.querySelector('h1').textContent = cardData.title;
-  panel.querySelector('p').textContent = cardData.info;
-  var preview = panel.querySelector('.works-popup-preview');
-  preview.style.background = theme.bg;
-  preview.style.color = theme.fg;
-  preview.textContent = cardData.title + ' �?憸?�';
-  overlay.style.opacity = '1';
-  overlay.style.visibility = 'visible';
-  overlay.style.pointerEvents = 'auto';
-  panel.style.transform = 'translateX(0)';
-}
-
-function closeWorksPopup() {
-  var overlay = document.querySelector('.works-popup-overlay');
-  if (overlay) {
-    overlay.style.opacity = '0';
-    overlay.style.visibility = 'hidden';
-    overlay.style.pointerEvents = 'none';
-    overlay.querySelector('.works-popup-panel').style.transform = 'translateX(100%)';
-  }
-}
-
-
-
-
-  /* Auto init/destroy 3D cards based on currentPage */
-  (function() {
-    setInterval(function() {
-      if (currentPage === 1 && !worksInitialized) {
-        initWorks3D();
-      } else if (currentPage !== 1 && worksInitialized) {
-        destroyWorks3D();
-      }
-    }, 300);
-    // Initial check
-    setTimeout(function() {
-      if (currentPage === 1) initWorks3D();
-    }, 800);
-  })();
-    window.scrollToPage = scrollToPage;
-  window.getCurrentPage = function() { return currentPage; };
-
 })();
-  </script>
-  </body>
+</script>
+</body>
 </html>
