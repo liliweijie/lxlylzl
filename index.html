@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>liliweijie - 平面设计师</title>
+<title>liliweijie - 平面设计�?/title>
 <style>
   /* ========== RESET & BASE ========== */
   *, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
@@ -43,7 +43,7 @@
     transition: background 0.45s cubic-bezier(0.4,0,0.2,1), color 0.45s cubic-bezier(0.4,0,0.2,1);
   }
 
-  /* ========== PAGE WRAPPER — below nav, max size ========== */
+  /* ========== PAGE WRAPPER �?below nav, max size ========== */
   .page-wrapper {
     position: fixed;
     top: 52px; left: 72px; right: 72px; bottom: 72px;
@@ -53,7 +53,7 @@
     justify-content: flex-start;
   }
 
-  /* ========== TOP NAV — fixed at viewport top ========== */
+  /* ========== TOP NAV �?fixed at viewport top ========== */
   .top-nav {
     position: fixed;
     top: 2px; left: 72px; right: 72px;
@@ -213,7 +213,7 @@
   }
   .lang-btn:hover { color: var(--accent); }
 
-  /* ========== GLASS FRAME CONTAINER — fills page-wrapper ========== */
+  /* ========== GLASS FRAME CONTAINER �?fills page-wrapper ========== */
   .app-container {
     position: relative;
     width: 100%;
@@ -319,7 +319,7 @@
     line-height: 1.7;
   }
 
-  /* ========== VERTICAL FRAMEWORK — inside page-wrapper ========== */
+  /* ========== VERTICAL FRAMEWORK �?inside page-wrapper ========== */
   .vertical-framework {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
@@ -375,7 +375,54 @@
     margin-top: 32px;
   }
 
-  /* 紧凑型作品卡片 — 类似服务页面的风格，不超出视口 */
+  /* 3D Cards in works page */
+  .works-3d-view .card-3d {
+    position: absolute;
+    top: 50%;
+    width: 150px;
+    height: 1050px;
+    border-radius: 5px;
+    cursor: pointer;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 18px 10px;
+    transform-style: preserve-3d;
+    transition: filter 0.35s ease, box-shadow 0.35s ease;
+  }
+  .works-3d-view .card-3d .card-inner {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .works-3d-view .card-3d .card-label {
+    font-size: 7px;
+    font-weight: 600;
+    opacity: 0.55;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    align-self: flex-start;
+  }
+  .works-3d-view .card-3d .card-title-area { flex:1; display:flex; align-items:center; justify-content:center; }
+  .works-3d-view .card-3d .card-title {
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+  }
+  .works-3d-view .card-3d .card-num { font-size: 38px; font-weight: 900; line-height: 1; margin: 14px 0 10px; }
+  .works-3d-view .card-3d .card-line { width: 100%; height: 1px; margin: 8px 0; opacity: 0.15; background: currentColor; }
+  .works-3d-view .card-3d .card-info { font-size: 7px; font-weight: 700; opacity: 0.35; letter-spacing: 0.06em; }
+  .works-3d-view .card-3d .card-footer { font-size: 7px; font-weight: 800; letter-spacing: 0.08em; margin-top: auto; }
+
+  /* 紧凑型作品卡�?�?类似服务页面的风格，不超出视�?*/
   .work-card {
     padding: 28px 24px;
     background: var(--card-bg);
@@ -449,7 +496,7 @@
 
   .stat-label { font-size: 0.85rem; color: var(--text-secondary); }
 
-  /* ========== BRANDS PAGE — centered layout ========== */
+  /* ========== BRANDS PAGE �?centered layout ========== */
   .brands-text {
     font-size: 1rem; color: var(--text-secondary); line-height: 1.9;
     text-align: left; max-width: 680px;
@@ -737,26 +784,26 @@
   <div class="nav-section nav-center">
     <div class="nav-links" id="navLinksHorizontal">
       <div class="nav-link active" data-target="page" data-index="0">
-        <span class="char">首</span><span class="char">页</span>
+        <span class="char">�?/span><span class="char">�?/span>
       </div>
       <div class="nav-link" data-target="page" data-index="1" role="button" tabindex="0">
-        <span class="char">作</span><span class="char">品</span><span class="char">集</span>
+        <span class="char">�?/span><span class="char">�?/span><span class="char">�?/span>
       </div>
       <div class="nav-link" data-target="page" data-index="2" role="button" tabindex="0">
-        <span class="char">关</span><span class="char">于</span>
+        <span class="char">�?/span><span class="char">�?/span>
       </div>
       <div class="nav-link" data-target="page" data-index="3" role="button" tabindex="0">
-        <span class="char">服</span><span class="char">务</span>
+        <span class="char">�?/span><span class="char">�?/span>
       </div>
       <div class="nav-link" data-target="page" data-index="4" role="button" tabindex="0">
-        <span class="char">案</span><span class="char">例</span>
+        <span class="char">�?/span><span class="char">�?/span>
       </div>
       <div class="nav-v-divider"></div>
       <div class="nav-link" data-target="vertical" data-index="0" role="button" tabindex="0">
-        <span class="char">联</span><span class="char">系</span>
+        <span class="char">�?/span><span class="char">�?/span>
       </div>
       <div class="nav-link" data-target="vertical" data-index="1" role="button" tabindex="0">
-        <span class="char">博</span><span class="char">客</span>
+        <span class="char">�?/span><span class="char">�?/span>
       </div>
     </div>
   </div>
@@ -780,7 +827,7 @@
         </svg>
       </button>
       <div class="nav-actions-divider"></div>
-      <button class="lang-btn" id="langBtn" aria-label="切换语言">中/EN</button>
+      <button class="lang-btn" id="langBtn" aria-label="切换语言">�?EN</button>
     </div>
   </div>
 </nav>
@@ -788,7 +835,7 @@
 <!-- ========== PAGE WRAPPER (glass frame) ========== -->
 <div class="page-wrapper">
 
-<!-- ========== GLASS FRAME — contains all content ========== -->
+<!-- ========== GLASS FRAME �?contains all content ========== -->
 <div class="app-container">
   <div class="glass-frame">
 
@@ -799,52 +846,31 @@
     <section class="page page--hero" id="page0">
       <div class="page__bg"></div>
       <div class="page__content"><div class="page__scroll-frame">
-        <h1 class="page__title">用设计讲述<span class="accent">品牌故事</span></h1>
-        <p class="page__desc">平面设计师 · 视觉策划 · 品牌顾问<br>将每一个创意转化为打动人心的视觉语言</p>
+        <h1 class="page__title">用设计讲�?span class="accent">品牌故事</span></h1>
+        <p class="page__desc">平面设计�?· 视觉策划 · 品牌顾问<br>将每一个创意转化为打动人心的视觉语言</p>
         <a href="#page5" class="hero-cta" onclick="event.preventDefault()" style="display:inline-block;margin-top:28px;padding:12px 36px;background:var(--accent);color:#fff;border-radius:0;font-weight:600;font-size:1rem;text-decoration:none;transition:transform 0.2s,box-shadow 0.2s;cursor:pointer">立即联系</a>
       </div></div>
     </section>
 
     <section class="page page--works" id="page1">
       <div class="page__bg"></div>
-      <div class="page__content" style="width:100%;max-width:900px;">
-        <h1 class="page__title"><span class="accent">作品集</span></h1>
-        <div class="works-grid">
-          <div class="work-card">
-            <div class="work-card__img" style="background: linear-gradient(135deg, #c0392b, #e74c3c);">🎨</div>
-            <div class="work-card__info">
-              <div class="work-card__title">品牌视觉升级</div>
-              <div class="work-card__cat">从品牌策略到视觉落地的全案升级，涵盖 Logo、VI、品牌手册及全套视觉规范体系。</div>
-            </div>
-          </div>
-          <div class="work-card">
-            <div class="work-card__img" style="background: linear-gradient(135deg, #2c3e50, #3498db);">📦</div>
-            <div class="work-card__info">
-              <div class="work-card__title">包装设计系列</div>
-              <div class="work-card__cat">产品包装、礼盒结构、材质工艺选配，兼顾货架视觉冲击与开箱体验。</div>
-            </div>
-          </div>
-          <div class="work-card">
-            <div class="work-card__img" style="background: linear-gradient(135deg, #667eea, #764ba2);">📱</div>
-            <div class="work-card__info">
-              <div class="work-card__title">电商视觉策划</div>
-              <div class="work-card__cat">详情页设计、主图视频策划、店铺整体视觉与营销素材系统化输出。</div>
-            </div>
-          </div>
+      <div class="page__content works-3d-page" style="width:100%;height:100%;max-width:none;padding:48px 40px 48px;position:relative;">
+        <div class="works-3d-view" style="width:100%;height:100%;perspective:750px;perspective-origin:50% 50%;position:relative;overflow:hidden;">
+          <div class="works-3d-stage" style="position:absolute;top:50%;left:50%;transform-style:preserve-3d;will-change:transform;"></div>
         </div>
+        <div class="works-scroll-hint" style="position:absolute;bottom:20px;left:50%;transform:translateX(-50%);font-size:0.72rem;color:var(--text-secondary);opacity:0.4;letter-spacing:0.06em;pointer-events:none;">�?滚动鼠标滚轮横向浏览 �?/div>
       </div>
     </section>
 
     <section class="page page--about" id="page2">
       <div class="page__bg"></div>
       <div class="page__content" style="width:100%;max-width:900px;"><div class="page__scroll-frame">
-        <h1 class="page__title">关于<span class="accent">我</span></h1>
+        <h1 class="page__title">关于<span class="accent">�?/span></h1>
         <div class="about-grid">
           <div class="about-text">
-            毕业于中央美术学院视觉传达专业，拥有8年平面设计经验。曾服务于腾讯、字节跳动等知名企业，擅长品牌视觉设计、包装设计和电商视觉策划。设计理念是「让每一个像素都有意义」，注重细节与整体视觉语言的统一。
-          </div>
+            毕业于中央美术学院视觉传达专业，拥有8年平面设计经验。曾服务于腾讯、字节跳动等知名企业，擅长品牌视觉设计、包装设计和电商视觉策划。设计理念是「让每一个像素都有意义」，注重细节与整体视觉语言的统一�?          </div>
           <div class="about-stats">
-            <div class="stat-item"><div class="stat-number">8+</div><div class="stat-label">年设计经验</div></div>
+            <div class="stat-item"><div class="stat-number">8+</div><div class="stat-label">年设计经�?/div></div>
             <div class="stat-item"><div class="stat-number">120+</div><div class="stat-label">完成项目</div></div>
             <div class="stat-item"><div class="stat-number">30+</div><div class="stat-label">合作品牌</div></div>
           </div>
@@ -857,7 +883,7 @@
       <div class="page__content" style="width:100%;max-width:900px;"><div class="page__scroll-frame">
         <h1 class="page__title">设计<span class="accent">服务</span></h1>
         <div class="services-grid">
-          <div class="service-card"><div class="service-icon">&#x1F3AF;</div><div class="service-title">品牌视觉设计</div><div class="service-desc">Logo设计、VI系统、品牌手册、视觉规范制定</div></div>
+          <div class="service-card"><div class="service-icon">&#x1F3AF;</div><div class="service-title">品牌视觉设计</div><div class="service-desc">Logo设计、VI系统、品牌手册、视觉规范制�?/div></div>
           <div class="service-card"><div class="service-icon">&#x1F4E6;</div><div class="service-title">包装设计</div><div class="service-desc">产品包装、礼盒设计、包装结构、材质选配</div></div>
           <div class="service-card"><div class="service-icon">&#x1F4E2;</div><div class="service-title">电商视觉</div><div class="service-desc">详情页设计、主图策划、店铺视觉、营销素材</div></div>
         </div>
@@ -872,7 +898,7 @@
           <div class="testimonial-item">
             <div class="testimonial-avatar">&#x738B;</div>
             <div class="testimonial-content">
-              <div class="testimonial-text">&#x300C;与Lili合作了3个项目，每次都能精准把握品牌调性，设计输出超出预期。特别是包装设计，上市后销量提升了40%。&#x300D;</div>
+              <div class="testimonial-text">&#x300C;与Lili合作�?个项目，每次都能精准把握品牌调性，设计输出超出预期。特别是包装设计，上市后销量提升了40%�?#x300D;</div>
               <div class="testimonial-name">&#x738B;&#x7ECF;&#x7406;</div>
               <div class="testimonial-role">&#x67D0;&#x65B0;&#x6D88;&#x8D39;&#x54C1;&#x724C; · &#x5E02;&#x573A;&#x603B;&#x76D1;</div>
             </div>
@@ -880,7 +906,7 @@
           <div class="testimonial-item">
             <div class="testimonial-avatar">&#x674E;</div>
             <div class="testimonial-content">
-              <div class="testimonial-text">&#x300C;专业、高效、有审美。Lili对细节的把控让人放心，每次修改都能快速理解需求并给出更好的方案。&#x300D;</div>
+              <div class="testimonial-text">&#x300C;专业、高效、有审美。Lili对细节的把控让人放心，每次修改都能快速理解需求并给出更好的方案�?#x300D;</div>
               <div class="testimonial-name">&#x674E;&#x603B;</div>
               <div class="testimonial-role">&#x67D0;&#x79D1;&#x6280;&#x516C;&#x53F8; · CEO</div>
             </div>
@@ -888,7 +914,7 @@
           <div class="testimonial-item">
             <div class="testimonial-avatar">&#x9648;</div>
             <div class="testimonial-content">
-              <div class="testimonial-text">&#x300C;第一次找自由设计师有点担心，但Lili的专业程度完全不输设计公司。沟通顺畅，交付及时，后续还主动跟进应用效果。&#x300D;</div>
+              <div class="testimonial-text">&#x300C;第一次找自由设计师有点担心，但Lili的专业程度完全不输设计公司。沟通顺畅，交付及时，后续还主动跟进应用效果�?#x300D;</div>
               <div class="testimonial-name">&#x9648;&#x5C0F;&#x59D0;</div>
               <div class="testimonial-role">&#x72EC;&#x7ACB;&#x8377;&#x724C;&#x521B;&#x59CB;&#x4EBA; · &#x54C1;&#x724C;&#x4E3B;&#x7406;</div>
             </div>
@@ -896,7 +922,7 @@
           <div class="testimonial-item">
             <div class="testimonial-avatar">&#x5F20;</div>
             <div class="testimonial-content">
-              <div class="testimonial-text">&#x300C;Lili的设计有一种「刚好」的分寸感——不会过度设计，也不会平庸。这种克制而精准的审美，正是我们品牌需要的。&#x300D;</div>
+              <div class="testimonial-text">&#x300C;Lili的设计有一种「刚好」的分寸感——不会过度设计，也不会平庸。这种克制而精准的审美，正是我们品牌需要的�?#x300D;</div>
               <div class="testimonial-name">&#x5F20;&#x5148;&#x751F;</div>
               <div class="testimonial-role">&#x5F00;&#x5E97;&#x751F;&#x6D3B;&#x9986; · &#x521B;&#x59CB;&#x4EBA;</div>
             </div>
@@ -904,7 +930,7 @@
           <div class="testimonial-item">
             <div class="testimonial-avatar">&#x5218;</div>
             <div class="testimonial-content">
-              <div class="testimonial-text">&#x300C;合作过最省心的设计师。brief 一说就懂，初稿就能用，基本不用大改。这种设计敏感度，是多年积累出来的。&#x300D;</div>
+              <div class="testimonial-text">&#x300C;合作过最省心的设计师。brief 一说就懂，初稿就能用，基本不用大改。这种设计敏感度，是多年积累出来的�?#x300D;</div>
               <div class="testimonial-name">&#x5218;&#x7ECF;&#x7406;</div>
               <div class="testimonial-role">&#x5FEB;&#x6D88;&#x54C1;&#x724C; · &#x5E02;&#x573A;&#x90E8;&#x95E8;</div>
             </div>
@@ -922,21 +948,21 @@
             <div class="work-card__img" style="background: linear-gradient(135deg, #f093fb, #f5576c);">🎭</div>
             <div class="work-card__info">
               <div class="work-card__title">品牌IP形象设计</div>
-              <div class="work-card__cat">从角色设定到延展应用，打造有记忆点的品牌 IP 形象体系。</div>
+              <div class="work-card__cat">从角色设定到延展应用，打造有记忆点的品牌 IP 形象体系�?/div>
             </div>
           </div>
           <div class="work-card">
             <div class="work-card__img" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">📖</div>
             <div class="work-card__info">
               <div class="work-card__title">企业画册设计</div>
-              <div class="work-card__cat">企业宣传册、产品手册、年度报告等平面出版物的版式与视觉设计。</div>
+              <div class="work-card__cat">企业宣传册、产品手册、年度报告等平面出版物的版式与视觉设计�?/div>
             </div>
           </div>
           <div class="work-card">
-            <div class="work-card__img" style="background: linear-gradient(135deg, #43e97b, #38f9d7);">🖼️</div>
+            <div class="work-card__img" style="background: linear-gradient(135deg, #43e97b, #38f9d7);">🖼�?/div>
             <div class="work-card__info">
               <div class="work-card__title">社交媒体视觉</div>
-              <div class="work-card__cat">公众号排版、小红书种草图、Instagram 视觉等社交平台内容设计。</div>
+              <div class="work-card__cat">公众号排版、小红书种草图、Instagram 视觉等社交平台内容设计�?/div>
             </div>
           </div>
         </div>
@@ -947,17 +973,17 @@
       <div class="page__bg"></div>
       <div class="page__content">
         <h1 class="page__title">合作<span class="accent">品牌</span></h1>
-        <p class="brands-text">多年来与各行各业的企业建立了长期合作关系，涵盖快消、科技、文化、教育等多个领域。每一个合作品牌都是一段故事，我很荣幸能用设计讲述它们的故事。</p>
-        <p class="brands-text">从初创品牌到成熟企业，我始终以「让每一个像素都有意义」为准则，为每个客户量身定制符合其品牌调性与市场定位的视觉方案。</p>
-        <p class="brands-text">设计不仅是美学，更是沟通——通过视觉语言连接品牌与受众，让每一次传播都精准触达人心。无论是品牌从0到1的完整构建，还是成熟品牌的视觉升级，我都能提供专业、系统且富有创意的解决方案。</p>
-        <p class="brands-text">期待与你的品牌相遇，一起创造下一个精彩故事。</p>
+        <p class="brands-text">多年来与各行各业的企业建立了长期合作关系，涵盖快消、科技、文化、教育等多个领域。每一个合作品牌都是一段故事，我很荣幸能用设计讲述它们的故事�?/p>
+        <p class="brands-text">从初创品牌到成熟企业，我始终以「让每一个像素都有意义」为准则，为每个客户量身定制符合其品牌调性与市场定位的视觉方案�?/p>
+        <p class="brands-text">设计不仅是美学，更是沟通——通过视觉语言连接品牌与受众，让每一次传播都精准触达人心。无论是品牌�?�?的完整构建，还是成熟品牌的视觉升级，我都能提供专业、系统且富有创意的解决方案�?/p>
+        <p class="brands-text">期待与你的品牌相遇，一起创造下一个精彩故事�?/p>
         <div class="stats-grid-center">
           <div class="stat-item-c"><span class="stat-num-c">30+</span><span class="stat-lbl-c">合作品牌</span></div>
-          <div class="stat-item-c"><span class="stat-num-c">8年</span><span class="stat-lbl-c">设计经验</span></div>
+          <div class="stat-item-c"><span class="stat-num-c">8�?/span><span class="stat-lbl-c">设计经验</span></div>
           <div class="stat-item-c"><span class="stat-num-c">120+</span><span class="stat-lbl-c">完成项目</span></div>
-          <div class="stat-item-c"><span class="stat-num-c">98%</span><span class="stat-lbl-c">复购率</span></div>
+          <div class="stat-item-c"><span class="stat-num-c">98%</span><span class="stat-lbl-c">复购�?/span></div>
           <div class="stat-item-c"><span class="stat-num-c">15+</span><span class="stat-lbl-c">行业奖项</span></div>
-          <div class="stat-item-c"><span class="stat-num-c">∞</span><span class="stat-lbl-c">创意热情</span></div>
+          <div class="stat-item-c"><span class="stat-num-c">�?/span><span class="stat-lbl-c">创意热情</span></div>
           <div class="stat-item-c"><span class="stat-num-c">50+</span><span class="stat-lbl-c">包装设计</span></div>
           <div class="stat-item-c"><span class="stat-num-c">40+</span><span class="stat-lbl-c">VI项目</span></div>
           <div class="stat-item-c"><span class="stat-num-c">20+</span><span class="stat-lbl-c">画册设计</span></div>
@@ -1134,24 +1160,42 @@
 
   // ========== SCROLL TO PAGE ==========
   function scrollToPage(idx) {
+    if (idx < 0 || idx >= PAGE_COUNT) return;
     currentPage = idx;
     var pageWidth = mainContent.clientWidth;
     mainContent.scrollTo({ left: idx * pageWidth, behavior: 'smooth' });
     updateNavState();
-      }
 
-  // ========== WHEEL HANDLER — 直接映射滚轮到横向滚动（无惯性无平滑） ==========
+    // Works 3D cards init/destroy
+    if (idx === 1) {
+      var tryInit = function() {
+        if (window.initWorks3D) window.initWorks3D();
+      };
+      // �?scrollend 事件（较新浏览器），同时用超时兜�?      var onScrollEnd = function() {
+        mainContent.removeEventListener('scrollend', onScrollEnd);
+        setTimeout(tryInit, 80);
+      };
+      if ('onscrollend' in mainContent) {
+        mainContent.addEventListener('scrollend', onScrollEnd);
+      }
+      // 兜底�?00ms 后强制初始化
+      setTimeout(tryInit, 800);
+    } else {
+      if (window.destroyWorks3D) window.destroyWorks3D();
+    }
+  }
+
+  // ========== WHEEL HANDLER �?直接映射滚轮到横向滚动（无惯性无平滑�?==========
   var _navUpdateTimer = null;
 
   mainContent.addEventListener('wheel', function(e) {
     if (inVerticalFramework) return;
     if (e.ctrlKey) return;
-    // 过滤微小滚动（触控板抖动）
-    if (Math.abs(e.deltaY) < 1.5 && Math.abs(e.deltaX) < 1.5) return;
+    // 过滤微小滚动（触控板抖动�?    if (Math.abs(e.deltaY) < 1.5 && Math.abs(e.deltaX) < 1.5) return;
+
     e.preventDefault();
 
-    // 直接设置 scrollLeft，无动画，像普通竖向滚动一样即滚即停
-    var maxScroll = mainContent.scrollWidth - mainContent.clientWidth;
+    // 直接设置 scrollLeft，无动画，像普通竖向滚动一样即滚即�?    var maxScroll = mainContent.scrollWidth - mainContent.clientWidth;
     mainContent.scrollLeft = Math.max(0, Math.min(mainContent.scrollLeft + e.deltaY * 3, maxScroll));
     
     // 导航高亮（节流）
@@ -1161,11 +1205,20 @@
       if (pw === 0) return;
       var np = Math.floor((mainContent.scrollLeft + pw / 2) / pw);
       np = Math.max(0, Math.min(np, PAGE_COUNT - 1));
-      if (np !== currentPage) { currentPage = np; updateNavState(); }
+      if (np !== currentPage) {
+        currentPage = np;
+        updateNavState();
+        // 滚轮滑动导致换页时，同步初始�?销�?3D 卡片
+        if (np === 1) {
+          setTimeout(function() { if(window.initWorks3D) window.initWorks3D(); }, 120);
+        } else {
+          if(window.destroyWorks3D) window.destroyWorks3D();
+        }
+      }
     }, 60);
   }, { passive: false });
 
-  // 最后一页滚到底 → 进入竖向框架
+  // 最后一页滚到底 �?进入竖向框架
   var lastPageEnterTimer = null;
   mainContent.addEventListener('wheel', function(e) {
     if (inVerticalFramework) return;
@@ -1194,12 +1247,12 @@
     }, 800);
   }
 
-  // Wheel handler INSIDE vertical framework: scroll up at top → exit back to last horizontal page
+  // Wheel handler INSIDE vertical framework: scroll up at top �?exit back to last horizontal page
   var _vfWheelTimer = null;
   verticalFw.addEventListener('wheel', function(e) {
     if (!inVerticalFramework) return;
     if (e.ctrlKey) return;
-    // At top and scrolling up → exit to last horizontal page (案例 = page4)
+    // At top and scrolling up �?exit to last horizontal page (案例 = page4)
     if (verticalFw.scrollTop <= 0 && e.deltaY < 0) {
       e.preventDefault();
       if (_vfWheelTimer) return;
@@ -1295,16 +1348,16 @@
   var currentLang = 'zh';
   var i18n = {
     zh: {
-      nav: ['首页', '作品集', '关于', '服务', '案例', '联系', '博客'],
-      pageTitle: ['创意设计，触手可及', '精选作品集', '关于我', '我的服务', '客户评价'],
+      nav: ['首页', '作品�?, '关于', '服务', '案例', '联系', '博客'],
+      pageTitle: ['创意设计，触手可�?, '精选作品集', '关于�?, '我的服务', '客户评价'],
       pageDesc: [
-        '用极简主义的设计语言，为品牌注入灵魂。每一个像素，都是对美的极致追求。',
-        '过去几年中，我为有雄心的品牌创造了令人难忘的视觉体验。',
-        '一名专注细节的平面设计师，擅长品牌识别、UI设计和印刷品设计。',
-        '从概念到落地，提供全流程设计服务，让每一个创意都精准传达。',
-        '来自客户们的真实反馈，是对我工作最大的肯定。'
+        '用极简主义的设计语言，为品牌注入灵魂。每一个像素，都是对美的极致追求�?,
+        '过去几年中，我为有雄心的品牌创造了令人难忘的视觉体验�?,
+        '一名专注细节的平面设计师，擅长品牌识别、UI设计和印刷品设计�?,
+        '从概念到落地，提供全流程设计服务，让每一个创意都精准传达�?,
+        '来自客户们的真实反馈，是对我工作最大的肯定�?
       ],
-      vfTitles: ['取得联系', '博客随笔', '关于我', '专业技能', '工作流程'],
+      vfTitles: ['取得联系', '博客随笔', '关于�?, '专业技�?, '工作流程'],
     },
     en: {
       nav: ['Home', 'Works', 'About', 'Services', 'Cases', 'Contact', 'Blog'],
@@ -1392,14 +1445,315 @@
 
   langBtn.addEventListener('click', function() {
     currentLang = currentLang === 'zh' ? 'en' : 'zh';
-    langBtn.textContent = currentLang === 'zh' ? '中/EN' : 'EN/中';
+    langBtn.textContent = currentLang === 'zh' ? '�?EN' : 'EN/�?;
     applyLang();
   });
 
   // Init
     updateNavState();
 
+  // Expose to window for works-3d.js to use
+  /* === 3D Cards Inline === */
+/* ===== 3D Cards for Works Page ===== */
+/* Auto init/destroy via setInterval �?no hook needed */
+
+var worksCards = [];
+var worksView, worksStage;
+var worksScrollX = 0, worksTargetScrollX = 0;
+var worksHoveredIdx = -1;
+var worksMouseX = 0;
+var worksViewWidth = 0, worksViewCenter = 0;
+var worksAnimFrame = null;
+var worksInitialized = false;
+var worksWheelHandler = null;
+var worksMousemoveHandler = null;
+var worksMouseleaveHandler = null;
+
+var WORKS_NUM = 20;
+var WORKS_BASE_GAP = 150;
+var WORKS_MAX_Z = 150;
+var WORKS_MIN_Z = -400;
+var WORKS_FOCUS_RANGE = 900;
+var WORKS_FISHEYE = 0.25;
+
+var WORKS_CARDS_DATA = [
+  {title:"品牌视觉", info:"Logo / VI / 品牌手册", footer:"案例"},
+  {title:"包装设计", info:"结构 / 标签 / 品牌应用", footer:"案例"},
+  {title:"电商视觉", info:"详情�?/ 主图 / 营销素材", footer:"案例"},
+  {title:"插画设计", info:"社媒配图 / 商业插画", footer:"画廊"},
+  {title:"画册设计", info:"企业宣传�?/ 产品手册", footer:"画廊"},
+  {title:"社交媒体", info:"公众�?/ 小红�?/ IG", footer:"案例"},
+  {title:"IP形象", info:"角色设定 / 延展应用", footer:"案例"},
+  {title:"字体设计", info:"品牌定制字体 / 排版", footer:"样张"},
+  {title:"展览视觉", info:"展会 / 活动 / 空间视觉", footer:"案例"},
+  {title:"文创设计", info:"周边产品 / 礼盒设计", footer:"画廊"},
+  {title:"餐饮品牌", info:"菜单 / 空间 / 视觉系统", footer:"案例"},
+  {title:"时尚视觉", info:"服饰 / 配饰 / 视觉策划", footer:"案例"},
+  {title:"教育品牌", info:"培训机构 / 学校视觉", footer:"案例"},
+  {title:"科技品牌", info:"SaaS / APP / 官网视觉", footer:"案例"},
+  {title:"医疗健康", info:"诊所 / 健康品牌视觉", footer:"案例"},
+  {title:"公益设计", info:"NGO / 活动 / 传播物料", footer:"案例"},
+  {title:"动态设�?, info:"短片 / 动效 / 演示", footer:"Showreel"},
+  {title:"空间导视", info:"标识 / 环境图形设计", footer:"案例"},
+  {title:"书籍装帧", info:"封面 / 排版 / 印刷�?, footer:"画廊"},
+  {title:"品牌升级", info:"重塑 / 焕新 / 视觉迭代", footer:"案例"}
+];
+
+function getWorksThemes() {
+  var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+  if (isLight) {
+    return [
+      {bg:'#e8e4dc',fg:'#1a1a2e'},{bg:'#d4cfc7',fg:'#1a1a2e'},{bg:'#c9c4b8',fg:'#1a1a2e'},
+      {bg:'#d8d3ca',fg:'#1a1a2e'},{bg:'#c5c0b5',fg:'#1a1a2e'},{bg:'#b8b3a8',fg:'#1a1a2e'},
+      {bg:'#ddd8ce',fg:'#1a1a2e'},{bg:'#cec9be',fg:'#1a1a2e'},{bg:'#bfbaae',fg:'#1a1a2e'},
+      {bg:'#d1ccbf',fg:'#1a1a2e'},{bg:'#e2ddd4',fg:'#1a1a2e'},{bg:'#d8d2c5',fg:'#1a1a2e'},
+      {bg:'#cdc7b8',fg:'#1a1a2e'},{bg:'#c3bdb0',fg:'#1a1a2e'},{bg:'#e5e0d6',fg:'#1a1a2e'},
+      {bg:'#dadbce',fg:'#1a1a2e'},{bg:'#cfcbc0',fg:'#1a1a2e'},{bg:'#c4bfb2',fg:'#1a1a2e'},
+      {bg:'#dad5ca',fg:'#1a1a2e'},{bg:'#d0cbc0',fg:'#1a1a2e'}
+    ];
+  }
+  return [
+    {bg:'#2c2c3e',fg:'#f0ece4'},{bg:'#3a3a4e',fg:'#f0ece4'},{bg:'#4a4a5e',fg:'#f0ece4'},
+    {bg:'#1e2d3d',fg:'#f0ece4'},{bg:'#2a3a4a',fg:'#f0ece4'},{bg:'#3a4a5a',fg:'#f0ece4'},
+    {bg:'#3e3a2e',fg:'#f0ece4'},{bg:'#4a3a2e',fg:'#f0ece4'},{bg:'#2e3a3a',fg:'#f0ece4'},
+    {bg:'#3a4a4a',fg:'#f0ece4'},{bg:'#4a2e2e',fg:'#f0ece4'},{bg:'#5a3a2e',fg:'#f0ece4'},
+    {bg:'#2e2e3a',fg:'#f0ece4'},{bg:'#3a3a4a',fg:'#f0ece4'},{bg:'#4a4a5e',fg:'#f0ece4'},
+    {bg:'#2e3a2e',fg:'#f0ece4'},{bg:'#3a4a3a',fg:'#f0ece4'},{bg:'#4a5a4a',fg:'#f0ece4'},
+    {bg:'#3a2e3a',fg:'#f0ece4'},{bg:'#4a3a4a',fg:'#f0ece4'}
+  ];
+}
+
+function initWorks3D() {
+  if (worksInitialized) return;
+  worksView = document.querySelector('.works-3d-view');
+  worksStage = document.querySelector('.works-3d-stage');
+  if (!worksView || !worksStage) return;
+
+  if (worksView.offsetWidth < 10 || worksView.offsetHeight < 10) {
+    setTimeout(initWorks3D, 200);
+    return;
+  }
+
+  worksViewWidth = worksView.offsetWidth;
+  worksViewCenter = worksViewWidth / 2;
+  worksMouseX = worksViewCenter;
+  worksInitialized = true;
+
+  for (var i = 0; i < WORKS_NUM; i++) {
+    var themes = getWorksThemes();
+    var theme = themes[i % themes.length];
+    var cardData = WORKS_CARDS_DATA[i];
+    var el = document.createElement('div');
+    el.className = 'card-3d';
+    el.dataset.idx = i;
+    el.style.background = theme.bg;
+    el.style.color = theme.fg;
+    el.innerHTML =
+      '<div class="card-inner">' +
+        '<span class="card-label">' + theme.bg.toUpperCase() + '</span>' +
+        '<div class="card-title-area"><span class="card-title">' + cardData.title + '</span></div>' +
+        '<div class="card-num">' + (i+1) + '</div>' +
+        '<div class="card-line"></div>' +
+        '<span class="card-info">' + cardData.info + '</span>' +
+        '<span class="card-footer">' + cardData.footer + '</span>' +
+      '</div>';
+    worksStage.appendChild(el);
+
+    (function(idx) {
+      el.addEventListener('mouseenter', function() { worksHoveredIdx = idx; });
+      el.addEventListener('mouseleave', function() { worksHoveredIdx = -1; });
+      el.addEventListener('click', function(e) {
+        e.stopPropagation();
+        openWorksPopup(idx);
+      });
+    })(i);
+
+    worksCards.push({el: el, idx: i});
+  }
+
+  worksWheelHandler = function(e) {
+    if (!worksInitialized) return;
+    var halfSpread = (WORKS_NUM - 1) * WORKS_BASE_GAP / 2;
+    var maxScroll = Math.max(halfSpread, worksViewWidth * 0.45);
+    var atLeft  = worksTargetScrollX <= -maxScroll + 2;
+    var atRight = worksTargetScrollX >=  maxScroll - 2;
+    var scrollingDown = e.deltaY > 0;
+    var scrollingUp   = e.deltaY < 0;
+
+    if ((atRight && scrollingDown) || (atLeft && scrollingUp)) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (window.scrollToPage && window.getCurrentPage) {
+        var cp = window.getCurrentPage();
+        window.scrollToPage(scrollingDown ? cp + 1 : cp - 1);
+      }
+      return;
+    }
+
+    e.preventDefault();
+    e.stopPropagation();
+    worksTargetScrollX -= e.deltaY * 3.5;
+  };
+  worksView.addEventListener('wheel', worksWheelHandler, {passive: false});
+
+  worksMousemoveHandler = function(e) {
+    var rect = worksView.getBoundingClientRect();
+    worksMouseX = e.clientX - rect.left;
+  };
+  worksView.addEventListener('mousemove', worksMousemoveHandler);
+
+  worksMouseleaveHandler = function() { worksMouseX = worksViewCenter; };
+  worksView.addEventListener('mouseleave', worksMouseleaveHandler);
+
+  if (!document.querySelector('.works-popup-overlay')) {
+    var overlay = document.createElement('div');
+    overlay.className = 'works-popup-overlay';
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.92);opacity:0;visibility:hidden;transition:opacity 0.45s ease;pointer-events:none;';
+    overlay.innerHTML =
+      '<div class="works-popup-panel" style="position:absolute;top:0;right:0;width:60%;height:100%;background:var(--bg-primary);transform:translateX(100%);transition:transform 0.5s cubic-bezier(0.22,1,0.36,1);display:flex;flex-direction:column;overflow-y:auto;border-left:1px solid rgba(255,255,255,0.06);">' +
+        '<div style="padding:48px 52px 28px;display:flex;align-items:flex-start;justify-content:space-between;">' +
+          '<div><div style="font-size:0.72rem;color:var(--text-secondary);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px;">案例详情</div></div>' +
+          '<button class="works-popup-close" style="width:40px;height:40px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:var(--text-secondary);cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s;border-radius:6px;">�?/button>' +
+        '</div>' +
+        '<div style="padding:0 52px 60px;flex:1;">' +
+          '<h1 style="font-size:2.4rem;font-weight:900;letter-spacing:-0.03em;margin-bottom:16px;"></h1>' +
+          '<p style="font-size:0.92rem;line-height:1.75;color:var(--text-secondary);margin-bottom:18px;"></p>' +
+          '<div class="works-popup-preview" style="width:100%;aspect-ratio:16/10;border-radius:8px;margin:28px 0;display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:800;letter-spacing:0.04em;"></div>' +
+          '<p style="font-size:0.82rem;line-height:1.7;color:var(--text-secondary);">这里是案例的详细描述。可以在此添加项目背景、设计过程、技术细节等内容�?/p>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(overlay);
+    overlay.addEventListener('click', function(e) { if (e.target === overlay) closeWorksPopup(); });
+    overlay.querySelector('.works-popup-close').addEventListener('click', closeWorksPopup);
+  }
+
+  worksAnimFrame = requestAnimationFrame(updateWorks3D);
+  console.log('[works-3d] initialized');
+}
+
+function destroyWorks3D() {
+  if (worksAnimFrame) { cancelAnimationFrame(worksAnimFrame); worksAnimFrame = null; }
+  worksInitialized = false;
+  worksCards = [];
+  worksScrollX = 0; worksTargetScrollX = 0;
+
+  if (worksView) {
+    if (worksWheelHandler)     worksView.removeEventListener('wheel', worksWheelHandler);
+    if (worksMousemoveHandler) worksView.removeEventListener('mousemove', worksMousemoveHandler);
+    if (worksMouseleaveHandler) worksView.removeEventListener('mouseleave', worksMouseleaveHandler);
+  }
+  worksWheelHandler = null;
+  worksMousemoveHandler = null;
+  worksMouseleaveHandler = null;
+  worksView = null;
+
+  if (worksStage) { worksStage.innerHTML = ''; }
+  console.log('[works-3d] destroyed');
+}
+
+function worksFisheye(x) {
+  var absX = Math.abs(x);
+  if (absX > WORKS_FOCUS_RANGE) return x;
+  var t = 1 - absX / WORKS_FOCUS_RANGE;
+  var boost = 1 + WORKS_FISHEYE * t * t;
+  return x * boost;
+}
+
+function updateWorks3D() {
+  worksScrollX += (worksTargetScrollX - worksScrollX) * 0.05;
+  var halfSpread = (WORKS_NUM - 1) * WORKS_BASE_GAP / 2;
+  var maxScroll = Math.max(halfSpread, worksViewWidth * 0.45);
+  if (worksScrollX > maxScroll) worksScrollX = maxScroll;
+  if (worksScrollX < -maxScroll) worksScrollX = -maxScroll;
+  if (worksTargetScrollX > maxScroll) worksTargetScrollX = maxScroll;
+  if (worksTargetScrollX < -maxScroll) worksTargetScrollX = -maxScroll;
+
+  var positions = [];
+  for (var i = 0; i < WORKS_NUM; i++) {
+    var logicalX = (i - (WORKS_NUM - 1) / 2) * WORKS_BASE_GAP + worksScrollX;
+    var visualX = worksFisheye(logicalX);
+    var screenX = worksViewCenter + visualX;
+    var dist = Math.abs(screenX - worksMouseX);
+    var z = WORKS_MIN_Z;
+    if (dist < WORKS_FOCUS_RANGE) {
+      var t = 1 - dist / WORKS_FOCUS_RANGE;
+      z = WORKS_MIN_Z + (WORKS_MAX_Z - WORKS_MIN_Z) * Math.pow(t, 1.3);
+    }
+    positions.push({visualX: visualX, z: z, screenX: screenX});
+  }
+
+  var closestIdx = 0, closestDist = Infinity;
+  for (var i = 0; i < WORKS_NUM; i++) {
+    var d = Math.abs(positions[i].screenX - worksMouseX);
+    if (d < closestDist) { closestDist = d; closestIdx = i; }
+  }
+
+  for (var i = 0; i < WORKS_NUM; i++) {
+    var el = worksCards[i].el;
+    var pos = positions[i];
+    var tz = pos.z;
+    if (parseInt(el.dataset.idx) === worksHoveredIdx) tz += 30;
+    el.style.transform = 'translateX(' + pos.visualX + 'px) translateY(-50%) translateZ(' + tz + 'px)';
+    el.style.zIndex = Math.round(-tz + 1000);
+    if (i === closestIdx) {
+      el.style.boxShadow = '-4px 2px 20px rgba(0,0,0,0.3)';
+    } else {
+      el.style.boxShadow = '0 1px 8px rgba(0,0,0,0.12)';
+    }
+  }
+
+  worksAnimFrame = requestAnimationFrame(updateWorks3D);
+}
+
+function openWorksPopup(idx) {
+  var themes = getWorksThemes();
+  var theme = themes[idx % themes.length];
+  var cardData = WORKS_CARDS_DATA[idx];
+  var overlay = document.querySelector('.works-popup-overlay');
+  var panel = overlay.querySelector('.works-popup-panel');
+  panel.querySelector('h1').textContent = cardData.title;
+  panel.querySelector('p').textContent = cardData.info;
+  var preview = panel.querySelector('.works-popup-preview');
+  preview.style.background = theme.bg;
+  preview.style.color = theme.fg;
+  preview.textContent = cardData.title + ' �?预览';
+  overlay.style.opacity = '1';
+  overlay.style.visibility = 'visible';
+  overlay.style.pointerEvents = 'auto';
+  panel.style.transform = 'translateX(0)';
+}
+
+function closeWorksPopup() {
+  var overlay = document.querySelector('.works-popup-overlay');
+  if (overlay) {
+    overlay.style.opacity = '0';
+    overlay.style.visibility = 'hidden';
+    overlay.style.pointerEvents = 'none';
+    overlay.querySelector('.works-popup-panel').style.transform = 'translateX(100%)';
+  }
+}
+
+
+
+
+  /* Auto init/destroy 3D cards based on currentPage */
+  (function() {
+    setInterval(function() {
+      if (currentPage === 1 && !worksInitialized) {
+        initWorks3D();
+      } else if (currentPage !== 1 && worksInitialized) {
+        destroyWorks3D();
+      }
+    }, 300);
+    // Initial check
+    setTimeout(function() {
+      if (currentPage === 1) initWorks3D();
+    }, 800);
+  })();
+    window.scrollToPage = scrollToPage;
+  window.getCurrentPage = function() { return currentPage; };
+
 })();
-</script>
-</body>
+  </script>
+  </body>
 </html>
