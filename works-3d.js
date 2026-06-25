@@ -6,10 +6,17 @@ var worksView, worksStage;
 var worksScrollX = 0, worksTargetScrollX = 0;
 var worksHoveredIdx = -1;
 var worksViewWidth = 0, worksViewCenter = 0;
-var worksMouseX = 0;  // 鼠标在 view 内的 X 位置
+var worksMouseX = -1;  // 鼠标在 view 内的 X 位置，-1 表示未知
 var worksAnimFrame = null;
 var worksInitialized = false;
 var worksWheelHandler = null;
+
+// 全局鼠标跟踪：在 works-3d.js 加载时就开始记录鼠标位置
+var _globalMouseX = -1, _globalMouseY = -1;
+document.addEventListener('mousemove', function(e) {
+  _globalMouseX = e.clientX;
+  _globalMouseY = e.clientY;
+});
 
 var WORKS_NUM = 20;
 var WORKS_BASE_GAP = 140;
@@ -78,9 +85,17 @@ function initWorks3D() {
 
   worksViewWidth = worksView.offsetWidth;
   worksViewCenter = worksViewWidth / 2;
-  worksMouseX = worksViewCenter;  // 初始值设为中心，鼠标移动后更新
-  worksScrollX = 0;
-  worksTargetScrollX = 300;  // 初始偏右一点，让左边卡片先出现
+  // 用全局鼠标位置计算初始焦点，鼠标在视图外则用中心点
+  if (_globalMouseX >= 0) {
+    var rect = worksView.getBoundingClientRect();
+    var mx = _globalMouseX - rect.left;
+    worksMouseX = (mx >= 0 && mx <= worksViewWidth) ? mx : worksViewCenter;
+  } else {
+    worksMouseX = worksViewCenter;
+  }
+  // 初始位置直接设为目标值，避免入场动画
+  worksScrollX = 300;
+  worksTargetScrollX = 300;
   worksInitialized = true;
 
   var themes = getWorksThemes();
@@ -144,9 +159,12 @@ function initWorks3D() {
   worksView.addEventListener('mousemove', function(e) {
     var rect = worksView.getBoundingClientRect();
     worksMouseX = e.clientX - rect.left;
+    _globalMouseX = e.clientX;  // 同步更新全局位置
+    _globalMouseY = e.clientY;
   });
+  // 鼠标离开时不强制回中心，保持最后位置
   worksView.addEventListener('mouseleave', function() {
-    worksMouseX = worksViewCenter;  // 鼠标离开时回到中心
+    // 可选：缓慢回到中心，现在保持原位
   });
 
   if (!document.querySelector('.works-popup-overlay')) {
