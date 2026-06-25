@@ -1196,27 +1196,32 @@
     updateNavState();
       }
 
-  // ========== WHEEL HANDLER — 直接映射滚轮到横向滚动（无惯性无平滑） ==========
-  var _navUpdateTimer = null;
+  // ========== WHEEL HANDLER — 整页翻页（一滚一页） ==========
+  var _wheelPageLock = false;
+  var _wheelPageTimer = null;
 
   mainContent.addEventListener('wheel', function(e) {
     if (inVerticalFramework) return;
     if (e.ctrlKey) return;
+    if (_wheelPageLock) return;
     e.preventDefault();
 
-    // 直接设置 scrollLeft，无动画，像普通竖向滚动一样即滚即停
-    var maxScroll = mainContent.scrollWidth - mainContent.clientWidth;
-    mainContent.scrollLeft = Math.max(0, Math.min(mainContent.scrollLeft - e.deltaY * 18, maxScroll));
+    var delta = e.deltaY;
+    // 判断滚轮方向：向下滚 → 下一页，向上滚 → 上一页
+    var nextPage;
+    if (delta > 0) {
+      nextPage = Math.min(currentPage + 1, PAGE_COUNT - 1);
+    } else {
+      nextPage = Math.max(currentPage - 1, 0);
+    }
 
-    // 导航高亮（节流）
-    clearTimeout(_navUpdateTimer);
-    _navUpdateTimer = setTimeout(function() {
-      var pw = mainContent.clientWidth;
-      if (pw === 0) return;
-      var np = Math.floor((mainContent.scrollLeft + pw / 2) / pw);
-      np = Math.max(0, Math.min(np, PAGE_COUNT - 1));
-      if (np !== currentPage) { currentPage = np; updateNavState(); }
-    }, 60);
+    if (nextPage !== currentPage) {
+      scrollToPage(nextPage);
+      _wheelPageLock = true;
+      // 800ms 内不重复翻页，防止连跳
+      clearTimeout(_wheelPageTimer);
+      _wheelPageTimer = setTimeout(function() { _wheelPageLock = false; }, 800);
+    }
   }, { passive: false });
 
   // 最后一页滚到底 → 进入竖向框架
