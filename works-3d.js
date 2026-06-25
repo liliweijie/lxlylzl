@@ -11,7 +11,7 @@ var worksInitialized = false;
 var worksWheelHandler = null;
 
 var WORKS_NUM = 20;
-var WORKS_BASE_GAP = 150;
+var WORKS_BASE_GAP = 120;
 var WORKS_MAX_Z = 100;
 var WORKS_MIN_Z = -150;
 var WORKS_FOCUS_RANGE = 1400;
