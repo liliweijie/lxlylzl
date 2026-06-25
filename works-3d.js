@@ -253,7 +253,9 @@ function updateWorks3D() {
     var pos = positions[i];
     var tz = pos.z;
     if (parseInt(el.dataset.idx) === worksHoveredIdx) tz += 30;
-    el.style.transform = 'translateX(' + pos.visualX + 'px) translateY(-50%) translateZ(' + tz + 'px)';
+    // 从底部向上生长：origin 在底部，translateZ 放大时顶部延伸
+    el.style.transformOrigin = 'center bottom';
+    el.style.transform = 'translateX(' + pos.visualX + 'px) translateZ(' + tz + 'px)';
     el.style.zIndex = Math.round(-tz + 1000);
     if (i === closestIdx) {
       el.style.boxShadow = '-4px 2px 20px rgba(0,0,0,0.3)';
