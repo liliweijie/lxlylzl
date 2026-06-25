@@ -1419,7 +1419,11 @@
   });
 
   // Init
-    updateNavState();
+  updateNavState();
+
+  // Expose for works-3d.js auto init/destroy
+  window.getCurrentPage = function() { return currentPage; };
+  window.scrollToPage = scrollToPage;
 
 })();
 </script>
