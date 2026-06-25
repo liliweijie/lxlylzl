@@ -794,9 +794,6 @@
     <section class="page page--hero" id="page0">
       <div class="page__bg"></div>
       <div class="page__content"><div class="page__scroll-frame">
-        <h1 class="page__title">用设计讲述<span class="accent">品牌故事</span></h1>
-        <p class="page__desc">平面设计师 · 视觉策划 · 品牌顾问<br>将每一个创意转化为打动人心的视觉语言</p>
-        <a href="#page5" class="hero-cta" onclick="event.preventDefault()" style="display:inline-block;margin-top:28px;padding:12px 36px;background:var(--accent);color:#fff;border-radius:100px;font-weight:600;font-size:1rem;text-decoration:none;transition:transform 0.2s,box-shadow 0.2s;cursor:pointer">立即联系</a>
       </div></div>
     </section>
 
@@ -1115,6 +1112,7 @@
   applyTheme = function(theme) {
     _origApplyTheme(theme);
     switchLogo(theme);
+    if (window.updateWorks3DTheme) window.updateWorks3DTheme();
   };
 
   applyTheme(getPreferredTheme());
