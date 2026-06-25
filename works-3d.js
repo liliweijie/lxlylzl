@@ -19,7 +19,7 @@ document.addEventListener('mousemove', function(e) {
 });
 
 var WORKS_NUM = 20;
-var WORKS_BASE_GAP = 140;
+var WORKS_BASE_GAP = 170;
 var WORKS_MAX_Z = 100;
 var WORKS_MIN_Z = -150;
 var WORKS_FOCUS_RANGE = 1400;
