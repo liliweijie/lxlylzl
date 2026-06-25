@@ -716,8 +716,6 @@
 
   /* ========== 3D CARDS ========== */
   .works-3d-view {
-    position: absolute;
-    inset: 0;
     overflow: hidden;
   }
   .works-3d-stage {
@@ -887,8 +885,8 @@
 
     <section class="page page--works" id="page1">
       <div class="page__bg"></div>
-      <div class="page__content" style="width:100%;max-width:680px;height:100%;padding:40px;box-sizing:border-box;position:relative;">
-        <div class="works-3d-view" style="overflow:hidden;">
+      <div class="page__content" style="width:100%;max-width:680px;height:100%;box-sizing:border-box;position:relative;">
+        <div class="works-3d-view" style="position:absolute;top:40px;left:40px;right:40px;bottom:40px;overflow:hidden;">
           <div class="works-3d-stage" style="position:absolute;inset:0;transform-style:preserve-3d;perspective:750px;"></div>
         </div>
       </div>
