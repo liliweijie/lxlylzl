@@ -1,11 +1,12 @@
 /* ===== 3D Cards for Works Page ===== */
-/* Z-axis focus fixed to view center — no mouse tracking */
+/* Z-axis follows mouse position */
 
 var worksCards = [];
 var worksView, worksStage;
 var worksScrollX = 0, worksTargetScrollX = 0;
 var worksHoveredIdx = -1;
 var worksViewWidth = 0, worksViewCenter = 0;
+var worksMouseX = 0;  // 鼠标在 view 内的 X 位置
 var worksAnimFrame = null;
 var worksInitialized = false;
 var worksWheelHandler = null;
@@ -77,8 +78,9 @@ function initWorks3D() {
 
   worksViewWidth = worksView.offsetWidth;
   worksViewCenter = worksViewWidth / 2;
+  worksMouseX = worksViewCenter;  // 初始值设为中心，鼠标移动后更新
   worksScrollX = 0;
-  worksTargetScrollX = 0;
+  worksTargetScrollX = 300;  // 初始偏右一点，让左边卡片先出现
   worksInitialized = true;
 
   var themes = getWorksThemes();
@@ -138,9 +140,14 @@ function initWorks3D() {
   };
   worksView.addEventListener('wheel', worksWheelHandler, {passive: false});
 
-  // 鼠标事件保留但仅用于 hover 检测（mouseenter/mouseleave 已处理）
-  worksView.addEventListener('mousemove', function(e) {});
-  worksView.addEventListener('mouseleave', function() {});
+  // 鼠标跟踪：用于 Z 轴焦点
+  worksView.addEventListener('mousemove', function(e) {
+    var rect = worksView.getBoundingClientRect();
+    worksMouseX = e.clientX - rect.left;
+  });
+  worksView.addEventListener('mouseleave', function() {
+    worksMouseX = worksViewCenter;  // 鼠标离开时回到中心
+  });
 
   if (!document.querySelector('.works-popup-overlay')) {
     var overlay = document.createElement('div');
@@ -200,8 +207,8 @@ function updateWorks3D() {
   if (worksTargetScrollX > maxScroll) worksTargetScrollX = maxScroll;
   if (worksTargetScrollX < -maxScroll) worksTargetScrollX = -maxScroll;
 
-  // Z 轴焦点固定在视图中心
-  var focusX = worksViewCenter;
+  // Z 轴焦点跟随鼠标位置
+  var focusX = worksMouseX;
 
   var positions = [];
   for (var i = 0; i < WORKS_NUM; i++) {
