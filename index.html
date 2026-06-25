@@ -714,6 +714,94 @@
     .vf-page { padding: 40px 20px; }
   }
 
+  /* ========== 3D CARDS ========== */
+  .works-3d-view {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+  .works-3d-stage {
+    position: absolute;
+    inset: 0;
+    transform-style: preserve-3d;
+    perspective: 750px;
+  }
+  .card-3d {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200px;
+    height: 280px;
+    margin-left: -100px;
+    margin-top: -140px;
+    border-radius: 12px;
+    cursor: pointer;
+    will-change: transform;
+    backface-visibility: hidden;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 1px 8px rgba(0,0,0,0.12);
+    transition: box-shadow 0.3s;
+  }
+  .card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+  }
+  .card-label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    opacity: 0.5;
+  }
+  .card-title-area {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .card-title {
+    font-size: 1.4rem;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    text-align: center;
+    line-height: 1.3;
+  }
+  .card-num {
+    position: absolute;
+    bottom: 16px;
+    right: 20px;
+    font-size: 2.2rem;
+    font-weight: 900;
+    opacity: 0.18;
+    line-height: 1;
+  }
+  .card-line {
+    width: 100%;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.15;
+    margin: 12px 0;
+  }
+  .card-info {
+    font-size: 0.72rem;
+    opacity: 0.6;
+    line-height: 1.5;
+  }
+  .card-footer {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.35;
+    margin-top: 6px;
+  }
+
   /* ========== HOVER FIXES ========== */
   .nav-link:hover { color: var(--accent) !important; }
   .work-card:hover { transform: translateY(-6px) !important; box-shadow: 0 8px 30px rgba(0,0,0,0.18); }
@@ -799,31 +887,8 @@
 
     <section class="page page--works" id="page1">
       <div class="page__bg"></div>
-      <div class="page__content" style="width:100%;max-width:900px;">
-        <h1 class="page__title"><span class="accent">作品集</span></h1>
-        <div class="works-grid">
-          <div class="work-card">
-            <div class="work-card__img" style="background: linear-gradient(135deg, #c0392b, #e74c3c);">🎨</div>
-            <div class="work-card__info">
-              <div class="work-card__title">品牌视觉升级</div>
-              <div class="work-card__cat">从品牌策略到视觉落地的全案升级，涵盖 Logo、VI、品牌手册及全套视觉规范体系。</div>
-            </div>
-          </div>
-          <div class="work-card">
-            <div class="work-card__img" style="background: linear-gradient(135deg, #2c3e50, #3498db);">📦</div>
-            <div class="work-card__info">
-              <div class="work-card__title">包装设计系列</div>
-              <div class="work-card__cat">产品包装、礼盒结构、材质工艺选配，兼顾货架视觉冲击与开箱体验。</div>
-            </div>
-          </div>
-          <div class="work-card">
-            <div class="work-card__img" style="background: linear-gradient(135deg, #667eea, #764ba2);">📱</div>
-            <div class="work-card__info">
-              <div class="work-card__title">电商视觉策划</div>
-              <div class="work-card__cat">详情页设计、主图视频策划、店铺整体视觉与营销素材系统化输出。</div>
-            </div>
-          </div>
-        </div>
+      <div class="works-3d-view" style="position:absolute;inset:0;overflow:hidden;">
+        <div class="works-3d-stage" style="position:absolute;inset:0;transform-style:preserve-3d;perspective:750px;"></div>
       </div>
     </section>
 
@@ -1358,5 +1423,6 @@
 
 })();
 </script>
+<script src="works-3d.js"></script>
 </body>
 </html>
