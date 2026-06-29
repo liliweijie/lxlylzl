@@ -861,9 +861,362 @@
   /* 作品集页不裁切卡片 */
   .page--works { overflow: visible !important; }
   .page--works .page__content { overflow: visible !important; }
-  </style>
+  
+  /* ========== HERO LOADING OVERLAY — 开屏 Loading 页 ========== */
+  /* 默认显示 Loading，不依赖 JS 初始化 */
+  .hero-loading-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: auto;
+    opacity: 1;
+  }
+  .hero-loading-overlay.light { background: #ffffff; }
+  .hero-loading-overlay.dark  { background: #0e0e12; }
+  /* Loading 结束后淡出 — 更平滑的淡出 */
+  .hero-loading-overlay.fade-out {
+    opacity: 0 !important;
+    pointer-events: none;
+    transition: opacity 0.1s ease;
+  }
+  /* Loading 完全结束后从 DOM 流中移除 */
+  .hero-loading-overlay.hidden {
+    display: none !important;
+  }
+
+  /* Logo SVG 容器：整体放大+消失 */
+  .hero-loading-logo {
+    width: 120px;
+    height: 120px;
+    animation: logoScale 0.8s ease-in-out forwards;
+  }
+  /* 0.8秒：容器从小变大消失 */
+  @keyframes logoScale {
+    0% {
+      opacity: 1;
+      transform: scale(0.3);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(4);
+    }
+  }
+
+  /* 填充层：开始可见，逐渐消失 */
+  .logo-filled {
+    animation: fillFadeOut 0.8s ease-in-out forwards;
+  }
+  @keyframes fillFadeOut {
+    0% { fill-opacity: 0.75; }
+    100% { fill-opacity: 0; }
+  }
+
+  /* 描边层：开始不可见，逐渐显示 */
+  .logo-outline {
+    animation: strokeFadeIn 0.8s ease-in-out forwards;
+  }
+  @keyframes strokeFadeIn {
+    0% { stroke-opacity: 0; }
+    100% { stroke-opacity: 0.75; }
+  }
+
+  /* ========== 页面内容默认隐藏（Loading 期间） ========== */
+  .top-nav,
+  .page-wrapper,
+  .main-wrapper {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  /* Loading 结束后显示页面内容 */
+  body.hero-loaded .top-nav,
+  body.hero-loaded .page-wrapper,
+  body.hero-loaded .main-wrapper {
+    opacity: 1;
+  }
+
+  .page--hero .page__content {
+    max-width: none !important;
+    width: 100% !important;
+    height: 100% !important;
+    padding: 0 !important;
+    position: relative !important;
+    overflow: hidden !important;
+  }
+  /* 阶段2+3: 文件卡片容器 */
+  .hero-files {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  /* 文件卡片基础样式 */
+  .hero-file {
+    position: absolute;
+    border-radius: 6px;
+    box-shadow:
+      0 8px 32px rgba(0,0,0,0.35),
+      0 2px 8px rgba(0,0,0,0.18);
+    pointer-events: auto;
+    cursor: grab;
+    will-change: transform, left, top, rotate;
+    backface-visibility: hidden;
+    transition: box-shadow 0.25s, transform 0.25s;
+  }
+  .hero-file:hover {
+    box-shadow:
+      0 12px 48px rgba(0,0,0,0.5),
+      0 4px 16px rgba(0,0,0,0.25);
+    z-index: 100 !important;
+  }
+  .hero-file:active {
+    cursor: grabbing;
+  }
+  /* 黑色大文件（主文件） */
+  .hero-file--black {
+    width: 280px;
+    height: 380px;
+    background: #1a1a1e;
+    border: 1px solid rgba(255,255,255,0.06);
+    color: #f0ece4;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 36px;
+    font-family: 'Noto Sans SC', 'PingFang SC', sans-serif;
+  }
+  .hero-file--black .hf-title {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 4px;
+  }
+  .hero-file--black .hf-subtitle {
+    font-size: 22px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.5px;
+  }
+  .hero-file--black .hf-sticker {
+    position: absolute;
+    width: 56px;
+    height: 56px;
+    background: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 26px;
+    color: #000;
+  }
+  .hero-file--black .hf-sticker--top-right { top: 24px; right: 24px; }
+  .hero-file--black .hf-sticker--arrow {
+    top: 120px; right: 20px;
+    background: none;
+    border: 3px solid #fff;
+    border-radius: 50%;
+    width: 48px; height: 48px;
+    font-size: 20px;
+  }
+  .hero-file--black .hf-label {
+    position: absolute;
+    bottom: 28px; right: 28px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+  /* 白色文档 */
+  .hero-file--white {
+    width: 220px;
+    height: 310px;
+    background: #eae8e2;
+    border: 1px solid rgba(0,0,0,0.08);
+    color: #222;
+    padding: 24px;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+  }
+  .hero-file--white .hf-line {
+    height: 8px;
+    background: rgba(0,0,0,0.08);
+    margin-bottom: 10px;
+    border-radius: 2px;
+  }
+  .hero-file--white .hf-line--short { width: 55%; }
+  .hero-file--white .hf-line--medium { width: 80%; }
+  .hero-file--white .hf-line--long { width: 95%; }
+  .hero-file--white .hf-badge {
+    display: inline-block;
+    padding: 4px 14px;
+    background: #fff;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 16px;
+    border: 1px solid rgba(0,0,0,0.1);
+  }
+  /* 深色小卡片 */
+  .hero-file--dark-card {
+    width: 180px;
+    height: 240px;
+    background: #111114;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    color: #fff;
+    font-family: monospace;
+    font-size: 11px;
+  }
+  .hero-file--dark-card .hf-circle {
+    width: 80px; height: 80px;
+    border: 2px solid rgba(255,255,255,0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    font-weight: 700;
+  }
+  .hero-file--dark-card .hf-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    width: 100%;
+  }
+  .hero-file--dark-cell {
+    height: 20px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 3px;
+  }
+  /* 蓝色文件夹 */
+  .hero-file--blue-folder {
+    width: 200px;
+    height: 260px;
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    border-radius: 6px 6px 12px 12px;
+    position: relative;
+  }
+  .hero-file--blue-folder::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    border-radius: 6px 6px 0 0;
+  }
+  .hero-file--blue-folder::after {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 12px;
+    width: 70px;
+    height: 16px;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    border-radius: 4px 4px 0 0;
+  }
+  .hero-file--blue-folder .hf-tab {
+    position: absolute;
+    bottom: 24px; left: 20px; right: 20px;
+    display: flex;
+    justify-content: space-between;
+    font-family: system-ui;
+    font-size: 12px;
+    color: rgba(255,255,255,0.75);
+  }
+  /* 浅色便签纸 */
+  .hero-file--note {
+    width: 160px;
+    height: 180px;
+    background: #fff9c4;
+    border: none;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    padding: 16px;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    font-size: 13px;
+    color: #5a4a00;
+    transform: rotate(-3deg) !important;
+  }
+  .hero-file--note .hf-scribble {
+    margin-top: 12px;
+    width: 100%;
+    height: 2px;
+    background: #c9b341;
+    border-radius: 1px;
+  }
+  /* 点击提示 */
+  .hero-hint {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 13px;
+    color: var(--text-muted, #5a5a6a);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    animation: hintPulse 1.8s ease-in-out infinite;
+    z-index: 200;
+  }
+  @keyframes hintPulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+  /* 飞入动画状态 */
+  .hero-file.flying-in {
+    transition: left 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+                top 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+                rotate 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+                opacity 0.45s ease;
+  }
+  .hero-file.scattered {
+    transition: left 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+                top 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+                rotate 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+                scale 0.85s ease;
+  }
+</style>
 </head>
 <body>
+
+<!-- ========== HERO LOADING OVERLAY — 开屏 Loading 页 ========== -->
+<div class="hero-loading-overlay" id="heroLoadingOverlay">
+  <!-- 内联 SVG：填充层 + 描边层，CSS 动画控制过渡 -->
+  <svg class="hero-loading-logo" id="heroLoadingLogo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 39.69 39.69" width="120" height="120">
+    <!-- 填充层：开始可见，逐渐消失 -->
+    <g class="logo-filled" fill="#aaaaaa" fill-opacity="0.75">
+      <circle cx="8.5" cy="8.5" r="8.5" transform="translate(-3.52 8.5) rotate(-45)"/>
+      <path d="M33.09,16.79h.01c3.16-.73,5.64-3.22,6.37-6.38.14-.61.22-1.25.22-1.91,0-4.7-3.81-8.5-8.5-8.5-.66,0-1.29.07-1.91.21-3.16.73-5.65,3.22-6.38,6.38h0c-1.86,8.09-8.18,14.42-16.27,16.29-.01,0-.02,0-.03,0-.02,0-.04.01-.07.02-3.13.74-5.59,3.22-6.31,6.36C.07,29.89,0,30.52,0,31.18,0,35.88,3.81,39.68,8.5,39.68c.66,0,1.29-.07,1.91-.22,3.16-.72,5.65-3.21,6.38-6.37h0s0-.01,0-.01c1.87-8.1,8.19-14.43,16.29-16.29h0Z"/>
+      <circle cx="31.18" cy="31.18" r="8.5" transform="translate(-6.33 8) rotate(-13.28)"/>
+    </g>
+    <!-- 描边层：开始不可见，逐渐显示 -->
+    <g class="logo-outline" fill="none" stroke="#aaaaaa" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0">
+      <circle cx="8.5" cy="8.5" r="8.5" transform="translate(-3.52 8.5) rotate(-45)"/>
+      <path d="M33.09,16.79h.01c3.16-.73,5.64-3.22,6.37-6.38.14-.61.22-1.25.22-1.91,0-4.7-3.81-8.5-8.5-8.5-.66,0-1.29.07-1.91.21-3.16.73-5.65,3.22-6.38,6.38h0c-1.86,8.09-8.18,14.42-16.27,16.29-.01,0-.02,0-.03,0-.02,0-.04.01-.07.02-3.13.74-5.59,3.22-6.31,6.36C.07,29.89,0,30.52,0,31.18,0,35.88,3.81,39.68,8.5,39.68c.66,0,1.29-.07,1.91-.22,3.16-.72,5.65-3.21,6.38-6.37h0s0-.01,0-.01c1.87-8.1,8.19-14.43,16.29-16.29h0Z"/>
+      <circle cx="31.18" cy="31.18" r="8.5" transform="translate(-6.33 8) rotate(-13.28)"/>
+    </g>
+  </svg>
+</div>
+
+<!-- 立即设置 Loading 主题，避免闪现无背景色 -->
+<script>
+(function() {
+  var theme = document.documentElement.getAttribute('data-theme') || 'dark';
+  var overlay = document.getElementById('heroLoadingOverlay');
+  if (overlay) overlay.className = 'hero-loading-overlay ' + theme;
+})();
+</script>
 
 <!-- ========== THREE-SECTION TOP NAV ========== -->
 <nav class="top-nav">
@@ -935,8 +1288,13 @@
 
     <section class="page page--hero" id="page0">
       <div class="page__bg"></div>
-      <div class="page__content"><div class="page__scroll-frame">
-      </div></div>
+      <div class="page__content hero-stage">
+        <!-- 文件卡片动画（Loading 结束后显示） -->
+        <div class="hero-files" id="heroFiles"></div>
+        <!-- 点击提示 -->
+        <div class="hero-hint" id="heroHint" style="display:none;">点击进入</div>
+      </div>
+      <script src="hero-animation.js"></script>
     </section>
 
     <section class="page page--works" id="page1">
@@ -1252,18 +1610,29 @@
     updateNavState();
       }
 
-  // ========== WHEEL HANDLER — 整页翻页（一滚一页） ==========
+  // ========== WHEEL HANDLER — 整页翻页 + 横竖切换 ==========
   var _wheelPageLock = false;
   var _wheelPageTimer = null;
+  var lastPageEnterTimer = null;
 
   mainContent.addEventListener('wheel', function(e) {
     if (inVerticalFramework) return;
     if (e.ctrlKey) return;
+
+    // 最后一页向下滚 → 进入竖向框架
+    if (currentPage === PAGE_COUNT - 1 && e.deltaY > 0) {
+      if (!lastPageEnterTimer) {
+        lastPageEnterTimer = setTimeout(function() { lastPageEnterTimer = null; }, 1500);
+        enterVerticalFramework();
+      }
+      e.preventDefault();
+      return;
+    }
+
     if (_wheelPageLock) return;
     e.preventDefault();
 
     var delta = e.deltaY;
-    // 判断滚轮方向：向下滚 → 下一页，向上滚 → 上一页
     var nextPage;
     if (delta > 0) {
       nextPage = Math.min(currentPage + 1, PAGE_COUNT - 1);
@@ -1274,25 +1643,10 @@
     if (nextPage !== currentPage) {
       scrollToPage(nextPage);
       _wheelPageLock = true;
-      // 800ms 内不重复翻页，防止连跳
       clearTimeout(_wheelPageTimer);
       _wheelPageTimer = setTimeout(function() { _wheelPageLock = false; }, 800);
     }
   }, { passive: false });
-
-  // 最后一页滚到底 → 进入竖向框架
-  var lastPageEnterTimer = null;
-  mainContent.addEventListener('wheel', function(e) {
-    if (inVerticalFramework) return;
-    if (currentPage !== PAGE_COUNT - 1) return;
-    if (e.deltaY < 0) return;
-    var maxScroll = mainContent.scrollWidth - mainContent.clientWidth;
-    if (mainContent.scrollLeft >= maxScroll - 5) {
-      if (lastPageEnterTimer) return;
-      lastPageEnterTimer = setTimeout(function() { lastPageEnterTimer = null; }, 1500);
-      enterVerticalFramework();
-    }
-  }, { passive: true });
 
   // ========== FRAMEWORK TRANSITION ==========
   function enterVerticalFramework(done) {
