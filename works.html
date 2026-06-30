@@ -237,30 +237,71 @@
   }
 
   /* ===== RESPONSIVE ===== */
+  /* Tablet: 2 columns */
   @media (max-width: 900px) {
-    .top-nav { left: 16px; right: 16px; }
+    html { font-size: 2.6666666667vw; }
+    .top-nav { left: 1.6rem; right: 1.6rem; }
     :root {
-      --card-width: 32rem;
-      --img-height: 45rem;
-      --card-gap: 8rem;
-      --col-gap: 2rem;
+      --card-width: 43vw;
+      --img-height: 61.2vw;
+      --card-gap: 10vw;
+      --col-gap: 5vw;
     }
-    .work-card__title { font-size: 1.5rem; }
-    .work-card__tag { font-size: 0.7rem; }
-    .work-card__client { font-size: 0.6rem; padding: 0.35rem 0.7rem; }
+    .work-grid { padding: 0 3.5vw; justify-content: center; }
+    .work-card__title { font-size: 2rem; }
+    .work-card__tag { font-size: 0.85rem; }
+    .work-card__client { font-size: 0.55rem; padding: 0.4rem 0.8rem; }
+    .work-card__content { margin-top: 1.2rem; padding: 0 1.2rem; }
+    .nav-label { font-size: 0.78rem; }
+    .nav-back  { font-size: 0.72rem; padding: 4px 12px; }
+    .nav-section { padding: 4px 14px; height: 36px; }
+    .scroll-progress { top: 2rem; right: 2rem; font-size: 0.9rem; }
+    #col2 { display: none; }
+    .swipe-hint { display: block; }
   }
 
+  /* Phone: 1 column */
   @media (max-width: 600px) {
-    .top-nav { left: 12px; right: 12px; }
+    html { font-size: 3.2vw; }
+    .top-nav { left: 0.8rem; right: 0.8rem; }
     :root {
-      --card-width: 28rem;
-      --img-height: 40rem;
-      --card-gap: 6rem;
-      --col-gap: 1.5rem;
+      --card-width: 88vw;
+      --img-height: 125.2vw;
+      --card-gap: 8vw;
+      --col-gap: 0;
     }
-    .work-card__title { font-size: 1.2rem; }
-    .work-card__tags { display: none; }
-    .scroll-progress { top: 1.5rem; right: 1.5rem; font-size: 0.8rem; }
+    .work-grid { padding: 0 6vw; }
+    .work-card__title { font-size: 1.8rem; }
+    .work-card__tag { font-size: 0.75rem; }
+    .work-card__client { font-size: 0.5rem; padding: 0.35rem 0.7rem; }
+    .work-card__content { margin-top: 1rem; padding: 0 1rem; }
+    .nav-center { display: none; }
+    .nav-back  { font-size: 0.68rem; padding: 3px 10px; }
+    .nav-section { padding: 3px 10px; height: 32px; }
+    .nav-logo { height: 22px; }
+    .scroll-progress { top: 1.6rem; right: 1.6rem; font-size: 0.8rem; }
+    #col1, #col2 { display: none; }
+  }
+
+  /* swipe hint — only visible on touch devices */
+  .swipe-hint {
+    display: none;
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 90;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
+    opacity: 0.7;
+    pointer-events: none;
+    animation: swipeFadeOut 3s ease 2s forwards;
+    text-transform: uppercase;
+  }
+  @keyframes swipeFadeOut {
+    to { opacity: 0; }
   }
 </style>
 </head>
@@ -309,6 +350,9 @@
   <div class="work-col" id="col2"></div>
 </div>
 
+<!-- mobile swipe hint -->
+<div class="swipe-hint" id="swipeHint">↑↓ 滑动浏览</div>
+
 <script>
 (function() {
   // ===== PROJECT DATA =====
@@ -329,9 +373,21 @@
     { title: 'Blank Round', client: 'Blank Round', desc: 'Culturally empowered Streetwear', tags: ['Design', 'Branding'], colorDark: '#1d1d2d', colorLight: '#e0e0f0' },
   ];
 
-  // ===== DISTRIBUTE =====
-  const distributions = [[], [], []];
-  projects.forEach((p, i) => { distributions[i % 3].push(p); });
+  // ===== COLUMN COUNT & DISTRIBUTION =====
+  function getColCount() {
+    const w = window.innerWidth;
+    if (w <= 600) return 1;
+    if (w <= 900) return 2;
+    return 3;
+  }
+
+  function redistribute(nCols) {
+    const dist = Array.from({ length: nCols }, () => []);
+    projects.forEach((p, i) => { dist[i % nCols].push(p); });
+    return dist;
+  }
+
+  let distributions = redistribute(getColCount());
 
   // ===== GENERATE CARD THEME-AWARE =====
   function generateCard(p, idx, isDark) {
@@ -373,13 +429,33 @@
 
   function buildColumns(theme) {
     const isDark = theme === 'dark';
-    cols.forEach((col, ci) => {
+    const dist = distributions;
+    for (let ci = 0; ci < 3; ci++) {
       let html = '';
-      distributions[ci].forEach((p, i) => { html += generateCard(p, ci * 10 + i, isDark); });
-      html += html + html;
-      col.innerHTML = html;
-    });
+      if (ci < dist.length) {
+        dist[ci].forEach((p, i) => { html += generateCard(p, ci * 10 + i, isDark); });
+        html += html + html;
+      }
+      cols[ci].innerHTML = html;
+    }
   }
+
+  // ===== RESIZE HANDLER =====
+  let lastColCount = getColCount();
+  let resizeTimer;
+
+  window.addEventListener('resize', function() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function() {
+      const newCount = getColCount();
+      if (newCount !== lastColCount) {
+        lastColCount = newCount;
+        distributions = redistribute(newCount);
+        const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+        buildColumns(theme);
+      }
+    }, 250);
+  });
 
   // ===== THEME =====
   function getPreferredTheme() {
@@ -431,9 +507,13 @@
   window.addEventListener('touchstart', function(e) {
     touchStartY = e.touches[0].clientY;
     touchScrollBase = totalScroll;
+    // dismiss swipe hint
+    var hint = document.getElementById('swipeHint');
+    if (hint) { hint.style.display = 'none'; }
   }, { passive: true });
   window.addEventListener('touchmove', function(e) {
-    totalScroll = touchScrollBase + (touchStartY - e.touches[0].clientY) * 0.3;
+    const factor = window.innerWidth <= 900 ? 0.5 : 0.3;
+    totalScroll = touchScrollBase + (touchStartY - e.touches[0].clientY) * factor;
   }, { passive: true });
 
   // ===== RENDER =====
