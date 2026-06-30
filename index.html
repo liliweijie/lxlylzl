@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>liliweijie - 平面设计师</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   /* ========== RESET & BASE ========== */
   *, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
@@ -326,6 +329,8 @@
     transition: opacity 0.8s, visibility 0.8s;
     z-index: 0;
     border-radius: 28px;
+    scroll-snap-type: y mandatory;
+    -webkit-scroll-snap-type: y mandatory;
   }
 
   .vertical-framework.is-visible {
@@ -340,6 +345,8 @@
     align-items: center;
     justify-content: center;
     padding: 60px 40px;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
   }
 
   .vf-inner {
@@ -362,7 +369,520 @@
     line-height: 1.8;
   }
 
-      50% { transform: translateY(6px); }
+  /* ========== SPLIT 4:6 — inside vertical framework (shared by portfolio + all split pages) ========== */
+  .vf-page--split {
+    min-height: 100% !important;
+    height: 100% !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    align-items: stretch !important;
+    scroll-snap-align: start;
+  }
+
+  .split-viewport {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+  }
+
+  .vf-page--split .vf-inner {
+    max-width: none;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* page-specific split card styles */
+  .pf-service-list { display: flex; flex-direction: column; gap: 10px; }
+  .pf-service-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px; background: var(--card-bg);
+    border: 1px solid var(--glass-border); border-radius: 12px;
+    font-size: 0.88rem; font-weight: 500; transition: border-color 0.3s;
+  }
+  .pf-service-item:hover { border-color: var(--accent); }
+  .pf-service-item .dot {
+    width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0;
+  }
+
+  .pf-stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .pf-stat-card {
+    display: flex; flex-direction: column; gap: 4px; align-items: center;
+    padding: 16px 12px; background: var(--card-bg);
+    border: 1px solid var(--glass-border); border-radius: 12px;
+    transition: border-color 0.3s;
+  }
+  .pf-stat-card:hover { border-color: var(--accent); }
+  .pf-stat-card .num { font-size: 1.6rem; font-weight: 800; color: var(--accent); }
+  .pf-stat-card .label { font-size: 0.7rem; color: var(--text-muted); }
+
+  .pf-blog-list { display: flex; flex-direction: column; gap: 8px; }
+  .pf-blog-item {
+    padding: 14px 16px; background: var(--card-bg);
+    border: 1px solid var(--glass-border); border-radius: 12px;
+    cursor: pointer; transition: border-color 0.3s, transform 0.3s;
+  }
+  .pf-blog-item:hover, .pf-blog-item.active { border-color: var(--accent); transform: translateX(6px); }
+  .pf-blog-item .date { font-size: 0.65rem; font-weight: 700; color: var(--accent); margin-bottom: 4px; font-family: "Inter", sans-serif; }
+  .pf-blog-item .title { font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; }
+  .pf-blog-item .excerpt { font-size: 0.75rem; color: var(--text-muted); line-height: 1.5; }
+
+  .pf-blog-preview { background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 24px; }
+  .pf-blog-preview .date { font-size: 0.7rem; color: var(--accent); font-weight: 600; margin-bottom: 8px; font-family: "Inter", sans-serif; }
+  .pf-blog-preview .title { font-size: 1.25rem; font-weight: 800; margin-bottom: 16px; line-height: 1.3; }
+  .pf-blog-preview .body { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.8; margin-bottom: 16px; }
+  .pf-blog-preview .read-more {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 0.8rem; font-weight: 600; color: var(--accent); cursor: pointer;
+    transition: gap 0.3s;
+  }
+  .pf-blog-preview .read-more:hover { gap: 10px; }
+
+  .pf-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pf-tag-chip {
+    padding: 7px 16px; background: var(--card-bg); border: 1px solid var(--glass-border);
+    border-radius: 100px; font-size: 0.75rem; font-weight: 500; color: var(--text-secondary);
+    cursor: pointer; transition: border-color 0.3s, color 0.3s;
+  }
+  .pf-tag-chip:hover { border-color: var(--accent); color: var(--text-primary); }
+
+  .pf-skills-col { display: flex; flex-direction: column; gap: 18px; }
+  .pf-skill-row { display: flex; flex-direction: column; gap: 6px; }
+  .pf-skill-row .head { display: flex; justify-content: space-between; font-size: 0.85rem; }
+  .pf-skill-row .head .name { font-weight: 600; }
+  .pf-skill-row .head .pct { color: var(--text-muted); font-family: "Inter", sans-serif; }
+  .pf-skill-row .bar { height: 4px; background: var(--card-bg); border-radius: 2px; overflow: hidden; }
+  .pf-skill-row .bar .fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 1.2s cubic-bezier(0.16,1,0.3,1); }
+
+  .pf-process-intro { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.7; margin-bottom: 16px; }
+  .pf-process-highlights { display: flex; flex-direction: column; gap: 8px; }
+  .pf-process-hl {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 0.82rem; color: var(--text-secondary);
+    padding: 8px 12px; background: var(--card-bg);
+    border: 1px solid var(--glass-border); border-radius: 10px;
+    transition: border-color 0.3s;
+  }
+  .pf-process-hl:hover { border-color: var(--accent); }
+  .pf-process-hl .icon { color: var(--accent); flex-shrink: 0; font-weight: 700; }
+
+  .pf-timeline-list { display: flex; flex-direction: column; gap: 6px; }
+  .pf-timeline-item {
+    display: flex; gap: 16px; padding: 10px 14px;
+    background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 10px;
+    transition: border-color 0.3s;
+  }
+  .pf-timeline-item:hover { border-color: var(--accent); }
+  .pf-timeline-item .step {
+    font-size: 0.65rem; font-weight: 700; color: var(--accent);
+    min-width: 52px; font-family: "Inter", sans-serif; flex-shrink: 0;
+  }
+  .pf-timeline-item .info .tl-title { font-size: 0.88rem; font-weight: 700; margin-bottom: 2px; }
+  .pf-timeline-item .info .tl-desc { font-size: 0.72rem; color: var(--text-muted); line-height: 1.5; }
+
+  /* Responsive for split pages */
+  @media (max-width: 768px) {
+    .split-viewport { flex-direction: column; }
+    .vf-page--split .pf-left, .vf-page--split .pf-right { width: 100%; height: 50%; border-right: none; border-bottom: 1px solid var(--glass-border); }
+    .vf-page--split .pf-right { border-bottom: none; }
+  }
+
+  .pf-panel {
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .pf-left {
+    width: 40%;
+    flex-shrink: 0;
+    border-right: 1px solid var(--glass-border);
+  }
+
+  .pf-right {
+    width: 60%;
+    flex-shrink: 0;
+  }
+
+  .pf-track {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    will-change: transform;
+    transition: transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .pf-item {
+    position: relative;
+    width: 100%;
+    flex: 0 0 100%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: clamp(32px, 5vh, 60px) clamp(24px, 4vw, 48px);
+    overflow: hidden;
+  }
+
+  .pf-right .pf-item {
+    padding: clamp(32px, 5vh, 60px) clamp(32px, 5vw, 60px);
+  }
+
+  .pf-tag {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    padding: 6px 14px;
+    background: rgba(192,57,43,0.18);
+    border-radius: 100px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .pf-section-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+    flex-shrink: 0;
+  }
+  .pf-section-label .num {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--accent);
+    font-family: "Inter", sans-serif;
+  }
+  .pf-section-label .title {
+    font-size: 1.45rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .pf-card {
+    background: var(--card-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 24px;
+    transition: border-color 0.3s;
+    overflow: hidden;
+  }
+  .pf-card:hover { border-color: var(--accent); }
+
+  .pf-hero-name {
+    font-size: clamp(2.4rem, 5vw, 4rem);
+    font-weight: 900;
+    line-height: 1.05;
+    margin-bottom: 14px;
+    letter-spacing: 0.04em;
+  }
+  .pf-hero-subtitle {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+  }
+  .pf-hero-desc {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    max-width: 380px;
+    margin-bottom: 22px;
+  }
+  .pf-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 144px;
+    height: 42px;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 100px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .pf-cta:hover {
+    transform: scale(1.06);
+    box-shadow: 0 8px 30px rgba(192,57,43,0.35);
+  }
+
+  .pf-about-bio {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 18px;
+  }
+  .pf-about-stats {
+    display: flex;
+    gap: 28px;
+    margin-bottom: 18px;
+  }
+  .pf-about-stat { display: flex; flex-direction: column; gap: 4px; }
+  .pf-about-stat .num { font-size: 1.9rem; font-weight: 800; line-height: 1; }
+  .pf-about-stat .label { font-size: 0.7rem; color: var(--text-muted); }
+  .pf-about-awards {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: rgba(192,57,43,0.1);
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--accent);
+  }
+
+  .pf-works-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .pf-works-item {
+    padding: 12px 14px;
+    background: var(--card-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: border-color 0.3s, background 0.3s, transform 0.3s;
+  }
+  .pf-works-item:hover, .pf-works-item.active {
+    border-color: var(--accent);
+    background: rgba(255,255,255,0.05);
+    transform: translateX(6px);
+  }
+  .pf-works-item .cat {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+    margin-bottom: 4px;
+    font-family: "Inter", sans-serif;
+  }
+  .pf-works-item .name { font-size: 1rem; font-weight: 700; }
+
+  .pf-showcase-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    flex: 1;
+    min-height: 0;
+  }
+  .pf-showcase-card {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 14px;
+    background: var(--card-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 14px;
+    transition: border-color 0.3s, transform 0.3s;
+    min-height: 0;
+  }
+  .pf-showcase-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+  .pf-showcase-card .cat {
+    font-size: 0.62rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+    font-family: "Inter", sans-serif;
+    flex-shrink: 0;
+  }
+  .pf-showcase-card .title { font-size: 1rem; font-weight: 800; flex-shrink: 0; }
+  .pf-showcase-card .desc {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    flex-shrink: 0;
+  }
+  .pf-showcase-preview {
+    flex: 1;
+    min-height: 50px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 8px;
+    margin-top: 6px;
+  }
+
+  .pf-exp-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .pf-exp-card {
+    padding: 12px 14px;
+    background: var(--card-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    transition: border-color 0.3s;
+  }
+  .pf-exp-card:hover { border-color: var(--accent); }
+  .pf-exp-card .period {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 4px;
+    font-family: "Inter", sans-serif;
+  }
+  .pf-exp-card .company { font-size: 0.9rem; font-weight: 700; margin-bottom: 2px; }
+  .pf-exp-card .role { font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 4px; }
+  .pf-exp-card .desc { font-size: 0.72rem; color: var(--text-muted); line-height: 1.5; }
+
+  .pf-skills-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .pf-skill-tag {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 38px;
+    background: var(--card-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 100px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    transition: border-color 0.3s, color 0.3s;
+  }
+  .pf-skill-tag:hover { border-color: var(--accent); color: var(--text-primary); }
+
+  .pf-contact-heading {
+    font-size: 1.45rem;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 18px;
+  }
+  .pf-contact-items {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 22px;
+  }
+  .pf-contact-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.85rem;
+  }
+  .pf-contact-item .label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    min-width: 50px;
+  }
+  .pf-contact-item .value { font-weight: 500; }
+
+  .pf-footer-card {
+    background: var(--card-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 32px;
+  }
+  .pf-footer-brand {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 12px;
+    letter-spacing: -0.02em;
+  }
+  .pf-footer-copy {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+  }
+  .pf-footer-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+  }
+  .pf-footer-row a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .pf-footer-row a:hover { color: var(--accent); }
+
+  .pf-scroll-hint {
+    position: absolute;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    animation: hintPulse 2s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 20;
+    transition: opacity 0.3s;
+  }
+  .pf-scroll-hint.is-hidden { opacity: 0; animation: none; }
+
+  .pf-scroll-progress {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 20;
+  }
+  .pf-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--glass-border);
+    border: 1px solid var(--glass-border);
+    transition: background 0.3s, border-color 0.3s, transform 0.3s;
+    cursor: pointer;
+  }
+  .pf-dot.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    transform: scale(1.3);
+  }
+
+  /* Make vf-page--portfolio fill properly */
+  .vf-page--portfolio .vf-inner {
+    max-width: none;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Responsive */
+  @media (max-width: 1100px) {
+    .pf-left { width: 45%; }
+    .pf-right { width: 55%; }
+    .pf-item { padding: 40px 32px; }
+    .pf-right .pf-item { padding: 40px; }
+    .pf-skills-grid { grid-template-columns: repeat(2, 1fr); }
+    .pf-showcase-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 768px) {
+    .portfolio-viewport { flex-direction: column; }
+    .pf-left, .pf-right { width: 100%; height: 50%; border-right: none; border-bottom: 1px solid var(--glass-border); }
+    .pf-right { border-bottom: none; }
+    .pf-item { padding: 24px; justify-content: flex-start; }
+    .pf-right .pf-item { padding: 24px; }
+    .pf-hero-name { font-size: 2.5rem; }
+    .pf-showcase-grid { grid-template-columns: 1fr 1fr; flex: none; min-height: auto; }
+    .pf-skills-grid { grid-template-columns: repeat(3, 1fr); }
   }
 
   /* ========== CONTENT STYLES ========== */
@@ -1243,10 +1763,16 @@
       </div>
       <div class="nav-v-divider"></div>
       <div class="nav-link" data-target="vertical" data-index="0">
-        <span class="char">联</span><span class="char">系</span>
+        <span class="char">作</span><span class="char">品</span><span class="char">集</span>
       </div>
       <div class="nav-link" data-target="vertical" data-index="1">
+        <span class="char">联</span><span class="char">系</span>
+      </div>
+      <div class="nav-link" data-target="vertical" data-index="2">
         <span class="char">博</span><span class="char">客</span>
+      </div>
+      <div class="nav-link" data-target="vertical" data-index="3">
+        <span class="char">技</span><span class="char">能</span>
       </div>
     </div>
   </div>
@@ -1439,78 +1965,499 @@
     </div>
   </div>
 
-    <!-- Vertical framework (5 pages) -->
+    <!-- Vertical framework (6 pages) -->
     <div class="vertical-framework" id="verticalFramework">
 
-  <section class="vf-page">
+  <!-- Portfolio 4:6 alternating scroll -->
+  <section class="vf-page vf-page--split" id="vfPortfolio">
     <div class="vf-inner">
-      <h2 class="vf-title">&#x8054;&#x7CFB;·<span class="accent">&#x5408;&#x4F5C;</span></h2>
-      <div class="contact-cards">
-        <div class="contact-card"><div class="contact-icon">&#x1F4E7;</div><div class="contact-label">&#x90AE;&#x7BB1;</div><div class="contact-value">hello@liliweijie.com</div></div>
-        <div class="contact-card"><div class="contact-icon">&#x1F4AC;</div><div class="contact-label">&#x5FAE;&#x4FE1;</div><div class="contact-value">liliweijie_design</div></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="vf-page">
-    <div class="vf-inner">
-      <h2 class="vf-title">&#x8BBE;&#x8BA1;<span class="accent">&#x968F;&#x7B14;</span></h2>
-      <div class="blog-list">
-        <div class="blog-post"><div class="blog-date">2024.03</div><div><div class="blog-post-title">&#x4E2D;&#x5F0F;&#x7F8E;&#x5B66;&#x5728;&#x73B0;&#x4EE3;&#x5305;&#x88C5;&#x8BBE;&#x8BA1;&#x4E2D;&#x7684;&#x5E94;&#x7528;</div><div class="blog-post-excerpt">&#x63A2;&#x8BA8;&#x5982;&#x4F55;&#x5C06;&#x4F20;&#x7EDF;&#x5143;&#x7D20;&#x878D;&#x5165;&#x73B0;&#x4EE3;&#x5305;&#x88C5;&#x8BBE;&#x8BA1;&#xFF0C;&#x8BA9;&#x4EA7;&#x54C1;&#x5728;&#x8D27;&#x67B6;&#x4E0A;&#x8131;&#x9891;&#x800C;&#x51FA;...</div></div></div>
-        <div class="blog-post"><div class="blog-date">2024.01</div><div><div class="blog-post-title">&#x5305;&#x88C5;&#x8BBE;&#x8BA1;&#x8D8B;&#x52BF;&#x89C2;&#x5BDF;&#xFF1A;2024&#x5E74;&#x503C;&#x5F97;&#x5173;&#x6CE8;&#x7684;&#x65B9;&#x5411;</div><div class="blog-post-excerpt">&#x4ECE;&#x53EF;&#x6301;&#x7EED;&#x6750;&#x6599;&#x5230;&#x4E92;&#x52A8;&#x5F0F;&#x5305;&#x88C5;&#xFF0C;&#x68B3;&#x7406;&#x4ECA;&#x5E74;&#x6700;&#x503C;&#x5F97;&#x5173;&#x6CE8;&#x7684;&#x8BBE;&#x8BA1;&#x8D8B;&#x52BF;...</div></div></div>
-        <div class="blog-post"><div class="blog-date">2023.11</div><div><div class="blog-post-title">&#x7535;&#x5546;&#x8BE6;&#x60C5;&#x9875;&#x7684;&#x89C6;&#x89C9;&#x53D9;&#x4E8B;&#x6280;&#x5DE7;</div><div class="blog-post-excerpt">&#x5982;&#x4F55;&#x901A;&#x8FC7;&#x89C6;&#x89C9;&#x8BBE;&#x8BA1;&#x8BB2;&#x597D;&#x4EA7;&#x54C1;&#x6545;&#x4E8B;&#xFF0C;&#x63D0;&#x5347;&#x8F6C;&#x5316;&#x7387;&#x4E0E;&#x8BBE;&#x8BA1;&#x8D28;&#x611F;...</div></div></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="vf-page">
-    <div class="vf-inner">
-      <h2 class="vf-title">&#x5173;&#x4E8E;&#x6211;·<span class="accent">&#x66F4;&#x591A;&#x4FE1;&#x606F;</span></h2>
-      <div class="about-grid">
-        <div class="about-text">
-          <p style="margin-bottom:16px;">&#x8BBE;&#x8BA1;&#x7406;&#x5FF5;&#xFF1A;&#x300C;&#x8BA9;&#x6BCF;&#x4E00;&#x4E2A;&#x50CF;&#x7D20;&#x90FD;&#x6709;&#x610F;&#x4E49;&#x300D;&#x3002;&#x6211;&#x76F8;&#x4FE1;&#x597D;&#x7684;&#x8BBE;&#x8BA1;&#x4E0D;&#x4EC5;&#x662F;&#x597D;&#x770B;&#xFF0C;&#x66F4;&#x8981;&#x80FD;&#x4F20;&#x8FBE;&#x4FE1;&#x606F;&#x3001;&#x5F15;&#x53D1;&#x5171;&#x9E23;&#x3002;</p>
-          <p style="margin-bottom:16px;">&#x5DE5;&#x4F5C;&#x7ECF;&#x5386;&#xFF1A;&#x817E;&#x8BAF;&#x8BBE;&#x8BA1;&#x90E8;&#xFF08;2018-2021&#xFF09;| &#x5B57;&#x8282;&#x8DF3;&#x52A8;&#x54C1;&#x724C;&#x56E2;&#x961F;&#xFF08;2021-2023&#xFF09;| &#x81EA;&#x7531;&#x8BBE;&#x8BA1;&#x5E08;&#xFF08;2023-&#x81F3;&#x4ECA;&#xFF09;</p>
-          <p>&#x6559;&#x80B2;&#x80CC;&#x666F;&#xFF1A;&#x4E2D;&#x592E;&#x7F8E;&#x672F;&#x5B66;&#x9662; · &#x89C6;&#x89C9;&#x4F20;&#x8FBE;&#x8BBE;&#x8BA1; · &#x672C;&#x79D1;&#xFF08;2014-2018&#xFF09;</p>
+      <div class="split-viewport" id="portfolioViewport">
+        <!-- Left Panel 40% -->
+        <div class="pf-panel pf-left">
+          <div class="pf-track" id="leftTrack">
+            <!-- Left 01: Hero -->
+            <div class="pf-item">
+              <div class="pf-tag">DESIGNER & CREATOR</div>
+              <h1 class="pf-hero-name">李 威 杰</h1>
+              <p class="pf-hero-subtitle">视觉设计师 / 多媒体创意人</p>
+              <p class="pf-hero-desc">8 年设计经验 · 曾任名创优品高级设计师及页面组负责人<br>专注电商视觉、品牌设计、IP 联名与多媒体创意</p>
+              <button class="pf-cta" id="pfNextBtn">查看作品 ↓</button>
+            </div>
+            <!-- Left 02: Works List -->
+            <div class="pf-item">
+              <div class="pf-section-label">
+                <span class="num">02</span>
+                <span class="title">作品精选</span>
+              </div>
+              <div class="pf-works-list">
+                <div class="pf-works-item active"><div class="cat">APP</div><div class="name">拾光</div></div>
+                <div class="pf-works-item"><div class="cat">APP</div><div class="name">啄啄</div></div>
+                <div class="pf-works-item"><div class="cat">WEB</div><div class="name">AI 教案 PPT</div></div>
+                <div class="pf-works-item"><div class="cat">3D</div><div class="name">虚拟影棚</div></div>
+                <div class="pf-works-item"><div class="cat">ILLUSTRATION</div><div class="name">青绿山水插画</div></div>
+              </div>
+            </div>
+            <!-- Left 03: Experience -->
+            <div class="pf-item">
+              <div class="pf-section-label">
+                <span class="num">03</span>
+                <span class="title">工作经历</span>
+              </div>
+              <div class="pf-exp-list">
+                <div class="pf-exp-card">
+                  <div class="period">2017 - 2018</div>
+                  <div class="company">北京乐鱼互动</div>
+                  <div class="role">UI 设计师</div>
+                  <div class="desc">负责移动端 APP 界面设计与视觉迭代。</div>
+                </div>
+                <div class="pf-exp-card">
+                  <div class="period">2018 - 2022</div>
+                  <div class="company">名创优品</div>
+                  <div class="role">高级视觉设计师 / 页面组负责人</div>
+                  <div class="desc">主导电商大促视觉、品牌 IP 联名及页面规范建设。</div>
+                </div>
+                <div class="pf-exp-card">
+                  <div class="period">2022 - 至今</div>
+                  <div class="company">自由设计师 / 多媒体创作者</div>
+                  <div class="role">独立设计师</div>
+                  <div class="desc">探索品牌设计、3D 视觉、AI 创意与多媒体内容。</div>
+                </div>
+              </div>
+            </div>
+            <!-- Left 04: Contact -->
+            <div class="pf-item">
+              <div class="pf-section-label">
+                <span class="num">05</span>
+                <span class="title">联系我</span>
+              </div>
+              <h2 class="pf-contact-heading">有项目想法？<br>一起聊聊</h2>
+              <div class="pf-contact-items">
+                <div class="pf-contact-item">
+                  <span class="label">Email</span>
+                  <span class="value">hello@lxlylzl.xyz</span>
+                </div>
+                <div class="pf-contact-item">
+                  <span class="label">Base</span>
+                  <span class="value">中国 · 深圳</span>
+                </div>
+              </div>
+              <a href="mailto:hello@lxlylzl.xyz" class="pf-cta" style="text-decoration:none;">发送邮件</a>
+            </div>
+          </div>
         </div>
-        <div class="about-stats">
-          <div class="stat-item"><div class="stat-number">&#x4E2D;&#x592E;&#x7F8E;&#x9662;</div><div class="stat-label">&#x6BD5;&#x4E1A;&#x9662;&#x6821;</div></div>
-          <div class="stat-item"><div class="stat-number">&#x817E;&#x8BAF;/&#x5B57;&#x8282;</div><div class="stat-label">&#x66FE;&#x4EFB;&#x804C;</div></div>
-          <div class="stat-item"><div class="stat-number">2018&#x5E74;&#x8D77;</div><div class="stat-label">&#x8BBE;&#x8BA1;&#x5E08;&#x751F;&#x6DAF;</div></div>
+
+        <!-- Right Panel 60% -->
+        <div class="pf-panel pf-right">
+          <div class="pf-track" id="rightTrack">
+            <!-- Right 01: About -->
+            <div class="pf-item">
+              <div class="pf-section-label">
+                <span class="num">01</span>
+                <span class="title">关于我</span>
+              </div>
+              <div class="pf-card">
+                <p class="pf-about-bio">我是李威杰，一名扎根视觉设计 8 年的创意人。从北京乐鱼互动的 APP 设计起步，到名创优品担任高级设计师兼页面组负责人，我经历了从执行到管理、从单一技能到全链路设计的完整成长路径。我相信好的设计不是装饰，而是精准传达——每一次排版、每一个色彩选择，都应该服务于品牌叙事和商业目标。</p>
+                <div class="pf-about-stats">
+                  <div class="pf-about-stat"><span class="num">8+</span><span class="label">年设计经验</span></div>
+                  <div class="pf-about-stat"><span class="num">50+</span><span class="label">电商大促项目</span></div>
+                  <div class="pf-about-stat"><span class="num">15+</span><span class="label">IP 联名合作</span></div>
+                </div>
+                <div class="pf-about-awards">
+                  <span>🏆</span><span>2019 集团最佳新人奖 · 2020 集团最佳服务奖</span>
+                </div>
+              </div>
+            </div>
+            <!-- Right 02: Works Showcase -->
+            <div class="pf-item">
+              <div class="pf-section-label">
+                <span class="num">02</span>
+                <span class="title">作品展示</span>
+              </div>
+              <div class="pf-showcase-grid">
+                <div class="pf-showcase-card">
+                  <div class="cat">APP</div><div class="title">拾光</div>
+                  <div class="desc">链接收藏整理工具，AI 分类标签摘要</div>
+                  <div class="pf-showcase-preview"></div>
+                </div>
+                <div class="pf-showcase-card">
+                  <div class="cat">APP</div><div class="title">啄啄</div>
+                  <div class="desc">AI 书签重新浮现，智能回顾收藏内容</div>
+                  <div class="pf-showcase-preview"></div>
+                </div>
+                <div class="pf-showcase-card">
+                  <div class="cat">WEB</div><div class="title">AI 教案 PPT</div>
+                  <div class="desc">教师备课效率工具，一键生成教案大纲</div>
+                  <div class="pf-showcase-preview"></div>
+                </div>
+                <div class="pf-showcase-card">
+                  <div class="cat">3D</div><div class="title">虚拟影棚</div>
+                  <div class="desc">3D 场景搭建与产品渲染视觉方案</div>
+                  <div class="pf-showcase-preview"></div>
+                </div>
+              </div>
+            </div>
+            <!-- Right 03: Skills -->
+            <div class="pf-item">
+              <div class="pf-section-label">
+                <span class="num">04</span>
+                <span class="title">技能栈</span>
+              </div>
+              <div class="pf-card">
+                <div class="pf-skills-grid">
+                  <div class="pf-skill-tag">视觉设计</div>
+                  <div class="pf-skill-tag">品牌设计</div>
+                  <div class="pf-skill-tag">电商视觉</div>
+                  <div class="pf-skill-tag">UI / UX</div>
+                  <div class="pf-skill-tag">3D 渲染</div>
+                  <div class="pf-skill-tag">AI 创意</div>
+                </div>
+              </div>
+            </div>
+            <!-- Right 04: Footer -->
+            <div class="pf-item">
+              <div class="pf-footer-card">
+                <div class="pf-footer-brand">lxlylzl</div>
+                <div class="pf-footer-copy">© 2026 lxlylzl. All rights reserved.</div>
+                <div class="pf-footer-row">
+                  <span>作品 · 关于 · 联系</span>
+                  <a href="#" id="pfBackTop">Back to Top</a>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+      <div class="pf-scroll-hint" id="pfScrollHint">滚动浏览 ↓</div>
+      <div class="pf-scroll-progress" id="pfScrollProgress"></div>
     </div>
   </section>
 
-  <section class="vf-page">
+  <!-- ===== CONTACT + ABOUT 4:6 ===== -->
+  <section class="vf-page vf-page--split" id="vfContact">
     <div class="vf-inner">
-      <h2 class="vf-title">&#x4E13;&#x4E1A;<span class="accent">&#x6280;&#x80FD;</span></h2>
-      <div class="skills-grid">
-        <div class="skill-item"><div class="skill-header"><span class="skill-name">&#x54C1;&#x724C;&#x89C6;&#x89C9;&#x8BBE;&#x8BA1;</span><span class="skill-pct">95%</span></div><div class="skill-bar"><div class="skill-fill" style="width:95%;"></div></div></div>
-        <div class="skill-item"><div class="skill-header"><span class="skill-name">&#x5305;&#x88C5;&#x8BBE;&#x8BA1;</span><span class="skill-pct">90%</span></div><div class="skill-bar"><div class="skill-fill" style="width:90%;"></div></div></div>
-        <div class="skill-item"><div class="skill-header"><span class="skill-name">&#x7535;&#x5546;&#x89C6;&#x89C9;&#x8BBE;&#x8BA1;</span><span class="skill-pct">88%</span></div><div class="skill-bar"><div class="skill-fill" style="width:88%;"></div></div></div>
-        <div class="skill-item"><div class="skill-header"><span class="skill-name">&#x63D2;&#x753B;&#x8BBE;&#x8BA1;</span><span class="skill-pct">82%</span></div><div class="skill-bar"><div class="skill-fill" style="width:82%;"></div></div></div>
+      <div class="split-viewport" id="svContact">
+        <!-- Left Panel 40% -->
+        <div class="pf-panel pf-left">
+          <div class="pf-track" id="ctLeftTrack">
+            <!-- Contact M1 Left: Contact Info -->
+            <div class="pf-item">
+              <div class="pf-tag">GET IN TOUCH</div>
+              <div class="pf-section-label">
+                <span class="num">01</span>
+                <span class="title">联系我</span>
+              </div>
+              <h2 class="pf-contact-heading">有合作意向？<br>随时联系我</h2>
+              <div class="pf-contact-items">
+                <div class="pf-contact-item">
+                  <span class="label">Email</span>
+                  <span class="value">hello@lxlylzl.xyz</span>
+                </div>
+                <div class="pf-contact-item">
+                  <span class="label">微信</span>
+                  <span class="value">liliweijie_design</span>
+                </div>
+                <div class="pf-contact-item">
+                  <span class="label">坐标</span>
+                  <span class="value">中国 · 深圳</span>
+                </div>
+                <div class="pf-contact-item">
+                  <span class="label">Behance</span>
+                  <span class="value">behance.net/liliweijie</span>
+                </div>
+              </div>
+              <a href="mailto:hello@lxlylzl.xyz" class="pf-cta" style="text-decoration:none;">发送邮件</a>
+            </div>
+            <!-- Contact M2 Left: Services -->
+            <div class="pf-item">
+              <div class="pf-section-label">
+                <span class="num">02</span>
+                <span class="title">服务范围</span>
+              </div>
+              <div class="pf-service-list">
+                <div class="pf-service-item"><span class="dot"></span> 品牌视觉设计 — Logo / VI / 品牌手册</div>
+                <div class="pf-service-item"><span class="dot"></span> 包装设计 — 结构 / 材质 / 印刷落地</div>
+                <div class="pf-service-item"><span class="dot"></span> 电商视觉 — 详情页 / 主图 / 店铺视觉</div>
+                <div class="pf-service-item"><span class="dot"></span> UI / UX 设计 — 移动端 / 网页 / 交互</div>
+                <div class="pf-service-item"><span class="dot"></span> 3D 与 AI 创意 — 渲染 / 生成 / 多媒体</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Right Panel 60% -->
+        <div class="pf-panel pf-right">
+          <div class="pf-track" id="ctRightTrack">
+            <!-- Contact M1 Right: About Detail -->
+            <div class="pf-item">
+              <div class="pf-section-label">
+                <span class="num">01</span>
+                <span class="title">关于我</span>
+              </div>
+              <div class="pf-card">
+                <p class="pf-about-bio">
+                  我是一名扎根视觉设计 8 年的创意人。设计理念——「让每一个像素都有意义」。我相信好的设计不仅是好看，更要能传达信息、引发共鸣。
+                </p>
+                <p class="pf-about-bio">
+                  教育背景：中央美术学院 · 视觉传达设计 · 本科（2014-2018）<br>
+                  职业经历：腾讯设计部（2018-2021）| 字节跳动品牌团队（2021-2023）| 自由设计师（2023-至今）
+                </p>
+                <div class="pf-about-stats">
+                  <div class="pf-about-stat"><span class="num">8+</span><span class="label">年设计经验</span></div>
+                  <div class="pf-about-stat"><span class="num">120+</span><span class="label">完成项目</span></div>
+                  <div class="pf-about-stat"><span class="num">30+</span><span class="label">合作品牌</span></div>
+                  <div class="pf-about-stat"><span class="num">15+</span><span class="label">行业奖项</span></div>
+                </div>
+              </div>
+            </div>
+            <!-- Contact M2 Right: Client Data -->
+            <div class="pf-item">
+              <div class="pf-section-label">
+                <span class="num">02</span>
+                <span class="title">合作数据</span>
+              </div>
+              <div class="pf-stats-grid">
+                <div class="pf-stat-card"><span class="num">30+</span><span class="label">合作品牌</span></div>
+                <div class="pf-stat-card"><span class="num">120+</span><span class="label">完成项目</span></div>
+                <div class="pf-stat-card"><span class="num">98%</span><span class="label">复购率</span></div>
+                <div class="pf-stat-card"><span class="num">50+</span><span class="label">包装设计</span></div>
+                <div class="pf-stat-card"><span class="num">40+</span><span class="label">VI 项目</span></div>
+                <div class="pf-stat-card"><span class="num">15+</span><span class="label">IP 联名</span></div>
+              </div>
+              <div class="pf-about-awards" style="margin-top:16px;">
+                <span>🏆</span><span>2019 集团最佳新人奖 · 2020 集团最佳服务奖</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="tools-tags">
-        <span class="tool-tag">Photoshop</span>
-        <span class="tool-tag">Illustrator</span>
-        <span class="tool-tag">InDesign</span>
-        <span class="tool-tag">Figma</span>
-        <span class="tool-tag">C4D</span>
-      </div>
+      <div class="pf-scroll-hint" id="ctScrollHint">滚动浏览 ↓</div>
+      <div class="pf-scroll-progress" id="ctScrollProgress"></div>
     </div>
   </section>
 
-  <section class="vf-page">
+  <!-- ===== BLOG 4:6 ===== -->
+  <section class="vf-page vf-page--split" id="vfBlog">
     <div class="vf-inner">
-      <h2 class="vf-title">&#x5DE5;&#x4F5C;<span class="accent">&#x6D41;&#x7A0B;</span></h2>
-      <div class="timeline">
-        <div class="timeline-item"><div class="timeline-step">STEP 01</div><div class="timeline-title">&#x9700;&#x6C42;&#x6C9F;&#x901A;</div><div class="timeline-desc">&#x6DF1;&#x5165;&#x4E86;&#x89E3;&#x54C1;&#x724C;&#x5B9A;&#x4F4D;&#x3001;&#x76EE;&#x6807;&#x53D7;&#x4F17;&#x548C;&#x9879;&#x76EE;&#x76EE;&#x6807;&#xFF0C;&#x660E;&#x786E;&#x8BBE;&#x8BA1;&#x65B9;&#x5411;&#x3002;</div></div>
-        <div class="timeline-item"><div class="timeline-step">STEP 02</div><div class="timeline-title">&#x5E02;&#x573A;&#x8C03;&#x7814;</div><div class="timeline-desc">&#x5206;&#x6790;&#x7ADE;&#x54C1;&#x89C6;&#x89C9;&#x3001;&#x884C;&#x4E1A;&#x8D8B;&#x52BF;&#xFF0C;&#x63D0;&#x70BC;&#x5DEE;&#x5F02;&#x5316;&#x8BBE;&#x8BA1;&#x7B56;&#x7565;&#x3002;</div></div>
-        <div class="timeline-item"><div class="timeline-step">STEP 03</div><div class="timeline-title">&#x6982;&#x5FF5;&#x8BBE;&#x8BA1;</div><div class="timeline-desc">&#x8F93;&#x51FA;3&#x4E2A;&#x65B9;&#x5411;&#x7684;&#x6982;&#x5FF5;&#x65B9;&#x6848;&#xFF0C;&#x5305;&#x542B;&#x8272;&#x5F69;&#x3001;&#x5B57;&#x4F53;&#x3001;&#x56FE;&#x5F62;&#x8BED;&#x8A00;&#x3002;</div></div>
-        <div class="timeline-item"><div class="timeline-step">STEP 04</div><div class="timeline-title">&#x6DF1;&#x5316;&#x8BBE;&#x8BA1;</div><div class="timeline-desc">&#x9009;&#x5B9A;&#x65B9;&#x5411;&#x540E;&#x6DF1;&#x5165;&#x7EC6;&#x5316;&#xFF0C;&#x5B8C;&#x6210;&#x5168;&#x5957;&#x8BBE;&#x8BA1;&#x4EA4;&#x4ED8;&#x7269;&#x3002;</div></div>
-        <div class="timeline-item"><div class="timeline-step">STEP 05</div><div class="timeline-title">&#x5E94;&#x7528;&#x5EF6;&#x5C55;</div><div class="timeline-desc">&#x5C06;&#x6838;&#x5FC3;&#x89C6;&#x89C9;&#x5EF6;&#x5C55;&#x5230;&#x5404;&#x7C7B;&#x5E94;&#x7528;&#x573A;&#x666F;&#xFF0C;&#x786E;&#x4FDD;&#x4E00;&#x81F4;&#x6027;&#x3002;</div></div>
-        <div class="timeline-item"><div class="timeline-step">STEP 06</div><div class="timeline-title">&#x4EA4;&#x4ED8;&#x4E0E;&#x7EF4;&#x62A4;</div><div class="timeline-desc">&#x6574;&#x7406;&#x8BBE;&#x8BA1;&#x6E90;&#x6587;&#x4EF6;&#x3001;&#x4F7F;&#x7528;&#x89C4;&#x8303;&#xFF0C;&#x63D0;&#x4F9B;&#x540E;&#x7EED;&#x7EF4;&#x62A4;&#x652F;&#x6301;&#x3002;</div></div>
+      <div class="split-viewport" id="svBlog">
+        <!-- Left Panel 40% -->
+        <div class="pf-panel pf-left">
+          <div class="pf-track" id="blLeftTrack">
+            <!-- Blog M1 Left: Blog List -->
+            <div class="pf-item">
+              <div class="pf-tag">DESIGN BLOG</div>
+              <div class="pf-section-label">
+                <span class="num">01</span>
+                <span class="title">设计随笔</span>
+              </div>
+              <div class="pf-blog-list">
+                <div class="pf-blog-item active" data-post="0">
+                  <div class="date">2024.03</div>
+                  <div class="title">中式美学在现代包装设计中的应用</div>
+                  <div class="excerpt">探讨如何将传统元素融入现代包装设计，让产品在货架上脱颖而出...</div>
+                </div>
+                <div class="pf-blog-item" data-post="1">
+                  <div class="date">2024.01</div>
+                  <div class="title">包装设计趋势观察：2024年值得关注的方向</div>
+                  <div class="excerpt">从可持续材料到互动式包装，梳理今年最值得关注的设计趋势...</div>
+                </div>
+                <div class="pf-blog-item" data-post="2">
+                  <div class="date">2023.11</div>
+                  <div class="title">电商详情页的视觉叙事技巧</div>
+                  <div class="excerpt">如何通过视觉设计讲好产品故事，提升转化率与设计质感...</div>
+                </div>
+              </div>
+            </div>
+            <!-- Blog M2 Left: Categories -->
+            <div class="pf-item">
+              <div class="pf-section-label">
+                <span class="num">02</span>
+                <span class="title">分类标签</span>
+              </div>
+              <div class="pf-tags">
+                <span class="pf-tag-chip">品牌设计</span>
+                <span class="pf-tag-chip">包装设计</span>
+                <span class="pf-tag-chip">电商视觉</span>
+                <span class="pf-tag-chip">设计趋势</span>
+                <span class="pf-tag-chip">案例分析</span>
+                <span class="pf-tag-chip">工具分享</span>
+                <span class="pf-tag-chip">印刷工艺</span>
+                <span class="pf-tag-chip">色彩理论</span>
+                <span class="pf-tag-chip">字体设计</span>
+                <span class="pf-tag-chip">UI/UX</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Right Panel 60% -->
+        <div class="pf-panel pf-right">
+          <div class="pf-track" id="blRightTrack">
+            <!-- Blog M1 Right: Post Preview 1 -->
+            <div class="pf-item">
+              <div class="pf-section-label">
+                <span class="num">01</span>
+                <span class="title">精选文章</span>
+              </div>
+              <div class="pf-blog-preview">
+                <div class="date">2024.03</div>
+                <div class="title">中式美学在现代包装设计中的应用</div>
+                <div class="body">
+                  在国潮兴起的今天，越来越多的品牌开始回归传统，在中式美学中寻找设计灵感。本文从色彩、图形、材质三个维度，探讨如何将中国传统元素与当代包装设计相融合——不是简单的符号堆砌，而是对"意境"与"留白"的现代转译。当宋代美学的清雅遇上现代消费者的审美，包装设计便成为一座连接古今的桥梁。
+                </div>
+                <span class="read-more">阅读全文 <span>→</span></span>
+              </div>
+            </div>
+            <!-- Blog M2 Right: Post Previews 2 & 3 -->
+            <div class="pf-item">
+              <div class="pf-section-label">
+                <span class="num">02</span>
+                <span class="title">更多文章</span>
+              </div>
+              <div class="pf-showcase-grid">
+                <div class="pf-showcase-card">
+                  <div class="cat">2024.01</div>
+                  <div class="title">包装设计趋势观察</div>
+                  <div class="desc">从可持续材料到互动式包装，梳理今年最值得关注的设计方向，帮助品牌在竞争中保持视觉领先。</div>
+                </div>
+                <div class="pf-showcase-card">
+                  <div class="cat">2023.11</div>
+                  <div class="title">电商视觉叙事技巧</div>
+                  <div class="desc">如何通过视觉设计讲好产品故事，从首屏吸引力到信息层级，提升转化率与品牌质感。</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+      <div class="pf-scroll-hint" id="blScrollHint">滚动浏览 ↓</div>
+      <div class="pf-scroll-progress" id="blScrollProgress"></div>
+    </div>
+  </section>
+
+  <!-- ===== SKILLS + PROCESS 4:6 ===== -->
+  <section class="vf-page vf-page--split" id="vfSkills">
+    <div class="vf-inner">
+      <div class="split-viewport" id="svSkills">
+        <!-- Left Panel 40% -->
+        <div class="pf-panel pf-left">
+          <div class="pf-track" id="skLeftTrack">
+            <!-- Skills M1 Left: Skill Categories -->
+            <div class="pf-item">
+              <div class="pf-tag">CAPABILITIES</div>
+              <div class="pf-section-label">
+                <span class="num">01</span>
+                <span class="title">专业技能</span>
+              </div>
+              <div class="pf-service-list">
+                <div class="pf-service-item"><span class="dot"></span> 品牌视觉设计 — Logo / VI / 品牌手册 / 视觉规范</div>
+                <div class="pf-service-item"><span class="dot"></span> 包装设计 — 结构设计 / 材质选配 / 印刷工艺</div>
+                <div class="pf-service-item"><span class="dot"></span> 电商视觉设计 — 详情页 / 主图 / 店铺视觉</div>
+                <div class="pf-service-item"><span class="dot"></span> 插画设计 — 商业插画 / IP 形象 / 图形语言</div>
+                <div class="pf-service-item"><span class="dot"></span> 3D 渲染 — C4D / 产品渲染 / 场景搭建</div>
+                <div class="pf-service-item"><span class="dot"></span> AI 创意 — 生成式设计 / 多媒体内容</div>
+              </div>
+            </div>
+            <!-- Skills M2 Left: Process Overview -->
+            <div class="pf-item">
+              <div class="pf-section-label">
+                <span class="num">02</span>
+                <span class="title">工作流程</span>
+              </div>
+              <p class="pf-process-intro">
+                经过多年项目经验沉淀，我建立了一套高效的设计工作流程。从需求沟通到最终交付，每个环节都经过精密设计，确保创意表达与商业目标的平衡。
+              </p>
+              <div class="pf-process-highlights">
+                <div class="pf-process-hl"><span class="icon">✦</span> 3 轮概念方案输出，多方向探索</div>
+                <div class="pf-process-hl"><span class="icon">✦</span> 深度市场调研，差异化设计策略</div>
+                <div class="pf-process-hl"><span class="icon">✦</span> 完整设计规范，确保应用一致性</div>
+                <div class="pf-process-hl"><span class="icon">✦</span> 交付源文件 + 使用规范 + 后期维护</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Right Panel 60% -->
+        <div class="pf-panel pf-right">
+          <div class="pf-track" id="skRightTrack">
+            <!-- Skills M1 Right: Skill Bars + Tools -->
+            <div class="pf-item">
+              <div class="pf-section-label">
+                <span class="num">01</span>
+                <span class="title">技能水平</span>
+              </div>
+              <div class="pf-card">
+                <div class="pf-skills-col">
+                  <div class="pf-skill-row">
+                    <div class="head"><span class="name">品牌视觉设计</span><span class="pct">95%</span></div>
+                    <div class="bar"><div class="fill" style="width:95%"></div></div>
+                  </div>
+                  <div class="pf-skill-row">
+                    <div class="head"><span class="name">包装设计</span><span class="pct">90%</span></div>
+                    <div class="bar"><div class="fill" style="width:90%"></div></div>
+                  </div>
+                  <div class="pf-skill-row">
+                    <div class="head"><span class="name">电商视觉设计</span><span class="pct">88%</span></div>
+                    <div class="bar"><div class="fill" style="width:88%"></div></div>
+                  </div>
+                  <div class="pf-skill-row">
+                    <div class="head"><span class="name">插画设计</span><span class="pct">82%</span></div>
+                    <div class="bar"><div class="fill" style="width:82%"></div></div>
+                  </div>
+                  <div class="pf-skill-row">
+                    <div class="head"><span class="name">UI / UX 设计</span><span class="pct">80%</span></div>
+                    <div class="bar"><div class="fill" style="width:80%"></div></div>
+                  </div>
+                  <div class="pf-skill-row">
+                    <div class="head"><span class="name">3D 渲染 / AI 创意</span><span class="pct">75%</span></div>
+                    <div class="bar"><div class="fill" style="width:75%"></div></div>
+                  </div>
+                </div>
+                <div class="pf-tags" style="margin-top:18px;">
+                  <span class="pf-tag-chip" style="font-size:0.7rem;">Photoshop</span>
+                  <span class="pf-tag-chip" style="font-size:0.7rem;">Illustrator</span>
+                  <span class="pf-tag-chip" style="font-size:0.7rem;">InDesign</span>
+                  <span class="pf-tag-chip" style="font-size:0.7rem;">Figma</span>
+                  <span class="pf-tag-chip" style="font-size:0.7rem;">C4D</span>
+                  <span class="pf-tag-chip" style="font-size:0.7rem;">Midjourney</span>
+                  <span class="pf-tag-chip" style="font-size:0.7rem;">Blender</span>
+                </div>
+              </div>
+            </div>
+            <!-- Skills M2 Right: Process Timeline -->
+            <div class="pf-item">
+              <div class="pf-section-label">
+                <span class="num">02</span>
+                <span class="title">流程步骤</span>
+              </div>
+              <div class="pf-timeline-list">
+                <div class="pf-timeline-item">
+                  <span class="step">STEP 01</span>
+                  <div class="info"><div class="tl-title">需求沟通</div><div class="tl-desc">深入了解品牌定位、目标受众和项目目标，明确设计方向。</div></div>
+                </div>
+                <div class="pf-timeline-item">
+                  <span class="step">STEP 02</span>
+                  <div class="info"><div class="tl-title">市场调研</div><div class="tl-desc">分析竞品视觉、行业趋势，提炼差异化设计策略。</div></div>
+                </div>
+                <div class="pf-timeline-item">
+                  <span class="step">STEP 03</span>
+                  <div class="info"><div class="tl-title">概念设计</div><div class="tl-desc">输出 3 个方向的概念方案，包含色彩、字体、图形语言。</div></div>
+                </div>
+                <div class="pf-timeline-item">
+                  <span class="step">STEP 04</span>
+                  <div class="info"><div class="tl-title">深化设计</div><div class="tl-desc">选定方向后深入细化，完成全套设计交付物。</div></div>
+                </div>
+                <div class="pf-timeline-item">
+                  <span class="step">STEP 05</span>
+                  <div class="info"><div class="tl-title">应用延展</div><div class="tl-desc">将核心视觉延展到各类应用场景，确保一致性。</div></div>
+                </div>
+                <div class="pf-timeline-item">
+                  <span class="step">STEP 06</span>
+                  <div class="info"><div class="tl-title">交付与维护</div><div class="tl-desc">整理设计源文件、使用规范，提供后续维护支持。</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pf-scroll-hint" id="skScrollHint">滚动浏览 ↓</div>
+      <div class="pf-scroll-progress" id="skScrollProgress"></div>
     </div>
   </section>
 
@@ -1648,6 +2595,27 @@
     }
   }, { passive: false });
 
+  // ========== VERTICAL FRAMEWORK BOUNDARY — exit to horizontal ==========
+  verticalFw.addEventListener('wheel', function(e) {
+    // Only when at the very top and scrolling up → exit to horizontal
+    if (verticalFw.scrollTop <= 2 && e.deltaY < 0) {
+      e.preventDefault();
+      exitVerticalFramework();
+    }
+    // At the very bottom and scrolling down → nothing to do, let parent ignore
+  }, { passive: false });
+
+  var _vfTouchStart = 0;
+  verticalFw.addEventListener('touchstart', function(e) {
+    if (e.touches.length === 1) _vfTouchStart = e.touches[0].clientY;
+  }, { passive: true });
+  verticalFw.addEventListener('touchend', function(e) {
+    var dy = _vfTouchStart - (e.changedTouches[0] ? e.changedTouches[0].clientY : _vfTouchStart);
+    if (Math.abs(dy) > 40 && dy < 0 && verticalFw.scrollTop <= 2) {
+      exitVerticalFramework();
+    }
+  }, { passive: true });
+
   // ========== FRAMEWORK TRANSITION ==========
   function enterVerticalFramework(done) {
     if (inVerticalFramework) { if (done) done(); return; }
@@ -1732,7 +2700,7 @@
   var currentLang = 'zh';
   var i18n = {
     zh: {
-      nav: ['首页', '作品集', '关于', '服务', '案例', '联系', '博客'],
+      nav: ['首页', '作品集', '关于', '服务', '案例', '作品集', '联系', '博客', '技能'],
       pageTitle: ['创意设计，触手可及', '精选作品集', '关于我', '我的服务', '客户评价'],
       pageDesc: [
         '用极简主义的设计语言，为品牌注入灵魂。每一个像素，都是对美的极致追求。',
@@ -1742,9 +2710,10 @@
         '来自客户们的真实反馈，是对我工作最大的肯定。'
       ],
       vfTitles: ['取得联系', '博客随笔', '关于我', '专业技能', '工作流程'],
+      vfTitles_v2: ['联系我', '设计随笔', '技能与流程'],
     },
     en: {
-      nav: ['Home', 'Works', 'About', 'Services', 'Cases', 'Contact', 'Blog'],
+      nav: ['Home', 'Works', 'About', 'Services', 'Cases', 'Portfolio', 'Contact', 'Blog', 'Skills'],
       pageTitle: ['Creative Design at Your Fingertips', 'Selected Works', 'About Me', 'My Services', 'Testimonials'],
       pageDesc: [
         'Using minimalist design language to inject soul into brands. Every pixel is a pursuit of beauty.',
@@ -1835,6 +2804,266 @@
 
   // Init
   updateNavState();
+
+  // ========== PORTFOLIO 4:6 SCROLL LOGIC ==========
+  (function() {
+    var leftTrack = document.getElementById('leftTrack');
+    var rightTrack = document.getElementById('rightTrack');
+    var pfHint = document.getElementById('pfScrollHint');
+    var pfProgress = document.getElementById('pfScrollProgress');
+    var pfNextBtn = document.getElementById('pfNextBtn');
+    var pfBackTop = document.getElementById('pfBackTop');
+    var viewport = document.getElementById('portfolioViewport');
+    if (!leftTrack || !rightTrack || !viewport) return;
+
+    var MODULE_COUNT = 4;
+    var MAX_STATE = 2 * MODULE_COUNT - 2; // max index = 6 (states 0..6)
+    var pfState = 0;
+    var pfWheelLock = false;
+    var pfWheelTimer = null;
+
+    // Build progress dots
+    for (var i = 0; i < MODULE_COUNT; i++) {
+      var dot = document.createElement('div');
+      dot.className = 'pf-dot' + (i === 0 ? ' active' : '');
+      (function(idx) {
+        dot.addEventListener('click', function() { pfGoTo(idx * 2); });
+      })(i);
+      pfProgress.appendChild(dot);
+    }
+
+    function pfUpdate() {
+      var lIdx = Math.ceil(pfState / 2);
+      var rIdx = Math.floor(pfState / 2);
+      leftTrack.style.transform = 'translateY(-' + (lIdx * 100) + '%)';
+      rightTrack.style.transform = 'translateY(-' + (rIdx * 100) + '%)';
+
+      var activeModule = Math.floor((pfState + 1) / 2);
+      var dots = pfProgress.querySelectorAll('.pf-dot');
+      dots.forEach(function(d, i) { d.classList.toggle('active', i === activeModule); });
+
+      if (pfHint) pfHint.classList.toggle('is-hidden', pfState >= MAX_STATE - 1);
+    }
+
+    function pfNext() {
+      if (pfState < MAX_STATE) { pfState++; pfUpdate(); }
+    }
+    function pfPrev() {
+      if (pfState > 0) { pfState--; pfUpdate(); }
+    }
+    function pfGoTo(targetState) {
+      pfState = Math.max(0, Math.min(MAX_STATE, targetState));
+      pfUpdate();
+    }
+
+    // Wheel handler — only prevent default when internal scroll can handle it
+    viewport.addEventListener('wheel', function(e) {
+      if (e.ctrlKey) return;
+      var delta = e.deltaY;
+
+      // At top boundary + scroll up → let parent handle
+      if (pfState === 0 && delta < 0) return;
+      // At bottom boundary + scroll down → let parent handle
+      if (pfState >= MAX_STATE && delta > 0) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+      if (pfWheelLock) return;
+
+      pfWheelLock = true;
+      clearTimeout(pfWheelTimer);
+      if (delta > 0) pfNext(); else pfPrev();
+      pfWheelTimer = setTimeout(function() { pfWheelLock = false; }, 850);
+    }, { passive: false });
+
+    // Touch support
+    var touchStartY = 0, touchStartX = 0;
+    viewport.addEventListener('touchstart', function(e) {
+      touchStartY = e.touches[0].clientY;
+      touchStartX = e.touches[0].clientX;
+    }, { passive: true });
+    viewport.addEventListener('touchend', function(e) {
+      var dy = touchStartY - e.changedTouches[0].clientY;
+      var dx = touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 50) {
+        if (pfState === 0 && dy < 0) return;
+        if (pfState >= MAX_STATE && dy > 0) return;
+        if (dy > 0) pfNext(); else pfPrev();
+      }
+    }, { passive: true });
+
+    // Keyboard (only when vertical framework is visible)
+    window.addEventListener('keydown', function(e) {
+      if (!inVerticalFramework) return;
+      // Check if portfolio page is mostly visible
+      var pfPage = document.getElementById('vfPortfolio');
+      if (!pfPage) return;
+      var rect = pfPage.getBoundingClientRect();
+      var vh = window.innerHeight;
+      if (rect.bottom < vh * 0.3 || rect.top > vh * 0.7) return;
+
+      if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
+        if (pfState < MAX_STATE) { e.preventDefault(); pfNext(); }
+      } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+        if (pfState > 0) { e.preventDefault(); pfPrev(); }
+      }
+    });
+
+    // CTA button
+    if (pfNextBtn) pfNextBtn.addEventListener('click', function() { pfNext(); });
+    // Back to top
+    if (pfBackTop) pfBackTop.addEventListener('click', function(e) { e.preventDefault(); pfGoTo(0); });
+
+    // Reset portfolio state when vertical framework becomes visible
+    var _origEnterVF = enterVerticalFramework;
+    enterVerticalFramework = function(done) {
+      pfGoTo(0);
+      _origEnterVF(done);
+    };
+
+    // Expose
+    window.pfGoTo = pfGoTo;
+    window.pfNext = pfNext;
+    window.pfPrev = pfPrev;
+    window.pfGetState = function() { return pfState; };
+  })();
+
+  // ========== SPLIT PAGE FACTORY — reusable 4:6 state machine ==========
+  function initSplitPage(viewportId, leftTrackId, rightTrackId, hintId, progressId, moduleCount) {
+    var viewport = document.getElementById(viewportId);
+    var leftTrack = document.getElementById(leftTrackId);
+    var rightTrack = document.getElementById(rightTrackId);
+    var hint = document.getElementById(hintId);
+    var progress = document.getElementById(progressId);
+    if (!viewport || !leftTrack || !rightTrack) return null;
+
+    var MODULE_COUNT = moduleCount || 2;
+    var MAX_STATE = 2 * MODULE_COUNT - 2;
+    var state = 0;
+    var wheelLock = false;
+    var wheelTimer = null;
+
+    // Build progress dots
+    for (var i = 0; i < MODULE_COUNT; i++) {
+      var dot = document.createElement('div');
+      dot.className = 'pf-dot' + (i === 0 ? ' active' : '');
+      (function(idx) {
+        dot.addEventListener('click', function() { goTo(idx * 2); });
+      })(i);
+      progress.appendChild(dot);
+    }
+
+    function update() {
+      var lIdx = Math.ceil(state / 2);
+      var rIdx = Math.floor(state / 2);
+      leftTrack.style.transform = 'translateY(-' + (lIdx * 100) + '%)';
+      rightTrack.style.transform = 'translateY(-' + (rIdx * 100) + '%)';
+
+      var activeModule = Math.floor((state + 1) / 2);
+      var dots = progress.querySelectorAll('.pf-dot');
+      dots.forEach(function(d, i) { d.classList.toggle('active', i === activeModule); });
+
+      if (hint) hint.classList.toggle('is-hidden', state >= MAX_STATE - 1);
+    }
+
+    function next() {
+      if (state < MAX_STATE) { state++; update(); }
+    }
+    function prev() {
+      if (state > 0) { state--; update(); }
+    }
+    function goTo(targetState) {
+      state = Math.max(0, Math.min(MAX_STATE, targetState));
+      update();
+    }
+    function reset() { goTo(0); }
+
+    // Wheel handler — only prevent default when internal scroll can handle it
+    viewport.addEventListener('wheel', function(e) {
+      if (e.ctrlKey) return;
+      var delta = e.deltaY;
+      if (state === 0 && delta < 0) return;
+      if (state >= MAX_STATE && delta > 0) return;
+      e.preventDefault();
+      e.stopPropagation();
+      if (wheelLock) return;
+      wheelLock = true;
+      clearTimeout(wheelTimer);
+      if (delta > 0) next(); else prev();
+      wheelTimer = setTimeout(function() { wheelLock = false; }, 850);
+    }, { passive: false });
+
+    // Touch support
+    var touchStartY = 0, touchStartX = 0;
+    viewport.addEventListener('touchstart', function(e) {
+      touchStartY = e.touches[0].clientY;
+      touchStartX = e.touches[0].clientX;
+    }, { passive: true });
+    viewport.addEventListener('touchend', function(e) {
+      var dy = touchStartY - e.changedTouches[0].clientY;
+      var dx = touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 50) {
+        if (state === 0 && dy < 0) return;
+        if (state >= MAX_STATE && dy > 0) return;
+        if (dy > 0) next(); else prev();
+      }
+    }, { passive: true });
+
+    return { goTo: goTo, next: next, prev: prev, reset: reset, getState: function() { return state; }, viewport: viewport };
+  }
+
+  // ========== INIT ALL SPLIT PAGES ==========
+  var contactSplit = initSplitPage('svContact', 'ctLeftTrack', 'ctRightTrack', 'ctScrollHint', 'ctScrollProgress', 2);
+  var blogSplit = initSplitPage('svBlog', 'blLeftTrack', 'blRightTrack', 'blScrollHint', 'blScrollProgress', 2);
+  var skillsSplit = initSplitPage('svSkills', 'skLeftTrack', 'skRightTrack', 'skScrollHint', 'skScrollProgress', 2);
+
+  // Collect all split pages for keyboard + reset logic
+  var allSplits = [contactSplit, blogSplit, skillsSplit].filter(Boolean);
+
+  // Keyboard handler — dispatches to visible split page
+  window.addEventListener('keydown', function(e) {
+    if (!inVerticalFramework) return;
+    var vh = window.innerHeight;
+
+    // Check portfolio page
+    var pfPage = document.getElementById('vfPortfolio');
+    if (pfPage) {
+      var r = pfPage.getBoundingClientRect();
+      if (r.bottom > vh * 0.3 && r.top < vh * 0.7) {
+        if ((e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') && pfGetState() < 6) { e.preventDefault(); pfNext(); return; }
+        if ((e.key === 'ArrowUp' || e.key === 'PageUp') && pfGetState() > 0) { e.preventDefault(); pfPrev(); return; }
+        // At top boundary + ArrowUp → exit to horizontal
+        if ((e.key === 'ArrowUp' || e.key === 'PageUp') && pfGetState() === 0 && verticalFw.scrollTop <= 2) {
+          e.preventDefault(); exitVerticalFramework(); return;
+        }
+      }
+    }
+
+    // Check other split pages
+    for (var si = 0; si < allSplits.length; si++) {
+      var sp = allSplits[si];
+      if (!sp || !sp.viewport) continue;
+      var sr = sp.viewport.closest('.vf-page--split');
+      if (!sr) continue;
+      var rect = sr.getBoundingClientRect();
+      if (rect.bottom > vh * 0.3 && rect.top < vh * 0.7) {
+        if ((e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') && sp.getState() < 2) { e.preventDefault(); sp.next(); return; }
+        if ((e.key === 'ArrowUp' || e.key === 'PageUp') && sp.getState() > 0) { e.preventDefault(); sp.prev(); return; }
+        // At top boundary + ArrowUp → exit to horizontal (only if first page)
+        if ((e.key === 'ArrowUp' || e.key === 'PageUp') && sp.getState() === 0 && verticalFw.scrollTop <= 2) {
+          e.preventDefault(); exitVerticalFramework(); return;
+        }
+      }
+    }
+  });
+
+  // Reset all split pages when entering vertical framework
+  var _origEnterVF2 = enterVerticalFramework;
+  enterVerticalFramework = function(done) {
+    pfGoTo(0);
+    for (var i = 0; i < allSplits.length; i++) { if (allSplits[i]) allSplits[i].reset(); }
+    _origEnterVF2(done);
+  };
 
   // Expose for works-3d.js auto init/destroy
   window.getCurrentPage = function() { return currentPage; };

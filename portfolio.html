@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>作品集 - lxlylzl</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  /* ========== RESET & BASE ========== */
+  *, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
+
+  :root {
+    --accent: #c0392b;
+    --accent-glow: rgba(192,57,43,0.25);
+    --glass-bg: rgba(18,18,24,0.72);
+    --glass-border: rgba(255,255,255,0.08);
+    --text-primary: #f0ece4;
+    --text-secondary: #9898a8;
+    --text-muted: #5a5a6a;
+    --bg-primary: #0e0e12;
+    --nav-bg: rgba(18,18,24,0.6);
+    --page-bg: rgba(28,28,38,0.82);
+    --card-bg: rgba(255,255,255,0.03);
+    --card-border: rgba(255,255,255,0.06);
+    --card-hover: rgba(255,255,255,0.05);
+    --surface: rgba(255,255,255,0.04);
+  }
+
+  [data-theme="light"] {
+    --glass-bg: rgba(255,255,255,0.72);
+    --glass-border: rgba(0,0,0,0.08);
+    --text-primary: #1a1a2e;
+    --text-secondary: #6a6a7a;
+    --text-muted: #a0a0b0;
+    --bg-primary: #f5f0e8;
+    --nav-bg: rgba(255,255,255,0.6);
+    --page-bg: rgba(245,240,230,0.75);
+    --card-bg: rgba(0,0,0,0.03);
+    --card-border: rgba(0,0,0,0.06);
+    --card-hover: rgba(0,0,0,0.05);
+    --surface: rgba(0,0,0,0.04);
+  }
+
+  html { font-size: 16px; }
+
+  body {
+    font-family: "Inter", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    overflow: hidden;
+    height: 100vh;
+    transition: background 0.45s cubic-bezier(0.4,0,0.2,1), color 0.45s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  /* ========== TOP NAV ========== */
+  .top-nav {
+    position: fixed;
+    top: 2px; left: 72px; right: 72px;
+    height: 47px;
+    z-index: 1000;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+  }
+  .top-nav * { pointer-events: auto; }
+
+  .nav-section {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 18px;
+    background: var(--nav-bg);
+    backdrop-filter: blur(32px) saturate(1.2);
+    -webkit-backdrop-filter: blur(32px) saturate(1.2);
+    border: 1px solid var(--glass-border);
+    border-radius: 100px;
+    transition: background 0.3s, border-color 0.3s;
+    box-sizing: border-box;
+    height: 42px;
+  }
+
+  .nav-left  { position: absolute; top: 50%; left: 0; transform: translateY(-50%); }
+  .nav-center {
+    position: absolute; top: 50%;
+    left: 50%; transform: translate(-50%, -50%);
+  }
+  .nav-right { position: absolute; top: 50%; right: 0; transform: translateY(-50%); }
+
+  .nav-logo {
+    height: 26px;
+    width: auto;
+    cursor: pointer;
+    user-select: none;
+    transition: opacity 0.2s;
+    object-fit: contain;
+  }
+  .nav-logo:hover { opacity: 0.7; }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .nav-link {
+    position: relative;
+    font-size: 0.92rem;
+    font-weight: 400;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 6px 14px;
+    border-radius: 100px;
+    user-select: none;
+    white-space: nowrap;
+    transition: color 0.2s;
+    text-decoration: none;
+  }
+
+  .nav-link .char {
+    display: inline-block;
+    font-weight: 400;
+    transition: font-weight 0.15s;
+    pointer-events: auto;
+  }
+  .nav-link .char.bold,
+  .nav-link:hover .char { font-weight: 700; color: var(--text-primary); }
+  .nav-link.active { color: var(--accent); }
+  .nav-link.active .char { font-weight: 700; color: var(--text-primary); }
+
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .nav-actions-divider {
+    width: 1px;
+    height: 16px;
+    background: var(--glass-border);
+    flex-shrink: 0;
+  }
+
+  .theme-btn {
+    width: 30px; height: 30px;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.3s, transform 0.5s;
+    border-radius: 8px;
+  }
+  .theme-btn:hover { color: var(--accent); }
+  .theme-btn svg {
+    width: 18px; height: 18px;
+    stroke: currentColor; fill: none;
+    stroke-width: 1.8;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+
+  /* ========== PAGE WRAPPER & GLASS FRAME ========== */
+  .page-wrapper {
+    position: fixed;
+    top: 52px; left: 72px; right: 72px; bottom: 72px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  .app-container {
+    position: relative;
+    width: 100%;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    min-height: 0;
+  }
+
+  .glass-frame {
+    width: 100%;
+    height: 100%;
+    background: var(--glass-bg);
+    backdrop-filter: blur(32px) saturate(1.2);
+    -webkit-backdrop-filter: blur(32px) saturate(1.2);
+    border: 1px solid var(--glass-border);
+    border-radius: 28px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.4);
+    transition: background 0.45s cubic-bezier(0.4,0,0.2,1), border-color 0.45s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  /* ========== PORTFOLIO VIEWPORT ========== */
+  .portfolio-viewport {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+  }
+
+  .pf-panel {
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .pf-left {
+    width: 40%;
+    flex-shrink: 0;
+    border-right: 1px solid var(--glass-border);
+  }
+
+  .pf-right {
+    width: 60%;
+    flex-shrink: 0;
+  }
+
+  .pf-track {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    will-change: transform;
+    transition: transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .pf-item {
+    position: relative;
+    width: 100%;
+    flex: 0 0 100%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 44px 40px;
+    overflow: hidden;
+  }
+
+  .pf-right .pf-item {
+    padding: 44px 48px;
+  }
+
+  /* ========== SHARED COMPONENTS ========== */
+  .pf-tag {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    padding: 6px 14px;
+    background: rgba(192,57,43,0.18);
+    border-radius: 100px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .pf-section-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+    flex-shrink: 0;
+  }
+  .pf-section-label .num {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--accent);
+    font-family: "Inter", sans-serif;
+  }
+  .pf-section-label .title {
+    font-size: 1.45rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .pf-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 24px;
+    transition: border-color 0.3s, transform 0.3s;
+    overflow: hidden;
+  }
+  .pf-card:hover { border-color: var(--accent); }
+
+  /* ========== HERO MODULE ========== */
+  .hero-name {
+    font-size: clamp(2.4rem, 5vw, 4rem);
+    font-weight: 900;
+    line-height: 1.05;
+    margin-bottom: 14px;
+    letter-spacing: 0.04em;
+  }
+  .hero-subtitle {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+  }
+  .hero-desc {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    max-width: 380px;
+    margin-bottom: 22px;
+  }
+  .hero-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 144px;
+    height: 42px;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 100px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .hero-cta:hover {
+    transform: scale(1.06);
+    box-shadow: 0 8px 30px rgba(192,57,43,0.35);
+  }
+
+  /* About card */
+  .about-bio {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 18px;
+  }
+  .about-stats-row {
+    display: flex;
+    gap: 28px;
+    margin-bottom: 18px;
+  }
+  .about-stat { display: flex; flex-direction: column; gap: 4px; }
+  .about-stat .num {
+    font-size: 1.9rem;
+    font-weight: 800;
+    line-height: 1;
+  }
+  .about-stat .label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+  }
+  .about-awards {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: rgba(192,57,43,0.1);
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--accent);
+  }
+
+  /* ========== WORKS MODULE ========== */
+  .works-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .works-list-item {
+    padding: 12px 14px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: border-color 0.3s, background 0.3s, transform 0.3s;
+  }
+  .works-list-item:hover,
+  .works-list-item.active {
+    border-color: var(--accent);
+    background: var(--card-hover);
+    transform: translateX(6px);
+  }
+  .works-list-item .cat {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+    margin-bottom: 4px;
+    font-family: "Inter", sans-serif;
+  }
+  .works-list-item .name {
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+  .showcase-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    height: 100%;
+    min-height: 280px;
+  }
+  .showcase-card {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 14px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+  .showcase-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+  .showcase-card .cat {
+    font-size: 0.62rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+    font-family: "Inter", sans-serif;
+  }
+  .showcase-card .title { font-size: 1rem; font-weight: 800; }
+  .showcase-card .desc {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+  .showcase-preview {
+    flex: 1;
+    min-height: 70px;
+    background: var(--surface);
+    border-radius: 8px;
+    margin-top: 6px;
+  }
+
+  /* ========== EXPERIENCE + SKILLS ========== */
+  .exp-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .exp-card {
+    padding: 12px 14px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    transition: border-color 0.3s;
+  }
+  .exp-card:hover { border-color: var(--accent); }
+  .exp-card .period {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 4px;
+    font-family: "Inter", sans-serif;
+  }
+  .exp-card .company {
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+  .exp-card .role {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+  }
+  .exp-card .desc {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .skill-tag {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 38px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 100px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    transition: border-color 0.3s, color 0.3s;
+  }
+  .skill-tag:hover { border-color: var(--accent); color: var(--text-primary); }
+
+  /* ========== CONTACT + FOOTER ========== */
+  .contact-heading {
+    font-size: 1.45rem;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 18px;
+  }
+  .contact-items {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 22px;
+  }
+  .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.85rem;
+  }
+  .contact-item .label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    min-width: 50px;
+  }
+  .contact-item .value { font-weight: 500; }
+
+  .footer-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 24px;
+  }
+  .footer-brand {
+    font-size: 1.25rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+    letter-spacing: -0.02em;
+  }
+  .footer-copy {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 18px;
+  }
+  .footer-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+  }
+  .footer-row a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .footer-row a:hover { color: var(--accent); }
+
+  /* ========== SCROLL HINT & PROGRESS ========== */
+  .scroll-hint {
+    position: absolute;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    animation: hintPulse 2s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 20;
+    transition: opacity 0.3s;
+  }
+  .scroll-hint.is-hidden { opacity: 0; animation: none; }
+  @keyframes hintPulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+
+  .scroll-progress {
+    position: absolute;
+    right: 28px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 20;
+  }
+  .scroll-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--glass-border);
+    border: 1px solid var(--glass-border);
+    transition: background 0.3s, border-color 0.3s, transform 0.3s;
+    cursor: pointer;
+  }
+  .scroll-dot.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    transform: scale(1.3);
+  }
+
+  /* ========== TRANSITION STATES ========== */
+  .pf-track.is-settling { transition: none; }
+
+  /* ========== RESPONSIVE ========== */
+  @media (max-width: 1100px) {
+    .pf-left { width: 45%; }
+    .pf-right { width: 55%; }
+    .pf-item { padding: 40px 32px; }
+    .pf-right .pf-item { padding: 40px; }
+    .skills-grid { grid-template-columns: repeat(2, 1fr); }
+    .showcase-grid { grid-template-columns: 1fr; min-height: auto; }
+  }
+
+  @media (max-width: 768px) {
+    .top-nav { left: 16px; right: 16px; }
+    .page-wrapper { top: 48px; left: 16px; right: 16px; bottom: 16px; }
+    .glass-frame { border-radius: 20px; }
+    .portfolio-viewport { flex-direction: column; }
+    .pf-left, .pf-right { width: 100%; height: 50%; border-right: none; border-bottom: 1px solid var(--glass-border); }
+    .pf-right { border-bottom: none; }
+    .pf-item { padding: 24px; min-height: 50vh; justify-content: flex-start; }
+    .pf-right .pf-item { padding: 24px; }
+    .hero-name { font-size: 2.5rem; }
+    .showcase-grid { grid-template-columns: 1fr 1fr; min-height: auto; }
+    .skills-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<!-- ========== TOP NAV ========== -->
+<nav class="top-nav">
+  <div class="nav-section nav-left">
+    <a href="index.html"><img class="nav-logo" id="logoBtn" src="logo.svg" alt="LX Logo" title="回到首页"></a>
+  </div>
+
+  <div class="nav-section nav-center">
+    <div class="nav-links" id="navLinksHorizontal">
+      <a href="index.html" class="nav-link"><span class="char">首</span><span class="char">页</span></a>
+      <a href="portfolio.html" class="nav-link active"><span class="char">作</span><span class="char">品</span><span class="char">集</span></a>
+      <a href="index.html" class="nav-link"><span class="char">关</span><span class="char">于</span></a>
+      <a href="index.html" class="nav-link"><span class="char">服</span><span class="char">务</span></a>
+      <a href="index.html" class="nav-link"><span class="char">联</span><span class="char">系</span></a>
+    </div>
+  </div>
+
+  <div class="nav-section nav-right">
+    <div class="nav-actions">
+      <button class="theme-btn" id="themeBtn" aria-label="切换明暗模式">
+        <svg class="icon-sun" viewBox="0 0 24 24" style="display:none;">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1" x2="12" y2="3"/>
+          <line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/>
+          <line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ========== PAGE WRAPPER ========== -->
+<div class="page-wrapper">
+  <div class="app-container">
+    <div class="glass-frame">
+
+      <div class="portfolio-viewport" id="portfolioViewport">
+        <!-- Left Panel -->
+        <div class="pf-panel pf-left">
+          <div class="pf-track" id="leftTrack">
+
+            <!-- Left 01: Hero -->
+            <div class="pf-item" data-left="0">
+              <div class="pf-tag">DESIGNER & CREATOR</div>
+              <h1 class="hero-name">李 威 杰</h1>
+              <p class="hero-subtitle">视觉设计师 / 多媒体创意人</p>
+              <p class="hero-desc">8 年设计经验 · 曾任名创优品高级设计师及页面组负责人<br>专注电商视觉、品牌设计、IP 联名与多媒体创意</p>
+              <button class="hero-cta" onclick="app.next()">查看作品 ↓</button>
+            </div>
+
+            <!-- Left 02: Works List -->
+            <div class="pf-item" data-left="1">
+              <div class="pf-section-label">
+                <span class="num">02</span>
+                <span class="title">作品精选</span>
+              </div>
+              <div class="works-list">
+                <div class="works-list-item active" data-work="0">
+                  <div class="cat">APP</div>
+                  <div class="name">拾光</div>
+                </div>
+                <div class="works-list-item" data-work="1">
+                  <div class="cat">APP</div>
+                  <div class="name">啄啄</div>
+                </div>
+                <div class="works-list-item" data-work="2">
+                  <div class="cat">WEB</div>
+                  <div class="name">AI 教案 PPT</div>
+                </div>
+                <div class="works-list-item" data-work="3">
+                  <div class="cat">3D</div>
+                  <div class="name">虚拟影棚</div>
+                </div>
+                <div class="works-list-item" data-work="4">
+                  <div class="cat">ILLUSTRATION</div>
+                  <div class="name">青绿山水插画</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Left 03: Experience -->
+            <div class="pf-item" data-left="2">
+              <div class="pf-section-label">
+                <span class="num">03</span>
+                <span class="title">工作经历</span>
+              </div>
+              <div class="exp-list">
+                <div class="exp-card">
+                  <div class="period">2017 - 2018</div>
+                  <div class="company">北京乐鱼互动</div>
+                  <div class="role">UI 设计师</div>
+                  <div class="desc">负责移动端 APP 界面设计与视觉迭代。</div>
+                </div>
+                <div class="exp-card">
+                  <div class="period">2018 - 2022</div>
+                  <div class="company">名创优品</div>
+                  <div class="role">高级视觉设计师 / 页面组负责人</div>
+                  <div class="desc">主导电商大促视觉、品牌 IP 联名及页面规范建设。</div>
+                </div>
+                <div class="exp-card">
+                  <div class="period">2022 - 至今</div>
+                  <div class="company">自由设计师 / 多媒体创作者</div>
+                  <div class="role">独立设计师</div>
+                  <div class="desc">探索品牌设计、3D 视觉、AI 创意与多媒体内容。</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Left 04: Contact -->
+            <div class="pf-item" data-left="3">
+              <div class="pf-section-label">
+                <span class="num">05</span>
+                <span class="title">联系我</span>
+              </div>
+              <h2 class="contact-heading">有项目想法？<br>一起聊聊</h2>
+              <div class="contact-items">
+                <div class="contact-item">
+                  <span class="label">Email</span>
+                  <span class="value">hello@lxlylzl.xyz</span>
+                </div>
+                <div class="contact-item">
+                  <span class="label">Base</span>
+                  <span class="value">中国 · 深圳</span>
+                </div>
+              </div>
+              <button class="hero-cta" onclick="location.href='mailto:hello@lxlylzl.xyz'">发送邮件</button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="pf-panel pf-right">
+          <div class="pf-track" id="rightTrack">
+
+            <!-- Right 01: About -->
+            <div class="pf-item" data-right="0">
+              <div class="pf-section-label">
+                <span class="num">01</span>
+                <span class="title">关于我</span>
+              </div>
+              <div class="pf-card">
+                <p class="about-bio">我是李威杰，一名扎根视觉设计 8 年的创意人。从北京乐鱼互动的 APP 设计起步，到名创优品担任高级设计师兼页面组负责人，我经历了从执行到管理、从单一技能到全链路设计的完整成长路径。我相信好的设计不是装饰，而是精准传达——每一次排版、每一个色彩选择，都应该服务于品牌叙事和商业目标。</p>
+                <div class="about-stats-row">
+                  <div class="about-stat"><span class="num">8+</span><span class="label">年设计经验</span></div>
+                  <div class="about-stat"><span class="num">50+</span><span class="label">电商大促项目</span></div>
+                  <div class="about-stat"><span class="num">15+</span><span class="label">IP 联名合作</span></div>
+                </div>
+                <div class="about-awards">
+                  <span>🏆</span>
+                  <span>2019 集团最佳新人奖 · 2020 集团最佳服务奖</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right 02: Works Showcase -->
+            <div class="pf-item" data-right="1">
+              <div class="pf-section-label">
+                <span class="num">02</span>
+                <span class="title">作品展示</span>
+              </div>
+              <div class="showcase-grid">
+                <div class="showcase-card">
+                  <div class="cat">APP</div>
+                  <div class="title">拾光</div>
+                  <div class="desc">链接收藏整理工具，AI 分类标签摘要</div>
+                  <div class="showcase-preview"></div>
+                </div>
+                <div class="showcase-card">
+                  <div class="cat">APP</div>
+                  <div class="title">啄啄</div>
+                  <div class="desc">AI 书签重新浮现，智能回顾收藏内容</div>
+                  <div class="showcase-preview"></div>
+                </div>
+                <div class="showcase-card">
+                  <div class="cat">WEB</div>
+                  <div class="title">AI 教案 PPT</div>
+                  <div class="desc">教师备课效率工具，一键生成教案大纲</div>
+                  <div class="showcase-preview"></div>
+                </div>
+                <div class="showcase-card">
+                  <div class="cat">3D</div>
+                  <div class="title">虚拟影棚</div>
+                  <div class="desc">3D 场景搭建与产品渲染视觉方案</div>
+                  <div class="showcase-preview"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right 03: Skills -->
+            <div class="pf-item" data-right="2">
+              <div class="pf-section-label">
+                <span class="num">04</span>
+                <span class="title">技能栈</span>
+              </div>
+              <div class="pf-card">
+                <div class="skills-grid">
+                  <div class="skill-tag">视觉设计</div>
+                  <div class="skill-tag">品牌设计</div>
+                  <div class="skill-tag">电商视觉</div>
+                  <div class="skill-tag">UI / UX</div>
+                  <div class="skill-tag">3D 渲染</div>
+                  <div class="skill-tag">AI 创意</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right 04: Footer -->
+            <div class="pf-item" data-right="3">
+              <div class="footer-card">
+                <div class="footer-brand">lxlylzl</div>
+                <div class="footer-copy">© 2026 lxlylzl. All rights reserved.</div>
+                <div class="footer-row">
+                  <a href="index.html">作品 · 关于 · 联系</a>
+                  <a href="#" onclick="app.goTo(0); return false;">Back to Top</a>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="scroll-hint" id="scrollHint">滚动浏览 ↓</div>
+      <div class="scroll-progress" id="scrollProgress"></div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var leftTrack = document.getElementById('leftTrack');
+  var rightTrack = document.getElementById('rightTrack');
+  var scrollHint = document.getElementById('scrollHint');
+  var progressEl = document.getElementById('scrollProgress');
+  var themeBtn = document.getElementById('themeBtn');
+  var logoBtn = document.getElementById('logoBtn');
+
+  var MODULE_COUNT = 4;
+  var MAX_STATE = 2 * MODULE_COUNT - 2; // max index = 6 (states 0..6)
+  var state = 0;
+  var isAnimating = false;
+  var wheelLock = false;
+  var wheelTimer = null;
+
+  // Build progress dots
+  for (var i = 0; i < MODULE_COUNT; i++) {
+    var dot = document.createElement('div');
+    dot.className = 'scroll-dot' + (i === 0 ? ' active' : '');
+    dot.dataset.index = i;
+    dot.addEventListener('click', function() {
+      app.goTo(parseInt(this.dataset.index, 10) * 2);
+    });
+    progressEl.appendChild(dot);
+  }
+
+  function getPreferredTheme() {
+    var stored = localStorage.getItem('theme');
+    if (stored) return stored;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    var iconSun = themeBtn.querySelector('.icon-sun');
+    var iconMoon = themeBtn.querySelector('.icon-moon');
+    if (theme === 'light') {
+      iconSun.style.display = '';
+      iconMoon.style.display = 'none';
+      if (logoBtn) logoBtn.src = 'logo-light.svg';
+    } else {
+      iconSun.style.display = 'none';
+      iconMoon.style.display = '';
+      if (logoBtn) logoBtn.src = 'logo.svg';
+    }
+  }
+
+  applyTheme(getPreferredTheme());
+  themeBtn.addEventListener('click', function() {
+    var next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    localStorage.setItem('theme', next);
+    applyTheme(next);
+  });
+
+  // Character hover bold
+  document.querySelectorAll('.nav-link').forEach(function(link) {
+    var chars = link.querySelectorAll('.char');
+    link.addEventListener('mousemove', function(e) {
+      chars.forEach(function(ch) {
+        var rect = ch.getBoundingClientRect();
+        ch.classList.toggle('bold', e.clientX >= rect.left && e.clientX <= rect.right);
+      });
+    });
+    link.addEventListener('mouseleave', function() {
+      chars.forEach(function(ch) { ch.classList.remove('bold'); });
+    });
+  });
+
+  function updatePositions() {
+    var leftIndex = Math.floor(state / 2);
+    var rightIndex = Math.floor((state + 1) / 2);
+    var leftOffset = (state % 2 === 1) ? -1 : 0; // after left moves, it's 1 ahead
+    var rightOffset = (state % 2 === 0 && state > 0) ? -1 : 0; // compensate for right lag
+
+    // Actually simpler: left leads by half a step
+    // State 0: left=0, right=0
+    // State 1: left=1, right=0
+    // State 2: left=1, right=1
+    // State 3: left=2, right=1
+    // State 4: left=2, right=2
+    // State 5: left=3, right=2
+    // State 6: left=3, right=3
+    var lIdx = Math.ceil(state / 2);
+    var rIdx = Math.floor(state / 2);
+
+    leftTrack.style.transform = 'translateY(-' + (lIdx * 100) + '%)';
+    rightTrack.style.transform = 'translateY(-' + (rIdx * 100) + '%)';
+
+    // Update active work list item based on right showcase index
+    var activeWork = rIdx === 1 ? 0 : -1; // only in works module
+    document.querySelectorAll('.works-list-item').forEach(function(item, i) {
+      item.classList.toggle('active', rIdx === 1 && i === activeWork);
+    });
+
+    // Update progress dots
+    var activeModule = Math.floor((state + 1) / 2);
+    document.querySelectorAll('.scroll-dot').forEach(function(dot, i) {
+      dot.classList.toggle('active', i === activeModule);
+    });
+
+    // Hide scroll hint at end
+    scrollHint.classList.toggle('is-hidden', state >= MAX_STATE - 1);
+  }
+
+  function next() {
+    if (state < MAX_STATE) {
+      state++;
+      updatePositions();
+    }
+  }
+
+  function prev() {
+    if (state > 0) {
+      state--;
+      updatePositions();
+    }
+  }
+
+  function goTo(targetState) {
+    state = Math.max(0, Math.min(MAX_STATE, targetState));
+    updatePositions();
+  }
+
+  // Wheel handler
+  window.addEventListener('wheel', function(e) {
+    if (e.ctrlKey) return;
+    if (wheelLock) { e.preventDefault(); return; }
+
+    var delta = e.deltaY;
+    if (Math.abs(delta) < 5) return;
+
+    e.preventDefault();
+    wheelLock = true;
+    clearTimeout(wheelTimer);
+
+    if (delta > 0) {
+      next();
+    } else {
+      prev();
+    }
+
+    wheelTimer = setTimeout(function() { wheelLock = false; }, 850);
+  }, { passive: false });
+
+  // Keyboard navigation
+  window.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
+      e.preventDefault();
+      next();
+    } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+      e.preventDefault();
+      prev();
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      goTo(0);
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      goTo(MAX_STATE);
+    }
+  });
+
+  // Touch swipe support
+  var touchStartY = 0;
+  var touchStartX = 0;
+  window.addEventListener('touchstart', function(e) {
+    touchStartY = e.touches[0].clientY;
+    touchStartX = e.touches[0].clientX;
+  }, { passive: true });
+
+  window.addEventListener('touchend', function(e) {
+    var dy = touchStartY - e.changedTouches[0].clientY;
+    var dx = touchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 50) {
+      if (dy > 0) next(); else prev();
+    }
+  }, { passive: true });
+
+  // Expose app API
+  window.app = {
+    next: next,
+    prev: prev,
+    goTo: goTo,
+    getState: function() { return state; }
+  };
+
+  // Initial render
+  updatePositions();
+
+})();
+</script>
+</body>
+</html>
