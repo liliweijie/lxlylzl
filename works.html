@@ -281,6 +281,49 @@
     .scroll-progress { top: 1.6rem; right: 1.6rem; font-size: 0.8rem; }
   }
 
+  /* ===== FLUID CURSOR ===== */
+  @media (hover: hover) and (pointer: fine) {
+    body, a, button, .nav-logo, .nav-back, .work-card, .theme-btn { cursor: none; }
+
+    .fluid-cursor {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      pointer-events: none;
+      z-index: 9999;
+      filter: url(#goo);
+      mix-blend-mode: difference;
+    }
+
+    .fluid-blob {
+      position: absolute;
+      top: 0; left: 0;
+      border-radius: 50%;
+      background: #fff;
+      will-change: transform;
+    }
+    .fluid-blob:nth-child(1) { width: 34px; height: 34px; }
+    .fluid-blob:nth-child(2) { width: 28px; height: 28px; }
+    .fluid-blob:nth-child(3) { width: 22px; height: 22px; }
+    .fluid-blob:nth-child(4) { width: 16px; height: 16px; }
+
+    .fluid-dot {
+      position: fixed;
+      top: 0; left: 0;
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: #fff;
+      pointer-events: none;
+      z-index: 10000;
+      will-change: transform;
+      mix-blend-mode: difference;
+    }
+  }
+
+  @media (hover: none), (pointer: coarse) {
+    .fluid-cursor, .fluid-dot { display: none; }
+  }
+
   /* swipe hint — only visible on touch devices */
   .swipe-hint {
     display: none;
@@ -350,6 +393,23 @@
 
 <!-- mobile swipe hint -->
 <div class="swipe-hint" id="swipeHint">↑↓ 滑动浏览</div>
+
+<!-- Fluid Cursor -->
+<svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+  <defs>
+    <filter id="goo">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur"/>
+      <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -10"/>
+    </filter>
+  </defs>
+</svg>
+<div class="fluid-cursor" id="fluidCursor">
+  <div class="fluid-blob"></div>
+  <div class="fluid-blob"></div>
+  <div class="fluid-blob"></div>
+  <div class="fluid-blob"></div>
+</div>
+<div class="fluid-dot" id="fluidDot"></div>
 
 <script>
 (function() {
@@ -482,6 +542,31 @@
     totalScroll = touchScrollBase + (touchStartY - e.touches[0].clientY) * factor;
   }, { passive: true });
 
+  // ===== FLUID CURSOR =====
+  var fluidBlobs = document.querySelectorAll('.fluid-blob');
+  var fluidDot = document.getElementById('fluidDot');
+  var blobLerps = [0.30, 0.22, 0.16, 0.10];
+  var blobSizes = [34, 28, 22, 16];
+  var blobPos = [];
+  for (var i = 0; i < fluidBlobs.length; i++) {
+    blobPos.push({ x: -200, y: -200 });
+  }
+  var mouseFX = -200, mouseFY = -200;
+  var dotX = -200, dotY = -200;
+  var cursorHover = false;
+
+  window.addEventListener('mousemove', function(e) {
+    mouseFX = e.clientX;
+    mouseFY = e.clientY;
+  });
+
+  document.addEventListener('mouseover', function(e) {
+    if (e.target.closest('a, button, .work-card, .nav-logo')) cursorHover = true;
+  });
+  document.addEventListener('mouseout', function(e) {
+    if (e.target.closest('a, button, .work-card, .nav-logo')) cursorHover = false;
+  });
+
   // ===== RENDER =====
   const progressEl = document.getElementById('scrollProgress');
   (function update() {
@@ -495,6 +580,18 @@
 
     const pct = Math.round((visualScroll / SCROLL_RANGE) * 100);
     progressEl.textContent = String(pct).padStart(2, '0');
+
+    // Fluid cursor update
+    var hoverScale = cursorHover ? 1.7 : 1.0;
+    for (var bi = 0; bi < fluidBlobs.length; bi++) {
+      blobPos[bi].x += (mouseFX - blobPos[bi].x) * blobLerps[bi];
+      blobPos[bi].y += (mouseFY - blobPos[bi].y) * blobLerps[bi];
+      var half = blobSizes[bi] / 2;
+      fluidBlobs[bi].style.transform = 'translate(' + (blobPos[bi].x - half) + 'px,' + (blobPos[bi].y - half) + 'px) scale(' + hoverScale + ')';
+    }
+    dotX += (mouseFX - dotX) * 0.5;
+    dotY += (mouseFY - dotY) * 0.5;
+    fluidDot.style.transform = 'translate(' + (dotX - 2.5) + 'px,' + (dotY - 2.5) + 'px)';
 
     requestAnimationFrame(update);
   })();
