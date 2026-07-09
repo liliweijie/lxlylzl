@@ -35,17 +35,15 @@
     color: var(--text);
     font-family: 'Inter', 'Noto Sans SC', sans-serif;
     overflow: hidden;
-    min-height: 100vh;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     transition: background 0.45s ease, color 0.45s ease;
   }
 
-  /* ===== TOP NAV (the bar itself is vertically centered, not the page) ===== */
+  /* ===== TOP NAV (the bar itself is centered — it's the only child of body) ===== */
   .top-nav {
-    position: fixed;
-    top: 50%;
-    left: 0;
-    right: 0;
-    transform: translateY(-50%);
     width: 100%;
     display: flex;
     align-items: center;
