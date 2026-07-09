@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LXLYLZL · 重做 Demo</title>
+<style>
+  :root{
+    --bg:#0A0A0A;
+    --frame-fill:rgba(255,255,255,0.04);
+    --frame-stroke:rgba(255,255,255,0.14);
+    --divider:rgba(255,255,255,0.10);
+    --accent:#E85D3B;
+    --text:#F2F2F2;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    background:var(--bg);
+    font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+    min-height:100vh;
+    padding:40px;
+    display:flex;
+    align-items:center;        /* 上下居中 */
+    justify-content:center;    /* 左右居中 */
+    -webkit-font-smoothing:antialiased;
+  }
+  .glass-frame{
+    width:100%;
+    max-width:1360px;
+    height:min(820px, calc(100vh - 80px));   /* 居中且留白，不超视口 */
+    border-radius:28px;
+    background:var(--frame-fill);
+    border:1px solid var(--frame-stroke);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+    box-shadow:0 12px 40px rgba(0,0,0,0.35), inset 0 1px 2px rgba(255,255,255,0.12);
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+  }
+  .nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:22px 56px;
+    flex:0 0 auto;
+  }
+  .nav-col{
+    flex:1 1 0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+  }
+  .nav-col a{
+    font-size:18px;
+    font-weight:700;
+    text-decoration:none;
+    color:var(--text);
+    transition:color .2s ease;
+    letter-spacing:0.02em;
+  }
+  .nav-col.active a{ color:var(--accent); }
+  .divider{
+    height:1px;
+    background:var(--divider);
+    width:100%;
+    flex:0 0 auto;
+  }
+  .content{
+    flex:1 1 auto;
+  }
+  /* 平板端：缩小留白与框架高度，仍保持居中 */
+  @media (max-width:1024px){
+    body{padding:32px;}
+    .glass-frame{
+      max-width:100%;
+      height:min(760px, calc(100vh - 64px));
+    }
+  }
+  /* 移动端：留白更小，框架高度自适应，内容少时整体垂直居中 */
+  @media (max-width:720px){
+    body{padding:16px;}
+    .glass-frame{
+      max-width:100%;
+      height:auto;
+      min-height:min(78vh, 600px);
+    }
+    .nav{padding:18px 22px;}
+    .nav-col a{font-size:16px;}
+  }
+</style>
+</head>
+<body>
+  <div class="glass-frame">
+    <nav class="nav">
+      <div class="nav-col active"><a href="#">首页</a></div>
+      <div class="nav-col"><a href="#">作品集</a></div>
+      <div class="nav-col"><a href="#">更多</a></div>
+    </nav>
+    <div class="divider"></div>
+    <div class="content"></div>
+  </div>
+</body>
+</html>
