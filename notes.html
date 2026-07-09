@@ -25,8 +25,8 @@
     --text: #0E0E0E;
     --text-muted: #262626;
     --panel: #DBDBDB;
-    --nav-bg: rgba(0,0,0,0.04);
-    --nav-border: rgba(0,0,0,0.12);
+    --nav-bg: rgba(0,0,0,0.06);
+    --nav-border: rgba(0,0,0,0.16);
   }
 
   html, body { height: 100%; }
@@ -35,15 +35,14 @@
     color: var(--text);
     font-family: 'Inter', 'Noto Sans SC', sans-serif;
     overflow: hidden;
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    min-height: 100vh;
     transition: background 0.45s ease, color 0.45s ease;
   }
 
-  /* ===== TOP NAV (the bar itself is centered — it's the only child of body) ===== */
+  /* ===== TOP NAV (pinned to the very top of the page, content centered) ===== */
   .top-nav {
+    position: relative;
+    top: 0;
     width: 100%;
     display: flex;
     align-items: center;
