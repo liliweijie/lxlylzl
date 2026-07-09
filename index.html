@@ -12,17 +12,19 @@
   *, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
 
   :root {
-    --accent: #c0392b;
-    --accent-glow: rgba(192,57,43,0.25);
-    --glass-bg: rgba(18,18,24,0.72);
-    --glass-border: rgba(255,255,255,0.08);
-    --text-primary: #f0ece4;
-    --text-secondary: #9898a8;
-    --text-muted: #5a5a6a;
-    --bg-primary: #0e0e12;
-    --nav-bg: rgba(18,18,24,0.6);
-    --page-bg: rgba(28,28,38,0.82);
-    --card-bg: rgba(255,255,255,0.03);
+    /* 颜色标准（2026-07-09 截图色板）:
+       近黑 #0E0E0E / 炭灰 #262626 / 橙红 #F24C30 / 浅灰 #DBDBDB / 近白 #F9F9F9 */
+    --accent: #F24C30;
+    --accent-glow: rgba(242,76,48,0.28);
+    --glass-bg: rgba(38,38,38,0.55);
+    --glass-border: rgba(219,219,219,0.14);
+    --text-primary: #F9F9F9;
+    --text-secondary: #DBDBDB;
+    --text-muted: #7a7a7a;
+    --bg-primary: #0E0E0E;
+    --nav-bg: rgba(14,14,14,0.72);
+    --page-bg: rgba(38,38,38,0.82);
+    --card-bg: rgba(38,38,38,0.6);
     /* 卡片模块垂直偏移：改这个数字来上下移动整个卡片模块 */
     /* 正数 = 向下移，负数 = 向上移，单位 px */
     --card-top: 50px;
@@ -30,14 +32,14 @@
 
   [data-theme="light"] {
     --glass-bg: rgba(255,255,255,0.72);
-    --glass-border: rgba(0,0,0,0.08);
-    --text-primary: #1a1a2e;
-    --text-secondary: #6a6a7a;
-    --text-muted: #a0a0b0;
-    --bg-primary: #f5f0e8;
-    --nav-bg: rgba(255,255,255,0.6);
-    --page-bg: rgba(245,240,230,0.75);
-    --card-bg: rgba(0,0,0,0.03);
+    --glass-border: rgba(38,38,38,0.12);
+    --text-primary: #0E0E0E;
+    --text-secondary: #262626;
+    --text-muted: #8a8a8a;
+    --bg-primary: #F9F9F9;
+    --nav-bg: rgba(249,249,249,0.72);
+    --page-bg: rgba(255,255,255,0.82);
+    --card-bg: rgba(38,38,38,0.04);
   }
 
   html { font-size: 16px; }
@@ -541,7 +543,7 @@
     justify-content: center;
     width: fit-content;
     padding: 6px 14px;
-    background: rgba(192,57,43,0.18);
+    background: rgba(242,76,48,0.18);
     border-radius: 100px;
     font-size: 0.7rem;
     font-weight: 600;
@@ -616,7 +618,7 @@
   }
   .pf-cta:hover {
     transform: scale(1.06);
-    box-shadow: 0 8px 30px rgba(192,57,43,0.35);
+    box-shadow: 0 8px 30px rgba(242,76,48,0.35);
   }
 
   .pf-about-bio {
@@ -638,7 +640,7 @@
     align-items: center;
     gap: 8px;
     padding: 10px 14px;
-    background: rgba(192,57,43,0.1);
+    background: rgba(242,76,48,0.1);
     border-radius: 8px;
     font-size: 0.75rem;
     font-weight: 500;
