@@ -54,10 +54,17 @@
     pointer-events: none;
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    gap: 10px;
+    justify-content: space-between;
   }
   .top-nav * { pointer-events: auto; }
+  .nav-center {
+    position: absolute;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
 
   /* Logo pill */
   .nav-logo-wrap {
@@ -299,13 +306,14 @@
 <nav class="top-nav">
   <a href="index.html" class="nav-logo-link"><div class="nav-logo-wrap"><img class="nav-logo" id="logoBtn" src="logo.svg" alt="LX Logo"></div></a>
 
-  <a class="nav-link" href="index.html">首页</a>
-  <a class="nav-link is-active" href="works.html">作品</a>
-  <a class="nav-link" href="about.html">关于</a>
-  <a class="nav-link" href="notes.html">碎碎念</a>
+  <div class="nav-center">
+    <a class="nav-link" href="index.html">首页</a>
+    <a class="nav-link is-active" href="works.html">作品</a>
+    <a class="nav-link" href="about.html">关于</a>
+    <a class="nav-link" href="notes.html">碎碎念</a>
+  </div>
 
-  <div class="nav-right">
-    <button class="theme-btn" id="themeBtn" aria-label="切换明暗模式">
+  <button class="theme-btn" id="themeBtn" aria-label="切换明暗模式">
       <svg class="icon-sun" viewBox="0 0 24 24" style="display:none;">
         <circle cx="12" cy="12" r="5"/>
         <line x1="12" y1="1" x2="12" y2="3"/>
@@ -321,7 +329,6 @@
         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
       </svg>
     </button>
-  </div>
 </nav>
 
 <!-- ===== SCROLL PROGRESS ===== -->

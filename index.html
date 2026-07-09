@@ -39,16 +39,24 @@
     transition: background 0.45s ease, color 0.45s ease;
   }
 
-  /* ===== TOP NAV (pinned at very top) ===== */
+  /* ===== TOP NAV: logo left / links centered / toggle right ===== */
   .top-nav {
     position: relative;
     top: 0;
     width: 100%;
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    gap: 12px;
+    justify-content: space-between;
     padding: 20px 40px;
+  }
+  .nav-center {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    gap: 12px;
   }
 
   /* Logo pill */
@@ -102,7 +110,6 @@
 
   /* Theme toggle */
   .theme-btn {
-    margin-left: auto;
     width: 40px; height: 40px;
     border: none; background: var(--pill-bg);
     border: 1px solid var(--pill-border);
@@ -146,10 +153,12 @@
       <img class="nav-logo" src="logo.svg" alt="LX Logo">
     </div>
 
-    <a class="nav-link is-active" href="index.html">首页</a>
-    <a class="nav-link" href="works.html">作品</a>
-    <a class="nav-link" href="about.html">关于</a>
-    <a class="nav-link" href="notes.html">碎碎念</a>
+    <div class="nav-center">
+      <a class="nav-link is-active" href="index.html">首页</a>
+      <a class="nav-link" href="works.html">作品</a>
+      <a class="nav-link" href="about.html">关于</a>
+      <a class="nav-link" href="notes.html">碎碎念</a>
+    </div>
 
     <button class="theme-btn" id="themeBtn" aria-label="切换明暗模式">
       <svg class="icon-sun" viewBox="0 0 24 24" style="display:none;">
