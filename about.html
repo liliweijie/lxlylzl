@@ -35,20 +35,24 @@
     color: var(--text);
     font-family: 'Noto Sans SC', 'Inter', sans-serif;
     overflow: hidden;
-    min-height: 100vh;
+    height: 100vh;
+    width: 100vw;
     transition: background 0.45s ease, color 0.45s ease;
   }
 
-  /* ===== TOP NAV: logo left / links centered / toggle right ===== */
+  /* ===== TOP NAV: logo left / links centered / toggle right (fixed, full-screen) ===== */
   .top-nav {
-    position: relative;
-    top: 0;
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1000;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 20px 40px;
+    pointer-events: none;
   }
+  .top-nav * { pointer-events: auto; }
   .nav-center {
     position: absolute;
     left: 50%;
