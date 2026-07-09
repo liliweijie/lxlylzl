@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>LXLYLZL — Brutalist Hero Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Noto+Sans+SC:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #0c0c0c;
+    --paper: #efece3;
+    --red: #ff2b2b;
+    --line: #2a2a2a;
+    --mono: 'Space Mono', 'Courier New', monospace;
+    --display: 'Anton', 'Arial Narrow', sans-serif;
+    --cn: 'Noto Sans SC', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body { height: 100%; }
+
+  body {
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--cn);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ===== POSTER FRAME ===== */
+  .frame {
+    min-height: 100vh;
+    border: 2px solid var(--paper);
+    margin: 14px;
+    padding: 22px 26px 18px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  /* ===== TOP BAR ===== */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 2px solid var(--paper);
+    padding-bottom: 14px;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .brand {
+    font-family: var(--display);
+    font-size: clamp(1.4rem, 2.6vw, 2.2rem);
+    letter-spacing: 0.04em;
+    line-height: 1;
+  }
+  .brand sup {
+    font-family: var(--mono);
+    font-size: 0.5em;
+    vertical-align: super;
+    color: var(--red);
+  }
+  .nav {
+    display: flex;
+    gap: 0;
+    border: 2px solid var(--paper);
+  }
+  .nav a {
+    font-family: var(--display);
+    font-size: clamp(0.8rem, 1.2vw, 1.1rem);
+    letter-spacing: 0.08em;
+    padding: 8px 16px;
+    color: var(--paper);
+    text-decoration: none;
+    border-right: 2px solid var(--paper);
+    transition: background 0.12s, color 0.12s;
+  }
+  .nav a:last-child { border-right: none; }
+  .nav a:hover { background: var(--red); color: var(--ink); }
+
+  .meta {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-align: right;
+    line-height: 1.5;
+  }
+  .meta .tag {
+    display: inline-block;
+    border: 1px solid var(--paper);
+    padding: 1px 6px;
+    margin-left: 6px;
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1.55fr 1fr;
+    gap: 24px;
+    padding: 30px 0 18px;
+    align-items: stretch;
+    position: relative;
+  }
+
+  .hero-main { display: flex; flex-direction: column; justify-content: space-between; }
+
+  .kicker {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.22em;
+    color: var(--red);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .kicker::before {
+    content: '';
+    width: 42px; height: 2px; background: var(--red);
+  }
+
+  .wordmark {
+    font-family: var(--display);
+    font-size: clamp(4.5rem, 17vw, 16rem);
+    line-height: 0.82;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    margin: 4px 0;
+  }
+  .wordmark .red { color: var(--red); }
+
+  .hero-foot {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 18px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+
+  /* density layer — Chinese fine print */
+  .density {
+    font-family: var(--cn);
+    font-weight: 400;
+    font-size: 0.86rem;
+    line-height: 1.85;
+    letter-spacing: 0.02em;
+    max-width: 30ch;
+    color: #c9c6bd;
+  }
+  .density b { font-weight: 900; color: var(--paper); }
+  .density .en {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    color: var(--red);
+    display: block;
+    margin-top: 6px;
+  }
+
+  .scroll-hint {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-align: right;
+    line-height: 1.6;
+  }
+
+  /* ===== RIGHT COLUMN — brutalist devices ===== */
+  .hero-side {
+    border-left: 2px solid var(--paper);
+    padding-left: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 18px;
+  }
+
+  .sticker {
+    align-self: flex-start;
+    background: var(--red);
+    color: var(--ink);
+    font-family: var(--display);
+    font-size: clamp(1.1rem, 2vw, 1.8rem);
+    letter-spacing: 0.04em;
+    padding: 10px 16px;
+    transform: rotate(-3deg);
+    line-height: 1;
+  }
+  .sticker small {
+    display: block;
+    font-family: var(--cn);
+    font-weight: 700;
+    font-size: 0.5em;
+    letter-spacing: 0.1em;
+    margin-top: 4px;
+  }
+
+  /* barcode */
+  .barcode {
+    height: 64px;
+    background-image: repeating-linear-gradient(90deg,
+      var(--paper) 0, var(--paper) 2px, transparent 2px, transparent 5px,
+      var(--paper) 5px, var(--paper) 8px, transparent 8px, transparent 10px,
+      var(--paper) 10px, var(--paper) 12px, transparent 12px, transparent 16px);
+    background-color: var(--ink);
+  }
+  .barcode-no {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.3em;
+    margin-top: 4px;
+    color: #8a8a82;
+  }
+
+  .star {
+    font-size: 2.4rem;
+    color: var(--red);
+    align-self: flex-end;
+    line-height: 1;
+  }
+
+  /* ===== SECTION SYSTEM ROW ===== */
+  .sections {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-top: 2px solid var(--paper);
+    border-left: 2px solid var(--paper);
+    margin-top: 8px;
+  }
+  .sec {
+    border-right: 2px solid var(--paper);
+    border-bottom: 2px solid var(--paper);
+    padding: 16px 14px 14px;
+    min-height: 116px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: background 0.12s, color 0.12s;
+    cursor: pointer;
+  }
+  .sec:hover { background: var(--paper); color: var(--ink); }
+  .sec .no {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    color: var(--red);
+  }
+  .sec:hover .no { color: var(--ink); }
+  .sec .en {
+    font-family: var(--display);
+    font-size: clamp(1.4rem, 2.4vw, 2.1rem);
+    letter-spacing: 0.02em;
+    line-height: 1;
+  }
+  .sec .cn {
+    font-family: var(--cn);
+    font-weight: 700;
+    font-size: 0.82rem;
+    letter-spacing: 0.06em;
+    margin-top: 4px;
+  }
+
+  /* ===== FOOTER LINE ===== */
+  .footline {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    border-top: 2px solid var(--paper);
+    margin-top: 0;
+    padding-top: 10px;
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.14em;
+    color: #8a8a82;
+    flex-wrap: wrap;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 860px) {
+    .hero { grid-template-columns: 1fr; }
+    .hero-side { border-left: none; border-top: 2px solid var(--paper); padding-left: 0; padding-top: 18px; flex-direction: row; flex-wrap: wrap; align-items: center; }
+    .sections { grid-template-columns: repeat(2, 1fr); }
+    .wordmark { font-size: 22vw; }
+  }
+  @media (max-width: 480px) {
+    .frame { margin: 8px; padding: 14px; }
+    .nav { width: 100%; justify-content: space-between; }
+    .nav a { flex: 1; text-align: center; padding: 8px 4px; }
+    .sections { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+  <div class="frame">
+
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <div class="brand">LXLYLZL<sup>®</sup></div>
+      <nav class="nav">
+        <a href="#">WORKS</a>
+        <a href="#">ABOUT</a>
+        <a href="#">SERVICES</a>
+        <a href="#">CONTACT</a>
+      </nav>
+      <div class="meta">
+        MMXXVI<br>
+        <span class="tag">CN · SHENZHEN</span>
+      </div>
+    </header>
+
+    <!-- HERO -->
+    <main class="hero">
+      <div class="hero-main">
+        <div>
+          <div class="kicker">ISSUE 01 — PORTFOLIO</div>
+          <h1 class="wordmark">LXL<span class="red">·</span>YLZL</h1>
+        </div>
+
+        <div class="hero-foot">
+          <div class="density">
+            <b>独立设计师 / 创意开发者。</b><br>
+            以设计驱动品牌增长，把复杂的想法变成能用的产品。<br>
+            品牌塑造 · 网站构建 · 动态视觉。
+            <span class="en">BRANDING / WEB / MOTION</span>
+          </div>
+          <div class="scroll-hint">
+            SCROLL ↓<br>
+            下滑浏览
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: brutalist devices -->
+      <aside class="hero-side">
+        <div class="sticker">
+          SELECTED
+          <small>精选作品 ↗</small>
+        </div>
+
+        <div>
+          <div class="barcode"></div>
+          <div class="barcode-no">9 789898 000001 · LXL-YLZL</div>
+        </div>
+
+        <div class="star">✶</div>
+      </aside>
+    </main>
+
+    <!-- SECTION SYSTEM -->
+    <section class="sections">
+      <div class="sec">
+        <div class="no">01 /</div>
+        <div>
+          <div class="en">WORKS</div>
+          <div class="cn">作品集</div>
+        </div>
+      </div>
+      <div class="sec">
+        <div class="no">02 /</div>
+        <div>
+          <div class="en">ABOUT</div>
+          <div class="cn">关于我</div>
+        </div>
+      </div>
+      <div class="sec">
+        <div class="no">03 /</div>
+        <div>
+          <div class="en">SERVICES</div>
+          <div class="cn">我能做什么</div>
+        </div>
+      </div>
+      <div class="sec">
+        <div class="no">04 /</div>
+        <div>
+          <div class="en">CONTACT</div>
+          <div class="cn">取得联系</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footline">
+      <span>© MMXXVI LXLYLZL STUDIO. ALL RIGHTS RESERVED.</span>
+      <span>NO COPYRIGHT · 转载请标注出处</span>
+      <span>DESIGNED IN SHENZHEN ✶</span>
+    </footer>
+
+  </div>
+</body>
+</html>

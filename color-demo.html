@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>配色方案 Demo — lxlylzl.xyz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  /* ========== RESET ========== */
+  *, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
+
+  /* ========================================
+     NEW COLOR PALETTE — from user screenshot
+     暖色暴力调色板：黑/炭/金黄/橙红/浅灰/白/深红
+     ======================================== */
+
+  :root {
+    /* ---- 主强调色（原 #c0392b → 橙红）---- */
+    --accent: #E85D3B;
+    --accent-glow: rgba(232,93,59,0.3);
+
+    /* ---- 新增：辅助强调色 ---- */
+    --accent-yellow: #F4C430;      /* 亮金黄 — 顶部 */
+    --accent-gold: #B8860B;        /* 暗金橄榄 — 金下 */
+    --accent-red: #DC143C;         /* 深红 — 底部 */
+
+    /* ---- 渐变组合 ---- */
+    --gradient-accent: linear-gradient(135deg, #E85D3B, #DC143C);
+    --gradient-warm: linear-gradient(135deg, #F4C430, #E85D3B);
+    --gradient-dark-warm: linear-gradient(135deg, #1a1a1a, #0a0a0a);
+
+    /* ---- Dark Mode（默认）---- */
+    --glass-bg: rgba(10,10,10,0.78);
+    --glass-border: rgba(255,255,255,0.07);
+    --text-primary: #F0EDE8;
+    --text-secondary: #9A9590;
+    --text-muted: #5A5550;
+    --bg-primary: #0A0A0A;
+    --bg-secondary: #141414;
+    --nav-bg: rgba(10,10,10,0.65);
+    --page-bg: rgba(20,20,20,0.88);
+    --card-bg: rgba(255,255,255,0.03);
+    --card-border: rgba(255,255,255,0.06);
+  }
+
+  [data-theme="light"] {
+    --glass-bg: rgba(255,255,255,0.78);
+    --glass-border: rgba(0,0,0,0.08);
+    --text-primary: #1A1816;
+    --text-secondary: #6A6560;
+    --text-muted: #9A9590;
+    --bg-primary: #FAF8F5;
+    --bg-secondary: #F0EDE8;
+    --nav-bg: rgba(250,248,245,0.65);
+    --page-bg: rgba(250,248,245,0.82);
+    --card-bg: rgba(0,0,0,0.025);
+    --card-border: rgba(0,0,0,0.06);
+  }
+
+  html { font-size: 16px; }
+  body {
+    font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background 0.45s, color 0.45s;
+    min-height: 100vh;
+    padding: 40px 20px;
+  }
+
+  /* ========== LAYOUT ========== */
+  .demo-container { max-width: 1100px; margin: 0 auto; }
+  .section { margin-bottom: 56px; }
+  .section-title {
+    font-family: "Inter", sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--card-border);
+  }
+
+  /* ========== THEME TOGGLE ========== */
+  .theme-toggle {
+    position: fixed; top: 20px; right: 20px; z-index: 999;
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: var(--nav-bg);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    color: var(--text-primary);
+    font-size: 18px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.25s;
+  }
+  .theme-toggle:hover { 
+    background: var(--accent); 
+    color: #fff; 
+    border-color: var(--accent); 
+  }
+
+  /* ========== PALETTE SHOWCASE ========== */
+  .palette-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .palette-swatch {
+    border-radius: 12px;
+    aspect-ratio: 1;
+    display: flex; flex-direction: column;
+    justify-content: flex-end; align-items: center;
+    padding: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+  .palette-swatch::after {
+    content: attr(data-hex);
+    font-family: "Inter", monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: inherit;
+    opacity: 0.85;
+  }
+  .swatch-black   { background: #000000; color: #fff; }
+  .swatch-charcoal{ background: #1a1a1a; color: #fff; }
+  .swatch-yellow  { background: #F4C430; color: #000; }
+  .swatch-gold    { background: #B8860B; color: #fff; }
+  .swatch-orange  { background: #E85D3B; color: #fff; }
+  .swatch-light   { background: #D8D8D8; color: #000; }
+  .swatch-white   { background: #FFFFFF; color: #000; border: 1px solid var(--card-border); }
+  .swatch-crimson { background: #DC143C; color: #fff; }
+
+  /* ========== NAV DEMO ========== */
+  .nav-demo {
+    display: flex; align-items: center; gap: 12px;
+    padding: 8px 24px;
+    background: var(--nav-bg);
+    backdrop-filter: blur(24px);
+    border: 1px solid var(--glass-border);
+    border-radius: 100px;
+    width: fit-content;
+  }
+  .nav-logo-text {
+    font-family: "Inter", sans-serif;
+    font-weight: 800; font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    color: var(--text-primary);
+  }
+  .nav-link-demo {
+    font-size: 0.82rem; font-weight: 500;
+    color: var(--text-secondary);
+    padding: 4px 12px; border-radius: 100px;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .nav-link-demo:hover { color: var(--accent); }
+  .nav-link-demo.active { color: var(--accent); font-weight: 700; }
+  .divider-dot {
+    width: 3px; height: 3px; border-radius: 50%;
+    background: var(--text-muted);
+  }
+
+  /* ========== GLASS FRAME ========== */
+  .glass-frame {
+    background: var(--glass-bg);
+    backdrop-filter: blur(32px) saturate(1.2);
+    -webkit-backdrop-filter: blur(32px) saturate(1.2);
+    border: 1px solid var(--glass-border);
+    border-radius: 28px;
+    padding: 36px;
+  }
+
+  /* ========== CARDS GRID ========== */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 768px) { .cards-grid { grid-template-columns: repeat(2, 1fr); } }
+
+  .demo-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 24px;
+    transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+    cursor: default;
+  }
+  .demo-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(232,93,59,0.1);
+  }
+  .demo-card .tag {
+    font-family: "Inter", sans-serif;
+    font-size: 0.62rem; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+  .demo-card h3 {
+    font-size: 1.05rem; font-weight: 700;
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+  .demo-card p {
+    font-size: 0.82rem; color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* ========== BUTTONS ========== */
+  .btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+  .btn {
+    font-family: "Inter", sans-serif;
+    font-size: 0.8rem; font-weight: 600;
+    padding: 10px 22px; border-radius: 100px;
+    cursor: pointer; transition: all 0.25s;
+    border: none; outline: none;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 4px 16px var(--accent-glow);
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px var(--accent-glow);
+  }
+  .btn-outline {
+    background: transparent;
+    color: var(--text-primary);
+    border: 1px solid var(--glass-border);
+  }
+  .btn-outline:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .btn-yellow {
+    background: var(--accent-yellow);
+    color: #000;
+  }
+  .btn-gold {
+    background: var(--accent-gold);
+    color: #fff;
+  }
+  .btn-red {
+    background: var(--accent-red);
+    color: #fff;
+  }
+
+  /* ========== TEXT SAMPLES ========== */
+  .text-row { display: flex; flex-direction: column; gap: 14px; }
+  .text-sample h1 {
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 900; line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+  .text-sample h1 .hl { color: var(--accent); }
+  .text-sample h1 .hl-yellow { color: var(--accent-yellow); }
+  .text-sample h1 .hl-gold { color: var(--accent-gold); }
+  .text-sample h1 .hl-red { color: var(--accent-red); }
+  .text-sample h2 {
+    font-size: 1.4rem; font-weight: 800;
+    margin-top: 8px; color: var(--text-secondary);
+  }
+  .text-sample p {
+    font-size: 0.92rem; line-height: 1.75;
+    color: var(--text-secondary);
+    max-width: 520px;
+  }
+
+  /* ========== SKILL BARS ========== */
+  .skill-item { margin-bottom: 14px; }
+  .skill-label {
+    display: flex; justify-content: space-between;
+    font-size: 0.78rem; font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .skill-label span:first-child { color: var(--text-primary); }
+  .skill-label span:last-child { color: var(--accent); font-family: "Inter"; }
+  .bar-track {
+    height: 5px; background: var(--card-bg);
+    border-radius: 3px; overflow: hidden;
+    border: 1px solid var(--card-border);
+  }
+  .bar-fill {
+    height: 100%; border-radius: 3px;
+    background: var(--gradient-accent);
+    animation: fillIn 1.2s ease-out forwards;
+  }
+  @keyframes fillIn { from { width: 0; } }
+  .fill-90 { width: 90%; }
+  .fill-85 { width: 85%; }
+  .fill-80 { width: 80%; }
+  .fill-75 { width: 75%; }
+
+  /* ========== STATS ROW ========== */
+  .stats-row { display: flex; gap: 20px; flex-wrap: wrap; }
+  .stat-box {
+    flex: 1; min-width: 140px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 20px;
+    text-align: center;
+  }
+  .stat-num {
+    font-family: "Inter", sans-serif;
+    font-size: 2rem; font-weight: 900;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 0.72rem; color: var(--text-muted);
+    margin-top: 6px; font-weight: 600;
+  }
+
+  /* ========== BADGES / TAGS ========== */
+  .tags-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tag-chip {
+    font-family: "Inter", sans-serif;
+    font-size: 0.7rem; font-weight: 600;
+    padding: 6px 14px; border-radius: 100px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    color: var(--text-secondary);
+    cursor: pointer; transition: all 0.2s;
+  }
+  .tag-chip:hover { border-color: var(--accent); color: var(--text-primary); }
+  .tag-chip.accent { 
+    background: var(--accent); 
+    color: #fff; 
+    border-color: var(--accent); 
+  }
+  .tag-chip.gold { 
+    background: var(--accent-gold); 
+    color: #fff; 
+    border-color: var(--accent-gold); 
+  }
+
+  /* ========== GRADIENT BLOCKS ========== */
+  .grad-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .grad-block {
+    height: 100px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: "Inter", sans-serif;
+    font-size: 0.72rem; font-weight: 700;
+    color: #fff; letter-spacing: 0.1em;
+  }
+
+  /* ========== COMPARISON TABLE ========== */
+  .compare-table {
+    width: 100%; border-collapse: collapse;
+    font-size: 0.82rem;
+  }
+  .compare-table th {
+    text-align: left; padding: 10px 14px;
+    font-family: "Inter", sans-serif;
+    font-size: 0.68rem; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--card-border);
+  }
+  .compare-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--card-border);
+    color: var(--text-secondary);
+  }
+  .compare-table tr:hover td { color: var(--text-primary); }
+  .compare-table .var-name {
+    font-family: "Inter", monospace;
+    font-size: 0.75rem; color: var(--accent);
+  }
+  .color-dot {
+    display: inline-block; width: 12px; height: 12px;
+    border-radius: 3px; vertical-align: middle;
+    margin-right: 8px;
+  }
+
+  /* ========== PAGE HEADER ========== */
+  .page-header { margin-bottom: 48px; }
+  .page-header h1 {
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+  .page-header p {
+    font-size: 0.92rem; color: var(--text-secondary);
+    margin-top: 12px; max-width: 520px;
+    line-height: 1.65;
+  }
+
+  /* ========== RESPONSIVE ========== */
+  @media (max-width: 600px) {
+    body { padding: 24px 12px; }
+    .glass-frame { padding: 20px; border-radius: 20px; }
+    .cards-grid { grid-template-columns: 1fr; }
+    .grad-grid { grid-template-columns: 1fr; }
+    .stats-row { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<button class="theme-toggle" id="themeBtn" title="切换主题">◐</button>
+
+<div class="demo-container">
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <h1>配色方案 <span style="color:var(--accent)">Demo</span></h1>
+    <p>基于暖色暴力调色板 — 黑 / 炭 / 金黄 / 橙红 / 浅灰 / 白 / 深红。映射到 lxlylzl.xyz 全站 CSS 变量体系。</p>
+  </div>
+
+  <!-- PALETTE -->
+  <div class="section">
+    <div class="section-title">01 — 调色板</div>
+    <div class="palette-grid">
+      <div class="palette-swatch swatch-black" data-hex="#000000"></div>
+      <div class="palette-swatch swatch-charcoal" data-hex="#1A1A1A"></div>
+      <div class="palette-swatch swatch-yellow" data-hex="#F4C430"></div>
+      <div class="palette-swatch swatch-gold" data-hex="#B8860B"></div>
+      <div class="palette-swatch swatch-orange" data-hex="#E85D3B"></div>
+      <div class="palette-swatch swatch-light" data-hex="#D8D8D8"></div>
+      <div class="palette-swatch swatch-white" data-hex="#FFFFFF"></div>
+      <div class="palette-swatch swatch-crimson" data-hex="#DC143C"></div>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <div class="section">
+    <div class="section-title">02 — 导航栏</div>
+    <div class="nav-demo">
+      <span class="nav-logo-text">LXLYLZL</span>
+      <span class="divider-dot"></span>
+      <span class="nav-link-demo active">作品集</span>
+      <span class="nav-link-demo">关于</span>
+      <span class="nav-link-demo">服务</span>
+      <span class="nav-link-demo">联系</span>
+      <span class="divider-dot"></span>
+      <span class="nav-link-demo">作品 ↗</span>
+    </div>
+  </div>
+
+  <!-- TYPOGRAPHY -->
+  <div class="section glass-frame">
+    <div class="section-title">03 — 文字层次</div>
+    <div class="text-row">
+      <div class="text-sample">
+        <h1>设计驱动<span class="hl">品牌增长</span></h1>
+        <h2>独立设计师 · 创意开发者</h2>
+        <p>专注品牌视觉与数字体验设计，用设计思维解决商业问题。从品牌策略到界面实现，全链路交付。</p>
+      </div>
+      <div class="text-sample" style="margin-top:24px;">
+        <h1><span class="hl-yellow">精选</span>作品<span class="hl-red">项目</span></h1>
+        <p>每个项目都是一次从零到一的探索——策略先行、设计落地、数据验证。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUTTONS -->
+  <div class="section">
+    <div class="section-title">04 — 按钮体系</div>
+    <div class="btn-row">
+      <button class="btn btn-primary">主要操作</button>
+      <button class="btn btn-outline">次要操作</button>
+      <button class="btn btn-yellow">金黄色按钮</button>
+      <button class="btn btn-gold">暗金按钮</button>
+      <button class="btn btn-red">深红色按钮</button>
+    </div>
+  </div>
+
+  <!-- CARDS -->
+  <div class="section">
+    <div class="section-title">05 — 卡片组件</div>
+    <div class="cards-grid">
+      <div class="demo-card">
+        <div class="tag">Brand Identity</div>
+        <h3>品牌视觉系统设计</h3>
+        <p>从 Logo 到完整的视觉语言，建立一致且 memorable 的品牌形象。</p>
+      </div>
+      <div class="demo-card">
+        <div class="tag">Web Design</div>
+        <h3>网站与数字产品</h3>
+        <p>响应式网站、落地页、Web 应用——以用户体验为核心的设计。</p>
+      </div>
+      <div class="demo-card">
+        <div class="tag">Motion</div>
+        <h3>动效与交互设计</h3>
+        <p>微交互、页面转场、滚动动画——让界面有生命力。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SKILLS -->
+  <div class="section glass-frame">
+    <div class="section-title">06 — 技能条</div>
+    <div class="skill-item">
+      <div class="skill-label"><span>UI / 视觉设计</span><span>90%</span></div>
+      <div class="bar-track"><div class="bar-fill fill-90"></div></div>
+    </div>
+    <div class="skill-item">
+      <div class="skill-label"><span>前端开发</span><span>85%</span></div>
+      <div class="bar-track"><div class="bar-fill fill-85"></div></div>
+    </div>
+    <div class="skill-item">
+      <div class="skill-label"><span>品牌策略</span><span>80%</span></div>
+      <div class="bar-track"><div class="bar-fill fill-80"></div></div>
+    </div>
+    <div class="skill-item">
+      <div class="skill-label"><span>动效设计</span><span>75%</span></div>
+      <div class="bar-track"><div class="bar-fill fill-75"></div></div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="section">
+    <div class="section-title">07 — 数据展示</div>
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="stat-num">60+</div>
+        <div class="stat-label">完成项目</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">5yr</div>
+        <div class="stat-label">行业经验</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">40+</div>
+        <div class="stat-label">合作客户</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAGS -->
+  <div class="section">
+    <div class="section-title">08 — 标签 / 徽章</div>
+    <div class="tags-row">
+      <span class="tag-chip accent">UI Design</span>
+      <span class="tag-chip gold">Branding</span>
+      <span class="tag-chip">Frontend</span>
+      <span class="tag-chip">Motion</span>
+      <span class="tag-chip">Illustration</span>
+      <span class="tag-chip">3D</span>
+      <span class="tag-chip">Typography</span>
+      <span class="tag-chip">Strategy</span>
+    </div>
+  </div>
+
+  <!-- GRADIENTS -->
+  <div class="section">
+    <div class="section-title">09 — 渐变组合</div>
+    <div class="grad-grid">
+      <div class="grad-block" style="background:var(--gradient-accent)">ACCENT GRADIENT</div>
+      <div class="grad-block" style="background:var(--gradient-warm)">WARM GRADIENT</div>
+      <div class="grad-block" style="background:var(--gradient-dark-warm)">DARK WARM</div>
+    </div>
+  </div>
+
+  <!-- VARIABLE TABLE -->
+  <div class="section glass-frame">
+    <div class="section-title">10 — 变量对照表</div>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>变量</th>
+          <th>旧值</th>
+          <th>新值</th>
+          <th>说明</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="var-name">--accent</td>
+          <td><span class="color-dot" style="background:#c0392b"></span>#c0392b</td>
+          <td><span class="color-dot" style="background:#E85D3B"></span><b style="color:var(--accent)">#E85D3B</b></td>
+          <td>主强调色：冷红→暖橙红</td>
+        </tr>
+        <tr>
+          <td class="var-name">--accent-yellow</td>
+          <td>—</td>
+          <td><span class="color-dot" style="background:#F4C430"></span><b style="color:var(--accent-yellow)">#F4C430</b></td>
+          <td>新增：亮金黄强调</td>
+        </tr>
+        <tr>
+          <td class="var-name">--accent-gold</td>
+          <td>—</td>
+          <td><span class="color-dot" style="background:#B8860B"></span><b style="color:var(--accent-gold)">#B8860B</b></td>
+          <td>新增：暗金橄榄</td>
+        </tr>
+        <tr>
+          <td class="var-name">--accent-red</td>
+          <td>—</td>
+          <td><span class="color-dot" style="background:#DC143C"></span><b style="color:var(--accent-red)">#DC143C</b></td>
+          <td>新增：深红辅助</td>
+        </tr>
+        <tr>
+          <td class="var-name">--bg-primary (dark)</td>
+          <td><span class="color-dot" style="background:#0e0e12"></span>#0e0e12</td>
+          <td><span class="color-dot" style="background:#0A0A0A"></span><b>#0A0A0A</b></td>
+          <td>更深纯黑底</td>
+        </tr>
+        <tr>
+          <td class="var-name">--bg-primary (light)</td>
+          <td><span class="color-dot" style="background:#f5f0e8"></span>#f5f0e8</td>
+          <td><span class="color-dot" style="background:#FAF8F5"></span><b>#FAF8F5</b></td>
+          <td>更白更干净</td>
+        </tr>
+        <tr>
+          <td class="var-name">--text-primary (dark)</td>
+          <td><span class="color-dot" style="background:#f0ece4"></span>#f0ece4</td>
+          <td><span class="color-dot" style="background:#F0EDE8"></span><b>#F0EDE8</b></td>
+          <td>微调偏冷白</td>
+        </tr>
+        <tr>
+          <td class="var-name">--gradient-accent</td>
+          <td>—</td>
+          <td><span class="color-dot" style="background:linear-gradient(135deg,#E85D3B,#DC143C)"></span>橙红→深红</td>
+          <td>新增：主渐变</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<script>
+  const btn = document.getElementById('themeBtn');
+  btn.addEventListener('click', () => {
+    const html = document.documentElement;
+    const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    btn.textContent = next === 'dark' ? '◐' : '☀';
+  });
+</script>
+</body>
+</html>
