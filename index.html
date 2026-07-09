@@ -6,7 +6,7 @@
 <title>lxlylzl — 李威杰</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -152,92 +152,11 @@
     stroke-linecap: round; stroke-linejoin: round;
   }
 
-  /* ===== HERO ===== */
+  /* ===== CONTENT (empty placeholder) ===== */
   .hero {
     flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 0 24px;
     min-height: 0;
   }
-  .hero__inner { max-width: 720px; }
-  .hero__eyebrow {
-    color: var(--accent);
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    font-size: 0.78rem;
-    font-weight: 500;
-    margin-bottom: 1.6rem;
-  }
-  .hero__title {
-    font-family: 'Playfair Display', 'Georgia', serif;
-    font-weight: 500;
-    font-size: clamp(3.2rem, 9vw, 7rem);
-    line-height: 1.04;
-    letter-spacing: 0.02em;
-  }
-  .hero__brand {
-    font-family: 'Inter', sans-serif;
-    font-weight: 300;
-    letter-spacing: 0.42em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    margin-top: 1rem;
-    font-size: 1rem;
-    padding-left: 0.42em;
-  }
-  .hero__desc {
-    color: var(--text-muted);
-    margin: 2.2rem auto 0;
-    max-width: 520px;
-    font-size: 1.05rem;
-    line-height: 1.85;
-    font-weight: 400;
-  }
-  .hero__actions {
-    margin-top: 2.6rem;
-    display: flex;
-    gap: 14px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5em;
-    padding: 0.9rem 1.9rem;
-    border-radius: 100px;
-    font-size: 0.95rem;
-    font-weight: 500;
-    text-decoration: none;
-    border: 1px solid transparent;
-    cursor: pointer;
-    transition: transform 0.25s, filter 0.25s, border-color 0.25s, color 0.25s;
-  }
-  .btn--primary { background: var(--accent); color: #fff; }
-  .btn--primary:hover { filter: brightness(1.08); transform: translateY(-1px); }
-  .btn--ghost { border-color: var(--nav-border); color: var(--text); background: var(--nav-bg); }
-  .btn--ghost:hover { border-color: var(--accent); color: var(--accent); }
-
-  /* ===== FOOTER ===== */
-  .hero__foot {
-    flex-shrink: 0;
-    padding: 16px 28px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: var(--text-muted);
-    font-size: 0.72rem;
-    letter-spacing: 0.1em;
-    border-top: 1px solid var(--frame-border);
-  }
-  .hero__foot a { color: var(--text-muted); text-decoration: none; transition: color 0.25s; }
-  .hero__foot a:hover { color: var(--accent); }
-  .hero__foot-links { display: flex; gap: 18px; }
 
   /* ===== RESPONSIVE ===== */
   @media (max-width: 900px) {
@@ -245,17 +164,12 @@
     .top-nav { padding: 14px 16px; }
     .nav-link { font-size: 0.78rem; padding: 0 11px; height: 34px; }
     .nav-center { padding: 4px; gap: 4px; }
-    .hero__desc { font-size: 0.98rem; }
   }
   @media (max-width: 600px) {
     .glass-frame { inset: 8px; border-radius: 14px; }
     .top-nav { padding: 12px 12px; }
     .nav-link { font-size: 0.7rem; padding: 0 9px; height: 30px; }
     .nav-link__en { display: none; }
-    .hero { padding: 0 16px; }
-    .hero__actions { flex-direction: column; width: 100%; max-width: 280px; }
-    .btn { justify-content: center; }
-    .hero__foot { flex-direction: column; gap: 8px; text-align: center; }
   }
 </style>
 </head>
@@ -297,32 +211,8 @@
     </div>
   </nav>
 
-  <!-- ===== HERO ===== -->
-  <main class="hero">
-    <div class="hero__inner">
-      <p class="hero__eyebrow">平面设计师 · AI 产品创作者</p>
-      <h1 class="hero__title">李威杰</h1>
-      <p class="hero__brand">lxlylzl</p>
-      <p class="hero__desc">
-        以视觉设计与 AI 工具塑造有温度的产品体验。<br>
-        从品牌、界面到 AI 应用，让创意真正落地。
-      </p>
-      <div class="hero__actions">
-        <a class="btn btn--primary" href="works.html">查看作品 →</a>
-        <a class="btn btn--ghost" href="#" onclick="return false;" title="即将上线">关于我</a>
-      </div>
-    </div>
-  </main>
-
-  <!-- ===== FOOTER ===== -->
-  <footer class="hero__foot">
-    <span>© 2026 liliweijie · lxlylzl</span>
-    <div class="hero__foot-links">
-      <a href="works.html">作品</a>
-      <a href="#" onclick="return false;" title="即将上线">关于</a>
-      <a href="#" onclick="return false;" title="即将上线">碎碎念</a>
-    </div>
-  </footer>
+  <!-- ===== CONTENT (empty) ===== -->
+  <main class="hero"></main>
 
 </div>
 
