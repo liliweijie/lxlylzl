@@ -1391,250 +1391,9 @@
     position: relative !important;
     overflow: hidden !important;
   }
-  /* 阶段2+3: 文件卡片容器 */
-  .hero-files {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-  }
-  /* 文件卡片基础样式 */
-  .hero-file {
-    position: absolute;
-    border-radius: 6px;
-    box-shadow:
-      0 8px 32px rgba(0,0,0,0.35),
-      0 2px 8px rgba(0,0,0,0.18);
-    pointer-events: auto;
-    cursor: grab;
-    will-change: transform, left, top, rotate;
-    backface-visibility: hidden;
-    transition: box-shadow 0.25s, transform 0.25s;
-  }
-  .hero-file:hover {
-    box-shadow:
-      0 12px 48px rgba(0,0,0,0.5),
-      0 4px 16px rgba(0,0,0,0.25);
-    z-index: 100 !important;
-  }
-  .hero-file:active {
-    cursor: grabbing;
-  }
-  /* 黑色大文件（主文件） */
-  .hero-file--black {
-    width: 280px;
-    height: 380px;
-    background: #1a1a1e;
-    border: 1px solid rgba(255,255,255,0.06);
-    color: #f0ece4;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 36px;
-    font-family: 'Noto Sans SC', 'PingFang SC', sans-serif;
-  }
-  .hero-file--black .hf-title {
-    font-size: 28px;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-    margin-bottom: 4px;
-  }
-  .hero-file--black .hf-subtitle {
-    font-size: 22px;
-    font-weight: 300;
-    color: rgba(255,255,255,0.5);
-    letter-spacing: 0.5px;
-  }
-  .hero-file--black .hf-sticker {
-    position: absolute;
-    width: 56px;
-    height: 56px;
-    background: #fff;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 900;
-    font-size: 26px;
-    color: #000;
-  }
-  .hero-file--black .hf-sticker--top-right { top: 24px; right: 24px; }
-  .hero-file--black .hf-sticker--arrow {
-    top: 120px; right: 20px;
-    background: none;
-    border: 3px solid #fff;
-    border-radius: 50%;
-    width: 48px; height: 48px;
-    font-size: 20px;
-  }
-  .hero-file--black .hf-label {
-    position: absolute;
-    bottom: 28px; right: 28px;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    opacity: 0.7;
-  }
-  /* 白色文档 */
-  .hero-file--white {
-    width: 220px;
-    height: 310px;
-    background: #eae8e2;
-    border: 1px solid rgba(0,0,0,0.08);
-    color: #222;
-    padding: 24px;
-    font-family: 'Helvetica Neue', Arial, sans-serif;
-  }
-  .hero-file--white .hf-line {
-    height: 8px;
-    background: rgba(0,0,0,0.08);
-    margin-bottom: 10px;
-    border-radius: 2px;
-  }
-  .hero-file--white .hf-line--short { width: 55%; }
-  .hero-file--white .hf-line--medium { width: 80%; }
-  .hero-file--white .hf-line--long { width: 95%; }
-  .hero-file--white .hf-badge {
-    display: inline-block;
-    padding: 4px 14px;
-    background: #fff;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    margin-top: 16px;
-    border: 1px solid rgba(0,0,0,0.1);
-  }
-  /* 深色小卡片 */
-  .hero-file--dark-card {
-    width: 180px;
-    height: 240px;
-    background: #111114;
-    border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 8px;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    color: #fff;
-    font-family: monospace;
-    font-size: 11px;
-  }
-  .hero-file--dark-card .hf-circle {
-    width: 80px; height: 80px;
-    border: 2px solid rgba(255,255,255,0.2);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 32px;
-    font-weight: 700;
-  }
-  .hero-file--dark-card .hf-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6px;
-    width: 100%;
-  }
-  .hero-file--dark-cell {
-    height: 20px;
-    background: rgba(255,255,255,0.04);
-    border-radius: 3px;
-  }
-  /* 蓝色文件夹 */
-  .hero-file--blue-folder {
-    width: 200px;
-    height: 260px;
-    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-    border-radius: 6px 6px 12px 12px;
-    position: relative;
-  }
-  .hero-file--blue-folder::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 40px;
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-    border-radius: 6px 6px 0 0;
-  }
-  .hero-file--blue-folder::after {
-    content: '';
-    position: absolute;
-    top: -8px;
-    left: 12px;
-    width: 70px;
-    height: 16px;
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-    border-radius: 4px 4px 0 0;
-  }
-  .hero-file--blue-folder .hf-tab {
-    position: absolute;
-    bottom: 24px; left: 20px; right: 20px;
-    display: flex;
-    justify-content: space-between;
-    font-family: system-ui;
-    font-size: 12px;
-    color: rgba(255,255,255,0.75);
-  }
-  /* 浅色便签纸 */
-  .hero-file--note {
-    width: 160px;
-    height: 180px;
-    background: #fff9c4;
-    border: none;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-    padding: 16px;
-    font-family: 'Comic Sans MS', cursive, sans-serif;
-    font-size: 13px;
-    color: #5a4a00;
-    transform: rotate(-3deg) !important;
-  }
-  .hero-file--note .hf-scribble {
-    margin-top: 12px;
-    width: 100%;
-    height: 2px;
-    background: #c9b341;
-    border-radius: 1px;
-  }
-  /* 点击提示 */
-  .hero-hint {
-    position: absolute;
-    bottom: 40px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-family: 'Noto Sans SC', sans-serif;
-    font-size: 13px;
-    color: var(--text-muted, #5a5a6a);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    animation: hintPulse 1.8s ease-in-out infinite;
-    z-index: 200;
-  }
-  @keyframes hintPulse {
-    0%, 100% { opacity: 0.4; }
-    50% { opacity: 1; }
-  }
-  /* 飞入动画状态 */
-  .hero-file.flying-in {
-    transition: left 0.65s cubic-bezier(0.22, 1, 0.36, 1),
-                top 0.65s cubic-bezier(0.22, 1, 0.36, 1),
-                rotate 0.65s cubic-bezier(0.22, 1, 0.36, 1),
-                opacity 0.45s ease;
-  }
-  .hero-file.scattered {
-    transition: left 0.85s cubic-bezier(0.22, 1, 0.36, 1),
-                top 0.85s cubic-bezier(0.22, 1, 0.36, 1),
-                rotate 0.85s cubic-bezier(0.22, 1, 0.36, 1),
-                scale 0.85s ease;
-  }
   /* ===== FLUID CURSOR ===== */
   @media (hover: hover) and (pointer: fine) {
-    body, a, button, .nav-link, .nav-logo, .hero-file, .skill-badge, .glass-nav-pill { cursor: none; }
+    body, a, button, .nav-link, .nav-logo, .skill-badge, .glass-nav-pill { cursor: none; }
 
     .fluid-cursor {
       position: fixed;
@@ -1777,12 +1536,7 @@
     <section class="page page--hero" id="page0">
       <div class="page__bg"></div>
       <div class="page__content hero-stage">
-        <!-- 文件卡片（开屏已移除，加载即呈现，点击可散落） -->
-        <div class="hero-files" id="heroFiles"></div>
-        <!-- 点击提示 -->
-        <div class="hero-hint" id="heroHint" style="display:none;">点击进入</div>
       </div>
-      <script src="hero-animation.js"></script>
     </section>
 
     <section class="page page--works" id="page1">
@@ -3056,10 +2810,10 @@
   });
 
   document.addEventListener('mouseover', function(e) {
-    if (e.target.closest('a, button, .nav-link, .nav-logo, .hero-file, .skill-badge')) cursorHover = true;
+    if (e.target.closest('a, button, .nav-link, .nav-logo, .skill-badge')) cursorHover = true;
   });
   document.addEventListener('mouseout', function(e) {
-    if (e.target.closest('a, button, .nav-link, .nav-logo, .hero-file, .skill-badge')) cursorHover = false;
+    if (e.target.closest('a, button, .nav-link, .nav-logo, .skill-badge')) cursorHover = false;
   });
 
   (function update() {
