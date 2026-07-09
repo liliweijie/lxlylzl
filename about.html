@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>关于 — lxlylzl 李威杰</title>
+<title>lxlylzl — 关于</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -35,17 +35,17 @@
     color: var(--text);
     font-family: 'Inter', 'Noto Sans SC', sans-serif;
     overflow: hidden;
-    /* 纯空白页：导航条上下垂直居中 */
     min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
     transition: background 0.45s ease, color 0.45s ease;
   }
 
-  /* ===== TOP NAV (three-segment, vertically centered) ===== */
+  /* ===== TOP NAV (the bar itself is vertically centered, not the page) ===== */
   .top-nav {
-    position: relative;
+    position: fixed;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
     width: 100%;
     display: flex;
     align-items: center;
