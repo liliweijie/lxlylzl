@@ -25,6 +25,8 @@
     --nav-bg: rgba(14,14,14,0.72);
     --page-bg: rgba(38,38,38,0.82);
     --card-bg: rgba(38,38,38,0.6);
+    --nav-pill-bg: rgba(38,38,38,0.5);
+    --nav-pill-bg-hover: rgba(60,60,60,0.65);
     /* 卡片模块垂直偏移：改这个数字来上下移动整个卡片模块 */
     /* 正数 = 向下移，负数 = 向上移，单位 px */
     --card-top: 50px;
@@ -32,7 +34,7 @@
 
   [data-theme="light"] {
     --glass-bg: rgba(255,255,255,0.72);
-    --glass-border: rgba(38,38,38,0.12);
+    --glass-border: rgba(38,38,38,0.18);
     --text-primary: #0E0E0E;
     --text-secondary: #262626;
     --text-muted: #8a8a8a;
@@ -40,6 +42,8 @@
     --nav-bg: rgba(249,249,249,0.72);
     --page-bg: rgba(255,255,255,0.82);
     --card-bg: rgba(38,38,38,0.04);
+    --nav-pill-bg: rgba(249,249,249,0.85);
+    --nav-pill-bg-hover: rgba(255,255,255,0.95);
   }
 
   html { font-size: 16px; }
@@ -66,8 +70,8 @@
   /* ========== TOP NAV — fixed at viewport top ========== */
   .top-nav {
     position: fixed;
-    top: 2px; left: 72px; right: 72px;
-    height: 47px;
+    top: 16px; left: 88px; right: 88px;
+    height: 44px;
     z-index: 1000;
     pointer-events: none;
     display: flex;
@@ -76,19 +80,14 @@
 
   .top-nav * { pointer-events: auto; }
 
+  /* 导航胶囊容器 — 无背景，纯布局 */
   .nav-section {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 6px 18px;
-    background: var(--nav-bg);
-    backdrop-filter: blur(32px) saturate(1.2);
-    -webkit-backdrop-filter: blur(32px) saturate(1.2);
-    border: 1px solid var(--glass-border);
-    border-radius: 100px;
-    transition: background 0.3s, border-color 0.3s;
+    gap: 8px;
+    padding: 4px 8px;
     box-sizing: border-box;
-    height: 42px;
+    height: 44px;
   }
 
   .nav-left  { position: absolute; top: 50%; left: 0; transform: translateY(-50%); }
@@ -114,23 +113,31 @@
     gap: 10px;
   }
 
+  /* 每个导航项 = 独立圆角胶囊按钮 */
   .nav-link {
     position: relative;
-    font-size: 0.92rem;
-    font-weight: 400;
-    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-primary);
     cursor: pointer;
-    padding: 6px 14px;
+    padding: 8px 20px;
     border-radius: 100px;
     user-select: none;
     white-space: nowrap;
     text-decoration: none;
-    transition: color 0.2s;
+    border: 1.5px solid var(--glass-border);
+    background: var(--nav-pill-bg, rgba(38,38,38,0.5));
+    backdrop-filter: blur(12px) saturate(1.2);
+    -webkit-backdrop-filter: blur(12px) saturate(1.2);
+    transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .nav-link .char {
     display: inline-block;
-    font-weight: 400;
+    font-weight: inherit;
     transition: font-weight 0.15s;
     pointer-events: auto;
   }
@@ -140,13 +147,19 @@
     color: var(--text-primary);
   }
 
-  .nav-link.active .char {
-    font-weight: 700;
-    color: var(--text-primary);
-  }
-
+  /* 胶囊激活态 — 强调色边框 + 加粗 */
   .nav-link.active {
     color: var(--accent);
+    border-color: var(--accent);
+    background: rgba(242,76,48,0.10);
+    font-weight: 700;
+  }
+  .nav-link.active .char { font-weight: 700; color: var(--accent); }
+
+  /* 胶囊 hover — 边框变亮 + 微提亮 */
+  .nav-link:hover:not(.active) {
+    border-color: var(--text-muted);
+    background: var(--nav-pill-bg-hover);
   }
 
   .nav-divider {
@@ -170,19 +183,23 @@
   }
 
   .theme-btn {
-    width: 30px;
-    height: 30px;
-    border: none;
-    background: transparent;
-    color: var(--text-secondary);
+    width: auto;
+    height: auto;
+    min-width: 36px;
+    padding: 8px 14px;
+    border: 1.5px solid var(--glass-border);
+    background: var(--nav-pill-bg);
+    color: var(--text-primary);
     cursor: pointer;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    transition: color 0.3s, transform 0.5s;
-    border-radius: 8px;
+    transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+    border-radius: 100px;
+    backdrop-filter: blur(12px) saturate(1.2);
+    -webkit-backdrop-filter: blur(12px) saturate(1.2);
   }
-  .theme-btn:hover { color: var(--accent); }
+  .theme-btn:hover { color: var(--accent); border-color: var(--text-muted); }
   .theme-btn svg {
     width: 18px;
     height: 18px;
@@ -1340,7 +1357,7 @@
   }
 
   /* ========== HOVER FIXES ========== */
-  .nav-link:hover { color: var(--accent) !important; }
+  .nav-link:hover { color: var(--text-primary); border-color: var(--text-muted); background: var(--nav-pill-bg-hover); }
   .work-card:hover { transform: translateY(-6px) !important; box-shadow: 0 8px 30px rgba(0,0,0,0.18); }
   .hero-cta:hover { transform: scale(1.06) !important; }
 
