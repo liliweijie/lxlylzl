@@ -303,9 +303,26 @@
   @keyframes swipeFadeOut {
     to { opacity: 0; }
   }
+
+  /* ===== INVERTED CURSOR (鼠标上下左右颠倒) ===== */
+  body.cursor-invert, body.cursor-invert * { cursor: none !important; }
+  .fake-cursor {
+    position: fixed;
+    top: 0; left: 0;
+    width: 22px; height: 22px;
+    margin: -11px 0 0 -11px;
+    border-radius: 50%;
+    background: #fff;
+    mix-blend-mode: difference;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.06s linear, width 0.15s, height 0.15s;
+    will-change: transform;
+  }
+  .fake-cursor.is-hover { width: 38px; height: 38px; margin: -19px 0 0 -19px; }
 </style>
 </head>
-<body>
+<body class="cursor-invert">
 
 <!-- ===== TOP NAV ===== -->
 <nav class="top-nav">
@@ -335,6 +352,8 @@
       </svg>
     </button>
 </nav>
+
+  <div class="fake-cursor" id="fakeCursor"></div>
 
 <!-- ===== SCROLL PROGRESS ===== -->
 <div class="scroll-progress" id="scrollProgress">00</div>
@@ -497,8 +516,31 @@
     requestAnimationFrame(update);
   })();
 })();
-</script>
-<script>
+
+// ===== INVERTED CURSOR (鼠标上下左右颠倒) =====
+(function() {
+  const fc = document.getElementById('fakeCursor');
+  if (!fc) return;
+  let on = true;
+  function setOn(v) {
+    on = v;
+    fc.style.display = v ? 'block' : 'none';
+    document.body.classList.toggle('cursor-invert', v);
+  }
+  document.addEventListener('mousemove', function(e) {
+    if (!on) return;
+    const x = window.innerWidth - e.clientX;
+    const y = window.innerHeight - e.clientY;
+    fc.style.transform = 'translate(' + x + 'px,' + y + 'px)';
+  });
+  document.addEventListener('mouseover', function(e) {
+    if (!on) return;
+    if (e.target.closest('a, button')) fc.classList.add('is-hover');
+    else fc.classList.remove('is-hover');
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'i' || e.key === 'I') setOn(!on);
+  });
 })();
 </script>
 </body>
