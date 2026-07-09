@@ -12,121 +12,109 @@
 
   /* ===== 5-COLOR STANDARD PALETTE ===== */
   :root {
-    --bg: #0E0E0E;          /* 近黑 */
-    --text: #F9F9F9;        /* 近白 */
-    --text-muted: #DBDBDB;  /* 浅灰 */
-    --panel: #262626;       /* 炭灰 */
-    --accent: #F24C30;      /* 橙红 */
-    --nav-bg: rgba(255,255,255,0.04);
-    --nav-border: rgba(255,255,255,0.12);
+    --bg: #0E0E0E;
+    --text: #F9F9F9;
+    --text-muted: #DBDBDB;
+    --panel: #262626;
+    --accent: #F24C30;
+    --pill-bg: rgba(255,255,255,0.08);
+    --pill-border: rgba(255,255,255,0.14);
   }
   [data-theme="light"] {
     --bg: #F9F9F9;
     --text: #0E0E0E;
     --text-muted: #262626;
     --panel: #DBDBDB;
-    --nav-bg: rgba(0,0,0,0.06);
-    --nav-border: rgba(0,0,0,0.16);
+    --pill-bg: rgba(0,0,0,0.07);
+    --pill-border: rgba(0,0,0,0.12);
   }
 
   html, body { height: 100%; }
   body {
     background: var(--bg);
     color: var(--text);
-    font-family: 'Inter', 'Noto Sans SC', sans-serif;
+    font-family: 'Noto Sans SC', 'Inter', sans-serif;
     overflow: hidden;
     min-height: 100vh;
     transition: background 0.45s ease, color 0.45s ease;
   }
 
-  /* ===== TOP NAV (pinned to the very top of the page, content centered) ===== */
+  /* ===== TOP NAV (pinned at very top) ===== */
   .top-nav {
     position: relative;
     top: 0;
     width: 100%;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 18px 40px;
-    flex-shrink: 0;
+    justify-content: flex-start;
+    gap: 12px;
+    padding: 20px 40px;
   }
-  .nav-left  { display: flex; align-items: center; }
-  .nav-right { display: flex; align-items: center; }
 
-  .nav-logo {
-    height: 26px;
-    width: auto;
-    cursor: pointer;
-    transition: opacity 0.2s;
-  }
-  .nav-logo:hover { opacity: 0.7; }
-
-  .nav-center {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
+  /* Logo pill */
+  .nav-logo-wrap {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 5px;
-    background: var(--nav-bg);
-    backdrop-filter: blur(32px) saturate(1.2);
-    -webkit-backdrop-filter: blur(32px) saturate(1.2);
-    border: 1px solid var(--nav-border);
-    border-radius: 100px;
-    transition: background 0.3s, border-color 0.3s;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--pill-bg);
+    border: 1px solid var(--pill-border);
+    cursor: pointer;
+    transition: opacity 0.2s, background 0.25s;
+    flex-shrink: 0;
+  }
+  .nav-logo-wrap:hover { opacity: 0.75; }
+  .nav-logo {
+    height: 24px;
+    width: auto;
   }
 
-  /* capsule nav links */
+  /* Each nav item = its own solid capsule */
   .nav-link {
     display: inline-flex;
-    align-items: baseline;
-    gap: 0.35em;
-    height: 38px;
-    padding: 0 16px;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    padding: 0 28px;
     border-radius: 100px;
-    color: var(--text-muted);
+    background: var(--pill-bg);
+    border: 1px solid var(--pill-border);
+    color: var(--text);
     text-decoration: none;
-    font-size: 0.92rem;
+    font-size: 1.05rem;
     font-weight: 500;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.06em;
     white-space: nowrap;
-    transition: color 0.25s;
+    transition: background 0.25s, border-color 0.25s, transform 0.15s;
   }
-  .nav-link__text { display: inline-flex; }
-  .nav-link__text .ch {
-    display: inline-block;
-    font-weight: 400;
-    transition: font-weight 0.18s ease;
-    transition-delay: calc(var(--i) * 0.03s);
+  .nav-link:hover {
+    background: var(--panel);
+    border-color: var(--accent);
+    transform: translateY(-1px);
   }
-  .nav-link__en {
-    font-size: 0.7rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    opacity: 0.55;
-    transition: opacity 0.25s;
+  .nav-link.is-active {
+    background: var(--panel);
+    border-color: var(--text-muted);
+    font-weight: 600;
   }
-  .nav-link:hover { color: var(--text); }
-  .nav-link:hover .nav-link__text .ch { font-weight: 700; }
-  .nav-link:hover .nav-link__en { opacity: 0.9; }
-  .nav-link.is-active { color: var(--text); }
-  .nav-link.is-active .nav-link__text .ch { font-weight: 700; }
-  .nav-link.is-active .nav-link__en { opacity: 0.9; }
 
-  /* theme toggle */
+  /* Theme toggle */
   .theme-btn {
-    width: 32px; height: 32px;
-    border: none; background: transparent;
+    margin-left: auto;
+    width: 40px; height: 40px;
+    border: none; background: var(--pill-bg);
+    border: 1px solid var(--pill-border);
     color: var(--text-muted);
     cursor: pointer;
     display: flex;
     align-items: center; justify-content: center;
-    transition: color 0.3s;
-    border-radius: 8px;
+    transition: color 0.3s, background 0.25s;
+    border-radius: 50%;
+    flex-shrink: 0;
   }
-  .theme-btn:hover { color: var(--accent); }
+  .theme-btn:hover { color: var(--accent); background: var(--panel); }
   .theme-btn svg {
     width: 18px; height: 18px;
     stroke: currentColor; fill: none;
@@ -136,50 +124,49 @@
 
   /* ===== RESPONSIVE ===== */
   @media (max-width: 900px) {
-    .top-nav { padding: 14px 20px; }
-    .nav-link { font-size: 0.78rem; padding: 0 11px; height: 34px; }
-    .nav-center { padding: 4px; gap: 4px; }
+    .top-nav { padding: 16px 24px; gap: 10px; }
+    .nav-link { height: 42px; padding: 0 22px; font-size: 0.95rem; }
+    .nav-logo-wrap { width: 42px; height: 42px; }
+    .nav-logo { height: 21px; }
   }
   @media (max-width: 600px) {
-    .top-nav { padding: 12px 14px; }
-    .nav-link { font-size: 0.7rem; padding: 0 9px; height: 30px; }
-    .nav-link__en { display: none; }
+    .top-nav { padding: 14px 16px; gap: 8px; }
+    .nav-link { height: 36px; padding: 0 16px; font-size: 0.85rem; }
+    .nav-logo-wrap { width: 36px; height: 36px; }
+    .nav-logo { height: 18px; }
+    .theme-btn { width: 34px; height: 34px; }
   }
 </style>
 </head>
 <body>
 
-  <!-- ===== TOP NAV (vertically centered on blank page) ===== -->
+  <!-- ===== TOP NAV ===== -->
   <nav class="top-nav">
-    <div class="nav-left">
-      <img class="nav-logo" id="logoBtn" src="logo.svg" alt="LX Logo">
+    <div class="nav-logo-wrap" id="logoBtn">
+      <img class="nav-logo" src="logo.svg" alt="LX Logo">
     </div>
 
-    <div class="nav-center">
-      <a class="nav-link is-active" href="index.html"><span class="nav-link__text" data-text="首页">首页</span><span class="nav-link__en">Home</span></a>
-      <a class="nav-link" href="works.html"><span class="nav-link__text" data-text="作品">作品</span><span class="nav-link__en">Works</span></a>
-      <a class="nav-link" href="about.html"><span class="nav-link__text" data-text="关于">关于</span><span class="nav-link__en">About</span></a>
-      <a class="nav-link" href="notes.html"><span class="nav-link__text" data-text="碎碎念">碎碎念</span><span class="nav-link__en">Notes</span></a>
-    </div>
+    <a class="nav-link is-active" href="index.html">首页</a>
+    <a class="nav-link" href="works.html">作品</a>
+    <a class="nav-link" href="about.html">关于</a>
+    <a class="nav-link" href="notes.html">碎碎念</a>
 
-    <div class="nav-right">
-      <button class="theme-btn" id="themeBtn" aria-label="切换明暗模式">
-        <svg class="icon-sun" viewBox="0 0 24 24" style="display:none;">
-          <circle cx="12" cy="12" r="5"/>
-          <line x1="12" y1="1" x2="12" y2="3"/>
-          <line x1="12" y1="21" x2="12" y2="23"/>
-          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-          <line x1="1" y1="12" x2="3" y2="12"/>
-          <line x1="21" y1="12" x2="23" y2="12"/>
-          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-        </svg>
-        <svg class="icon-moon" viewBox="0 0 24 24">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-        </svg>
-      </button>
-    </div>
+    <button class="theme-btn" id="themeBtn" aria-label="切换明暗模式">
+      <svg class="icon-sun" viewBox="0 0 24 24" style="display:none;">
+        <circle cx="12" cy="12" r="5"/>
+        <line x1="12" y1="1" x2="12" y2="3"/>
+        <line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/>
+        <line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+      <svg class="icon-moon" viewBox="0 0 24 24">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+    </button>
   </nav>
 
 <script>
@@ -201,8 +188,8 @@
       iconSun.style.display = 'none';
       iconMoon.style.display = '';
     }
-    const logo = document.getElementById('logoBtn');
-    if (logo) logo.src = theme === 'light' ? 'logo-light.svg' : 'logo.svg';
+    const logoImg = document.querySelector('.nav-logo');
+    if (logoImg) logoImg.src = theme === 'light' ? 'logo-light.svg' : 'logo.svg';
   }
   applyTheme(getPreferredTheme());
   document.getElementById('themeBtn').addEventListener('click', function() {
@@ -211,17 +198,9 @@
     applyTheme(next);
   });
 
-  // ===== NAV: per-character bold hover =====
-  document.querySelectorAll('.nav-link__text').forEach(function(el) {
-    const txt = el.getAttribute('data-text') || el.textContent;
-    el.innerHTML = '';
-    [].forEach.call(txt, function(ch, i) {
-      const s = document.createElement('span');
-      s.className = 'ch';
-      s.style.setProperty('--i', i);
-      s.textContent = ch;
-      el.appendChild(s);
-    });
+  // Logo click -> home
+  document.getElementById('logoBtn').addEventListener('click', function() {
+    window.location.href = 'index.html';
   });
 })();
 </script>
