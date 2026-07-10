@@ -543,6 +543,8 @@
   const blobs = Array.prototype.slice.call(layer.querySelectorAll('.ink-blob'));
   const n = blobs.length;
   if (!n) return;
+  const base = [];
+  for (let i = 0; i < n; i++) base[i] = Math.pow(0.72, i); // 越往后越细
   const pos = blobs.map(function() { return { x: window.innerWidth / 2, y: window.innerHeight / 2 }; });
   const mouse = { x: pos[0].x, y: pos[0].y };
   const last = { x: pos[0].x, y: pos[0].y };
@@ -569,9 +571,9 @@
     const squash = 1 - speed / 160;
     hoverK += (hoverTarget - hoverK) * 0.15;
 
-    blobs[0].style.transform = 'translate(' + pos[0].x + 'px,' + pos[0].y + 'px) rotate(' + ang + 'rad) scale(' + (stretch * hoverK) + ',' + (squash * hoverK) + ')';
+    blobs[0].style.transform = 'translate(' + pos[0].x + 'px,' + pos[0].y + 'px) rotate(' + ang + 'rad) scale(' + (stretch * base[0] * hoverK) + ',' + (squash * base[0] * hoverK) + ')';
     for (let i = 1; i < n; i++) {
-      blobs[i].style.transform = 'translate(' + pos[i].x + 'px,' + pos[i].y + 'px) scale(' + hoverK + ')';
+      blobs[i].style.transform = 'translate(' + pos[i].x + 'px,' + pos[i].y + 'px) scale(' + (base[i] * hoverK) + ')';
     }
     last.x = pos[0].x; last.y = pos[0].y;
     requestAnimationFrame(tick);
