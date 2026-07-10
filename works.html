@@ -126,6 +126,22 @@
     stroke-linecap: round; stroke-linejoin: round;
   }
 
+  /* ===== INK DOT CURSOR (油墨黑点) ===== */
+  body, body * { cursor: none !important; }
+  .ink-cursor {
+    position: fixed;
+    top: 0; left: 0;
+    width: 14px; height: 14px;
+    margin: -7px 0 0 -7px;
+    border-radius: 50%;
+    background: #0E0E0E;
+    filter: drop-shadow(0 0 1.5px rgba(255,255,255,0.85));
+    pointer-events: none;
+    z-index: 9999;
+    will-change: transform;
+  }
+  .ink-cursor.is-hover { width: 26px; height: 26px; margin: -13px 0 0 -13px; }
+
   /* ===== WORK GRID ===== */
   .work-grid {
     position: fixed;
@@ -337,6 +353,8 @@
     </button>
 </nav>
 
+  <div class="ink-cursor" id="inkCursor"></div>
+
 <!-- ===== SCROLL PROGRESS ===== -->
 <div class="scroll-progress" id="scrollProgress">00</div>
 
@@ -497,6 +515,19 @@
 
     requestAnimationFrame(update);
   })();
+})();
+
+// ===== INK DOT CURSOR (油墨黑点) =====
+(function() {
+  const ic = document.getElementById('inkCursor');
+  if (!ic) return;
+  document.addEventListener('mousemove', function(e) {
+    ic.style.transform = 'translate(' + e.clientX + 'px,' + e.clientY + 'px)';
+  });
+  document.addEventListener('mouseover', function(e) {
+    if (e.target.closest('a, button')) ic.classList.add('is-hover');
+    else ic.classList.remove('is-hover');
+  });
 })();
 
 </script>
