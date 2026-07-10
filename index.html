@@ -143,8 +143,8 @@
   .ink-goo { position: absolute; inset: 0; filter: url(#ink-goo); }
   .ink-blob {
     position: absolute; top: 0; left: 0;
-    width: 16px; height: 16px;
-    margin: -8px 0 0 -8px;
+    width: 22px; height: 22px;
+    margin: -11px 0 0 -11px;
     border-radius: 50%;
     background: #0E0E0E;
     will-change: transform;
@@ -212,8 +212,8 @@
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <defs>
       <filter id="ink-goo">
-        <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur"/>
-        <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo"/>
+        <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur"/>
+        <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 16 -6" result="goo"/>
         <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
       </filter>
     </defs>
@@ -262,7 +262,7 @@
   const n = blobs.length;
   if (!n) return;
   const base = [];
-  for (let i = 0; i < n; i++) base[i] = Math.pow(0.72, i); // 越往后越细
+  for (let i = 0; i < n; i++) base[i] = Math.pow(0.78, i); // 越往后越细
   const pos = blobs.map(function() { return { x: window.innerWidth / 2, y: window.innerHeight / 2 }; });
   const mouse = { x: pos[0].x, y: pos[0].y };
   const last = { x: pos[0].x, y: pos[0].y };
