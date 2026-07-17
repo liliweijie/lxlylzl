@@ -531,7 +531,8 @@
 
   // ---- 配置 ----
   var REPEL_RADIUS = 150;   // 排异感应半径(px)
-  var REPEL_FORCE = 110;    // 排斥力度（调小：逃离更温和，仍有机会被抓住）
+  var REPEL_FORCE = 70;     // 排斥力度（再调小：逃离温和，追得上）
+  var GRAB_RADIUS = 170;    // 抓取半径(px)：按下时最近的、在此范围内的云即被抓住
   var RETURN_SPEED = 0.05;  // 回归原位速度
   var FRICTION = 0.86;      // 摩擦力(速度衰减)
   var NAV_H = 90;           // 导航栏占用高度
@@ -545,6 +546,7 @@
   var clouds = [];          // { el, panel, replyList, replyForm, note, replies, homeX, homeY, x, y, vx, vy, w, h, phase, speed, caught, dragging }
   var mouse = { x: -9999, y: -9999 };
   var dragOff = { x: 0, y: 0 };
+  var mouseDown = false;    // 鼠标是否按下（抓取态期间冻结排异，便于拖拽）
 
   document.addEventListener('mousemove', function(e) {
     mouse.x = e.clientX; mouse.y = e.clientY;
@@ -640,15 +642,7 @@
     }
     clouds.push(c);
 
-    // 抓住：在云朵上按下 -> 抓住 + 拖动
-    el.addEventListener('mousedown', function(e) {
-      e.stopPropagation();
-      c.caught = true; c.dragging = true;
-      dragOff.x = mouse.x - c.x;
-      dragOff.y = mouse.y - c.y;
-      c.el.classList.add('is-caught');
-      c.panel.classList.add('is-on');
-    });
+    // 抓取改由 document 级 mousedown 统一处理（见下方），按最近云 + 抓取半径判定
 
     // 回复提交（乐观 + 持久化）
     replyForm.addEventListener('submit', function(e) {
@@ -672,14 +666,33 @@
     return c;
   }
 
-  // 点击空白处释放所有被抓住的云
+  // 点击：按下时冻结排异，并抓住“指针 170px 内最近的云”；点空白释放所有
   document.addEventListener('mousedown', function(e) {
-    if (!e.target.closest('.cloud') && !e.target.closest('.cloud-catch')) {
+    mouseDown = true;
+    // 点击回复面板内部：保持当前抓住态（可继续打字/回复），不抢抓、不释放
+    if (e.target.closest('.cloud-catch')) return;
+    // 找离指针最近、且在抓取半径内的云
+    var nearest = null, nd = 1e9;
+    for (var i = 0; i < clouds.length; i++) {
+      var c = clouds[i];
+      var ccx = c.x + c.w / 2, ccy = c.y + c.h / 2;
+      var d = Math.sqrt((ccx - mouse.x) * (ccx - mouse.x) + (ccy - mouse.y) * (ccy - mouse.y));
+      if (d < nd) { nd = d; nearest = c; }
+    }
+    if (nearest && nd <= GRAB_RADIUS) {
+      releaseAll();
+      nearest.caught = true; nearest.dragging = true;
+      dragOff.x = mouse.x - nearest.x;
+      dragOff.y = mouse.y - nearest.y;
+      nearest.el.classList.add('is-caught');
+      nearest.panel.classList.add('is-on');
+    } else {
       releaseAll();
     }
   });
-  // 松开鼠标：停止拖动（保持抓住/钉住态，可键盘输入回复）
+  // 松开鼠标：停止拖动（保持抓住/钉住态，可键盘输入回复）；恢复排异
   document.addEventListener('mouseup', function() {
+    mouseDown = false;
     for (var i = 0; i < clouds.length; i++) if (clouds[i].dragging) clouds[i].dragging = false;
   });
 
@@ -712,14 +725,16 @@
       var hx = c.homeX + driftX;
       var hy = c.homeY + driftY;
 
-      // 鼠标排异
-      var cx = c.x + c.w / 2, cy = c.y + c.h / 2;
-      var dx = cx - mouse.x, dy = cy - mouse.y;
-      var dist = Math.sqrt(dx * dx + dy * dy) || 1;
-      if (dist < REPEL_RADIUS) {
-        var force = (1 - dist / REPEL_RADIUS) * REPEL_FORCE;
-        c.vx += (dx / dist) * force;
-        c.vy += (dy / dist) * force;
+      // 鼠标排异（按下抓取期间冻结，便于稳定拖拽）
+      if (!mouseDown) {
+        var cx = c.x + c.w / 2, cy = c.y + c.h / 2;
+        var dx = cx - mouse.x, dy = cy - mouse.y;
+        var dist = Math.sqrt(dx * dx + dy * dy) || 1;
+        if (dist < REPEL_RADIUS) {
+          var force = (1 - dist / REPEL_RADIUS) * REPEL_FORCE;
+          c.vx += (dx / dist) * force;
+          c.vy += (dy / dist) * force;
+        }
       }
 
       // 弹簧回拉到漂移中的 home
