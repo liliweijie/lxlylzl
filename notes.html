@@ -269,7 +269,7 @@
     animation: sendShake 0.45s cubic-bezier(.36,.07,.19,.97);
   }
 
-  /* ===== 抓住态：catch you 标签 + 回复面板 ===== */
+  /* ===== 抓住态：回复面板 ===== */
   .cloud.is-caught {
     opacity: 0.96 !important;
     border-color: var(--accent);
@@ -618,7 +618,7 @@
     el.appendChild(textSpan);
     sky.appendChild(el);
 
-    // 抓住后的面板（catch you + 回复列表 + 回复框）
+    // 抓住后的面板（回复列表 + 回复框）
     var panel = document.createElement('div');
     panel.className = 'cloud-catch';
     var replyList = document.createElement('div');
