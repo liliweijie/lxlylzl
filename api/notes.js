@@ -2,19 +2,6 @@ module.exports = async (req, res) => {
   res.setHeader('Content-Type', 'application/json');
   res.setHeader('Access-Control-Allow-Origin', '*');
 
-  // 临时探测：仅返回后端类型与变量是否注入（不泄露任何密钥）
-  if (req.query && req.query.status === '1') {
-    let backend = 'memory';
-    if (UP) backend = 'redis';
-    else if (process.env.GIST_ID && process.env.GITHUB_TOKEN) backend = 'gist';
-    return res.json({
-      backend: backend,
-      storage_rest_url_set: !!process.env.STORAGE_REST_API_URL,
-      storage_rest_token_set: !!process.env.STORAGE_REST_API_TOKEN,
-      kv_rest_url_set: !!process.env.KV_REST_API_URL
-    });
-  }
-
   const GIST_ID = process.env.GIST_ID;
   const GH_TOKEN = process.env.GITHUB_TOKEN;
   const KEY = 'notes';
@@ -34,6 +21,19 @@ module.exports = async (req, res) => {
     return null;
   }
   const UP = findUpstash();
+
+  // 临时探测：仅返回后端类型与变量是否注入（不泄露任何密钥）
+  if (req.query && req.query.status === '1') {
+    let backend = 'memory';
+    if (UP) backend = 'redis';
+    else if (GIST_ID && GH_TOKEN) backend = 'gist';
+    return res.json({
+      backend: backend,
+      storage_rest_url_set: !!process.env.STORAGE_REST_API_URL,
+      storage_rest_token_set: !!process.env.STORAGE_REST_API_TOKEN,
+      kv_rest_url_set: !!process.env.KV_REST_API_URL
+    });
+  }
 
   // ---- 读取请求体（兼容 Vercel 已解析 / 原始流） ----
   async function getBody() {
