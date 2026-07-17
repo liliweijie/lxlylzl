@@ -39,8 +39,9 @@ h1{font-size:18px; font-weight:700; letter-spacing:.02em; margin:0;}
 .login input{
   width:100%; max-width:320px; padding:12px 14px; border-radius:12px;
   border:1px solid var(--panel-border); background:rgba(127,127,127,0.08);
-  color:var(--text); font-size:14px; outline:none;
+  color:var(--text); font-size:14px; outline:none; margin-bottom:10px;
 }
+.login input:last-of-type{margin-bottom:0;}
 .login input:focus{border-color:var(--accent);}
 .btn{
   border:none; cursor:pointer; border-radius:12px; padding:10px 18px;
@@ -50,6 +51,15 @@ h1{font-size:18px; font-weight:700; letter-spacing:.02em; margin:0;}
 .btn-ghost{background:var(--panel); color:var(--text); border:1px solid var(--panel-border);}
 .btn-danger{background:transparent; color:var(--accent); border:1px solid var(--accent);}
 .row{display:flex; gap:8px; justify-content:center; margin-top:14px;}
+.toolbar{display:flex; align-items:center; gap:10px; margin-bottom:18px;}
+.toolbar .spacer{flex:1;}
+.toolbar .hint{color:var(--text-2); font-size:13px;}
+.confirm-bar{
+  display:flex; align-items:center; gap:10px; flex:1;
+  background:rgba(232,93,59,0.10); border:1px solid var(--accent);
+  border-radius:12px; padding:10px 14px;
+}
+.confirm-bar .warn{font-size:13px; color:var(--accent); flex:1; line-height:1.5;}
 .list{display:flex; flex-direction:column; gap:12px; margin-top:8px;}
 .item{
   background:var(--panel); border:1px solid var(--panel-border); border-radius:16px;
@@ -78,7 +88,8 @@ h1{font-size:18px; font-weight:700; letter-spacing:.02em; margin:0;}
   </div>
 
   <div id="loginView" class="login">
-    <p>输入后台密码以管理碎碎念评论</p>
+    <p>请输入后台账号与密码以管理碎碎念评论</p>
+    <input type="text" id="userInput" placeholder="账号" autocomplete="off">
     <input type="password" id="passInput" placeholder="密码" autocomplete="off">
     <div class="row">
       <button class="btn btn-primary" id="enterBtn">进入</button>
@@ -87,6 +98,11 @@ h1{font-size:18px; font-weight:700; letter-spacing:.02em; margin:0;}
   </div>
 
   <div id="adminView" style="display:none;">
+    <div class="toolbar">
+      <button class="btn btn-ghost" id="refreshBtn">刷新</button>
+      <span class="spacer"></span>
+      <button class="btn btn-danger" id="delAllBtn">一键清空所有留言</button>
+    </div>
     <div class="list" id="list"></div>
     <div class="empty" id="empty" style="display:none;">暂无评论</div>
   </div>
@@ -106,28 +122,64 @@ h1{font-size:18px; font-weight:700; letter-spacing:.02em; margin:0;}
   });
 })();
 
-var pass='';
+var user='', pass='';
+var currentCount=0;
 var loginView=document.getElementById('loginView');
 var adminView=document.getElementById('adminView');
 var listEl=document.getElementById('list');
 var emptyEl=document.getElementById('empty');
 var countEl=document.getElementById('count');
 var loginErr=document.getElementById('loginErr');
+var delAllBtn=document.getElementById('delAllBtn');
+var toolbar=delAllBtn.parentNode;
 
 document.getElementById('enterBtn').addEventListener('click',enter);
+document.getElementById('userInput').addEventListener('keydown',function(e){if(e.key==='Enter')enter();});
 document.getElementById('passInput').addEventListener('keydown',function(e){if(e.key==='Enter')enter();});
+document.getElementById('refreshBtn').addEventListener('click',load);
+delAllBtn.addEventListener('click',askDeleteAll);
 
-// 用 id=-1 探测密码：401=密码错，其余=已授权（不会误删真实数据）
+// 用 id=-1 探测账号密码：401=错误，其余=已授权（不会误删真实数据）
 function enter(){
+  var u=document.getElementById('userInput').value.trim();
   var v=document.getElementById('passInput').value;
-  if(!v){loginErr.textContent='请输入密码';return;}
-  fetch('/api/notes?id=-1',{method:'DELETE',headers:{'x-admin-pass':v}}).then(function(r){
-    if(r.status===401){loginErr.textContent='密码错误';return;}
-    pass=v;
+  if(!u||!v){loginErr.textContent='请输入账号和密码';return;}
+  fetch('/api/notes?id=-1',{method:'DELETE',headers:{'x-admin-user':u,'x-admin-pass':v}}).then(function(r){
+    if(r.status===401){loginErr.textContent='账号或密码错误';return;}
+    user=u; pass=v;
     loginView.style.display='none';
     adminView.style.display='block';
     load();
   }).catch(function(){loginErr.textContent='网络错误';});
+}
+
+// 一键清空：二次确认（先展开确认条，再点「确认清空」才真正执行）
+function askDeleteAll(){
+  var bar=document.createElement('div');
+  bar.className='confirm-bar';
+  var warn=document.createElement('span');
+  warn.className='warn';
+  warn.textContent='确定清空全部 '+currentCount+' 条留言吗？此操作不可恢复。';
+  var okBtn=document.createElement('button');
+  okBtn.className='btn btn-danger'; okBtn.textContent='确认清空';
+  var cancelBtn=document.createElement('button');
+  cancelBtn.className='btn btn-ghost'; cancelBtn.textContent='取消';
+  bar.appendChild(warn); bar.appendChild(okBtn); bar.appendChild(cancelBtn);
+  delAllBtn.style.display='none';
+  toolbar.insertBefore(bar, delAllBtn);
+  okBtn.addEventListener('click',function(){
+    okBtn.disabled=true; okBtn.textContent='清空中…';
+    fetch('/api/notes?all=1',{method:'DELETE',headers:{'x-admin-user':user,'x-admin-pass':pass}})
+      .then(function(r){return r.json();}).then(function(){
+        if(bar.parentNode) bar.parentNode.removeChild(bar);
+        delAllBtn.style.display='';
+        load();
+      }).catch(function(){okBtn.disabled=false; okBtn.textContent='确认清空';});
+  });
+  cancelBtn.addEventListener('click',function(){
+    if(bar.parentNode) bar.parentNode.removeChild(bar);
+    delAllBtn.style.display='';
+  });
 }
 
 function fmt(ts){
@@ -140,6 +192,7 @@ function fmt(ts){
 function load(){
   fetch('/api/notes').then(function(r){return r.json();}).then(function(arr){
     if(!Array.isArray(arr))arr=[];
+    currentCount=arr.length;
     countEl.textContent='（'+arr.length+' 条）';
     listEl.innerHTML='';
     if(arr.length===0){emptyEl.style.display='block';return;}
@@ -174,7 +227,7 @@ function renderItem(n){
     editBtn.onclick=function(){
       var v=ta.value.trim();
       if(!v)return;
-      fetch('/api/notes?id='+n.id,{method:'PATCH',headers:{'Content-Type':'application/json','x-admin-pass':pass},body:JSON.stringify({content:v})})
+      fetch('/api/notes?id='+n.id,{method:'PATCH',headers:{'Content-Type':'application/json','x-admin-user':user,'x-admin-pass':pass},body:JSON.stringify({content:v})})
         .then(function(r){return r.json();}).then(function(upd){
           n.content=upd.content; n.edited=true;
           content.textContent=upd.content;
@@ -193,7 +246,7 @@ function renderItem(n){
 
   delBtn.addEventListener('click',function(){
     if(!confirm('确定删除这条评论？'))return;
-    fetch('/api/notes?id='+n.id,{method:'DELETE',headers:{'x-admin-pass':pass}})
+    fetch('/api/notes?id='+n.id,{method:'DELETE',headers:{'x-admin-user':user,'x-admin-pass':pass}})
       .then(function(r){return r.json();}).then(function(){
         item.remove();
         load();
