@@ -27,11 +27,15 @@ module.exports = async (req, res) => {
     let backend = 'memory';
     if (UP) backend = 'redis';
     else if (GIST_ID && GH_TOKEN) backend = 'gist';
+    const keys = Object.keys(process.env).filter(function (k) {
+      return /STORAGE|REDIS|KV|UPSTASH|REST|GITHUB|GIST/i.test(k);
+    });
     return res.json({
       backend: backend,
       storage_rest_url_set: !!process.env.STORAGE_REST_API_URL,
       storage_rest_token_set: !!process.env.STORAGE_REST_API_TOKEN,
-      kv_rest_url_set: !!process.env.KV_REST_API_URL
+      kv_rest_url_set: !!process.env.KV_REST_API_URL,
+      matched_env_keys: keys
     });
   }
 
