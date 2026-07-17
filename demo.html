@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>lxlylzl · 导航胶囊液体过渡 Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0E0E0E;
+    --text: #F9F9F9;
+    --text-muted: #DBDBDB;
+    --panel: #262626;
+    --accent: #F24C30;
+    --pill-bg: rgba(255,255,255,0.08);
+    --pill-border: rgba(255,255,255,0.14);
+  }
+  [data-theme="light"] {
+    --bg: #F9F9F9;
+    --text: #0E0E0E;
+    --text-muted: #262626;
+    --panel: #DBDBDB;
+    --pill-bg: rgba(0,0,0,0.07);
+    --pill-border: rgba(0,0,0,0.12);
+  }
+
+  html, body { height: 100%; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: 'Noto Sans SC', 'Inter', sans-serif;
+    overflow: hidden; height: 100vh; width: 100vw;
+    transition: background .45s ease, color .45s ease;
+  }
+
+  /* ===== TOP NAV（复用站点）===== */
+  .top-nav { position:fixed;top:0;left:0;right:0;z-index:1000;width:100%;display:flex;align-items:center;justify-content:space-between;padding:20px 40px;pointer-events:none; }
+  .top-nav * { pointer-events:auto; }
+  .nav-center { position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;align-items:center;gap:12px; }
+  .nav-logo-wrap { display:flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:50%;background:var(--pill-bg);border:1px solid var(--pill-border);cursor:pointer;transition:opacity .2s,background .25s;flex-shrink:0; }
+  .nav-logo-wrap:hover{opacity:.75;}
+  .nav-logo{height:24px;width:auto;}
+  .nav-link { display:inline-flex;align-items:center;justify-content:center;height:48px;padding:0 28px;border-radius:100px;background:var(--pill-bg);border:1px solid var(--pill-border);color:var(--text);text-decoration:none;font-size:1.05rem;font-weight:500;letter-spacing:.06em;white-space:nowrap;transition:background .25s,border-color .25s,transform .15s; }
+  .nav-link:hover{background:var(--panel);border-color:var(--accent);transform:translateY(-1px);}
+  .nav-link.is-active{background:var(--panel);border-color:var(--text-muted);font-weight:600;}
+  .theme-btn{width:40px;height:40px;border:none;background:var(--pill-bg);border:1px solid var(--pill-border);color:var(--text-muted);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:color .3s,background .25s;border-radius:50%;flex-shrink:0;}
+  .theme-btn:hover{color:var(--accent);background:var(--panel);}
+  .theme-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+
+  /* ===== INK CURSOR ===== */
+  body,body *{cursor:none!important}
+  #inkLayer{position:fixed;inset:0;z-index:9999;pointer-events:none;filter:drop-shadow(0 0 1.5px rgba(255,255,255,.85))}
+  .ink-goo{position:absolute;inset:0;filter:url(#ink-goo)}
+  .ink-blob{position:absolute;top:0;left:0;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;background:#0E0E0E;will-change:transform}
+  #inkLayer.is-hidden{opacity:0}
+
+  /* ===== DEMO STAGE ===== */
+  .demo-stage{
+    position:relative;width:100%;height:100vh;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:48px;
+  }
+  .demo-hint{font-size:.92rem;color:var(--text-muted);letter-spacing:.04em;text-align:center;max-width:520px;line-height:1.8;}
+  .demo-hint b{color:var(--accent);font-weight:600;}
+
+  /* ---- 液体容器：goo 滤镜作用于此层内所有 .nl-body + .nl-bridge ---- */
+  .liquid-nav{
+    position:relative;display:flex;align-items:center;gap:14px;
+  }
+  /* 液体层：绝对定位覆盖整个区域，挂 goo 滤镜 */
+  .ln-goo-layer{
+    position:absolute;inset:-40px -20px;z-index:1;
+    filter:url(#nav-goo);
+    pointer-events:none;
+  }
+  /* 每个"液态胶囊"的可见实体 */
+  .nl-item{
+    position:relative;z-index:2;
+    display:inline-flex;align-items:center;justify-content:center;
+    height:64px; min-width:120px; padding:0 36px;
+    text-decoration:none;color:var(--text);font-size:1.35rem;font-weight:600;
+    letter-spacing:.08em;white-space:nowrap;
+    /* 原胶囊本身透明——可见部分由 ln-goo-layer 内的 .nl-body 绘制 */
+    background:transparent;border:none;
+    cursor:pointer;
+  }
+  /* 液态胶囊本体（放在 goo 层里，会被滤镜融合） */
+  .nl-body{
+    position:absolute;top:0;left:0;
+    height:100%;width:100%;
+    border-radius:100px;
+    background:var(--pill-bg);
+    border:2px solid var(--pill-border);
+    transition:border-color .25s;
+    will-change:transform,width,left;
+  }
+  .nl-item:hover .nl-body,
+  .nl-item.is-hovered .nl-body{border-color:var(--accent);}
+  .nl-item.is-active .nl-body{
+    background:var(--panel);
+    border-color:var(--text-muted);
+  }
+  /* 文字浮在 goo 层之上（不被模糊/融合） */
+  .nl-text{
+    position:relative;z-index:3;
+    pointer-events:none;
+  }
+
+  /* 桥接体：两颗胶囊之间冒出的液态桥（也在 goo 层里） */
+  .nl-bridge{
+    position:absolute;top:0;height:64px;
+    background:var(--pill-bg);
+    border:2px solid var(--pill-border);
+    opacity:0;
+    transition:opacity .12s ease;
+    will-change:transform,width,left;
+  }
+  /* 中间的小圆滴 o */
+  .nl-drop{
+    position:absolute;top:50%;
+    width:20px;height:20px;margin:-10px 0 0 -10px;
+    border-radius:50%;
+    background:var(--pill-bg);
+    border:2px solid var(--pill-border);
+    opacity:0;
+    transition:opacity .18s ease;
+    will-change:transform;
+  }
+
+  /* duang 弹动 */
+  @keyframes duang{
+    0%  { transform:scale(1,1); }
+    28% { transform:scale(1.16,0.84); }
+    52% { transform:scale(0.94,1.07); }
+    74% { transform:scale(1.03,0.98); }
+    100%{ transform:scale(1,1); }
+  }
+  .nl-body.duang{animation:duang .55s cubic-bezier(.3,.85,.3,1);}
+
+  @media(max-width:720px){
+    .nl-item{height:52px;min-width:90px;padding:0 24px;font-size:1.05rem;}
+    .nl-bridge{height:52px;}
+  }
+</style>
+</head>
+<body>
+
+  <nav class="top-nav">
+    <div class="nav-logo-wrap" id="logoBtn"><img class="nav-logo" src="logo.svg" alt="LX Logo"></div>
+    <div class="nav-center">
+      <a class="nav-link is-active" href="index.html">首页</a>
+      <a class="nav-link" href="works.html">作品</a>
+      <a class="nav-link" href="about.html">关于</a>
+      <a class="nav-link" href="notes.html">碎碎念</a>
+    </div>
+    <button class="theme-btn" id="themeBtn" aria-label="切换明暗模式">
+      <svg class="icon-sun" viewBox="0 0 24 24" style="display:none;"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+  </nav>
+
+  <!-- ===== DEMO ===== -->
+  <div class="demo-stage">
+    <p class="demo-hint">把鼠标从 <b>首页</b> 缓缓移向 <b>作品</b><br>看两个胶囊之间如何像液体一样<b>拉丝 → 融合 → 分离</b></p>
+
+    <div class="liquid-nav" id="liquidNav">
+      <!-- goo 滤镜层：所有 nl-body + nl-bridge 在此融合 -->
+      <div class="ln-goo-layer" id="gooLayer"></div>
+
+      <a class="nl-item is-active" data-i="0"><span class="nl-text">首页</span></a>
+      <a class="nl-item" data-i="1"><span class="nl-text">作品</span></a>
+      <a class="nl-item" data-i="2"><span class="nl-text">关于</span></a>
+      <a class="nl-item" data-i="3"><span class="nl-text">碎碎念</span></a>
+    </div>
+  </div>
+
+  <!-- INK CURSOR -->
+  <div id="inkLayer" class="is-hidden">
+    <div class="ink-goo">
+      <div class="ink-blob"></div><div class="ink-blob"></div><div class="ink-blob"></div>
+      <div class="ink-blob"></div><div class="ink-blob"></div>
+    </div>
+  </div>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <filter id="ink-goo">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur"/>
+        <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 16 -6" result="goo"/>
+        <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+      </filter>
+      <!-- 导航胶囊液体融合滤镜：更强模糊 + 更高阈值让桥更圆润 -->
+      <filter id="nav-goo">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur"/>
+        <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -11" result="goo"/>
+        <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+      </filter>
+    </defs>
+  </svg>
+
+<script>
+// ===== THEME =====
+(function(){
+  function pref(){const s=localStorage.getItem('theme');if(s)return s;return window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'}
+  function ap(t){
+    document.documentElement.setAttribute('data-theme',t);
+    const s=document.querySelector('.icon-sun'),m=document.querySelector('.icon-moon');
+    if(t==='light'){s.style.display='';m.style.display='none'}else{s.style.display='none';m.style.display=''}
+    const l=document.querySelector('.nav-logo');if(l)l.src=t==='light'?'logo-light.svg':'logo.svg';
+  }
+  ap(pref());document.getElementById('themeBtn').addEventListener('click',function(){const n=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';localStorage.setItem('theme',n);ap(n)});
+  document.getElementById('logoBtn').addEventListener('click',function(){window.location.href='index.html'});
+})();
+
+// ===== INK CURSOR =====
+(function(){
+  const layer=document.getElementById('inkLayer');if(!layer)return;
+  const blobs=[...layer.querySelectorAll('.ink-blob')];const n=blobs.length;if(!n)return;
+  const base=[];for(let i=0;i<n;i++)base[i]=Math.pow(0.78,i);
+  const pos=blobs.map(()=>({x:innerWidth/2,y:innerHeight/2}));
+  const mouse={x:pos[0].x,y:pos[0].y},last={x:pos[0].x,y:pos[0].y};
+  let hk=1,hT=1,shown=false;
+  addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY;if(!shown){shown=true;layer.classList.remove('is-hidden')}});
+  addEventListener('mouseover',e=>{hT=e.target.closest('a,button')?1.7:1});
+  function e(c,t,f){c.x+=(t.x-c.x)*f;c.y+=(t.y-c.y)*f}
+  function tick(){
+    e(pos[0],mouse,.5);for(let i=1;i<n;i++)e(pos[i],pos[i-1],.32);
+    const dx=pos[0].x-last.x,dy=pos[0].y-last.y;
+    const sp=Math.min(Math.hypot(dx,dy),70),ang=Math.atan2(dy,dx);
+    const st=1+sp/45,sq=1-sp/160;hk+=(hT-hk)*.15;
+    blobs[0].style.transform='translate('+pos[0].x+'px,'+pos[0].y+'px) rotate('+ang+'rad) scale('+(st*base[0]*hk)+','+(sq*base[0]*hk)+')';
+    for(let i=1;i<n;i++)blobs[i].style.transform='translate('+pos[i].x+'px,'+pos[i].y+'px) scale('+(base[i]*hk)+')';
+    last.x=pos[0].x;last.y=pos[0].y;requestAnimationFrame(tick);
+  }
+  tick();
+})();
+
+// ===== NAV LIQUID TRANSITION：胶囊间 goo 液体桥 =====
+(function(){
+  const nav=document.getElementById('liquidNav');
+  const goo=document.getElementById('gooLayer');
+  const items=[...nav.querySelectorAll('.nl-item')];
+  const N=items.length;
+
+  // 为每个胶囊创建 goo 层内的液态本体
+  items.forEach(function(it){
+    const b=document.createElement('div');b.className='nl-body';it.appendChild(b);
+  });
+  const bodies=items.map(it=>it.querySelector('.nl-body'));
+
+  // 为每个间隙创建桥接体 + 圆滴（预创建，默认隐藏）
+  const bridges=[];const drops=[];
+  for(let i=0;i<N-1;i++){
+    const br=document.createElement('div');br.className='nl-bridge';goo.appendChild(br);bridges.push(br);
+    const dr=document.createElement('div');dr.className='nl-drop';goo.appendChild(dr);drops.push(dr);
+  }
+
+  let mx=-9999,my=-9999;     // 鼠标相对 nav 坐标
+  let dropX=-9999,dropY=-9999;// 圆滴缓动坐标
+  let gap=-1;                  // 当前所在间隙索引(-1=无)
+  let lastItem=-1;             // 最近所在的胶囊索引
+  let primed=false;            // 是否已给圆滴设初值
+
+  function geo(){
+    const r=nav.getBoundingClientRect();
+    return items.map(function(el){
+      const g=el.getBoundingClientRect();
+      return{l:g.left-r.left,t:g.top-r.top,w:g.width,h:g.height,r:g.right-r.left};
+    });
+  }
+
+  function showBridge(i,on){
+    bridges[i].style.opacity=on?'1':'0';
+    drops[i].style.opacity=on?'1':'0';
+  }
+
+  function triggerDuang(i){
+    const b=bodies[i];b.classList.remove('duang');
+    void b.offsetWidth;b.classList.add('duang');
+  }
+  bodies.forEach(b=>b.addEventListener('animationend',()=>b.classList.remove('duang')));
+
+  // hover 态同步到液态本体
+  items.forEach((it,i)=>{
+    it.addEventListener('mouseenter',function(){it.classList.add('is-hovered')});
+    it.addEventListener('mouseleave',function(){it.classList.remove('is-hovered')});
+  });
+
+  nav.addEventListener('mousemove',function(e){
+    const r=nav.getBoundingClientRect();mx=e.clientX-r.left;my=e.clientY-r.top;
+  });
+  nav.addEventListener('mouseleave',function(){gap=-1;lastItem=-1;bridges.forEach((b,i)=>showBridge(i,false));});
+
+  function updateZone(g){
+    // 1) 落在某颗胶囊上 -> 到达 -> duang
+    for(let i=0;i<N;i++){if(mx>=g[i].l&&mx<=g[i].r){if(lastItem!==i){triggerDuang(i);lastItem=i}gap=-1;bridges.forEach((_,j)=>showBridge(j,false));return}}
+    // 2) 落在相邻间隙 -> 拉出液体桥
+    for(let i=0;i<N-1;i++){if(mx>g[i].r&&mx<g[i+1].l){gap=i;showBridge(i,true);return}}
+    // 3) 外侧
+    gap=-1;lastItem=-1;bridges.forEach((_,i)=>showBridge(i,false));
+  }
+
+  function animate(){
+    const g=geo();
+    updateZone(g);
+
+    if(gap>=0){
+      const a=g[gap],b=g[gap+1];
+      if(!primed){dropX=mx;dropY=my;primed=true}
+
+      // 桥接条：两端探入胶囊内部（粘滞感），宽度随距离变化
+      const pl=a.r+6,pr=b.l-6;       // 探入量 6px
+      const bw=pr-pl;
+      bridges[gap].style.left=pl+'px';
+      bridges[gap].style.width=bw+'px';
+
+      // 圆滴跟随光标（缓动营造拖尾粘滞）
+      dropX+=(mx-dropX)*.18;dropY+=(my-dropY)*.18;
+      drops[gap].style.left=dropX+'px';
+      drops[gap].style.top=(dropY||a.t+a.h/2)+'px';
+    }else{primed=false}
+
+    requestAnimationFrame(animate);
+  }
+  animate();
+})();
+</script>
+</body>
+</html>
