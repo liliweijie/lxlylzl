@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>lxlylzl · 标题框液体融合 Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* ===== 5-COLOR STANDARD PALETTE ===== */
+  :root {
+    --bg: #0E0E0E;
+    --text: #F9F9F9;
+    --text-muted: #DBDBDB;
+    --panel: #262626;
+    --accent: #F24C30;
+    --pill-bg: rgba(255,255,255,0.08);
+    --pill-border: rgba(255,255,255,0.14);
+  }
+  [data-theme="light"] {
+    --bg: #F9F9F9;
+    --text: #0E0E0E;
+    --text-muted: #262626;
+    --panel: #DBDBDB;
+    --pill-bg: rgba(0,0,0,0.07);
+    --pill-border: rgba(0,0,0,0.12);
+  }
+
+  html, body { height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans SC', 'Inter', sans-serif;
+    overflow: hidden;
+    height: 100vh; width: 100vw;
+    transition: background 0.45s ease, color 0.45s ease;
+  }
+
+  /* ===== TOP NAV (与站点一致) ===== */
+  .top-nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    width: 100%; display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 40px; pointer-events: none;
+  }
+  .top-nav * { pointer-events: auto; }
+  .nav-center {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .nav-logo-wrap {
+    display: flex; align-items: center; justify-content: center;
+    width: 48px; height: 48px; border-radius: 50%;
+    background: var(--pill-bg); border: 1px solid var(--pill-border);
+    cursor: pointer; transition: opacity 0.2s, background 0.25s; flex-shrink: 0;
+  }
+  .nav-logo-wrap:hover { opacity: 0.75; }
+  .nav-logo { height: 24px; width: auto; }
+  .nav-link {
+    display: inline-flex; align-items: center; justify-content: center;
+    height: 48px; padding: 0 28px; border-radius: 100px;
+    background: var(--pill-bg); border: 1px solid var(--pill-border);
+    color: var(--text); text-decoration: none; font-size: 1.05rem; font-weight: 500;
+    letter-spacing: 0.06em; white-space: nowrap;
+    transition: background 0.25s, border-color 0.25s, transform 0.15s;
+  }
+  .nav-link:hover { background: var(--panel); border-color: var(--accent); transform: translateY(-1px); }
+  .theme-btn {
+    width: 40px; height: 40px; border: none; background: var(--pill-bg);
+    border: 1px solid var(--pill-border); color: var(--text-muted);
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: color 0.3s, background 0.25s; border-radius: 50%; flex-shrink: 0;
+  }
+  .theme-btn:hover { color: var(--accent); background: var(--panel); }
+  .theme-btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* ===== DEMO STAGE ===== */
+  .demo-wrap {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 48px;
+  }
+  .demo-caption {
+    font-size: 0.95rem; letter-spacing: 0.18em; color: var(--text-muted);
+    text-transform: uppercase; opacity: 0.7;
+  }
+
+  /* 标题框舞台：切换时挂 goo 滤镜做液体融合 */
+  .stage {
+    position: relative;
+    width: 380px; height: 160px;
+  }
+  .stage.is-fusing { filter: url(#liquid-goo); }
+
+  .box {
+    position: absolute; left: 50%; top: 50%;
+    width: 320px; height: 130px;
+    border-radius: 30px;
+    background: linear-gradient(135deg, var(--accent), #ff7a5c);
+    box-shadow: 0 22px 60px rgba(242, 76, 48, 0.28);
+    transform: translate(-50%, -50%);
+    will-change: transform, opacity;
+  }
+
+  /* 清晰文字层（不挂 goo，保持可读） */
+  .titles {
+    position: absolute; left: 50%; top: 50%;
+    width: 320px; height: 130px;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+  .t {
+    position: absolute; left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3.1rem; font-weight: 800; letter-spacing: 0.04em;
+    color: #fff; white-space: nowrap;
+    will-change: transform, opacity;
+  }
+
+  /* 切换芯片 */
+  .chips { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+  .chip {
+    height: 46px; padding: 0 26px; border-radius: 100px;
+    background: var(--pill-bg); border: 1px solid var(--pill-border);
+    color: var(--text); font-family: inherit; font-size: 1rem; font-weight: 500;
+    letter-spacing: 0.06em; cursor: pointer;
+    transition: background 0.25s, border-color 0.25s, transform 0.15s;
+  }
+  .chip:hover { background: var(--panel); border-color: var(--accent); transform: translateY(-1px); }
+  .chip.is-active { background: var(--panel); border-color: var(--text-muted); font-weight: 600; }
+
+  /* ===== INK CURSOR ===== */
+  body, body * { cursor: none !important; }
+  #inkLayer { position: fixed; inset: 0; z-index: 9999; pointer-events: none; filter: drop-shadow(0 0 1.5px rgba(255,255,255,0.85)); }
+  .ink-goo { position: absolute; inset: 0; filter: url(#ink-goo); }
+  .ink-blob { position: absolute; top: 0; left: 0; width: 22px; height: 22px; margin: -11px 0 0 -11px; border-radius: 50%; background: #0E0E0E; will-change: transform; }
+  #inkLayer.is-hidden { opacity: 0; }
+
+  @media (max-width: 600px) {
+    .top-nav { padding: 14px 16px; }
+    .stage { width: 300px; height: 130px; }
+    .box, .titles { width: 260px; height: 110px; }
+    .t { font-size: 2.4rem; }
+  }
+</style>
+</head>
+<body>
+
+  <nav class="top-nav">
+    <div class="nav-logo-wrap" id="logoBtn">
+      <img class="nav-logo" src="logo.svg" alt="LX Logo">
+    </div>
+    <div class="nav-center">
+      <a class="nav-link" href="index.html">首页</a>
+      <a class="nav-link" href="works.html">作品</a>
+      <a class="nav-link" href="about.html">关于</a>
+      <a class="nav-link" href="notes.html">碎碎念</a>
+    </div>
+    <button class="theme-btn" id="themeBtn" aria-label="切换明暗模式">
+      <svg class="icon-sun" viewBox="0 0 24 24" style="display:none;">
+        <circle cx="12" cy="12" r="5"/>
+        <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+      <svg class="icon-moon" viewBox="0 0 24 24">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+    </button>
+  </nav>
+
+  <div class="demo-wrap">
+    <div class="demo-caption">标题框 · 液体融合过渡 Demo</div>
+
+    <div class="stage" id="stage">
+      <div class="box" id="boxNow"></div>
+      <div class="titles" id="titles">
+        <div class="t" id="tNow">首页</div>
+      </div>
+    </div>
+
+    <div class="chips" id="chips">
+      <button class="chip is-active" data-title="首页">首页</button>
+      <button class="chip" data-title="作品">作品</button>
+      <button class="chip" data-title="关于">关于</button>
+      <button class="chip" data-title="碎碎念">碎碎念</button>
+    </div>
+  </div>
+
+  <div id="inkLayer" class="is-hidden">
+    <div class="ink-goo">
+      <div class="ink-blob"></div><div class="ink-blob"></div><div class="ink-blob"></div>
+      <div class="ink-blob"></div><div class="ink-blob"></div>
+    </div>
+  </div>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <filter id="liquid-goo" x="-60%" y="-60%" width="220%" height="220%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="9" result="blur"/>
+        <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo"/>
+        <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+      </filter>
+      <filter id="ink-goo">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur"/>
+        <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 16 -6" result="goo"/>
+        <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+      </filter>
+    </defs>
+  </svg>
+
+<script>
+// ===== THEME =====
+(function() {
+  function getPreferredTheme() {
+    const stored = localStorage.getItem('theme');
+    if (stored) return stored;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    const iconSun = document.querySelector('.icon-sun');
+    const iconMoon = document.querySelector('.icon-moon');
+    if (theme === 'light') { iconSun.style.display = ''; iconMoon.style.display = 'none'; }
+    else { iconSun.style.display = 'none'; iconMoon.style.display = ''; }
+    const logoImg = document.querySelector('.nav-logo');
+    if (logoImg) logoImg.src = theme === 'light' ? 'logo-light.svg' : 'logo.svg';
+  }
+  applyTheme(getPreferredTheme());
+  document.getElementById('themeBtn').addEventListener('click', function() {
+    const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    localStorage.setItem('theme', next); applyTheme(next);
+  });
+  document.getElementById('logoBtn').addEventListener('click', function() { window.location.href = 'index.html'; });
+})();
+
+// ===== INK CURSOR =====
+(function() {
+  const layer = document.getElementById('inkLayer');
+  if (!layer) return;
+  const blobs = Array.prototype.slice.call(layer.querySelectorAll('.ink-blob'));
+  const n = blobs.length; if (!n) return;
+  const base = []; for (let i = 0; i < n; i++) base[i] = Math.pow(0.78, i);
+  const pos = blobs.map(function() { return { x: window.innerWidth / 2, y: window.innerHeight / 2 }; });
+  const mouse = { x: pos[0].x, y: pos[0].y };
+  const last = { x: pos[0].x, y: pos[0].y };
+  let hoverK = 1, hoverTarget = 1, shown = false;
+  document.addEventListener('mousemove', function(e) {
+    mouse.x = e.clientX; mouse.y = e.clientY;
+    if (!shown) { shown = true; layer.classList.remove('is-hidden'); }
+  });
+  document.addEventListener('mouseover', function(e) { hoverTarget = e.target.closest('a, button') ? 1.7 : 1; });
+  function ease(cur, t, f) { cur.x += (t.x - cur.x) * f; cur.y += (t.y - cur.y) * f; }
+  function tick() {
+    ease(pos[0], mouse, 0.5); for (let i = 1; i < n; i++) ease(pos[i], pos[i - 1], 0.32);
+    const dx = pos[0].x - last.x, dy = pos[0].y - last.y;
+    const speed = Math.min(Math.hypot(dx, dy), 70);
+    const ang = Math.atan2(dy, dx);
+    const stretch = 1 + speed / 45, squash = 1 - speed / 160;
+    hoverK += (hoverTarget - hoverK) * 0.15;
+    blobs[0].style.transform = 'translate(' + pos[0].x + 'px,' + pos[0].y + 'px) rotate(' + ang + 'rad) scale(' + (stretch * base[0] * hoverK) + ',' + (squash * base[0] * hoverK) + ')';
+    for (let i = 1; i < n; i++) blobs[i].style.transform = 'translate(' + pos[i].x + 'px,' + pos[i].y + 'px) scale(' + (base[i] * hoverK) + ')';
+    last.x = pos[0].x; last.y = pos[0].y;
+    requestAnimationFrame(tick);
+  }
+  tick();
+})();
+
+// ===== 标题框液体融合切换 =====
+(function() {
+  const stage = document.getElementById('stage');
+  const boxNow = document.getElementById('boxNow');
+  const titles = document.getElementById('titles');
+  const tNow = document.getElementById('tNow');
+  const chips = document.getElementById('chips');
+  const allTitles = ['首页', '作品', '关于', '碎碎念'];
+  let current = '首页';
+  let fusing = false;
+
+  function setActiveChip(title) {
+    Array.prototype.forEach.call(chips.children, function(c) {
+      c.classList.toggle('is-active', c.dataset.title === title);
+    });
+  }
+
+  function fuseTo(next) {
+    if (fusing || next === current) return;
+    fusing = true;
+    stage.classList.add('is-fusing');
+
+    // 进入的框与文字（独立元素，便于动画后清理）
+    const boxIn = document.createElement('div'); boxIn.className = 'box';
+    const tIn = document.createElement('div'); tIn.className = 't'; tIn.textContent = next;
+    stage.appendChild(boxIn);
+    titles.appendChild(tIn);
+
+    const D = 820;
+    const ease = 'cubic-bezier(.72,0,.28,1)';
+
+    // 旧框上移缩小消失；新框从下方升入 —— 中段重叠处经 goo 融为液体
+    boxNow.animate([
+      { transform: 'translate(-50%,-50%) translateY(0) scale(1)', opacity: 1 },
+      { transform: 'translate(-50%,-50%) translateY(-72px) scale(.5)', opacity: 0 }
+    ], { duration: D, easing: ease, fill: 'forwards' });
+    boxIn.animate([
+      { transform: 'translate(-50%,-50%) translateY(72px) scale(.5)', opacity: 0 },
+      { transform: 'translate(-50%,-50%) translateY(0) scale(1)', opacity: 1 }
+    ], { duration: D, easing: ease, fill: 'forwards' });
+
+    // 文字清晰层：旧淡出、新淡入（不被 goo 模糊）
+    tNow.animate([
+      { transform: 'translate(-50%,-50%) translateY(0)', opacity: 1 },
+      { transform: 'translate(-50%,-50%) translateY(-34px)', opacity: 0 }
+    ], { duration: D * 0.55, easing: 'ease-in', fill: 'forwards' });
+    tIn.animate([
+      { transform: 'translate(-50%,-50%) translateY(34px)', opacity: 0 },
+      { transform: 'translate(-50%,-50%) translateY(0)', opacity: 1 }
+    ], { duration: D * 0.7, delay: D * 0.3, easing: 'ease-out', fill: 'forwards' });
+
+    Promise.all([boxNow.getAnimations()[0].finished, boxIn.getAnimations()[0].finished]).then(function() {
+      // 复位 resting 框/文字为 next，清理临时元素与动画
+      boxNow.getAnimations().forEach(function(a) { a.cancel(); });
+      boxNow.style.opacity = '1';
+      boxNow.style.transform = 'translate(-50%, -50%)';
+      boxIn.remove();
+
+      tNow.textContent = next;
+      tNow.getAnimations().forEach(function(a) { a.cancel(); });
+      tNow.style.opacity = '1';
+      tNow.style.transform = 'translate(-50%, -50%)';
+      tIn.remove();
+
+      stage.classList.remove('is-fusing');
+      current = next;
+      setActiveChip(next);
+      fusing = false;
+    });
+  }
+
+  // 芯片点击切换
+  chips.addEventListener('click', function(e) {
+    const c = e.target.closest('.chip');
+    if (c) fuseTo(c.dataset.title);
+  });
+  // 点击大标题框 → 切到下一个
+  stage.addEventListener('click', function() {
+    const i = allTitles.indexOf(current);
+    fuseTo(allTitles[(i + 1) % allTitles.length]);
+  });
+})();
+</script>
+</body>
+</html>
