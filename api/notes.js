@@ -123,13 +123,6 @@ module.exports = async (req, res) => {
         await r.rpush(KEY, JSON.stringify(note));
         return res.json(note);
       }
-      // 一次性清空（清理用，用完即删）
-      if (req.method === 'DELETE') {
-        const sec = (req.query && req.query.secret) || (req.headers && req.headers['x-flush-secret']);
-        if (sec !== '08c762852285a4cb3745456d') return res.status(401).json({ error: 'unauthorized' });
-        await r.del(KEY);
-        return res.json({ ok: true, deleted: true });
-      }
       return res.status(405).json({ error: 'method_not_allowed' });
     } catch (e) {
       return res.status(500).json({ error: String((e && e.message) ? e.message : e) });
