@@ -604,6 +604,8 @@
     c.caught = true;
     c.el.classList.add('is-caught');
     c.panel.classList.add('is-on');
+    // 面板宽度跟随放大后的云朵宽度（最小 240px），与框左对齐、同宽，视觉成一体
+    c.panel.style.width = Math.max(Math.round(c.w * CATCH_SCALE), 240) + 'px';
     mask.classList.add('is-on');
     commenting = true;
   }
