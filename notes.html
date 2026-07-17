@@ -730,8 +730,8 @@
         c.x = Math.max(PADDING, Math.min(c.x, maxX));
         c.y = Math.max(NAV_H, Math.min(c.y, maxY));
         c.el.style.transform = 'translate(' + c.x + 'px,' + c.y + 'px) scale(' + CATCH_SCALE + ')';
-        // 面板跟随到云朵下方
-        c.panel.style.transform = 'translate(' + c.x + 'px,' + (c.y + c.h + 28) + 'px)';
+        // 面板直接跟随到云朵框正下方
+        c.panel.style.transform = 'translate(' + c.x + 'px,' + (c.y + c.h + 10) + 'px)';
         continue;
       }
 
