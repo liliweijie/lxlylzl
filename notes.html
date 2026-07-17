@@ -151,6 +151,103 @@
   }
   #inkLayer.is-hidden { opacity: 0; }
 
+  /* ===== NOTES / 留言社区 ===== */
+  .notes-main {
+    position: fixed;
+    top: 96px;
+    left: 0; right: 0;
+    bottom: 92px;
+    overflow-y: auto;
+    padding: 28px 40px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .notes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  .note-card {
+    background: var(--pill-bg);
+    border: 1px solid var(--pill-border);
+    border-radius: 18px;
+    padding: 16px 20px;
+    animation: noteIn 0.45s cubic-bezier(.2,.8,.2,1) both;
+  }
+  .note-meta {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 8px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+  .note-name { font-weight: 600; color: var(--text); }
+  .note-time { opacity: 0.7; }
+  .note-content {
+    font-size: 1.02rem;
+    line-height: 1.7;
+    color: var(--text);
+    word-break: break-word;
+    white-space: pre-wrap;
+  }
+  @keyframes noteIn {
+    from { opacity: 0; transform: translateY(-14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .notes-empty {
+    text-align: center;
+    color: var(--text-muted);
+    opacity: 0.55;
+    padding: 48px 0;
+    font-size: 0.95rem;
+  }
+  /* compose bar */
+  .notes-compose {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    z-index: 1000;
+    display: flex;
+    gap: 12px;
+    padding: 16px 40px;
+    background: var(--pill-bg);
+    border-top: 1px solid var(--pill-border);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  .notes-name, .notes-input {
+    height: 48px;
+    padding: 0 20px;
+    border-radius: 100px;
+    background: var(--bg);
+    border: 1px solid var(--pill-border);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .notes-name { width: 150px; flex-shrink: 0; font-size: 0.95rem; }
+  .notes-input { flex: 1; }
+  .notes-name:focus, .notes-input:focus { border-color: var(--accent); }
+  .notes-send {
+    height: 48px; padding: 0 30px;
+    border-radius: 100px;
+    border: 1px solid var(--pill-border);
+    background: var(--panel);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.2s, border-color 0.2s, transform 0.12s;
+  }
+  .notes-send:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .notes-send:active { transform: translateY(1px); }
+  .notes-send:disabled { opacity: 0.5; cursor: default; }
+
   /* ===== RESPONSIVE ===== */
   @media (max-width: 900px) {
     .top-nav { padding: 16px 24px; gap: 10px; }
@@ -199,6 +296,17 @@
       </svg>
     </button>
   </nav>
+
+  <!-- ===== NOTES / 留言社区 ===== -->
+  <main class="notes-main">
+    <div class="notes-list" id="notesList"></div>
+  </main>
+
+  <form class="notes-compose" id="notesForm" autocomplete="off">
+    <input class="notes-name" id="notesName" type="text" maxlength="20" placeholder="昵称（可选）" aria-label="昵称">
+    <input class="notes-input" id="notesInput" type="text" maxlength="500" placeholder="说点什么…" aria-label="留言内容">
+    <button class="notes-send" type="submit">发送</button>
+  </form>
 
   <div id="inkLayer" class="is-hidden">
     <div class="ink-goo">
@@ -297,6 +405,78 @@
     requestAnimationFrame(tick);
   }
   tick();
+})();
+
+// ===== NOTES / 留言社区 =====
+(function() {
+  const list = document.getElementById('notesList');
+  const form = document.getElementById('notesForm');
+  const nameI = document.getElementById('notesName');
+  const inputI = document.getElementById('notesInput');
+  if (!list || !form) return;
+
+  function fmt(ts) {
+    const d = new Date(ts);
+    const p = function(n) { return (n < 10 ? '0' : '') + n; };
+    return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
+  }
+  function el(tag, cls, txt) {
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (txt != null) e.textContent = txt; // textContent 防 XSS
+    return e;
+  }
+  function renderNote(note, prepend) {
+    const card = el('div', 'note-card');
+    const meta = el('div', 'note-meta');
+    meta.appendChild(el('span', 'note-name', note.name || '匿名'));
+    meta.appendChild(el('span', 'note-time', fmt(note.ts)));
+    card.appendChild(meta);
+    card.appendChild(el('div', 'note-content', note.content));
+    if (prepend && list.firstChild) list.insertBefore(card, list.firstChild);
+    else list.appendChild(card);
+    return card;
+  }
+  function renderEmpty() {
+    if (!list.querySelector('.note-card')) {
+      list.appendChild(el('div', 'notes-empty', '还没有留言，来抢沙发吧～'));
+    }
+  }
+  function clearEmpty() {
+    const e = list.querySelector('.notes-empty');
+    if (e) e.remove();
+  }
+
+  fetch('/api/notes')
+    .then(function(r) { return r.json(); })
+    .then(function(arr) {
+      list.innerHTML = '';
+      if (!Array.isArray(arr) || !arr.length) return renderEmpty();
+      arr.forEach(function(n) { renderNote(n, false); });
+    })
+    .catch(renderEmpty);
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const content = inputI.value.trim();
+    if (!content) return;
+    const name = nameI.value.trim();
+    const btn = form.querySelector('.notes-send');
+    btn.disabled = true;
+    fetch('/api/notes', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: name, content: content })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(note) {
+      clearEmpty();
+      renderNote(note, true);
+      inputI.value = '';
+    })
+    .catch(function() { alert('发送失败，请稍后再试'); })
+    .finally(function() { btn.disabled = false; });
+  });
 })();
 
 </script>
