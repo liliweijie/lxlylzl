@@ -26,12 +26,14 @@ module.exports = async (req, res) => {
   if (req.query && req.query.status === '1') {
     let backend = 'memory';
     if (UP) backend = 'redis';
+    else if (process.env.REDIS_URL) backend = 'redis';
     else if (GIST_ID && GH_TOKEN) backend = 'gist';
     const keys = Object.keys(process.env).filter(function (k) {
       return /STORAGE|REDIS|KV|UPSTASH|REST|GITHUB|GIST/i.test(k);
     });
     return res.json({
       backend: backend,
+      redis_url_set: !!process.env.REDIS_URL,
       storage_rest_url_set: !!process.env.STORAGE_REST_API_URL,
       storage_rest_token_set: !!process.env.STORAGE_REST_API_TOKEN,
       kv_rest_url_set: !!process.env.KV_REST_API_URL,
@@ -79,6 +81,42 @@ module.exports = async (req, res) => {
         const name = (body.name || '').toString().trim().slice(0, 20);
         const note = { id: Date.now(), name: name || '匿名', content: content, ts: Date.now() };
         await kv(['RPUSH', KEY, JSON.stringify(note)]);
+        return res.json(note);
+      }
+      return res.status(405).json({ error: 'method_not_allowed' });
+    } catch (e) {
+      return res.status(500).json({ error: String((e && e.message) ? e.message : e) });
+    }
+  }
+
+  // ---- 其次：Vercel Redis（TCP，ioredis，REDIS_URL） ----
+  if (process.env.REDIS_URL) {
+    function getRedis() {
+      if (global.__redisClient) return global.__redisClient;
+      const Redis = require('ioredis');
+      let url = process.env.REDIS_URL;
+      // Upstash 强制 TLS：redis:// -> rediss://
+      if (/upstash\.io/i.test(url) && url.indexOf('redis://') === 0) {
+        url = 'rediss://' + url.slice('redis://'.length);
+      }
+      const c = new Redis(url, { maxRetriesPerRequest: 2, enableOfflineQueue: true });
+      global.__redisClient = c;
+      return c;
+    }
+    try {
+      const r = getRedis();
+      if (req.method === 'GET') {
+        const raw = await r.lrange(KEY, '0', '-1');
+        const list = (raw || []).map(function (s) { try { return JSON.parse(s); } catch (e) { return null; } }).filter(Boolean).reverse();
+        return res.json(list);
+      }
+      if (req.method === 'POST') {
+        const body = await getBody();
+        const content = (body.content || '').toString().trim().slice(0, 500);
+        if (!content) return res.status(400).json({ error: 'empty' });
+        const name = (body.name || '').toString().trim().slice(0, 20);
+        const note = { id: Date.now(), name: name || '匿名', content: content, ts: Date.now() };
+        await r.rpush(KEY, JSON.stringify(note));
         return res.json(note);
       }
       return res.status(405).json({ error: 'method_not_allowed' });
