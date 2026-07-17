@@ -67,7 +67,7 @@
 
   /* ---- 液体导航：胶囊本体是描边玻璃（与站点一致），不进 goo；只有液态桥/圆滴在 goo 层 ---- */
   .liquid-nav{
-    position:relative;display:flex;align-items:center;gap:14px;
+    position:relative;display:flex;align-items:center;gap:46px;
   }
 
   /* goo 滤镜层：仅含 液态桥 + 圆滴（实心 accent），滤镜把它们融合成连续液体 */
@@ -168,9 +168,9 @@
         <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 16 -6" result="goo"/>
         <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
       </filter>
-      <filter id="nav-goo" x="-30%" y="-30%" width="160%" height="160%">
-        <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur"/>
-        <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -9" result="goo"/>
+      <filter id="nav-goo" x="-40%" y="-40%" width="180%" height="180%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur"/>
+        <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -8" result="goo"/>
       </filter>
     </defs>
   </svg>
@@ -269,8 +269,8 @@
     if(gap>=0){
       const a=g[gap],b=g[gap+1];
       if(!primed){dropX=mx;dropY=(a.t+a.h/2);primed=true}
-      // 桥接条：两端探入胶囊内部（透过半透明描边可见，形成融合感）
-      const pl=a.r+10, pr=b.l-10;
+      // 桥接条：贯穿两胶囊边缘、两端略探入胶囊内部（goo 模糊后保留为可见液态，透过半透明描边形成融合感）
+      const pl=a.r-6, pr=b.l+6;
       bridges[gap].style.left=pl+'px';
       bridges[gap].style.top=a.t+'px';
       bridges[gap].style.width=(pr-pl)+'px';
