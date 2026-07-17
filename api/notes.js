@@ -123,6 +123,33 @@ module.exports = async (req, res) => {
         await r.rpush(KEY, JSON.stringify(note));
         return res.json(note);
       }
+      // ---- 后台管理：删除 / 编辑单条（需 ADMIN_PASS，前端 /admin.html 用） ----
+      if (req.method === 'DELETE' || req.method === 'PATCH' || req.method === 'PUT') {
+        const ADMIN_PASS = process.env.ADMIN_PASS || 'hL5GGrEaDY7Tzg';
+        const p = (req.query && req.query.pass) || (req.body && req.body.pass) || (req.headers && req.headers['x-admin-pass']);
+        if (p !== ADMIN_PASS) return res.status(401).json({ error: 'unauthorized' });
+        const id = Number((req.query && req.query.id) || (req.body && req.body.id));
+        if (!id) return res.status(400).json({ error: 'missing_id' });
+        const raw = await r.lrange(KEY, '0', '-1');
+        const list = (raw || []).map(function (s) { try { return JSON.parse(s); } catch (e) { return null; } }).filter(Boolean);
+        const idx = list.findIndex(function (o) { return o.id === id; });
+        if (idx < 0) return res.status(404).json({ error: 'not_found' });
+        if (req.method === 'DELETE') {
+          list.splice(idx, 1);
+          await r.del(KEY);
+          if (list.length) await r.rpush(KEY, ...list.map(function (o) { return JSON.stringify(o); }));
+          return res.json({ ok: true, deleted: id });
+        }
+        // PATCH / PUT：编辑内容
+        const body = await getBody();
+        const newContent = (body.content || '').toString().trim().slice(0, 500);
+        if (!newContent) return res.status(400).json({ error: 'empty' });
+        list[idx].content = newContent;
+        list[idx].edited = true;
+        await r.del(KEY);
+        await r.rpush(KEY, ...list.map(function (o) { return JSON.stringify(o); }));
+        return res.json(list[idx]);
+      }
       return res.status(405).json({ error: 'method_not_allowed' });
     } catch (e) {
       return res.status(500).json({ error: String((e && e.message) ? e.message : e) });
