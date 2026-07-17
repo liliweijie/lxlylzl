@@ -160,16 +160,17 @@
     pointer-events: none; /* let mouse events pass through to detect ink cursor pos */
   }
 
-  /* 每条留言 = 一朵飘浮的云 */
+  /* 每条留言 = 一朵飘浮的云（位移/飘动/排异全部由 JS 的 physicsLoop 控制，CSS 不碰 transform） */
   .cloud {
     position: absolute;
+    left: 0; top: 0;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     padding: 10px 20px;
     border-radius: 999px;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.16);
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.14);
     color: var(--text);
     font-size: 14px;
     font-weight: 500;
@@ -180,35 +181,17 @@
     text-overflow: ellipsis;
     pointer-events: auto;
     will-change: transform;
-    /* 入场动画：从底部输入栏位置飘上来 */
-    animation: cloudFloatIn 0.7s cubic-bezier(.22,.9,.3,1) both;
+    opacity: 0;                 /* 由 JS 淡入 */
     user-select: none;
     -webkit-user-select: none;
     box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+    transition: opacity 0.6s ease;
   }
-  .cloud .cloud-name {
-    font-weight: 700;
-    margin-right: 6px;
-    color: var(--accent);
-    flex-shrink: 0;
-  }
-  .cloud .cloud-text { opacity: 0.9; }
+  .cloud.is-in { opacity: 0.55; }
+  .cloud:hover { opacity: 0.9; border-color: rgba(255,255,255,0.28); }
+  .cloud .cloud-text { opacity: 1; }
 
-  @keyframes cloudFloatIn {
-    from { opacity: 0; transform: translateY(40px) scale(0.85); }
-    to   { opacity: 1; transform: translateY(0) scale(1); }
-  }
-
-  /* 云朵自身缓慢飘动 */
-  .cloud-drift {
-    animation: cloudDrift var(--drift-dur, 8s) ease-in-out infinite alternate;
-  }
-  @keyframes cloudDrift {
-    0%   { transform: translate(var(--home-x, 0px), var(--home-y, 0px)) translateY(-6px) rotate(-0.8deg); }
-    100% { transform: translate(var(--home-x, 0px), var(--home-y, 0px)) translateY(6px) rotate(0.8deg); }
-  }
-
-  /* 底部输入色块 */
+  /* 底部输入色块（背景透明，仅输入框本身是暗色 pill，避免下方多一块暗色） */
   .notes-compose {
     position: fixed;
     left: 50%; right: 0;
@@ -217,16 +200,10 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 24px 48px 28px;
-    background: linear-gradient(to top, rgba(14,14,14,0.92) 60%, transparent);
-    -webkit-backdrop-filter: blur(12px);
-    backdrop-filter: blur(12px);
+    padding: 20px 0 26px;
     transform: translateX(-50%);
     width: 520px;
     max-width: 90vw;
-  }
-  [data-theme="light"] .notes-compose {
-    background: linear-gradient(to top, rgba(249,249,249,0.88) 60%, transparent);
   }
 
   .notes-input-wrap {
@@ -235,7 +212,7 @@
     align-items: center;
     gap: 10px;
     height: 52px;
-    padding: 0 18px 0 22px;
+    padding: 0 8px 0 22px;
     border-radius: 999px;
     background: var(--panel);
     border: 1px solid var(--pill-border);
@@ -245,20 +222,6 @@
     border-color: var(--accent);
     box-shadow: 0 0 0 3px rgba(242,76,48,0.12);
   }
-
-  .notes-name {
-    width: 80px;
-    flex-shrink: 0;
-    background: transparent;
-    border: none;
-    color: var(--accent);
-    font-family: inherit;
-    font-size: 13px;
-    font-weight: 600;
-    outline: none;
-    letter-spacing: 0.02em;
-  }
-  .notes-name::placeholder { color: var(--text-muted); opacity: 0.5; font-weight: 400; }
 
   .notes-input {
     flex: 1;
@@ -270,7 +233,7 @@
     outline: none;
     letter-spacing: 0.01em;
   }
-  .notes-input::placeholder { color: var(--text-muted); opacity: 0.5; }
+  .notes-input::placeholder { color: var(--text-muted); opacity: 0.35; }
 
   .notes-send {
     width: 44px; height: 44px;
@@ -361,7 +324,6 @@
   <!-- ===== 底部输入色块 ===== -->
   <form class="notes-compose" id="notesForm" autocomplete="off">
     <div class="notes-input-wrap">
-      <input class="notes-name" id="notesName" type="text" maxlength="20" placeholder="昵称" aria-label="昵称">
       <input class="notes-input" id="notesInput" type="text" maxlength="500" placeholder="Message..." aria-label="留言内容">
     </div>
     <button class="notes-send" type="submit" aria-label="发送">
@@ -468,179 +430,148 @@
   tick();
 })();
 
-// ===== NOTES / 碎碎念 — 飘浮云朵 + 鼠标排异 =====
+// ===== NOTES / 碎碎念 — 飘浮云朵 + 鼠标排异（全部由 JS 控制 transform）=====
 (function() {
   var sky = document.getElementById('notesSky');
   var form = document.getElementById('notesForm');
-  var nameI = document.getElementById('notesName');
   var inputI = document.getElementById('notesInput');
   if (!sky || !form) return;
 
   // ---- 配置 ----
-  var REPEL_RADIUS = 140;    // 排异感应半径(px)
-  var REPEL_FORCE = 180;     // 排斥力度
-  var RETURN_SPEED = 0.045;  // 回归原位速度
-  var FRICTION = 0.88;      // 摩擦力(速度衰减)
-  var NAV_H = 90;            // 导航栏占用高度
-  var INPUT_H = 120;         // 底部输入区占用高度
-  var PADDING = 40;          // 边距
+  var REPEL_RADIUS = 150;   // 排异感应半径(px)
+  var REPEL_FORCE = 230;    // 排斥力度
+  var RETURN_SPEED = 0.05;  // 回归原位速度
+  var FRICTION = 0.86;      // 摩擦力(速度衰减)
+  var NAV_H = 90;           // 导航栏占用高度
+  var INPUT_H = 110;        // 底部输入区占用高度
+  var PADDING = 36;         // 边距
+  var DRIFT_AMP = 16;       // 持续漂移幅度(px)
+  var startT = performance.now();
 
   // ---- 状态 ----
-  var clouds = [];           // { el, homeX, homeY, x, y, vx, vy, w, h }
+  var clouds = [];          // { el, homeX, homeY, x, y, vx, vy, w, h, phase, speed }
   var mouse = { x: -9999, y: -9999 };
 
-  // ---- 监听鼠标位置（用于排异） ----
   document.addEventListener('mousemove', function(e) {
-    mouse.x = e.clientX;
-    mouse.y = e.clientY;
+    mouse.x = e.clientX; mouse.y = e.clientY;
   });
 
+  function randHome(w, h) {
+    var areaW = window.innerWidth - PADDING * 2 - w;
+    var areaH = window.innerHeight - NAV_H - INPUT_H - PADDING * 2 - h;
+    return {
+      x: PADDING + Math.random() * Math.max(areaW, 60),
+      y: NAV_H + PADDING + Math.random() * Math.max(areaH, 60)
+    };
+  }
+
   // ---- 创建一朵云 ----
-  function makeCloud(note, isNew) {
+  function makeCloud(content, fromBottom) {
     var el = document.createElement('div');
-    el.className = 'cloud' + (isNew ? '' : ' cloud-drift');
-
-    var nameSpan = document.createElement('span');
-    nameSpan.className = 'cloud-name';
-    nameSpan.textContent = note.name || '匿名';
-
+    el.className = 'cloud';
     var textSpan = document.createElement('span');
     textSpan.className = 'cloud-text';
-    textSpan.textContent = note.content;
-
-    el.appendChild(nameSpan);
+    textSpan.textContent = content; // textContent 防 XSS
     el.appendChild(textSpan);
     sky.appendChild(el);
 
     // 测量尺寸（需先挂入 DOM）
     var rect = el.getBoundingClientRect();
-    var w = Math.max(rect.width, 100);
-    var h = Math.max(rect.height, 36);
+    var w = Math.max(rect.width, 90);
+    var h = Math.max(rect.height, 34);
 
-    // 随机分布位置（避开导航栏和输入栏）
-    var areaW = window.innerWidth - PADDING * 2 - w;
-    var areaH = window.innerHeight - NAV_H - INPUT_H - PADDING * 2 - h;
-    var homeX = PADDING + Math.random() * Math.max(areaW, 60);
-    var homeY = NAV_H + PADDING + Math.random() * Math.max(areaH, 60);
-
-    // 新消息从输入栏附近飘上来
-    if (isNew) {
-      homeX = window.innerWidth / 2 - w / 2 + (Math.random() - 0.5) * 200;
-      homeY = window.innerHeight - INPUT_H - 80 - Math.random() * 120;
-    }
-
-    // 漂浮动画随机时长
-    var dur = 6 + Math.random() * 8;
-    el.style.setProperty('--drift-dur', dur + 's');
-    el.style.setProperty('--home-x', homeX + 'px');
-    el.style.setProperty('--home-y', homeY + 'px');
-
+    var home = randHome(w, h);
     var cloud = {
-      el: el,
-      homeX: homeX,
-      homeY: homeY,
-      x: homeX,
-      y: homeY,
-      vx: 0,
-      vy: 0,
-      w: w,
-      h: h
+      el: el, homeX: home.x, homeY: home.y,
+      x: home.x, y: home.y, vx: 0, vy: 0,
+      w: w, h: h,
+      phase: Math.random() * Math.PI * 2,
+      speed: 0.4 + Math.random() * 0.7
     };
+    // 新留言从输入栏附近飘上来
+    if (fromBottom) {
+      cloud.x = window.innerWidth / 2 - w / 2;
+      cloud.y = window.innerHeight - INPUT_H - 30;
+      cloud.vy = -3;
+    }
     clouds.push(cloud);
 
-    // 延迟加漂移类（让入场动画先播完）
-    if (!isNew) {
-      setTimeout(function() { el.classList.add('cloud-drift'); }, 700 + Math.random() * 1500);
-    } else {
-      setTimeout(function() { el.classList.add('cloud-drift'); }, 900);
-    }
+    // 淡入
+    requestAnimationFrame(function() { el.classList.add('is-in'); });
     return cloud;
   }
 
-  // ---- 排异物理循环 ----
+  // ---- 物理循环：持续漂移 + 鼠标排异 + 弹簧回拉 ----
   function physicsLoop() {
+    var t = (performance.now() - startT) / 1000;
+    var iw = window.innerWidth, ih = window.innerHeight;
     for (var i = 0; i < clouds.length; i++) {
       var c = clouds[i];
-      var cx = c.x + c.w / 2;
-      var cy = c.y + c.h / 2;
-      var dx = cx - mouse.x;
-      var dy = cy - mouse.y;
-      var dist = Math.sqrt(dx * dx + dy * dy) || 1;
 
+      // 持续漂移的 home 点（正弦）
+      var driftX = Math.sin(t * c.speed + c.phase) * DRIFT_AMP;
+      var driftY = Math.cos(t * c.speed * 0.8 + c.phase) * DRIFT_AMP;
+      var hx = c.homeX + driftX;
+      var hy = c.homeY + driftY;
+
+      // 鼠标排异
+      var cx = c.x + c.w / 2, cy = c.y + c.h / 2;
+      var dx = cx - mouse.x, dy = cy - mouse.y;
+      var dist = Math.sqrt(dx * dx + dy * dy) || 1;
       if (dist < REPEL_RADIUS) {
-        // 距离越近，排斥力越大
         var force = (1 - dist / REPEL_RADIUS) * REPEL_FORCE;
         c.vx += (dx / dist) * force;
         c.vy += (dy / dist) * force;
       }
 
-      // 回归原位的弹簧力
-      c.vx += (c.homeX - c.x) * RETURN_SPEED;
-      c.vy += (c.homeY - c.y) * RETURN_SPEED;
+      // 弹簧回拉到漂移中的 home
+      c.vx += (hx - c.x) * RETURN_SPEED;
+      c.vy += (hy - c.y) * RETURN_SPEED;
 
-      // 摩擦衰减
-      c.vx *= FRICTION;
-      c.vy *= FRICTION;
-
-      // 积分
-      c.x += c.vx;
-      c.y += c.vy;
+      // 摩擦衰减 + 积分
+      c.vx *= FRICTION; c.vy *= FRICTION;
+      c.x += c.vx; c.y += c.vy;
 
       // 边界约束
-      var maxX = window.innerWidth - c.w - PADDING;
-      var maxY = window.innerHeight - INPUT_H - c.h - PADDING;
+      var maxX = iw - c.w - PADDING, maxY = ih - INPUT_H - c.h - PADDING;
       c.x = Math.max(PADDING, Math.min(c.x, maxX));
       c.y = Math.max(NAV_H, Math.min(c.y, maxY));
 
-      // 应用位移（覆盖 CSS drift 的 base position）
-      var offsetX = c.x - c.homeX;
-      var offsetY = c.y - c.homeY;
-      c.el.style.transform = 'translate(' + offsetX + 'px,' + offsetY + 'px)';
+      // 唯一控制 transform 的地方
+      c.el.style.transform = 'translate(' + c.x + 'px,' + c.y + 'px)';
     }
     requestAnimationFrame(physicsLoop);
   }
-
-  // 启动物理循环
   physicsLoop();
 
-  // ---- 加载留言 ----
+  // ---- 加载已有留言 ----
   fetch('/api/notes')
     .then(function(r) { return r.json(); })
     .then(function(arr) {
-      if (!Array.isArray(arr) || !arr.length) return;
-      arr.forEach(function(n) { makeCloud(n, false); });
+      if (Array.isArray(arr)) arr.forEach(function(n) { makeCloud(n.content, false); });
     })
     .catch(function() {});
 
-  // ---- 发送 ----
+  // ---- 发送（乐观：先显示，再存后端） ----
   form.addEventListener('submit', function(e) {
     e.preventDefault();
     var content = inputI.value.trim();
     if (!content) return;
-    var name = nameI.value.trim();
 
-    // 颤一颤！
+    // 输入栏颤一颤
     form.classList.remove('is-shaking');
-    void form.offsetWidth; // 强制 reflow 重置动画
+    void form.offsetWidth;
     form.classList.add('is-shaking');
     setTimeout(function() { form.classList.remove('is-shaking'); }, 500);
+
+    inputI.value = '';
+    makeCloud(content, true); // 立刻飘出来
 
     fetch('/api/notes', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: name, content: content })
-    })
-    .then(function(r) { return r.json(); })
-    .then(function(note) {
-      inputI.value = '';
-      makeCloud(note, true);
-    })
-    .catch(function() {});
-  });
-
-  // ---- 窗口 resize 时重新计算边界（云的 home 位置不重算，只约束） ----
-  window.addEventListener('resize', function() {
-    // 物理循环里的边界约束会自动处理
+      body: JSON.stringify({ content: content })
+    }).catch(function() {});
   });
 })();
 
