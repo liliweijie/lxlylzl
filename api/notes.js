@@ -1,6 +1,12 @@
 module.exports = async (req, res) => {
   res.setHeader('Content-Type', 'application/json');
+  // 完整 CORS 头：允许跨域（含自定义鉴权头），否则浏览器预检 OPTIONS 失败 -> 前端报"网络错误"
   res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, PATCH, PUT, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-admin-user, x-admin-pass');
+
+  // 处理浏览器跨域预检（OPTIONS），必须 2xx 且带上面的 CORS 头
+  if (req.method === 'OPTIONS') return res.status(204).end();
 
   const GIST_ID = process.env.GIST_ID;
   const GH_TOKEN = process.env.GITHUB_TOKEN;
@@ -80,6 +86,12 @@ module.exports = async (req, res) => {
     list[idx].edited = true;
     await store.save(list);
     return res.json(list[idx]);
+  }
+
+  // 登录探测：GET ?probe=1 校验账号密码（凭 query 或 header），不依赖具体存储后端
+  if (req.method === 'GET' && req.query && req.query.probe === '1') {
+    if (!isAdmin(req)) return res.status(401).json({ error: 'unauthorized' });
+    return res.json({ ok: true });
   }
 
   // ---- 优先：Vercel KV（Upstash） ----
