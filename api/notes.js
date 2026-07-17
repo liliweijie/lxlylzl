@@ -60,7 +60,19 @@ module.exports = async (req, res) => {
         const content = (body.content || '').toString().trim().slice(0, 500);
         if (!content) return res.status(400).json({ error: 'empty' });
         const name = (body.name || '').toString().trim().slice(0, 20);
-        const note = { id: Date.now(), name: name || '匿名', content: content, ts: Date.now() };
+        // 回复某条留言（嵌套 replies）
+        if (body.parentId) {
+          const raw = await kv(['LRANGE', KEY, '0', '-1']);
+          const list = (raw || []).map(function (s) { try { return JSON.parse(s); } catch (e) { return null; } }).filter(Boolean);
+          const target = list.find(function (o) { return o.id === body.parentId; });
+          if (!target) return res.status(404).json({ error: 'not_found' });
+          target.replies = target.replies || [];
+          target.replies.push({ id: Date.now(), name: name || '匿名', content: content, ts: Date.now() });
+          await kv(['DEL', KEY]);
+          await kv(['RPUSH', KEY].concat(list.map(function (o) { return JSON.stringify(o); })));
+          return res.json(target);
+        }
+        const note = { id: Date.now(), name: name || '匿名', content: content, ts: Date.now(), replies: [] };
         await kv(['RPUSH', KEY, JSON.stringify(note)]);
         return res.json(note);
       }
@@ -96,7 +108,18 @@ module.exports = async (req, res) => {
         const content = (body.content || '').toString().trim().slice(0, 500);
         if (!content) return res.status(400).json({ error: 'empty' });
         const name = (body.name || '').toString().trim().slice(0, 20);
-        const note = { id: Date.now(), name: name || '匿名', content: content, ts: Date.now() };
+        // 回复某条留言（嵌套 replies）
+        if (body.parentId) {
+          const raw = await r.lrange(KEY, '0', '-1');
+          const list = (raw || []).map(function (s) { try { return JSON.parse(s); } catch (e) { return null; } }).filter(Boolean);
+          const target = list.find(function (o) { return o.id === body.parentId; });
+          if (!target) return res.status(404).json({ error: 'not_found' });
+          target.replies = target.replies || [];
+          target.replies.push({ id: Date.now(), name: name || '匿名', content: content, ts: Date.now() });
+          await r.multi().del(KEY).rpush(KEY, ...list.map(function (o) { return JSON.stringify(o); })).exec();
+          return res.json(target);
+        }
+        const note = { id: Date.now(), name: name || '匿名', content: content, ts: Date.now(), replies: [] };
         await r.rpush(KEY, JSON.stringify(note));
         return res.json(note);
       }

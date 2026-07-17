@@ -269,6 +269,98 @@
     animation: sendShake 0.45s cubic-bezier(.36,.07,.19,.97);
   }
 
+  /* ===== 抓住态：catch you 标签 + 回复面板 ===== */
+  .cloud.is-caught {
+    opacity: 0.96 !important;
+    border-color: var(--accent);
+    z-index: 60;
+  }
+
+  /* 抓住后跟随在云朵下方的面板（毛玻璃） */
+  .cloud-catch {
+    position: absolute;
+    left: 0; top: 0;
+    width: 300px;
+    max-width: 82vw;
+    padding: 14px 16px 14px;
+    border-radius: 18px;
+    background: rgba(18,18,18,0.72);
+    border: 1px solid rgba(255,255,255,0.18);
+    box-shadow: 0 12px 44px rgba(0,0,0,0.45);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    z-index: 55;
+    display: none;
+    pointer-events: auto;
+    will-change: transform;
+  }
+  [data-theme="light"] .cloud-catch { background: rgba(245,245,245,0.82); }
+  .cloud-catch.is-on { display: block; }
+
+  .catch-label {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: lowercase;
+    color: var(--text);
+    opacity: 0.25;            /* 25% 透明度 */
+    margin-bottom: 10px;
+  }
+
+  .catch-replies {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 168px;
+    overflow-y: auto;
+    margin-bottom: 10px;
+  }
+  .catch-reply {
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--text-muted);
+    padding: 8px 11px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.10);
+    word-break: break-word;
+  }
+
+  .catch-form { display: flex; align-items: center; gap: 8px; }
+  .catch-input {
+    flex: 1;
+    height: 40px;
+    padding: 0 14px;
+    border-radius: 999px;
+    background: var(--panel);
+    border: 1px solid var(--pill-border);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 13px;
+    outline: none;
+    letter-spacing: 0.01em;
+  }
+  .catch-input::placeholder { color: var(--text-muted); opacity: 0.4; }
+  .catch-input:focus { border-color: var(--accent); }
+  .catch-send {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: var(--text);
+    color: var(--bg);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.15s;
+  }
+  .catch-send:hover { transform: scale(1.08); }
+  .catch-send:active { transform: scale(0.94); }
+  .catch-send svg {
+    width: 18px; height: 18px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
+  }
+
   /* ===== RESPONSIVE ===== */
   @media (max-width: 900px) {
     .top-nav { padding: 16px 24px; gap: 10px; }
@@ -430,7 +522,7 @@
   tick();
 })();
 
-// ===== NOTES / 碎碎念 — 飘浮云朵 + 鼠标排异（全部由 JS 控制 transform）=====
+// ===== NOTES / 碎碎念 — 飘浮云朵 + 鼠标排异 + 抓住/回复（全部由 JS 控制 transform）=====
 (function() {
   var sky = document.getElementById('notesSky');
   var form = document.getElementById('notesForm');
@@ -439,18 +531,20 @@
 
   // ---- 配置 ----
   var REPEL_RADIUS = 150;   // 排异感应半径(px)
-  var REPEL_FORCE = 230;    // 排斥力度
+  var REPEL_FORCE = 110;    // 排斥力度（调小：逃离更温和，仍有机会被抓住）
   var RETURN_SPEED = 0.05;  // 回归原位速度
   var FRICTION = 0.86;      // 摩擦力(速度衰减)
   var NAV_H = 90;           // 导航栏占用高度
   var INPUT_H = 110;        // 底部输入区占用高度
   var PADDING = 36;         // 边距
   var DRIFT_AMP = 16;       // 持续漂移幅度(px)
+  var CATCH_SCALE = 1.12;   // 抓住时放大系数
   var startT = performance.now();
 
   // ---- 状态 ----
-  var clouds = [];          // { el, homeX, homeY, x, y, vx, vy, w, h, phase, speed }
+  var clouds = [];          // { el, panel, replyList, replyForm, note, replies, homeX, homeY, x, y, vx, vy, w, h, phase, speed, caught, dragging }
   var mouse = { x: -9999, y: -9999 };
+  var dragOff = { x: 0, y: 0 };
 
   document.addEventListener('mousemove', function(e) {
     mouse.x = e.clientX; mouse.y = e.clientY;
@@ -465,48 +559,152 @@
     };
   }
 
-  // ---- 创建一朵云 ----
-  function makeCloud(content, fromBottom) {
+  // 释放所有被抓住的云
+  function releaseAll() {
+    for (var i = 0; i < clouds.length; i++) {
+      var c = clouds[i];
+      if (c.caught) {
+        c.caught = false; c.dragging = false;
+        c.el.classList.remove('is-caught');
+        c.panel.classList.remove('is-on');
+      }
+    }
+  }
+
+  // ---- 创建一朵云（note = { id, name, content, ts, replies }） ----
+  function makeCloud(note, fromBottom) {
     var el = document.createElement('div');
     el.className = 'cloud';
     var textSpan = document.createElement('span');
     textSpan.className = 'cloud-text';
-    textSpan.textContent = content; // textContent 防 XSS
+    textSpan.textContent = note.content; // textContent 防 XSS
     el.appendChild(textSpan);
     sky.appendChild(el);
 
-    // 测量尺寸（需先挂入 DOM）
+    // 抓住后的面板（catch you + 回复列表 + 回复框）
+    var panel = document.createElement('div');
+    panel.className = 'cloud-catch';
+    var label = document.createElement('div');
+    label.className = 'catch-label';
+    label.textContent = 'catch you';
+    var replyList = document.createElement('div');
+    replyList.className = 'catch-replies';
+    var replyForm = document.createElement('form');
+    replyForm.className = 'catch-form';
+    replyForm.innerHTML = '<input class="catch-input" type="text" maxlength="500" placeholder="回复这条..." aria-label="回复内容">' +
+      '<button class="catch-send" type="submit" aria-label="回复"><svg viewBox="0 0 24 24"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg></button>';
+    panel.appendChild(label);
+    panel.appendChild(replyList);
+    panel.appendChild(replyForm);
+    sky.appendChild(panel);
+
+    var cloud = {
+      el: el, panel: panel, replyList: replyList, replyForm: replyForm,
+      note: note, replies: note.replies || [],
+      homeX: 0, homeY: 0,
+      x: 0, y: 0, vx: 0, vy: 0,
+      w: 0, h: 0,
+      phase: Math.random() * Math.PI * 2,
+      speed: 0.4 + Math.random() * 0.7,
+      caught: false, dragging: false
+    };
+    var c = cloud;
+
+    function renderReplies() {
+      replyList.innerHTML = '';
+      for (var k = 0; k < c.replies.length; k++) {
+        var rp = c.replies[k];
+        var row = document.createElement('div');
+        row.className = 'catch-reply';
+        row.textContent = (rp.name ? rp.name + '：' : '') + rp.content;
+        replyList.appendChild(row);
+      }
+      replyList.scrollTop = replyList.scrollHeight;
+    }
+    c.renderReplies = renderReplies;
+    renderReplies();
+
+    // 测量尺寸
     var rect = el.getBoundingClientRect();
     var w = Math.max(rect.width, 90);
     var h = Math.max(rect.height, 34);
-
     var home = randHome(w, h);
-    var cloud = {
-      el: el, homeX: home.x, homeY: home.y,
-      x: home.x, y: home.y, vx: 0, vy: 0,
-      w: w, h: h,
-      phase: Math.random() * Math.PI * 2,
-      speed: 0.4 + Math.random() * 0.7
-    };
+    c.w = w; c.h = h; c.homeX = home.x; c.homeY = home.y;
+    c.x = home.x; c.y = home.y;
+
     // 新留言从输入栏附近飘上来
     if (fromBottom) {
-      cloud.x = window.innerWidth / 2 - w / 2;
-      cloud.y = window.innerHeight - INPUT_H - 30;
-      cloud.vy = -3;
+      c.x = window.innerWidth / 2 - w / 2;
+      c.y = window.innerHeight - INPUT_H - 30;
+      c.vy = -3;
     }
-    clouds.push(cloud);
+    clouds.push(c);
+
+    // 抓住：在云朵上按下 -> 抓住 + 拖动
+    el.addEventListener('mousedown', function(e) {
+      e.stopPropagation();
+      c.caught = true; c.dragging = true;
+      dragOff.x = mouse.x - c.x;
+      dragOff.y = mouse.y - c.y;
+      c.el.classList.add('is-caught');
+      c.panel.classList.add('is-on');
+    });
+
+    // 回复提交（乐观 + 持久化）
+    replyForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      var inp = replyForm.querySelector('.catch-input');
+      var content2 = inp.value.trim();
+      if (!content2) return;
+      var reply = { id: Date.now(), name: '匿名', content: content2, ts: Date.now() };
+      c.replies.push(reply);
+      renderReplies();
+      inp.value = '';
+      fetch('/api/notes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: content2, parentId: c.note.id })
+      }).catch(function() {});
+    });
 
     // 淡入
     requestAnimationFrame(function() { el.classList.add('is-in'); });
-    return cloud;
+    return c;
   }
 
-  // ---- 物理循环：持续漂移 + 鼠标排异 + 弹簧回拉 ----
+  // 点击空白处释放所有被抓住的云
+  document.addEventListener('mousedown', function(e) {
+    if (!e.target.closest('.cloud') && !e.target.closest('.cloud-catch')) {
+      releaseAll();
+    }
+  });
+  // 松开鼠标：停止拖动（保持抓住/钉住态，可键盘输入回复）
+  document.addEventListener('mouseup', function() {
+    for (var i = 0; i < clouds.length; i++) if (clouds[i].dragging) clouds[i].dragging = false;
+  });
+
+  // ---- 物理循环：持续漂移 + 鼠标排异 + 抓住态 ----
   function physicsLoop() {
     var t = (performance.now() - startT) / 1000;
     var iw = window.innerWidth, ih = window.innerHeight;
     for (var i = 0; i < clouds.length; i++) {
       var c = clouds[i];
+
+      // 抓住态：跟随鼠标拖拽，或钉住静止（不逃离、不回归）
+      if (c.caught) {
+        if (c.dragging) {
+          c.x = mouse.x - dragOff.x;
+          c.y = mouse.y - dragOff.y;
+          c.vx = 0; c.vy = 0;
+        }
+        var maxX = iw - c.w - PADDING, maxY = ih - INPUT_H - c.h - PADDING;
+        c.x = Math.max(PADDING, Math.min(c.x, maxX));
+        c.y = Math.max(NAV_H, Math.min(c.y, maxY));
+        c.el.style.transform = 'translate(' + c.x + 'px,' + c.y + 'px) scale(' + CATCH_SCALE + ')';
+        // 面板跟随到云朵下方
+        c.panel.style.transform = 'translate(' + c.x + 'px,' + (c.y + c.h + 10) + 'px)';
+        continue;
+      }
 
       // 持续漂移的 home 点（正弦）
       var driftX = Math.sin(t * c.speed + c.phase) * DRIFT_AMP;
@@ -533,9 +731,9 @@
       c.x += c.vx; c.y += c.vy;
 
       // 边界约束
-      var maxX = iw - c.w - PADDING, maxY = ih - INPUT_H - c.h - PADDING;
-      c.x = Math.max(PADDING, Math.min(c.x, maxX));
-      c.y = Math.max(NAV_H, Math.min(c.y, maxY));
+      var maxX2 = iw - c.w - PADDING, maxY2 = ih - INPUT_H - c.h - PADDING;
+      c.x = Math.max(PADDING, Math.min(c.x, maxX2));
+      c.y = Math.max(NAV_H, Math.min(c.y, maxY2));
 
       // 唯一控制 transform 的地方
       c.el.style.transform = 'translate(' + c.x + 'px,' + c.y + 'px)';
@@ -548,11 +746,11 @@
   fetch('/api/notes')
     .then(function(r) { return r.json(); })
     .then(function(arr) {
-      if (Array.isArray(arr)) arr.forEach(function(n) { makeCloud(n.content, false); });
+      if (Array.isArray(arr)) arr.forEach(function(n) { makeCloud(n, false); });
     })
     .catch(function() {});
 
-  // ---- 发送（乐观：先显示，再存后端） ----
+  // ---- 发送顶层留言（乐观：先显示，再存后端） ----
   form.addEventListener('submit', function(e) {
     e.preventDefault();
     var content = inputI.value.trim();
@@ -565,7 +763,8 @@
     setTimeout(function() { form.classList.remove('is-shaking'); }, 500);
 
     inputI.value = '';
-    makeCloud(content, true); // 立刻飘出来
+    var note = { id: Date.now(), name: '匿名', content: content, ts: Date.now(), replies: [] };
+    makeCloud(note, true); // 立刻飘出来
 
     fetch('/api/notes', {
       method: 'POST',
