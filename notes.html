@@ -752,10 +752,10 @@
         c.x = Math.max(PADDING, Math.min(c.x, maxX));
         c.y = Math.max(NAV_H, Math.min(c.y, maxY));
         c.el.style.transform = 'translate(' + c.x + 'px,' + c.y + 'px) scale(' + CATCH_SCALE + ')';
-        // 面板跟随到云朵下方
-        c.panel.style.transform = 'translate(' + c.x + 'px,' + (c.y + c.h + 10) + 'px)';
-        // catch you 落在云朵框的左下方外部（略微左移并低于底边）
-        c.label.style.transform = 'translate(' + (c.x - 14) + 'px,' + (c.y + c.h + 8) + 'px)';
+        // 面板跟随到云朵下方（整体下移，给 catch you 留出框外空间）
+        c.panel.style.transform = 'translate(' + c.x + 'px,' + (c.y + c.h + 28) + 'px)';
+        // catch you 紧贴云朵框底、左偏 14px（在回复框上方，明确处于框外左下方）
+        c.label.style.transform = 'translate(' + (c.x - 14) + 'px,' + (c.y + c.h + 4) + 'px)';
         continue;
       }
 
