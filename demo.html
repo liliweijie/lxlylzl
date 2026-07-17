@@ -14,7 +14,7 @@
     --bg: #0E0E0E;
     --text: #F9F9F9;
     --text-muted: #DBDBDB;
-    --panel: #262626;
+    --panel: #2A2A2A;
     --accent: #F24C30;
     --pill-bg: rgba(255,255,255,0.08);
     --pill-border: rgba(255,255,255,0.14);
@@ -23,7 +23,7 @@
     --bg: #F9F9F9;
     --text: #0E0E0E;
     --text-muted: #262626;
-    --panel: #DBDBDB;
+    --panel: #CFCFCF;
     --pill-bg: rgba(0,0,0,0.07);
     --pill-border: rgba(0,0,0,0.12);
   }
@@ -65,69 +65,51 @@
   .demo-hint{font-size:.92rem;color:var(--text-muted);letter-spacing:.04em;text-align:center;max-width:520px;line-height:1.8;}
   .demo-hint b{color:var(--accent);font-weight:600;}
 
-  /* ---- 液体容器：goo 滤镜作用于此层内所有 .nl-body + .nl-bridge ---- */
+  /* ---- 液体导航：flex 仅用于占位/布局，胶囊可见本体全部在 goo 层 ---- */
   .liquid-nav{
     position:relative;display:flex;align-items:center;gap:14px;
   }
-  /* 液体层：绝对定位覆盖整个区域，挂 goo 滤镜 */
+  /* goo 滤镜层：包含 胶囊本体 + 桥 + 圆滴，全部不透明 -> 滤镜把它们融合 */
   .ln-goo-layer{
-    position:absolute;inset:-40px -20px;z-index:1;
+    position:absolute;inset:0;z-index:1;
     filter:url(#nav-goo);
     pointer-events:none;
   }
-  /* 每个"液态胶囊"的可见实体 */
-  .nl-item{
-    position:relative;z-index:2;
-    display:inline-flex;align-items:center;justify-content:center;
-    height:64px; min-width:120px; padding:0 36px;
-    text-decoration:none;color:var(--text);font-size:1.35rem;font-weight:600;
-    letter-spacing:.08em;white-space:nowrap;
-    /* 原胶囊本身透明——可见部分由 ln-goo-layer 内的 .nl-body 绘制 */
-    background:transparent;border:none;
-    cursor:pointer;
-  }
-  /* 液态胶囊本体（放在 goo 层里，会被滤镜融合） */
+  /* 液态胶囊本体（不透明，挂 goo 层内，会被融合）*/
   .nl-body{
     position:absolute;top:0;left:0;
-    height:100%;width:100%;
     border-radius:100px;
-    background:var(--pill-bg);
-    border:2px solid var(--pill-border);
-    transition:border-color .25s;
-    will-change:transform,width,left;
-  }
-  .nl-item:hover .nl-body,
-  .nl-item.is-hovered .nl-body{border-color:var(--accent);}
-  .nl-item.is-active .nl-body{
     background:var(--panel);
-    border-color:var(--text-muted);
+    will-change:left,top,width,height,transform;
   }
-  /* 文字浮在 goo 层之上（不被模糊/融合） */
-  .nl-text{
-    position:relative;z-index:3;
-    pointer-events:none;
-  }
-
-  /* 桥接体：两颗胶囊之间冒出的液态桥（也在 goo 层里） */
+  /* 桥接体：两颗胶囊之间冒出的液态桥 */
   .nl-bridge{
-    position:absolute;top:0;height:64px;
-    background:var(--pill-bg);
-    border:2px solid var(--pill-border);
+    position:absolute;top:0;
+    border-radius:100px;
+    background:var(--panel);
     opacity:0;
-    transition:opacity .12s ease;
-    will-change:transform,width,left;
+    will-change:left,top,width,height;
   }
   /* 中间的小圆滴 o */
   .nl-drop{
-    position:absolute;top:50%;
-    width:20px;height:20px;margin:-10px 0 0 -10px;
+    position:absolute;top:0;left:0;
+    width:22px;height:22px;margin:-11px 0 0 -11px;
     border-radius:50%;
-    background:var(--pill-bg);
-    border:2px solid var(--pill-border);
+    background:var(--panel);
     opacity:0;
-    transition:opacity .18s ease;
-    will-change:transform;
+    will-change:left,top;
   }
+
+  /* 胶囊（透明容器，仅占位+文字+点击）浮在 goo 层之上 */
+  .nl-item{
+    position:relative;z-index:2;
+    display:inline-flex;align-items:center;justify-content:center;
+    height:64px;min-width:120px;padding:0 36px;
+    color:var(--text);font-size:1.35rem;font-weight:600;
+    letter-spacing:.08em;white-space:nowrap;
+    background:transparent;border:none;text-decoration:none;cursor:pointer;
+  }
+  .nl-text{position:relative;z-index:3;pointer-events:none;}
 
   /* duang 弹动 */
   @keyframes duang{
@@ -141,7 +123,6 @@
 
   @media(max-width:720px){
     .nl-item{height:52px;min-width:90px;padding:0 24px;font-size:1.05rem;}
-    .nl-bridge{height:52px;}
   }
 </style>
 </head>
@@ -161,14 +142,11 @@
     </button>
   </nav>
 
-  <!-- ===== DEMO ===== -->
   <div class="demo-stage">
     <p class="demo-hint">把鼠标从 <b>首页</b> 缓缓移向 <b>作品</b><br>看两个胶囊之间如何像液体一样<b>拉丝 → 融合 → 分离</b></p>
 
     <div class="liquid-nav" id="liquidNav">
-      <!-- goo 滤镜层：所有 nl-body + nl-bridge 在此融合 -->
       <div class="ln-goo-layer" id="gooLayer"></div>
-
       <a class="nl-item is-active" data-i="0"><span class="nl-text">首页</span></a>
       <a class="nl-item" data-i="1"><span class="nl-text">作品</span></a>
       <a class="nl-item" data-i="2"><span class="nl-text">关于</span></a>
@@ -176,7 +154,6 @@
     </div>
   </div>
 
-  <!-- INK CURSOR -->
   <div id="inkLayer" class="is-hidden">
     <div class="ink-goo">
       <div class="ink-blob"></div><div class="ink-blob"></div><div class="ink-blob"></div>
@@ -191,10 +168,9 @@
         <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 16 -6" result="goo"/>
         <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
       </filter>
-      <!-- 导航胶囊液体融合滤镜：更强模糊 + 更高阈值让桥更圆润 -->
-      <filter id="nav-goo">
-        <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur"/>
-        <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -11" result="goo"/>
+      <filter id="nav-goo" x="-30%" y="-30%" width="160%" height="160%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="9" result="blur"/>
+        <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -9" result="goo"/>
         <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
       </filter>
     </defs>
@@ -237,31 +213,26 @@
   tick();
 })();
 
-// ===== NAV LIQUID TRANSITION：胶囊间 goo 液体桥 =====
+// ===== NAV LIQUID TRANSITION：胶囊本体间 goo 液体桥 =====
 (function(){
   const nav=document.getElementById('liquidNav');
   const goo=document.getElementById('gooLayer');
   const items=[...nav.querySelectorAll('.nl-item')];
   const N=items.length;
 
-  // 为每个胶囊创建 goo 层内的液态本体
-  items.forEach(function(it){
-    const b=document.createElement('div');b.className='nl-body';it.appendChild(b);
+  // 注入：每颗胶囊的液态本体 + 每间隙的桥 + 圆滴（全部在 goo 层内）
+  const bodies=items.map(function(){
+    const b=document.createElement('div');b.className='nl-body';goo.appendChild(b);return b;
   });
-  const bodies=items.map(it=>it.querySelector('.nl-body'));
-
-  // 为每个间隙创建桥接体 + 圆滴（预创建，默认隐藏）
-  const bridges=[];const drops=[];
+  const bridges=[],drops=[];
   for(let i=0;i<N-1;i++){
     const br=document.createElement('div');br.className='nl-bridge';goo.appendChild(br);bridges.push(br);
     const dr=document.createElement('div');dr.className='nl-drop';goo.appendChild(dr);drops.push(dr);
   }
 
-  let mx=-9999,my=-9999;     // 鼠标相对 nav 坐标
-  let dropX=-9999,dropY=-9999;// 圆滴缓动坐标
-  let gap=-1;                  // 当前所在间隙索引(-1=无)
-  let lastItem=-1;             // 最近所在的胶囊索引
-  let primed=false;            // 是否已给圆滴设初值
+  let mx=-9999,my=-9999;
+  let dropX=-9999,dropY=-9999;
+  let gap=-1,lastItem=-1,primed=false;
 
   function geo(){
     const r=nav.getBoundingClientRect();
@@ -271,55 +242,47 @@
     });
   }
 
-  function showBridge(i,on){
-    bridges[i].style.opacity=on?'1':'0';
-    drops[i].style.opacity=on?'1':'0';
-  }
-
   function triggerDuang(i){
-    const b=bodies[i];b.classList.remove('duang');
-    void b.offsetWidth;b.classList.add('duang');
+    const b=bodies[i];b.classList.remove('duang');void b.offsetWidth;b.classList.add('duang');
   }
   bodies.forEach(b=>b.addEventListener('animationend',()=>b.classList.remove('duang')));
-
-  // hover 态同步到液态本体
-  items.forEach((it,i)=>{
-    it.addEventListener('mouseenter',function(){it.classList.add('is-hovered')});
-    it.addEventListener('mouseleave',function(){it.classList.remove('is-hovered')});
-  });
 
   nav.addEventListener('mousemove',function(e){
     const r=nav.getBoundingClientRect();mx=e.clientX-r.left;my=e.clientY-r.top;
   });
-  nav.addEventListener('mouseleave',function(){gap=-1;lastItem=-1;bridges.forEach((b,i)=>showBridge(i,false));});
+  nav.addEventListener('mouseleave',function(){gap=-1;lastItem=-1;bridges.forEach(b=>b.style.opacity='0');drops.forEach(d=>d.style.opacity='0');});
 
   function updateZone(g){
-    // 1) 落在某颗胶囊上 -> 到达 -> duang
-    for(let i=0;i<N;i++){if(mx>=g[i].l&&mx<=g[i].r){if(lastItem!==i){triggerDuang(i);lastItem=i}gap=-1;bridges.forEach((_,j)=>showBridge(j,false));return}}
-    // 2) 落在相邻间隙 -> 拉出液体桥
-    for(let i=0;i<N-1;i++){if(mx>g[i].r&&mx<g[i+1].l){gap=i;showBridge(i,true);return}}
-    // 3) 外侧
-    gap=-1;lastItem=-1;bridges.forEach((_,i)=>showBridge(i,false));
+    for(let i=0;i<N;i++){if(mx>=g[i].l&&mx<=g[i].r){if(lastItem!==i){triggerDuang(i);lastItem=i}gap=-1;bridges.forEach(b=>b.style.opacity='0');drops.forEach(d=>d.style.opacity='0');return}}
+    for(let i=0;i<N-1;i++){if(mx>g[i].r&&mx<g[i+1].l){gap=i;bridges[i].style.opacity='1';drops[i].style.opacity='1';return}}
+    gap=-1;lastItem=-1;bridges.forEach(b=>b.style.opacity='0');drops.forEach(d=>d.style.opacity='0');
   }
 
   function animate(){
     const g=geo();
+    // 定位每颗胶囊本体（匹配 item 矩形）
+    for(let i=0;i<N;i++){
+      const it=items[i],b=bodies[i];
+      b.style.left=g[i].l+'px';b.style.top=g[i].t+'px';
+      b.style.width=g[i].w+'px';b.style.height=g[i].h+'px';
+      // 当前所在胶囊高亮（用更亮背景模拟 hover）
+      b.style.background = (it.classList.contains('is-hovered')||it===document.querySelector('.nl-item:hover')) ? 'var(--accent)' : 'var(--panel)';
+    }
     updateZone(g);
 
     if(gap>=0){
       const a=g[gap],b=g[gap+1];
-      if(!primed){dropX=mx;dropY=my;primed=true}
-
-      // 桥接条：两端探入胶囊内部（粘滞感），宽度随距离变化
-      const pl=a.r+6,pr=b.l-6;       // 探入量 6px
-      const bw=pr-pl;
+      if(!primed){dropX=mx;dropY=(a.t+a.h/2);primed=true}
+      // 桥接条：两端探入胶囊内部（粘滞融合）
+      const pl=a.r+4, pr=b.l-4;
       bridges[gap].style.left=pl+'px';
-      bridges[gap].style.width=bw+'px';
-
-      // 圆滴跟随光标（缓动营造拖尾粘滞）
-      dropX+=(mx-dropX)*.18;dropY+=(my-dropY)*.18;
+      bridges[gap].style.top=a.t+'px';
+      bridges[gap].style.width=(pr-pl)+'px';
+      bridges[gap].style.height=a.h+'px';
+      // 圆滴跟随光标（缓动粘滞）
+      dropX+=(mx-dropX)*.2;dropY+=(my-dropY)*.2;
       drops[gap].style.left=dropX+'px';
-      drops[gap].style.top=(dropY||a.t+a.h/2)+'px';
+      drops[gap].style.top=dropY+'px';
     }else{primed=false}
 
     requestAnimationFrame(animate);
