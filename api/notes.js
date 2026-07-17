@@ -22,12 +22,28 @@ module.exports = async (req, res) => {
   }
   const UP = findUpstash();
 
-  // 临时探测：仅返回后端类型与变量是否注入（不泄露任何密钥）
-  if (req.query && req.query.status === '1') {
+  // 临时探测 / 清理（验证后删除）：仅返回后端类型与变量是否注入（不泄露任何密钥）
+  if (req.query && (req.query.status === '1' || req.query.flush === '1')) {
     let backend = 'memory';
     if (UP) backend = 'redis';
     else if (process.env.REDIS_URL) backend = 'redis';
     else if (GIST_ID && GH_TOKEN) backend = 'gist';
+    if (req.query.flush === '1') {
+      try {
+        if (global.__redisClient) await global.__redisClient.del(KEY);
+        else if (process.env.REDIS_URL) {
+          const Redis = require('ioredis');
+          let u = process.env.REDIS_URL;
+          if (/upstash\.io/i.test(u) && u.indexOf('redis://') === 0) u = 'rediss://' + u.slice('redis://'.length);
+          const rc = new Redis(u, { maxRetriesPerRequest: 2 });
+          await rc.del(KEY);
+          rc.disconnect();
+        }
+        return res.json({ flushed: true, backend: backend });
+      } catch (e) {
+        return res.status(500).json({ error: String(e && e.message ? e.message : e) });
+      }
+    }
     const keys = Object.keys(process.env).filter(function (k) {
       return /STORAGE|REDIS|KV|UPSTASH|REST|GITHUB|GIST/i.test(k);
     });
