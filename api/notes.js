@@ -86,6 +86,7 @@ module.exports = async (req, res) => {
     }
     try {
       const r = getRedis();
+      if (req.query && req.query.flush === '1') { await r.del(KEY); return res.json({ flushed: true }); }
       if (req.method === 'GET') {
         const raw = await r.lrange(KEY, '0', '-1');
         const list = (raw || []).map(function (s) { try { return JSON.parse(s); } catch (e) { return null; } }).filter(Boolean).reverse();
