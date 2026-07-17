@@ -196,7 +196,7 @@ module.exports = async (req, res) => {
         await r.rpush(KEY, JSON.stringify(note));
         return res.json(note);
       }
-      // ---- 后台管理：删除 / 编辑单条 / 清空全部（需账号+密码，前端 /admin.html 用） ----
+      // ---- 后台管理：删除 / 编辑单条 / 清空全部（需账号+密码，前端 /1993 用） ----
       if (req.method === 'DELETE' || req.method === 'PATCH' || req.method === 'PUT') {
         return handleAdmin(req, res, {
           clear: function () { return r.del(KEY); },
