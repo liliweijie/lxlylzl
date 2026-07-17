@@ -732,8 +732,9 @@
         c.x = Math.max(PADDING, Math.min(c.x, maxX));
         c.y = Math.max(NAV_H, Math.min(c.y, maxY));
         c.el.style.transform = 'translate(' + c.x + 'px,' + c.y + 'px) scale(' + CATCH_SCALE + ')';
-        // 面板直接跟随到云朵框正下方
-        c.panel.style.transform = 'translate(' + c.x + 'px,' + (c.y + c.h + 10) + 'px)';
+        // 面板跟随到云朵框正下方，并补偿 scale(1.12) 以中心放大导致的左/右外扩，做到真正的框对框左对齐
+        var off = (c.w * (CATCH_SCALE - 1)) / 2;
+        c.panel.style.transform = 'translate(' + (c.x - off) + 'px,' + (c.y + c.h + 10) + 'px)';
         continue;
       }
 
