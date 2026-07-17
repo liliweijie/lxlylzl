@@ -309,22 +309,6 @@
   }
   .cloud-catch-mask.is-on { opacity: 1; pointer-events: auto; }
 
-  .catch-label {
-    position: absolute;
-    left: 0; top: 0;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.2em;
-    text-transform: lowercase;
-    color: var(--text);
-    opacity: 0.2;             /* 20% 透明度 */
-    pointer-events: none;     /* 纯标注，不挡交互 */
-    z-index: 61;              /* 在被抓住的云(60)与蒙版(50)之上 */
-    white-space: nowrap;
-    display: none;            /* 仅抓住态显示 */
-  }
-  .catch-label.is-on { display: block; }
-
   .catch-replies {
     display: flex;
     flex-direction: column;
@@ -605,7 +589,6 @@
         c.caught = false;
         c.el.classList.remove('is-caught');
         c.panel.classList.remove('is-on');
-        c.label.classList.remove('is-on');
       }
     }
   }
@@ -621,7 +604,6 @@
     c.caught = true;
     c.el.classList.add('is-caught');
     c.panel.classList.add('is-on');
-    c.label.classList.add('is-on');
     mask.classList.add('is-on');
     commenting = true;
   }
@@ -639,9 +621,6 @@
     // 抓住后的面板（catch you + 回复列表 + 回复框）
     var panel = document.createElement('div');
     panel.className = 'cloud-catch';
-    var label = document.createElement('div');
-    label.className = 'catch-label';
-    label.textContent = 'catch you';
     var replyList = document.createElement('div');
     replyList.className = 'catch-replies';
     var replyForm = document.createElement('form');
@@ -651,10 +630,9 @@
     panel.appendChild(replyList);
     panel.appendChild(replyForm);
     sky.appendChild(panel);
-    sky.appendChild(label);   // catch you 独立挂到 sky，由 JS 定位到云朵左下外部（避免被 .cloud overflow:hidden 裁掉）
 
     var cloud = {
-      el: el, panel: panel, label: label, replyList: replyList, replyForm: replyForm,
+      el: el, panel: panel, replyList: replyList, replyForm: replyForm,
       note: note, replies: note.replies || [],
       homeX: 0, homeY: 0,
       x: 0, y: 0, vx: 0, vy: 0,
@@ -752,10 +730,8 @@
         c.x = Math.max(PADDING, Math.min(c.x, maxX));
         c.y = Math.max(NAV_H, Math.min(c.y, maxY));
         c.el.style.transform = 'translate(' + c.x + 'px,' + c.y + 'px) scale(' + CATCH_SCALE + ')';
-        // 面板跟随到云朵下方（整体下移，给 catch you 留出框外空间）
+        // 面板跟随到云朵下方
         c.panel.style.transform = 'translate(' + c.x + 'px,' + (c.y + c.h + 28) + 'px)';
-        // catch you 紧贴云朵框底、左偏 14px（在回复框上方，明确处于框外左下方）
-        c.label.style.transform = 'translate(' + (c.x - 14) + 'px,' + (c.y + c.h + 4) + 'px)';
         continue;
       }
 
