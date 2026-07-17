@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>lxlylzl · 标题框液体融合 Demo</title>
+<title>lxlylzl · 液体过渡 Demo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  /* ===== 5-COLOR STANDARD PALETTE ===== */
+  /* ===== 5-COLOR STANDARD PALETTE（与站点一致）===== */
   :root {
     --bg: #0E0E0E;
     --text: #F9F9F9;
@@ -35,11 +35,12 @@
     color: var(--text);
     font-family: 'Noto Sans SC', 'Inter', sans-serif;
     overflow: hidden;
-    height: 100vh; width: 100vw;
+    height: 100vh;
+    width: 100vw;
     transition: background 0.45s ease, color 0.45s ease;
   }
 
-  /* ===== TOP NAV (与站点一致) ===== */
+  /* ===== TOP NAV（与站点一致：logo / 居中链接 / 明暗切换）===== */
   .top-nav {
     position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
     width: 100%; display: flex; align-items: center; justify-content: space-between;
@@ -47,7 +48,7 @@
   }
   .top-nav * { pointer-events: auto; }
   .nav-center {
-    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%);
     display: flex; align-items: center; gap: 12px;
   }
   .nav-logo-wrap {
@@ -67,87 +68,118 @@
     transition: background 0.25s, border-color 0.25s, transform 0.15s;
   }
   .nav-link:hover { background: var(--panel); border-color: var(--accent); transform: translateY(-1px); }
+  .nav-link.is-active { background: var(--panel); border-color: var(--text-muted); font-weight: 600; }
   .theme-btn {
     width: 40px; height: 40px; border: none; background: var(--pill-bg);
-    border: 1px solid var(--pill-border); color: var(--text-muted);
-    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    border: 1px solid var(--pill-border); color: var(--text-muted); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
     transition: color 0.3s, background 0.25s; border-radius: 50%; flex-shrink: 0;
   }
   .theme-btn:hover { color: var(--accent); background: var(--panel); }
   .theme-btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 
-  /* ===== DEMO STAGE ===== */
-  .demo-wrap {
-    position: absolute; inset: 0;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 48px;
-  }
-  .demo-caption {
-    font-size: 0.95rem; letter-spacing: 0.18em; color: var(--text-muted);
-    text-transform: uppercase; opacity: 0.7;
-  }
-
-  /* 标题框舞台：切换时挂 goo 滤镜做液体融合 */
-  .stage {
-    position: relative;
-    width: 380px; height: 160px;
-  }
-  .stage.is-fusing { filter: url(#liquid-goo); }
-
-  .box {
-    position: absolute; left: 50%; top: 50%;
-    width: 320px; height: 130px;
-    border-radius: 30px;
-    background: linear-gradient(135deg, var(--accent), #ff7a5c);
-    box-shadow: 0 22px 60px rgba(242, 76, 48, 0.28);
-    transform: translate(-50%, -50%);
-    will-change: transform, opacity;
-  }
-
-  /* 清晰文字层（不挂 goo，保持可读） */
-  .titles {
-    position: absolute; left: 50%; top: 50%;
-    width: 320px; height: 130px;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-  }
-  .t {
-    position: absolute; left: 50%; top: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 3.1rem; font-weight: 800; letter-spacing: 0.04em;
-    color: #fff; white-space: nowrap;
-    will-change: transform, opacity;
-  }
-
-  /* 切换芯片 */
-  .chips { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
-  .chip {
-    height: 46px; padding: 0 26px; border-radius: 100px;
-    background: var(--pill-bg); border: 1px solid var(--pill-border);
-    color: var(--text); font-family: inherit; font-size: 1rem; font-weight: 500;
-    letter-spacing: 0.06em; cursor: pointer;
-    transition: background 0.25s, border-color 0.25s, transform 0.15s;
-  }
-  .chip:hover { background: var(--panel); border-color: var(--accent); transform: translateY(-1px); }
-  .chip.is-active { background: var(--panel); border-color: var(--text-muted); font-weight: 600; }
-
-  /* ===== INK CURSOR ===== */
+  /* ===== INK CURSOR（墨水形变，与站点一致）===== */
   body, body * { cursor: none !important; }
   #inkLayer { position: fixed; inset: 0; z-index: 9999; pointer-events: none; filter: drop-shadow(0 0 1.5px rgba(255,255,255,0.85)); }
   .ink-goo { position: absolute; inset: 0; filter: url(#ink-goo); }
-  .ink-blob { position: absolute; top: 0; left: 0; width: 22px; height: 22px; margin: -11px 0 0 -11px; border-radius: 50%; background: #0E0E0E; will-change: transform; }
+  .ink-blob {
+    position: absolute; top: 0; left: 0; width: 22px; height: 22px; margin: -11px 0 0 -11px;
+    border-radius: 50%; background: #0E0E0E; will-change: transform;
+  }
   #inkLayer.is-hidden { opacity: 0; }
 
-  @media (max-width: 600px) {
-    .top-nav { padding: 14px 16px; }
-    .stage { width: 300px; height: 130px; }
-    .box, .titles { width: 260px; height: 110px; }
-    .t { font-size: 2.4rem; }
+  /* ===== DEMO STAGE ===== */
+  .demo-stage {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 28px;
+  }
+  .demo-hint {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+    text-align: center;
+    max-width: 560px;
+    line-height: 1.7;
+  }
+  .demo-hint b { color: var(--accent); font-weight: 600; }
+
+  .liquid-stage { position: relative; }
+
+  /* 液体层：goo 滤镜作用于桥接条 + 跟随光标的水滴 */
+  .liquid-layer {
+    position: absolute; inset: 0; z-index: 1;
+    filter: url(#liquid-goo);
+    pointer-events: none;
+  }
+  .liquid-bridge, .liquid-drop {
+    position: absolute; top: 0; left: 0;
+    background: var(--accent);
+    opacity: 0;
+    transition: opacity 0.18s ease;
+    border-radius: 999px;
+    will-change: transform, left, top, width, height;
+  }
+  .liquid-drop {
+    width: 54px; height: 54px;
+    margin: -27px 0 0 -27px;
+    border-radius: 50%;
+  }
+
+  /* 四个模块框（玻璃标题框，与站点风格一致）*/
+  .boxes {
+    position: relative; z-index: 2;
+    display: flex; align-items: stretch;
+    gap: 64px;
+  }
+  .mod-box {
+    width: 196px; min-height: 156px;
+    border-radius: 26px;
+    background: var(--pill-bg);
+    border: 1px solid var(--pill-border);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 10px; padding: 24px;
+    text-decoration: none; color: var(--text);
+    transition: border-color 0.25s, background 0.25s;
+    will-change: transform;
+    transform-origin: center center;
+  }
+  .mod-box:hover { border-color: var(--accent); }
+  .mod-box .mb-title { font-size: 1.7rem; font-weight: 700; letter-spacing: 0.08em; }
+  .mod-box .mb-sub { font-size: 0.82rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-muted); }
+
+  /* 水珠弹动：落到目标框的 duang */
+  @keyframes duang {
+    0%   { transform: scale(1, 1); }
+    28%  { transform: scale(1.15, 0.85); }
+    52%  { transform: scale(0.93, 1.08); }
+    74%  { transform: scale(1.04, 0.98); }
+    100% { transform: scale(1, 1); }
+  }
+  .mod-box.duang { animation: duang 0.55s cubic-bezier(.3,.85,.3,1); }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 1000px) {
+    .boxes { gap: 36px; }
+    .mod-box { width: 150px; min-height: 130px; border-radius: 20px; }
+    .mod-box .mb-title { font-size: 1.3rem; }
+  }
+  @media (max-width: 720px) {
+    .boxes { flex-wrap: wrap; justify-content: center; gap: 24px; max-width: 360px; }
+    .demo-hint { font-size: 0.85rem; padding: 0 20px; }
   }
 </style>
 </head>
 <body>
 
+  <!-- ===== TOP NAV ===== -->
   <nav class="top-nav">
     <div class="nav-logo-wrap" id="logoBtn">
       <img class="nav-logo" src="logo.svg" alt="LX Logo">
@@ -172,24 +204,25 @@
     </button>
   </nav>
 
-  <div class="demo-wrap">
-    <div class="demo-caption">标题框 · 液体融合过渡 Demo</div>
+  <!-- ===== DEMO ===== -->
+  <div class="demo-stage">
+    <p class="demo-hint">把鼠标从 <b>首页</b> 缓缓滑向 <b>作品</b> —— 两个框之间会拉出<b>液体粘滞</b>的桥，松开落到目标框时它会像水珠一样 <b>duang</b> 一下。</p>
 
-    <div class="stage" id="stage">
-      <div class="box" id="boxNow"></div>
-      <div class="titles" id="titles">
-        <div class="t" id="tNow">首页</div>
+    <div class="liquid-stage" id="liquidStage">
+      <div class="liquid-layer">
+        <div class="liquid-bridge" id="liquidBridge"></div>
+        <div class="liquid-drop" id="liquidDrop"></div>
       </div>
-    </div>
-
-    <div class="chips" id="chips">
-      <button class="chip is-active" data-title="首页">首页</button>
-      <button class="chip" data-title="作品">作品</button>
-      <button class="chip" data-title="关于">关于</button>
-      <button class="chip" data-title="碎碎念">碎碎念</button>
+      <div class="boxes">
+        <a class="mod-box" href="index.html"><span class="mb-title">首页</span><span class="mb-sub">Home</span></a>
+        <a class="mod-box" href="works.html"><span class="mb-title">作品</span><span class="mb-sub">Works</span></a>
+        <a class="mod-box" href="about.html"><span class="mb-title">关于</span><span class="mb-sub">About</span></a>
+        <a class="mod-box" href="notes.html"><span class="mb-title">碎碎念</span><span class="mb-sub">Notes</span></a>
+      </div>
     </div>
   </div>
 
+  <!-- ===== INK CURSOR LAYER ===== -->
   <div id="inkLayer" class="is-hidden">
     <div class="ink-goo">
       <div class="ink-blob"></div><div class="ink-blob"></div><div class="ink-blob"></div>
@@ -199,14 +232,14 @@
 
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <defs>
-      <filter id="liquid-goo" x="-60%" y="-60%" width="220%" height="220%">
-        <feGaussianBlur in="SourceGraphic" stdDeviation="9" result="blur"/>
-        <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo"/>
-        <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
-      </filter>
       <filter id="ink-goo">
         <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur"/>
         <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 16 -6" result="goo"/>
+        <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+      </filter>
+      <filter id="liquid-goo">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur"/>
+        <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -10" result="goo"/>
         <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
       </filter>
     </defs>
@@ -232,18 +265,21 @@
   applyTheme(getPreferredTheme());
   document.getElementById('themeBtn').addEventListener('click', function() {
     const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-    localStorage.setItem('theme', next); applyTheme(next);
+    localStorage.setItem('theme', next);
+    applyTheme(next);
   });
   document.getElementById('logoBtn').addEventListener('click', function() { window.location.href = 'index.html'; });
 })();
 
-// ===== INK CURSOR =====
+// ===== INK CURSOR（墨水形变）=====
 (function() {
   const layer = document.getElementById('inkLayer');
   if (!layer) return;
   const blobs = Array.prototype.slice.call(layer.querySelectorAll('.ink-blob'));
-  const n = blobs.length; if (!n) return;
-  const base = []; for (let i = 0; i < n; i++) base[i] = Math.pow(0.78, i);
+  const n = blobs.length;
+  if (!n) return;
+  const base = [];
+  for (let i = 0; i < n; i++) base[i] = Math.pow(0.78, i);
   const pos = blobs.map(function() { return { x: window.innerWidth / 2, y: window.innerHeight / 2 }; });
   const mouse = { x: pos[0].x, y: pos[0].y };
   const last = { x: pos[0].x, y: pos[0].y };
@@ -255,7 +291,8 @@
   document.addEventListener('mouseover', function(e) { hoverTarget = e.target.closest('a, button') ? 1.7 : 1; });
   function ease(cur, t, f) { cur.x += (t.x - cur.x) * f; cur.y += (t.y - cur.y) * f; }
   function tick() {
-    ease(pos[0], mouse, 0.5); for (let i = 1; i < n; i++) ease(pos[i], pos[i - 1], 0.32);
+    ease(pos[0], mouse, 0.5);
+    for (let i = 1; i < n; i++) ease(pos[i], pos[i - 1], 0.32);
     const dx = pos[0].x - last.x, dy = pos[0].y - last.y;
     const speed = Math.min(Math.hypot(dx, dy), 70);
     const ang = Math.atan2(dy, dx);
@@ -269,87 +306,104 @@
   tick();
 })();
 
-// ===== 标题框液体融合切换 =====
+// ===== LIQUID TRANSITION：首页/作品/关于/碎碎念 框间液体粘滞 + 落框 duang =====
 (function() {
-  const stage = document.getElementById('stage');
-  const boxNow = document.getElementById('boxNow');
-  const titles = document.getElementById('titles');
-  const tNow = document.getElementById('tNow');
-  const chips = document.getElementById('chips');
-  const allTitles = ['首页', '作品', '关于', '碎碎念'];
-  let current = '首页';
-  let fusing = false;
+  const stage = document.getElementById('liquidStage');
+  const boxes = Array.prototype.slice.call(stage.querySelectorAll('.mod-box'));
+  const bridge = document.getElementById('liquidBridge');
+  const drop = document.getElementById('liquidDrop');
+  const N = boxes.length;
 
-  function setActiveChip(title) {
-    Array.prototype.forEach.call(chips.children, function(c) {
-      c.classList.toggle('is-active', c.dataset.title === title);
+  let mouseX = -9999, mouseY = -9999;   // 相对 stage 坐标
+  let dropX = -9999, dropY = -9999;     // 水滴（带缓动，营造粘滞感）
+  let currentGap = -1;                  // 当前所在间隙索引（相邻两框之间）
+  let lastBox = -1;                     // 最近所在的框索引
+  let bridgePrimed = false;             // 进入间隙时给水滴定位初值
+
+  function measure() {
+    const sr = stage.getBoundingClientRect();
+    return boxes.map(function(el) {
+      const r = el.getBoundingClientRect();
+      return {
+        left: r.left - sr.left, top: r.top - sr.top,
+        w: r.width, h: r.height, right: r.right - sr.left,
+        cy: r.top - sr.top + r.height / 2
+      };
     });
   }
 
-  function fuseTo(next) {
-    if (fusing || next === current) return;
-    fusing = true;
-    stage.classList.add('is-fusing');
-
-    // 进入的框与文字（独立元素，便于动画后清理）
-    const boxIn = document.createElement('div'); boxIn.className = 'box';
-    const tIn = document.createElement('div'); tIn.className = 't'; tIn.textContent = next;
-    stage.appendChild(boxIn);
-    titles.appendChild(tIn);
-
-    const D = 820;
-    const ease = 'cubic-bezier(.72,0,.28,1)';
-
-    // 旧框上移缩小消失；新框从下方升入 —— 中段重叠处经 goo 融为液体
-    boxNow.animate([
-      { transform: 'translate(-50%,-50%) translateY(0) scale(1)', opacity: 1 },
-      { transform: 'translate(-50%,-50%) translateY(-72px) scale(.5)', opacity: 0 }
-    ], { duration: D, easing: ease, fill: 'forwards' });
-    boxIn.animate([
-      { transform: 'translate(-50%,-50%) translateY(72px) scale(.5)', opacity: 0 },
-      { transform: 'translate(-50%,-50%) translateY(0) scale(1)', opacity: 1 }
-    ], { duration: D, easing: ease, fill: 'forwards' });
-
-    // 文字清晰层：旧淡出、新淡入（不被 goo 模糊）
-    tNow.animate([
-      { transform: 'translate(-50%,-50%) translateY(0)', opacity: 1 },
-      { transform: 'translate(-50%,-50%) translateY(-34px)', opacity: 0 }
-    ], { duration: D * 0.55, easing: 'ease-in', fill: 'forwards' });
-    tIn.animate([
-      { transform: 'translate(-50%,-50%) translateY(34px)', opacity: 0 },
-      { transform: 'translate(-50%,-50%) translateY(0)', opacity: 1 }
-    ], { duration: D * 0.7, delay: D * 0.3, easing: 'ease-out', fill: 'forwards' });
-
-    Promise.all([boxNow.getAnimations()[0].finished, boxIn.getAnimations()[0].finished]).then(function() {
-      // 复位 resting 框/文字为 next，清理临时元素与动画
-      boxNow.getAnimations().forEach(function(a) { a.cancel(); });
-      boxNow.style.opacity = '1';
-      boxNow.style.transform = 'translate(-50%, -50%)';
-      boxIn.remove();
-
-      tNow.textContent = next;
-      tNow.getAnimations().forEach(function(a) { a.cancel(); });
-      tNow.style.opacity = '1';
-      tNow.style.transform = 'translate(-50%, -50%)';
-      tIn.remove();
-
-      stage.classList.remove('is-fusing');
-      current = next;
-      setActiveChip(next);
-      fusing = false;
-    });
+  function showBridge(on) {
+    bridge.style.opacity = on ? '1' : '0';
+    drop.style.opacity = on ? '1' : '0';
   }
 
-  // 芯片点击切换
-  chips.addEventListener('click', function(e) {
-    const c = e.target.closest('.chip');
-    if (c) fuseTo(c.dataset.title);
+  function triggerDuang(i) {
+    const el = boxes[i];
+    el.classList.remove('duang');
+    void el.offsetWidth;           // 重置动画
+    el.classList.add('duang');
+  }
+  boxes.forEach(function(el) {
+    el.addEventListener('animationend', function() { el.classList.remove('duang'); });
   });
-  // 点击大标题框 → 切到下一个
-  stage.addEventListener('click', function() {
-    const i = allTitles.indexOf(current);
-    fuseTo(allTitles[(i + 1) % allTitles.length]);
+
+  stage.addEventListener('mousemove', function(e) {
+    const sr = stage.getBoundingClientRect();
+    mouseX = e.clientX - sr.left;
+    mouseY = e.clientY - sr.top;
   });
+  stage.addEventListener('mouseleave', function() {
+    currentGap = -1; lastBox = -1; showBridge(false);
+  });
+
+  function updateZone(geo) {
+    // 1) 落在某个框内 -> 到达 -> duang
+    for (let i = 0; i < N; i++) {
+      const g = geo[i];
+      if (mouseX >= g.left && mouseX <= g.right) {
+        if (lastBox !== i) { triggerDuang(i); lastBox = i; }
+        currentGap = -1;
+        showBridge(false);
+        return;
+      }
+    }
+    // 2) 落在相邻两框间隙 -> 拉出液体桥
+    for (let i = 0; i < N - 1; i++) {
+      const a = geo[i], b = geo[i + 1];
+      if (mouseX > a.right && mouseX < b.left) {
+        currentGap = i;
+        showBridge(true);
+        return;
+      }
+    }
+    // 3) 框外
+    currentGap = -1; lastBox = -1; showBridge(false);
+  }
+
+  function animate() {
+    const geo = measure();
+    updateZone(geo);
+
+    if (currentGap >= 0) {
+      const a = geo[currentGap], b = geo[currentGap + 1];
+      if (!bridgePrimed) { dropX = mouseX; dropY = mouseY; bridgePrimed = true; }
+      // 桥：横跨整段间隙，并略微探入两侧框边（粘滞感）
+      const left = a.right - 18;
+      const right = b.left + 18;
+      bridge.style.left = left + 'px';
+      bridge.style.width = (right - left) + 'px';
+      bridge.style.top = a.top + 'px';
+      bridge.style.height = a.h + 'px';
+      // 水滴跟随光标（缓动 -> 粘滞拖尾）
+      dropX += (mouseX - dropX) * 0.18;
+      dropY += (mouseY - dropY) * 0.18;
+      drop.style.transform = 'translate(' + dropX + 'px,' + dropY + 'px)';
+    } else {
+      bridgePrimed = false;
+    }
+    requestAnimationFrame(animate);
+  }
+  animate();
 })();
 </script>
 </body>
