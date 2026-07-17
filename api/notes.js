@@ -2,11 +2,25 @@ module.exports = async (req, res) => {
   res.setHeader('Content-Type', 'application/json');
   res.setHeader('Access-Control-Allow-Origin', '*');
 
-  const KV_URL = process.env.KV_REST_API_URL;
-  const KV_TOKEN = process.env.KV_REST_API_TOKEN;
   const GIST_ID = process.env.GIST_ID;
   const GH_TOKEN = process.env.GITHUB_TOKEN;
   const KEY = 'notes';
+
+  // 兼容多种 Upstash / Vercel Redis 注入的变量名
+  // （KV 默认注入 KV_REST_API_URL；Redis 用自定义前缀如 STORAGE 注入 STORAGE_REST_API_URL）
+  function findUpstash() {
+    const prefixes = ['KV', 'STORAGE', 'REDIS'];
+    for (const p of prefixes) {
+      const url = process.env[p + '_REST_API_URL'];
+      const token = process.env[p + '_REST_API_TOKEN'];
+      if (url && token) return { url: url, token: token };
+    }
+    if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
+      return { url: process.env.UPSTASH_REDIS_REST_URL, token: process.env.UPSTASH_REDIS_REST_TOKEN };
+    }
+    return null;
+  }
+  const UP = findUpstash();
 
   // ---- 读取请求体（兼容 Vercel 已解析 / 原始流） ----
   async function getBody() {
@@ -24,11 +38,11 @@ module.exports = async (req, res) => {
   }
 
   // ---- 优先：Vercel KV（Upstash） ----
-  if (KV_URL && KV_TOKEN) {
+  if (UP) {
     async function kv(cmd) {
-      const r = await fetch(KV_URL, {
+      const r = await fetch(UP.url, {
         method: 'POST',
-        headers: { Authorization: 'Bearer ' + KV_TOKEN },
+        headers: { Authorization: 'Bearer ' + UP.token },
         body: JSON.stringify([cmd])
       });
       const j = await r.json();
