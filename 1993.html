@@ -112,6 +112,13 @@ h1{font-size:18px; font-weight:700; letter-spacing:.02em; margin:0;}
 .editor-card textarea{resize:vertical;}
 .row2{display:flex; gap:10px;}
 .row2 > div{flex:1;}
+.upload-block{margin:12px 0; padding:12px; border:1px dashed var(--panel-border); border-radius:12px; background:rgba(127,127,127,0.05);}
+.upload-block .ub-row{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
+.upload-block input[type=file]{width:auto; max-width:100%; padding:8px; font-size:12px;}
+.up-btn{background:var(--accent); color:#fff; border:none; border-radius:10px; padding:8px 14px; font-size:13px; cursor:pointer; font-family:inherit;}
+.up-btn:hover{opacity:0.9;}
+.up-status{font-size:12px; color:var(--text-2); margin-left:4px;}
+.up-status.ok{color:#5ac97a;}
 .card-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;}
 .card-title{font-size:13px; font-weight:600; color:var(--text-2);}
 .del{
@@ -386,6 +393,9 @@ function mkInput(type,value){
   var i=document.createElement('input'); i.type=type||'text'; i.value=value||'';
   return i;
 }
+function mkField(type,value,field){
+  var i=mkInput(type,value); if(field) i.setAttribute('data-field',field); return i;
+}
 function fieldWrap(labelText, control){
   var d=document.createElement('div'); d.className='field';
   var l=document.createElement('label'); l.textContent=labelText;
@@ -420,6 +430,21 @@ function loadWorks(){
     renderWorks(projects);
   }).catch(function(){ renderWorks([]); });
 }
+
+// 上传作品 html 到 /api/work（凭证走 x-admin-user / x-admin-pass）
+function uploadWork(html, onOk, onErr){
+  fetch('/api/work', {
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-admin-user':user,'x-admin-pass':pass},
+    body:JSON.stringify({ html:html })
+  }).then(function(r){ return r.json().then(function(j){ return {ok:r.ok, j:j}; }); })
+    .then(function(res){
+      if(res.ok && res.j && res.j.id) onOk(res.j.id);
+      else onErr((res.j && res.j.error) ? res.j.error : '上传失败');
+    })
+    .catch(function(e){ onErr(String(e)); });
+}
+
 function renderWorks(projects){
   var wrap=document.getElementById('worksList');
   wrap.innerHTML='';
@@ -429,23 +454,55 @@ function renderWorks(projects){
 function renderWorksCard(p){
   p=p||{};
   var card=document.createElement('div'); card.className='editor-card works-card';
+  card.dataset.htmlId = p.htmlId||'';
+  card.dataset.htmlUrl = p.htmlUrl||'';
   var head=document.createElement('div'); head.className='card-head';
   var title=document.createElement('span'); title.className='card-title'; title.textContent='作品';
   var del=document.createElement('button'); del.className='del'; del.textContent='删除';
   head.appendChild(title); head.appendChild(del);
-  var f_title=fieldWrap('标题', mkInput('text', p.title||''));
-  var f_client=fieldWrap('客户 / 署名', mkInput('text', p.client||''));
-  var f_desc=fieldWrap('描述', mkInput('text', p.desc||''));
-  var f_tags=fieldWrap('标签（逗号分隔）', mkInput('text', (p.tags||[]).join(', ')));
-  var cDark=fieldWrap('深色背景', mkInput('color', p.colorDark||'#2d1b69'));
-  var cLight=fieldWrap('浅色背景', mkInput('color', p.colorLight||'#e8dff5'));
+
+  // 上传作品（html 视频）
+  var up=document.createElement('div'); up.className='upload-block';
+  var upLabel=document.createElement('label'); upLabel.textContent='上传作品（.html 视频）';
+  var ubRow=document.createElement('div'); ubRow.className='ub-row';
+  var fileInput=document.createElement('input'); fileInput.type='file'; fileInput.accept='.html,text/html';
+  var upBtn=document.createElement('button'); upBtn.className='up-btn'; upBtn.textContent='上传';
+  var upStatus=document.createElement('span'); upStatus.className='up-status';
+  ubRow.appendChild(fileInput); ubRow.appendChild(upBtn); ubRow.appendChild(upStatus);
+  up.appendChild(upLabel); up.appendChild(ubRow);
+  if(card.dataset.htmlId) upStatus.innerHTML='已上传 ✓ <span class="ok">('+card.dataset.htmlId.slice(0,6)+')</span>';
+  upBtn.addEventListener('click', function(){
+    var file=fileInput.files[0];
+    if(!file){ upStatus.textContent='请先选择 .html 文件'; return; }
+    var reader=new FileReader();
+    reader.onload=function(){
+      uploadWork(reader.result, function(id){
+        card.dataset.htmlId=id; card.dataset.htmlUrl='';
+        upStatus.innerHTML='已上传 ✓ <span class="ok">('+id.slice(0,6)+')</span>';
+      }, function(err){ upStatus.textContent='上传失败: '+err; });
+    };
+    reader.readAsText(file);
+  });
+
+  var f_title=fieldWrap('标题', mkField('text', p.title||'', 'title'));
+  var f_client=fieldWrap('客户 / 署名', mkField('text', p.client||'', 'client'));
+  var f_desc=fieldWrap('描述', mkField('text', p.desc||'', 'desc'));
+  var f_tags=fieldWrap('标签（逗号分隔）', mkField('text', (p.tags||[]).join(', '), 'tags'));
+  var f_url=fieldWrap('或粘贴作品 URL（与上传二选一）', mkField('text', p.htmlUrl||'', 'htmlUrl'));
+  f_url.querySelector('input').addEventListener('input', function(e){
+    card.dataset.htmlUrl=e.target.value.trim();
+    if(card.dataset.htmlUrl){ card.dataset.htmlId=''; upStatus.textContent='使用粘贴的 URL'; }
+  });
+  var cDark=fieldWrap('深色背景', mkField('color', p.colorDark||'#2d1b69', 'colorDark'));
+  var cLight=fieldWrap('浅色背景', mkField('color', p.colorLight||'#e8dff5', 'colorLight'));
   var f_colors=document.createElement('div'); f_colors.className='row2';
   var a=document.createElement('div'); a.appendChild(cDark);
   var b=document.createElement('div'); b.appendChild(cLight);
   f_colors.appendChild(a); f_colors.appendChild(b);
   card.appendChild(head);
+  card.appendChild(up);
   card.appendChild(f_title); card.appendChild(f_client); card.appendChild(f_desc);
-  card.appendChild(f_tags); card.appendChild(f_colors);
+  card.appendChild(f_tags); card.appendChild(f_url); card.appendChild(f_colors);
   del.addEventListener('click',function(){ card.remove(); updateEmptyState('worksList','worksEmpty'); });
   return card;
 }
@@ -453,13 +510,17 @@ function saveWorks(){
   var cards=document.querySelectorAll('#worksList .works-card');
   var projects=[];
   cards.forEach(function(card){
-    var ins=card.querySelectorAll('input');
-    // 顺序：title, client, desc, tags, colorDark, colorLight
-    var t=ins[0].value.trim();
-    var c=ins[1].value.trim();
-    var d=ins[2].value.trim();
-    var tags=ins[3].value.split(',').map(function(s){return s.trim();}).filter(Boolean);
-    projects.push({ title:t, client:c||t, desc:d, tags:tags, colorDark:ins[4].value, colorLight:ins[5].value });
+    var g=function(f){ var el=card.querySelector('[data-field="'+f+'"]'); return el? el.value : ''; };
+    var t=g('title').trim();
+    var c=g('client').trim();
+    var d=g('desc').trim();
+    var tags=g('tags').value.split(',').map(function(s){return s.trim();}).filter(Boolean);
+    var colorDark=g('colorDark'); var colorLight=g('colorLight');
+    var htmlUrl=(card.dataset.htmlUrl || g('htmlUrl')).trim();
+    var htmlId=card.dataset.htmlId||'';
+    var obj={ title:t, client:c||t, desc:d, tags:tags, colorDark:colorDark, colorLight:colorLight };
+    if(htmlUrl) obj.htmlUrl=htmlUrl; else if(htmlId) obj.htmlId=htmlId;
+    projects.push(obj);
   });
   saveContent('works', { projects:projects });
 }
