@@ -165,6 +165,22 @@
     .nav-logo { height: 18px; }
     .theme-btn { width: 34px; height: 34px; }
   }
+
+  /* ===== HERO（数据驱动：/api/content?page=index） ===== */
+  .hero{ position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; padding: 100px 24px 80px; pointer-events: none; z-index: 10; }
+  .hero-card{
+    pointer-events: auto; width: 100%; max-width: 720px;
+    background: rgba(255,255,255,0.05); border: 1px solid var(--pill-border);
+    border-radius: 28px; padding: 48px 44px; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.35); text-align: center;
+  }
+  .hero-eyebrow{ font-size: 12px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--text-muted); opacity: 0.7; margin-bottom: 18px; }
+  .hero-title{ font-size: clamp(28px, 5vw, 46px); font-weight: 800; line-height: 1.25; white-space: pre-line; margin-bottom: 18px; }
+  .hero-subtitle{ font-size: 16px; color: var(--text); opacity: 0.9; margin-bottom: 10px; }
+  .hero-intro{ font-size: 14px; color: var(--text-muted); margin-bottom: 26px; }
+  .hero-socials{ display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  .hero-socials a{ font-size: 13px; padding: 8px 16px; border-radius: 100px; background: var(--pill-bg); border: 1px solid var(--pill-border); color: var(--text); text-decoration: none; transition: border-color .25s, transform .15s; }
+  .hero-socials a:hover{ border-color: var(--accent); transform: translateY(-1px); }
 </style>
 </head>
 <body>
@@ -218,6 +234,17 @@
       </filter>
     </defs>
   </svg>
+
+<!-- ===== HERO（数据驱动） ===== -->
+<main class="hero" id="hero">
+  <div class="hero-card">
+    <div class="hero-eyebrow" id="heroEyebrow"></div>
+    <h1 class="hero-title" id="heroTitle"></h1>
+    <div class="hero-subtitle" id="heroSubtitle"></div>
+    <div class="hero-intro" id="heroIntro"></div>
+    <div class="hero-socials" id="heroSocials"></div>
+  </div>
+</main>
 
 <script>
 // ===== THEME =====
@@ -297,6 +324,40 @@
     requestAnimationFrame(tick);
   }
   tick();
+})();
+
+// ===== HERO（数据驱动：/api/content?page=index；失败回退内嵌默认） =====
+(function() {
+  const DEFAULT = {
+    eyebrow: 'LX · 设计 / 开发',
+    title: '把想法\n做成能用的东西',
+    subtitle: '我做一些关于品牌、网站与交互的小东西。',
+    intro: '这里收集了我近期的练习与作品，欢迎随便逛逛。',
+    socials: [
+      { label: 'Instagram', url: '#' },
+      { label: 'Behance', url: '#' },
+      { label: 'Email', url: 'mailto:hi@lxlylzl.xyz' }
+    ]
+  };
+  function render(h) {
+    document.getElementById('heroEyebrow').textContent = h.eyebrow || '';
+    document.getElementById('heroTitle').textContent = h.title || '';
+    document.getElementById('heroSubtitle').textContent = h.subtitle || '';
+    document.getElementById('heroIntro').textContent = h.intro || '';
+    const sc = document.getElementById('heroSocials');
+    sc.innerHTML = '';
+    (h.socials || []).forEach(function (s) {
+      const a = document.createElement('a');
+      a.href = s.url || '#';
+      a.textContent = s.label || '';
+      a.target = '_blank';
+      sc.appendChild(a);
+    });
+  }
+  render(DEFAULT);
+  fetch('/api/content?page=index').then(function (r) { return r.json(); }).then(function (c) {
+    if (c && c.hero) render(c.hero);
+  }).catch(function () {});
 })();
 
 </script>

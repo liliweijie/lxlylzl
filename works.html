@@ -389,8 +389,8 @@
 
 <script>
 (function() {
-  // ===== PROJECT DATA =====
-  const projects = [
+  // ===== PROJECT DATA（默认种子；运行时从 /api/content?page=works 读取，失败则回退此默认） =====
+  let projects = [
     { title: 'Central on Air', client: 'Central on Air', desc: 'Amplifying the Local Music Scene', tags: ['Design', 'Dev', 'Branding'], colorDark: '#2d1b69', colorLight: '#e8dff5' },
     { title: 'Patch System', client: 'Patch System', desc: 'Clinic marketing made easy', tags: ['Design', 'Dev'], colorDark: '#1a3a2a', colorLight: '#d8ede0' },
     { title: 'Unis Footwear', client: 'Unis Footwear', desc: 'Turning trash into treasure 3D printing Sneakers', tags: ['Design', 'Dev'], colorDark: '#3d2b1a', colorLight: '#f0e0d0' },
@@ -407,9 +407,16 @@
     { title: 'Blank Round', client: 'Blank Round', desc: 'Culturally empowered Streetwear', tags: ['Design', 'Branding'], colorDark: '#1d1d2d', colorLight: '#e0e0f0' },
   ];
 
-  // ===== FIXED 3-COLUMN DISTRIBUTION =====
-  const distributions = [[], [], []];
-  projects.forEach((p, i) => { distributions[i % 3].push(p); });
+  // 运行时加载（优先 /api/content，失败则用内嵌默认，保证本地预览/接口异常时页面仍有内容）
+  async function loadProjects() {
+    try {
+      const r = await fetch('/api/content?page=works');
+      if (r.ok) {
+        const c = await r.json();
+        if (c && Array.isArray(c.projects) && c.projects.length) projects = c.projects;
+      }
+    } catch (e) { /* 用内嵌默认 */ }
+  }
 
   // ===== GENERATE CARD THEME-AWARE =====
   function generateCard(p, idx, isDark) {
@@ -451,6 +458,8 @@
 
   function buildColumns(theme) {
     const isDark = theme === 'dark';
+    const distributions = [[], [], []];
+    projects.forEach((p, i) => { distributions[i % 3].push(p); });
     cols.forEach((col, ci) => {
       let html = '';
       distributions[ci].forEach((p, i) => { html += generateCard(p, ci * 10 + i, isDark); });
@@ -482,7 +491,7 @@
     buildColumns(theme);
   }
 
-  applyTheme(getPreferredTheme());
+  loadProjects().then(function () { applyTheme(getPreferredTheme()); });
 
   document.getElementById('themeBtn').addEventListener('click', function() {
     const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';

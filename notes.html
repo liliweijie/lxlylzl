@@ -387,6 +387,11 @@
     .nav-logo { height: 18px; }
     .theme-btn { width: 34px; height: 34px; }
   }
+
+  /* ===== NOTES HEADING（数据驱动：/api/content?page=notes） ===== */
+  .notes-heading{ position: fixed; top: 92px; left: 50%; transform: translateX(-50%); z-index: 20; text-align: center; pointer-events: none; }
+  .notes-heading h1{ font-size: 22px; font-weight: 700; letter-spacing: 0.08em; margin: 0; }
+  .notes-heading p{ font-size: 13px; color: var(--text-muted); margin-top: 6px; opacity: 0.8; }
 </style>
 </head>
 <body>
@@ -423,6 +428,18 @@
   </nav>
 
   <!-- ===== 碎碎念 — 飘浮天空 ===== -->
+  <div class="notes-heading" id="notesHeading">
+    <h1 id="notesHeadingTitle"></h1>
+    <p id="notesHeadingSub"></p>
+  </div>
+  <script>
+  (function(){
+    const DEFAULT = { heading: '碎碎念', subtitle: '一些随手写下的碎片。' };
+    function render(n){ document.getElementById('notesHeadingTitle').textContent = n.heading || ''; document.getElementById('notesHeadingSub').textContent = n.subtitle || ''; }
+    render(DEFAULT);
+    fetch('/api/content?page=notes').then(function(r){return r.json();}).then(function(c){ if(c) render(c); }).catch(function(){});
+  })();
+  </script>
   <div class="notes-sky" id="notesSky"></div>
 
   <!-- ===== 底部输入色块 ===== -->
