@@ -425,25 +425,27 @@
     const textColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)';
     const labelColor = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)';
     const tagHtml = p.tags.map(t => '<span class="work-card__tag">+ ' + t + '</span>').join('');
+
+    // 有上传的 html 作品 -> iframe 内嵌播放；否则回退彩色 SVG 占位
+    const workSrc = p.htmlId ? ('/api/work?id=' + encodeURIComponent(p.htmlId)) : (p.htmlUrl || null);
+    const svgPlaceholder = `
+      <svg class="work-card__img" viewBox="0 0 520 740" preserveAspectRatio="xMidYMid slice" style="background:${bg}">
+        <defs><linearGradient id="g${idx}" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:rgba(255,255,255,${overlayAlpha})"/>
+          <stop offset="100%" style="stop-color:rgba(255,255,255,0)"/>
+        </linearGradient></defs>
+        <rect width="520" height="740" fill="url(#g${idx})"/>
+        <text x="50%" y="44%" text-anchor="middle" fill="${textColor}" font-family="Inter,sans-serif" font-weight="900" font-size="48px" letter-spacing="0.15em">${String(idx + 1).padStart(2,'0')}</text>
+        <text x="50%" y="58%" text-anchor="middle" fill="${labelColor}" font-family="Inter,sans-serif" font-weight="400" font-size="18px" letter-spacing="0.3em">PROJECT</text>
+      </svg>`;
+    const mediaHtml = workSrc
+      ? `<iframe class="work-card__img" src="${workSrc}" style="border:0;pointer-events:none;" loading="lazy" allow="autoplay; fullscreen; encrypted-media"></iframe>`
+      : svgPlaceholder;
+
     return `
       <div class="work-card" data-index="${idx}">
         <div class="work-card__imageWrap">
-          <svg class="work-card__img" viewBox="0 0 520 740" preserveAspectRatio="xMidYMid slice"
-               style="background:${bg}">
-            <defs>
-              <linearGradient id="g${idx}" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" style="stop-color:rgba(255,255,255,${overlayAlpha})"/>
-                <stop offset="100%" style="stop-color:rgba(255,255,255,0)"/>
-              </linearGradient>
-            </defs>
-            <rect width="520" height="740" fill="url(#g${idx})"/>
-            <text x="50%" y="44%" text-anchor="middle" fill="${textColor}"
-                  font-family="Inter,sans-serif" font-weight="900"
-                  font-size="48px" letter-spacing="0.15em">${String(idx + 1).padStart(2,'0')}</text>
-            <text x="50%" y="58%" text-anchor="middle" fill="${labelColor}"
-                  font-family="Inter,sans-serif" font-weight="400"
-                  font-size="18px" letter-spacing="0.3em">PROJECT</text>
-          </svg>
+          ${mediaHtml}
         </div>
         <div class="work-card__content">
           <div class="work-card__client">${p.client}</div>
