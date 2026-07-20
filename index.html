@@ -329,15 +329,11 @@
 // ===== HERO（数据驱动：/api/content?page=index；失败回退内嵌默认） =====
 (function() {
   const DEFAULT = {
-    eyebrow: 'LX · 设计 / 开发',
-    title: '把想法\n做成能用的东西',
-    subtitle: '我做一些关于品牌、网站与交互的小东西。',
-    intro: '这里收集了我近期的练习与作品，欢迎随便逛逛。',
-    socials: [
-      { label: 'Instagram', url: '#' },
-      { label: 'Behance', url: '#' },
-      { label: 'Email', url: 'mailto:hi@lxlylzl.xyz' }
-    ]
+    eyebrow: '',
+    title: '',
+    subtitle: '',
+    intro: '',
+    socials: []
   };
   function render(h) {
     document.getElementById('heroEyebrow').textContent = h.eyebrow || '';

@@ -345,12 +345,9 @@
 // ===== ABOUT（数据驱动：/api/content?page=about；失败回退内嵌默认） =====
 (function() {
   const DEFAULT = {
-    bio: ['我是 LX，一个做设计与开发的人。', '喜欢把复杂的东西做简单，把简单的东西做好看。', '平时捣鼓品牌、网页，以及一点交互小实验。'],
-    skills: ['品牌设计', '网页开发', 'UI / UX', '插画', '动效'],
-    contact: [
-      { label: 'Email', value: 'hi@lxlylzl.xyz', url: 'mailto:hi@lxlylzl.xyz' },
-      { label: '微信', value: 'lwjjack0123' }
-    ]
+    bio: [],
+    skills: [],
+    contact: []
   };
   function render(a) {
     const bio = document.getElementById('aboutBio'); bio.innerHTML = '';

@@ -15,15 +15,11 @@ module.exports = async (req, res) => {
   const DEFAULT_CONTENT = {
     index: {
       hero: {
-        eyebrow: 'LX · 设计 / 开发',
-        title: '把想法\n做成能用的东西',
-        subtitle: '我做一些关于品牌、网站与交互的小东西。',
-        intro: '这里收集了我近期的练习与作品，欢迎随便逛逛。',
-        socials: [
-          { label: 'Instagram', url: '#' },
-          { label: 'Behance', url: '#' },
-          { label: 'Email', url: 'mailto:hi@lxlylzl.xyz' }
-        ]
+        eyebrow: '',
+        title: '',
+        subtitle: '',
+        intro: '',
+        socials: []
       }
     },
     works: {
@@ -45,16 +41,9 @@ module.exports = async (req, res) => {
       ]
     },
     about: {
-      bio: [
-        '我是 LX，一个做设计与开发的人。',
-        '喜欢把复杂的东西做简单，把简单的东西做好看。',
-        '平时捣鼓品牌、网页，以及一点交互小实验。'
-      ],
-      skills: ['品牌设计', '网页开发', 'UI / UX', '插画', '动效'],
-      contact: [
-        { label: 'Email', value: 'hi@lxlylzl.xyz', url: 'mailto:hi@lxlylzl.xyz' },
-        { label: '微信', value: 'lwjjack0123' }
-      ]
+      bio: [],
+      skills: [],
+      contact: []
     },
     notes: {
       heading: '碎碎念',
