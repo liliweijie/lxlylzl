@@ -184,6 +184,19 @@
     user-select: none;
   }
   .admin-entry:hover{opacity: 0.55;}
+
+  /* ===== ABOUT（数据驱动：/api/content?page=about） ===== */
+  .about-wrap{ position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; padding: 100px 24px 80px; pointer-events: none; z-index: 10; }
+  .about-card{ pointer-events: auto; width: 100%; max-width: 640px; max-height: 76vh; overflow-y: auto; background: rgba(255,255,255,0.05); border: 1px solid var(--pill-border); border-radius: 28px; padding: 44px 40px; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); box-shadow: 0 20px 60px rgba(0,0,0,0.35); }
+  .about-bio p{ font-size: 15px; line-height: 1.8; color: var(--text); opacity: 0.9; margin-bottom: 14px; }
+  .about-section-title{ font-size: 12px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text-muted); opacity: 0.7; margin: 26px 0 14px; }
+  .about-skills{ display: flex; flex-wrap: wrap; gap: 8px; }
+  .about-skills span{ font-size: 13px; padding: 6px 14px; border-radius: 100px; background: var(--pill-bg); border: 1px solid var(--pill-border); }
+  .about-contact{ display: flex; flex-direction: column; gap: 10px; }
+  .about-contact .row{ font-size: 14px; color: var(--text); display: flex; gap: 10px; align-items: center; }
+  .about-contact .label{ color: var(--text-muted); min-width: 56px; }
+  .about-contact a{ color: var(--text); text-decoration: none; border-bottom: 1px solid var(--pill-border); }
+  .about-contact a:hover{ border-color: var(--accent); }
 </style>
 </head>
 <body>
@@ -237,6 +250,17 @@
       </filter>
     </defs>
   </svg>
+
+<!-- ===== ABOUT（数据驱动） ===== -->
+<main class="about-wrap" id="aboutWrap">
+  <div class="about-card">
+    <div class="about-bio" id="aboutBio"></div>
+    <div class="about-section-title">技能</div>
+    <div class="about-skills" id="aboutSkills"></div>
+    <div class="about-section-title">联系方式</div>
+    <div class="about-contact" id="aboutContact"></div>
+  </div>
+</main>
 
 <script>
 // ===== THEME =====
@@ -316,6 +340,39 @@
     requestAnimationFrame(tick);
   }
   tick();
+})();
+
+// ===== ABOUT（数据驱动：/api/content?page=about；失败回退内嵌默认） =====
+(function() {
+  const DEFAULT = {
+    bio: ['我是 LX，一个做设计与开发的人。', '喜欢把复杂的东西做简单，把简单的东西做好看。', '平时捣鼓品牌、网页，以及一点交互小实验。'],
+    skills: ['品牌设计', '网页开发', 'UI / UX', '插画', '动效'],
+    contact: [
+      { label: 'Email', value: 'hi@lxlylzl.xyz', url: 'mailto:hi@lxlylzl.xyz' },
+      { label: '微信', value: 'lwjjack0123' }
+    ]
+  };
+  function render(a) {
+    const bio = document.getElementById('aboutBio'); bio.innerHTML = '';
+    (a.bio || []).forEach(function (t) { const p = document.createElement('p'); p.textContent = t; bio.appendChild(p); });
+    const sk = document.getElementById('aboutSkills'); sk.innerHTML = '';
+    (a.skills || []).forEach(function (s) { const sp = document.createElement('span'); sp.textContent = s; sk.appendChild(sp); });
+    const ct = document.getElementById('aboutContact'); ct.innerHTML = '';
+    (a.contact || []).forEach(function (c) {
+      const row = document.createElement('div'); row.className = 'row';
+      const lab = document.createElement('span'); lab.className = 'label'; lab.textContent = c.label || '';
+      const val = document.createElement('span');
+      if (c.url) {
+        const a2 = document.createElement('a'); a2.href = c.url; a2.textContent = c.value || c.url; a2.target = '_blank';
+        val.appendChild(a2);
+      } else { val.textContent = c.value || ''; }
+      row.appendChild(lab); row.appendChild(val); ct.appendChild(row);
+    });
+  }
+  render(DEFAULT);
+  fetch('/api/content?page=about').then(function (r) { return r.json(); }).then(function (c) {
+    if (c) render(c);
+  }).catch(function () {});
 })();
 
 </script>

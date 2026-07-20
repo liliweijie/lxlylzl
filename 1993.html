@@ -76,6 +76,49 @@ h1{font-size:18px; font-weight:700; letter-spacing:.02em; margin:0;}
 .item .actions{display:flex; gap:8px; margin-top:12px;}
 .empty{text-align:center; color:var(--text-2); padding:40px 0; font-size:14px;}
 .err{color:var(--accent); font-size:13px; text-align:center; margin-top:10px; min-height:16px;}
+
+/* ===== TABS ===== */
+.tabs{display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap;}
+.tab{
+  border:1px solid var(--panel-border); background:var(--panel); color:var(--text);
+  border-radius:100px; padding:8px 20px; font-size:13px; cursor:pointer; font-family:inherit;
+  transition:border-color .2s, background .2s, color .2s;
+}
+.tab:hover{border-color:var(--accent);}
+.tab.is-active{background:var(--accent); color:#fff; border-color:var(--accent);}
+.panel{display:block;}
+.panel-head{display:flex; align-items:center; gap:10px; margin-bottom:18px;}
+.panel-head .spacer{flex:1;}
+.saved-hint{color:var(--accent); font-size:13px; opacity:0; transition:opacity .3s; margin-left:4px;}
+.about-section-title{
+  font-size:12px; letter-spacing:.25em; text-transform:uppercase;
+  color:var(--text-2); opacity:.7; margin:22px 0 12px;
+}
+
+/* ===== EDITOR CARD ===== */
+.editor-card{
+  background:var(--panel); border:1px solid var(--panel-border); border-radius:16px;
+  padding:16px 18px; margin-bottom:14px; backdrop-filter:blur(20px);
+}
+.editor-card .field{margin-bottom:12px;}
+.editor-card .field:last-child{margin-bottom:0;}
+.editor-card label{display:block; font-size:12px; color:var(--text-2); margin:0 0 6px;}
+.editor-card input, .editor-card textarea{
+  width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--panel-border);
+  background:rgba(127,127,127,0.08); color:var(--text); font-size:14px;
+  font-family:inherit; outline:none; box-sizing:border-box;
+}
+.editor-card input:focus, .editor-card textarea:focus{border-color:var(--accent);}
+.editor-card textarea{resize:vertical;}
+.row2{display:flex; gap:10px;}
+.row2 > div{flex:1;}
+.card-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;}
+.card-title{font-size:13px; font-weight:600; color:var(--text-2);}
+.del{
+  background:transparent; color:var(--accent); border:1px solid var(--accent);
+  border-radius:10px; padding:6px 12px; font-size:12px; cursor:pointer; font-family:inherit;
+}
+.del:hover{background:rgba(232,93,59,0.10);}
 </style>
 </head>
 <body data-theme="dark">
@@ -88,7 +131,7 @@ h1{font-size:18px; font-weight:700; letter-spacing:.02em; margin:0;}
   </div>
 
   <div id="loginView" class="login">
-    <p>请输入后台账号与密码以管理碎碎念评论</p>
+    <p>请输入后台账号与密码以管理站点内容</p>
     <input type="text" id="userInput" placeholder="账号" autocomplete="off">
     <input type="password" id="passInput" placeholder="密码" autocomplete="off">
     <div class="row">
@@ -98,13 +141,72 @@ h1{font-size:18px; font-weight:700; letter-spacing:.02em; margin:0;}
   </div>
 
   <div id="adminView" style="display:none;">
-    <div class="toolbar">
-      <button class="btn btn-ghost" id="refreshBtn">刷新</button>
-      <span class="spacer"></span>
-      <button class="btn btn-danger" id="delAllBtn">一键清空所有留言</button>
+    <div class="tabs">
+      <button class="tab is-active" data-tab="notes">碎碎念</button>
+      <button class="tab" data-tab="works">作品</button>
+      <button class="tab" data-tab="index">首页</button>
+      <button class="tab" data-tab="about">关于</button>
     </div>
-    <div class="list" id="list"></div>
-    <div class="empty" id="empty" style="display:none;">暂无评论</div>
+
+    <!-- 碎碎念 -->
+    <div class="panel" id="panel-notes">
+      <div class="toolbar">
+        <button class="btn btn-ghost" id="refreshBtn">刷新</button>
+        <span class="spacer"></span>
+        <button class="btn btn-danger" id="delAllBtn">一键清空所有留言</button>
+      </div>
+      <div class="list" id="list"></div>
+      <div class="empty" id="empty" style="display:none;">暂无评论</div>
+    </div>
+
+    <!-- 作品 -->
+    <div class="panel" id="panel-works" style="display:none;">
+      <div class="panel-head">
+        <button class="btn btn-ghost" id="worksAdd">＋ 新建作品</button>
+        <span class="spacer"></span>
+        <span class="saved-hint" id="hint-works"></span>
+        <button class="btn btn-primary" id="worksSave">保存</button>
+      </div>
+      <div class="list" id="worksList"></div>
+      <div class="empty" id="worksEmpty" style="display:none;">暂无作品，点「新建作品」添加</div>
+    </div>
+
+    <!-- 首页 -->
+    <div class="panel" id="panel-index" style="display:none;">
+      <div class="panel-head">
+        <span class="spacer"></span>
+        <span class="saved-hint" id="hint-index"></span>
+        <button class="btn btn-primary" id="indexSave">保存</button>
+      </div>
+      <div class="editor-card">
+        <div class="field"><label>眉标（小字）</label><input type="text" id="idx_eyebrow"></div>
+        <div class="field"><label>主标题（可换行，用回车分隔）</label><textarea id="idx_title" rows="2"></textarea></div>
+        <div class="field"><label>副标题</label><input type="text" id="idx_subtitle"></div>
+        <div class="field"><label>简介</label><input type="text" id="idx_intro"></div>
+      </div>
+      <div class="about-section-title">社交链接</div>
+      <div class="list" id="idx_socials"></div>
+      <button class="btn btn-ghost" id="idx_socAdd" style="margin-top:10px;">＋ 添加社交链接</button>
+    </div>
+
+    <!-- 关于 -->
+    <div class="panel" id="panel-about" style="display:none;">
+      <div class="panel-head">
+        <span class="spacer"></span>
+        <span class="saved-hint" id="hint-about"></span>
+        <button class="btn btn-primary" id="aboutSave">保存</button>
+      </div>
+      <div class="about-section-title">个人简介（逐段）</div>
+      <div class="list" id="abt_bio"></div>
+      <button class="btn btn-ghost" id="abt_bioAdd" style="margin-top:10px;">＋ 添加段落</button>
+      <div class="about-section-title">技能（逗号分隔）</div>
+      <div class="editor-card">
+        <div class="field"><input type="text" id="abt_skills"></div>
+      </div>
+      <div class="about-section-title">联系方式</div>
+      <div class="list" id="abt_contact"></div>
+      <button class="btn btn-ghost" id="abt_ctAdd" style="margin-top:10px;">＋ 添加联系方式</button>
+    </div>
   </div>
 </div>
 
@@ -138,6 +240,23 @@ document.getElementById('userInput').addEventListener('keydown',function(e){if(e
 document.getElementById('passInput').addEventListener('keydown',function(e){if(e.key==='Enter')enter();});
 document.getElementById('refreshBtn').addEventListener('click',load);
 delAllBtn.addEventListener('click',askDeleteAll);
+
+// ===== TABS =====
+var tabBtns=document.querySelectorAll('.tab');
+var loaded={works:false, index:false, about:false};
+tabBtns.forEach(function(btn){
+  btn.addEventListener('click',function(){ switchTab(btn.getAttribute('data-tab')); });
+});
+function switchTab(name){
+  tabBtns.forEach(function(b){ b.classList.toggle('is-active', b.getAttribute('data-tab')===name); });
+  ['notes','works','index','about'].forEach(function(p){
+    document.getElementById('panel-'+p).style.display = (p===name)?'block':'none';
+  });
+  if(name==='notes'){ load(); }
+  else if(name==='works' && !loaded.works){ loadWorks(); loaded.works=true; }
+  else if(name==='index' && !loaded.index){ loadIndex(); loaded.index=true; }
+  else if(name==='about' && !loaded.about){ loadAbout(); loaded.about=true; }
+}
 
 // 用 GET ?probe=1 校验账号密码（账号密码走 query，无自定义请求头 -> 不触发跨域预检，避免"网络错误"）
 function enter(){
@@ -257,6 +376,212 @@ function renderItem(n){
 
   return item;
 }
+
+// =====================================================================
+// 通用编辑器辅助
+// =====================================================================
+function val(id){var e=document.getElementById(id);return e?e.value:'';}
+function setVal(id,v){var e=document.getElementById(id);if(e)e.value=v||'';}
+function mkInput(type,value){
+  var i=document.createElement('input'); i.type=type||'text'; i.value=value||'';
+  return i;
+}
+function fieldWrap(labelText, control){
+  var d=document.createElement('div'); d.className='field';
+  var l=document.createElement('label'); l.textContent=labelText;
+  d.appendChild(l); d.appendChild(control);
+  return d;
+}
+function showSaved(name){
+  var h=document.getElementById('hint-'+name);
+  if(!h)return;
+  h.textContent='已保存 ✓'; h.style.opacity='1';
+  setTimeout(function(){h.style.opacity='0';},2000);
+}
+// 保存内容页（PATCH /api/content?page=X，凭证走 x-admin-user / x-admin-pass，与碎碎念一致）
+function saveContent(page, body){
+  fetch('/api/content?page='+page, {
+    method:'PATCH',
+    headers:{'Content-Type':'application/json','x-admin-user':user,'x-admin-pass':pass},
+    body:JSON.stringify(body)
+  }).then(function(r){
+    if(r.status===401){ alert('凭证失效，请刷新页面重新登录'); return; }
+    if(!r.ok){ alert('保存失败（'+r.status+'）'); return; }
+    showSaved(page);
+  }).catch(function(){ alert('保存失败，请检查网络'); });
+}
+
+// =====================================================================
+// 作品（works）
+// =====================================================================
+function loadWorks(){
+  fetch('/api/content?page=works').then(function(r){return r.json();}).then(function(c){
+    var projects=(c && Array.isArray(c.projects))? c.projects : [];
+    renderWorks(projects);
+  }).catch(function(){ renderWorks([]); });
+}
+function renderWorks(projects){
+  var wrap=document.getElementById('worksList');
+  wrap.innerHTML='';
+  document.getElementById('worksEmpty').style.display = projects.length? 'none':'block';
+  projects.forEach(function(p){ wrap.appendChild(renderWorksCard(p)); });
+}
+function renderWorksCard(p){
+  p=p||{};
+  var card=document.createElement('div'); card.className='editor-card works-card';
+  var head=document.createElement('div'); head.className='card-head';
+  var title=document.createElement('span'); title.className='card-title'; title.textContent='作品';
+  var del=document.createElement('button'); del.className='del'; del.textContent='删除';
+  head.appendChild(title); head.appendChild(del);
+  var f_title=fieldWrap('标题', mkInput('text', p.title||''));
+  var f_client=fieldWrap('客户 / 署名', mkInput('text', p.client||''));
+  var f_desc=fieldWrap('描述', mkInput('text', p.desc||''));
+  var f_tags=fieldWrap('标签（逗号分隔）', mkInput('text', (p.tags||[]).join(', ')));
+  var cDark=fieldWrap('深色背景', mkInput('color', p.colorDark||'#2d1b69'));
+  var cLight=fieldWrap('浅色背景', mkInput('color', p.colorLight||'#e8dff5'));
+  var f_colors=document.createElement('div'); f_colors.className='row2';
+  var a=document.createElement('div'); a.appendChild(cDark);
+  var b=document.createElement('div'); b.appendChild(cLight);
+  f_colors.appendChild(a); f_colors.appendChild(b);
+  card.appendChild(head);
+  card.appendChild(f_title); card.appendChild(f_client); card.appendChild(f_desc);
+  card.appendChild(f_tags); card.appendChild(f_colors);
+  del.addEventListener('click',function(){ card.remove(); updateEmptyState('worksList','worksEmpty'); });
+  return card;
+}
+function saveWorks(){
+  var cards=document.querySelectorAll('#worksList .works-card');
+  var projects=[];
+  cards.forEach(function(card){
+    var ins=card.querySelectorAll('input');
+    // 顺序：title, client, desc, tags, colorDark, colorLight
+    var t=ins[0].value.trim();
+    var c=ins[1].value.trim();
+    var d=ins[2].value.trim();
+    var tags=ins[3].value.split(',').map(function(s){return s.trim();}).filter(Boolean);
+    projects.push({ title:t, client:c||t, desc:d, tags:tags, colorDark:ins[4].value, colorLight:ins[5].value });
+  });
+  saveContent('works', { projects:projects });
+}
+function updateEmptyState(listId, emptyId){
+  var has=document.getElementById(listId).children.length>0;
+  document.getElementById(emptyId).style.display = has? 'none':'block';
+}
+
+// =====================================================================
+// 首页（index / hero）
+// =====================================================================
+function loadIndex(){
+  fetch('/api/content?page=index').then(function(r){return r.json();}).then(function(c){
+    c=c||{}; var hero=c.hero||{};
+    setVal('idx_eyebrow', hero.eyebrow||'');
+    setVal('idx_title', hero.title||'');
+    setVal('idx_subtitle', hero.subtitle||'');
+    setVal('idx_intro', hero.intro||'');
+    document.getElementById('idx_socials').innerHTML='';
+    (hero.socials||[]).forEach(function(s){ appendSocialRow(s); });
+  }).catch(function(){});
+}
+function appendSocialRow(s){
+  s=s||{};
+  var row=document.createElement('div'); row.className='editor-card soc-row'; row.style.marginBottom='10px';
+  var r2=document.createElement('div'); r2.className='row2';
+  var a=document.createElement('div'); var la=document.createElement('label'); la.textContent='名称';
+  var i1=mkInput('text', s.label||''); a.appendChild(la); a.appendChild(i1);
+  var b=document.createElement('div'); var lb=document.createElement('label'); lb.textContent='链接';
+  var i2=mkInput('text', s.url||''); b.appendChild(lb); b.appendChild(i2);
+  r2.appendChild(a); r2.appendChild(b);
+  var del=document.createElement('button'); del.className='del'; del.textContent='删除'; del.style.marginTop='8px';
+  del.addEventListener('click',function(){ row.remove(); });
+  row.appendChild(r2); row.appendChild(del);
+  document.getElementById('idx_socials').appendChild(row);
+}
+function saveIndex(){
+  var socials=[];
+  document.querySelectorAll('#idx_socials .soc-row').forEach(function(row){
+    var ins=row.querySelectorAll('input');
+    var label=ins[0].value.trim(), url=ins[1].value.trim();
+    if(label||url) socials.push({label:label, url:url});
+  });
+  saveContent('index', {
+    hero: {
+      eyebrow: val('idx_eyebrow'),
+      title: val('idx_title'),
+      subtitle: val('idx_subtitle'),
+      intro: val('idx_intro'),
+      socials: socials
+    }
+  });
+}
+
+// =====================================================================
+// 关于（about）
+// =====================================================================
+function loadAbout(){
+  fetch('/api/content?page=about').then(function(r){return r.json();}).then(function(a){
+    a=a||{};
+    document.getElementById('abt_bio').innerHTML='';
+    (a.bio||[]).forEach(function(t){ appendBioRow(t); });
+    setVal('abt_skills', (a.skills||[]).join(', '));
+    document.getElementById('abt_contact').innerHTML='';
+    (a.contact||[]).forEach(function(c){ appendContactRow(c); });
+  }).catch(function(){});
+}
+function appendBioRow(text){
+  var row=document.createElement('div'); row.className='editor-card bio-row'; row.style.marginBottom='10px';
+  var ta=document.createElement('textarea'); ta.rows=2; ta.value=text||'';
+  var del=document.createElement('button'); del.className='del'; del.textContent='删除'; del.style.marginTop='8px';
+  del.addEventListener('click',function(){ row.remove(); });
+  row.appendChild(ta); row.appendChild(del);
+  document.getElementById('abt_bio').appendChild(row);
+}
+function appendContactRow(c){
+  c=c||{};
+  var row=document.createElement('div'); row.className='editor-card ct-row'; row.style.marginBottom='10px';
+  var r2=document.createElement('div'); r2.className='row2';
+  var a=document.createElement('div'); var la=document.createElement('label'); la.textContent='标签';
+  var i1=mkInput('text', c.label||''); a.appendChild(la); a.appendChild(i1);
+  var b=document.createElement('div'); var lb=document.createElement('label'); lb.textContent='内容';
+  var i2=mkInput('text', c.value||''); b.appendChild(lb); b.appendChild(i2);
+  r2.appendChild(a); r2.appendChild(b);
+  var c3=document.createElement('div'); var lc=document.createElement('label'); lc.textContent='链接（可空）';
+  var i3=mkInput('text', c.url||''); c3.appendChild(lc); c3.appendChild(i3);
+  var del=document.createElement('button'); del.className='del'; del.textContent='删除'; del.style.marginTop='8px';
+  del.addEventListener('click',function(){ row.remove(); });
+  row.appendChild(r2); row.appendChild(c3); row.appendChild(del);
+  document.getElementById('abt_contact').appendChild(row);
+}
+function saveAbout(){
+  var bio=[];
+  document.querySelectorAll('#abt_bio .bio-row').forEach(function(row){
+    var v=row.querySelector('textarea').value.trim();
+    if(v) bio.push(v);
+  });
+  var skills=val('abt_skills').split(',').map(function(s){return s.trim();}).filter(Boolean);
+  var contact=[];
+  document.querySelectorAll('#abt_contact .ct-row').forEach(function(row){
+    var ins=row.querySelectorAll('input');
+    var label=ins[0].value.trim(), value=ins[1].value.trim(), url=ins[2].value.trim();
+    if(label||value){
+      var obj={label:label, value:value};
+      if(url) obj.url=url;
+      contact.push(obj);
+    }
+  });
+  saveContent('about', { bio:bio, skills:skills, contact:contact });
+}
+
+// ===== 编辑器按钮绑定 =====
+document.getElementById('worksAdd').addEventListener('click',function(){
+  document.getElementById('worksList').appendChild(renderWorksCard({}));
+  updateEmptyState('worksList','worksEmpty');
+});
+document.getElementById('worksSave').addEventListener('click',saveWorks);
+document.getElementById('indexSave').addEventListener('click',saveIndex);
+document.getElementById('aboutSave').addEventListener('click',saveAbout);
+document.getElementById('idx_socAdd').addEventListener('click',function(){ appendSocialRow({}); });
+document.getElementById('abt_bioAdd').addEventListener('click',function(){ appendBioRow(''); });
+document.getElementById('abt_ctAdd').addEventListener('click',function(){ appendContactRow({}); });
 </script>
 </body>
 </html>
