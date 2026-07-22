@@ -166,15 +166,15 @@
     .theme-btn { width: 34px; height: 34px; }
   }
 
-  /* ===== HOME: 内容大框（导航下 10px、页底 20px、左右对齐 logo/theme） ===== */
+  /* ===== HOME: 内容大框（导航下 10px、页底 40px、圆角 60px、左右对齐 logo/theme） ===== */
   .home-frame {
     position: fixed;
     top: 98px;       /* nav 高度 88 + 间距 10 */
-    bottom: 20px;
+    bottom: 40px;
     left: 40px;
     right: 40px;
     border: 1.5px solid rgba(255,255,255,0.24);
-    border-radius: 0;
+    border-radius: 60px;
     z-index: 1;
     pointer-events: none; /* 不挡墨水光标 / 导航交互 */
   }
@@ -182,7 +182,7 @@
     .home-frame { left: 24px; right: 24px; top: 84px; }
   }
   @media (max-width: 600px) {
-    .home-frame { left: 16px; right: 16px; top: 74px; bottom: 16px; }
+    .home-frame { left: 16px; right: 16px; top: 74px; bottom: 28px; }
   }
 
   /* ===== PAGE: 纯净背景（导航+光标） ===== */
@@ -240,7 +240,7 @@
     </defs>
   </svg>
 
-  <!-- ===== HOME: 内容大框（待填充） ===== -->
+  <!-- ===== HOME: 内容大框（圆角 60px，待填充） ===== -->
   <div class="home-frame"></div>
 
 <script>
