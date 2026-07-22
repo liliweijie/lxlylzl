@@ -166,31 +166,23 @@
     .theme-btn { width: 34px; height: 34px; }
   }
 
-  /* ===== HOME: 居中卡片（非磨砂）+ 四周留白 ===== */
-  .home-stage {
+  /* ===== HOME: 内容大框（导航下 10px、页底 20px、左右对齐 logo/theme） ===== */
+  .home-frame {
     position: fixed;
-    inset: 0;
+    top: 98px;       /* nav 高度 88 + 间距 10 */
+    bottom: 20px;
+    left: 40px;
+    right: 40px;
+    border: 1px solid var(--pill-border);
+    border-radius: 0;
     z-index: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 110px 40px 60px;   /* 上方给导航留白 */
+    pointer-events: none; /* 不挡墨水光标 / 导航交互 */
   }
-  .home-card {
-    border: none;
-    padding: 0;
-    background: transparent;
-    max-width: min(1920px, 100vw);
-    width: 100%;
-    box-shadow: none;
-  }
-  .home-card img {
-    display: block;
-    width: 100%;
-    height: auto;
+  @media (max-width: 900px) {
+    .home-frame { left: 24px; right: 24px; top: 84px; }
   }
   @media (max-width: 600px) {
-    .home-stage { padding: 96px 18px 40px; }
+    .home-frame { left: 16px; right: 16px; top: 74px; bottom: 16px; }
   }
 
   /* ===== PAGE: 纯净背景（导航+光标） ===== */
@@ -248,12 +240,8 @@
     </defs>
   </svg>
 
-  <!-- ===== HOME: 居中卡片（非磨砂） ===== -->
-  <main class="home-stage">
-    <div class="home-card">
-      <img src="home.svg" alt="lxlylzl 首页视觉 · LIWEIJIE / designer / portfolio" width="252.74" height="156.66">
-    </div>
-  </main>
+  <!-- ===== HOME: 内容大框（待填充） ===== -->
+  <div class="home-frame"></div>
 
 <script>
 // ===== THEME =====
@@ -335,7 +323,7 @@
   tick();
 })();
 
-// 首页视觉由 home.svg 提供（居中卡片 / 非磨砂）
+// 首页：.home-frame 为内容大框，待填充
 
 </script>
 </body>
