@@ -166,25 +166,6 @@
     .theme-btn { width: 34px; height: 34px; }
   }
 
-  /* ===== HOME: 内容大框（导航下 5px、页底 40px、圆角 30px、2px 边框） ===== */
-  .home-frame {
-    position: fixed;
-    top: 93px;       /* nav 高度 88 + 间距 5 */
-    bottom: 40px;
-    left: 40px;
-    right: 40px;
-    border: 2px solid var(--pill-border);
-    border-radius: 30px;
-    z-index: 1;
-    pointer-events: none; /* 不挡墨水光标 / 导航交互 */
-  }
-  @media (max-width: 900px) {
-    .home-frame { left: 24px; right: 24px; top: 79px; }
-  }
-  @media (max-width: 600px) {
-    .home-frame { left: 16px; right: 16px; top: 69px; bottom: 28px; }
-  }
-
   /* ===== PAGE: 纯净背景（导航+光标） ===== */
 </style>
 </head>
@@ -240,8 +221,7 @@
     </defs>
   </svg>
 
-  <!-- ===== HOME: 内容大框（圆角 30px，待填充） ===== -->
-  <div class="home-frame"></div>
+  <!-- ===== HOME: 全屏大页面（待填充） ===== -->
 
 <script>
 // ===== THEME =====
@@ -323,7 +303,7 @@
   tick();
 })();
 
-// 首页：.home-frame 为内容大框，待填充
+// 首页：全屏大页面，待填充
 
 </script>
 </body>
