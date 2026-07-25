@@ -44,7 +44,7 @@ module.exports = async (req, res) => {
   }
 
   // ---- 后台管理鉴权（账号 + 密码） ----
-  // 默认 liweijie / lwjjack0123；可用 Vercel 环境变量 ADMIN_USER / ADMIN_PASS 覆盖
+  // 后台鉴权：仅读取 Vercel 环境变量 ADMIN_USER / ADMIN_PASS。未设置则拒绝登录（fail-closed）。
   function getAdminCreds(req) {
     const q = req.query || {};
     const h = req.headers || {};
@@ -55,8 +55,8 @@ module.exports = async (req, res) => {
     };
   }
   function isAdmin(req) {
-    const ADMIN_USER = process.env.ADMIN_USER || 'liweijie';
-    const ADMIN_PASS = process.env.ADMIN_PASS || 'lwjjack0123';
+    const ADMIN_USER = process.env.ADMIN_USER;
+    const ADMIN_PASS = process.env.ADMIN_PASS;
     const c = getAdminCreds(req);
     return c.user === ADMIN_USER && c.pass === ADMIN_PASS;
   }
