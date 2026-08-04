@@ -1,0 +1,645 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>后台 ADMIN · liweijie</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=JetBrains+Mono:wght@400;500&amp;family=Noto+Sans+SC:wght@400;500;700;900&amp;display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0b0b0c; --ink-2:#151517; --paper:#f4f1ea;
+  --red:#e83a2e; --red-deep:#a91e14; --gray:#8b8b8e;
+  --line:rgba(244,241,234,.14); --line-strong:rgba(244,241,234,.32);
+  --font-anton:'Anton','Arial Narrow',sans-serif;
+  --font-noto:'Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;
+  --font-mono:'JetBrains Mono','SFMono-Regular',Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  min-height:100vh; background:var(--ink); color:var(--paper);
+  font-family:var(--font-noto); padding:clamp(16px,4vw,48px);
+  background-image:repeating-linear-gradient(0deg,transparent 0 3px,rgba(244,241,234,.012) 3px 4px);
+}
+.wrap{max-width:1080px;margin:0 auto;}
+button{font-family:inherit;cursor:pointer;}
+input,textarea{font-family:inherit;outline:none;}
+
+/* ---------- header ---------- */
+.adm-head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:28px;flex-wrap:wrap;}
+.brand{font-family:var(--font-anton);font-size:22px;letter-spacing:.04em;}
+.brand .tag{
+  font-family:var(--font-mono);font-size:11px;letter-spacing:.2em;color:var(--red);
+  border:1px solid var(--red);padding:3px 8px;margin-left:10px;vertical-align:middle;
+}
+.adm-head__right{display:flex;align-items:center;gap:12px;}
+
+/* ---------- ticket panels ---------- */
+.ticket{
+  position:relative;background:var(--ink-2);border:1px solid var(--line);
+  padding:26px 26px 22px;margin-bottom:18px;
+}
+.ticket::before,.ticket::after{
+  content:'';position:absolute;top:50%;width:18px;height:18px;border-radius:50%;
+  background:var(--ink);border:1px solid var(--line);transform:translateY(-50%);
+}
+.ticket::before{left:-10px;}
+.ticket::after{right:-10px;}
+.ticket__no{
+  position:absolute;top:14px;right:20px;font-family:var(--font-mono);
+  font-size:10px;letter-spacing:.18em;color:var(--gray);
+}
+.tear{
+  position:absolute;left:0;right:0;top:64px;height:1px;
+  background-image:linear-gradient(90deg,var(--line-strong) 0 8px,transparent 8px 16px);
+  background-size:16px 1px;pointer-events:none;
+}
+
+/* ---------- login ---------- */
+.login{max-width:460px;margin:8vh auto 0;text-align:center;padding-top:40px;}
+.login h1{font-size:22px;font-weight:900;margin-bottom:10px;}
+.login .muted{color:var(--gray);font-size:13px;line-height:1.7;margin-bottom:22px;}
+.login input{
+  display:block;width:100%;padding:12px 14px;margin-bottom:12px;
+  background:rgba(244,241,234,.05);border:1px solid var(--line);color:var(--paper);
+  font-size:14px;font-family:var(--font-mono);
+}
+.login input:focus{border-color:var(--red);}
+.err{color:var(--red);font-size:13px;min-height:18px;margin-top:12px;}
+
+/* ---------- buttons ---------- */
+.btn{
+  border:1px solid var(--line-strong);background:transparent;color:var(--paper);
+  font-size:13px;padding:9px 16px;letter-spacing:.06em;transition:border-color .2s,color .2s,background .2s;
+}
+.btn:hover{border-color:var(--red);color:var(--red);}
+.btn--primary{background:var(--red);border-color:var(--red);color:#fff;font-weight:700;}
+.btn--primary:hover{background:var(--red-deep);border-color:var(--red-deep);color:#fff;}
+.btn--danger{border-color:var(--red);color:var(--red);}
+.btn--danger:hover{background:var(--red);color:#fff;}
+.btn[disabled]{opacity:.5;cursor:not-allowed;}
+
+/* ---------- tabs ---------- */
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+.tab{
+  font-family:var(--font-mono);font-size:12px;letter-spacing:.14em;
+  border:1px solid var(--line-strong);background:transparent;color:var(--paper);
+  padding:9px 18px;border-radius:100px;
+}
+.tab:hover{border-color:var(--red);color:var(--red);}
+.tab.is-active{background:var(--red);border-color:var(--red);color:#fff;}
+
+/* ---------- panels ---------- */
+.panel__bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px;}
+.panel__title{font-weight:900;font-size:15px;}
+.panel__title .en{font-family:var(--font-mono);font-size:11px;color:var(--gray);letter-spacing:.2em;margin-left:8px;}
+.status{font-family:var(--font-mono);font-size:12px;color:var(--gray);min-height:16px;}
+.status.ok{color:#7fd08a;}
+.status.bad{color:var(--red);}
+.panel__actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;}
+textarea.json{
+  width:100%;min-height:320px;resize:vertical;padding:14px;
+  background:#0e0e10;border:1px solid var(--line);color:var(--paper);
+  font-family:var(--font-mono);font-size:12.5px;line-height:1.7;tab-size:2;
+}
+textarea.json:focus{border-color:var(--red);}
+textarea.json.invalid{border-color:var(--red);box-shadow:0 0 0 1px var(--red);}
+.hint{font-size:12px;color:var(--gray);line-height:1.7;margin-top:10px;}
+.hint .red{color:var(--red);}
+
+/* ---------- notes admin ---------- */
+.nlist{display:flex;flex-direction:column;gap:10px;margin-top:6px;}
+.nitem{border:1px solid var(--line);padding:12px 14px;background:rgba(244,241,234,.03);}
+.nitem .meta{
+  display:flex;gap:10px;align-items:baseline;font-family:var(--font-mono);
+  font-size:11px;color:var(--gray);margin-bottom:6px;flex-wrap:wrap;
+}
+.nitem .meta .name{color:var(--paper);}
+.nitem .meta .edited{color:var(--red);}
+.nitem .content{font-size:14px;line-height:1.65;white-space:pre-wrap;word-break:break-word;}
+.nitem textarea{
+  width:100%;min-height:64px;resize:vertical;padding:10px;margin-top:4px;
+  background:#0e0e10;border:1px solid var(--line);color:var(--paper);
+  font-size:13px;font-family:inherit;
+}
+.nitem .row{display:flex;gap:8px;margin-top:10px;}
+.nitem .row .btn{padding:6px 12px;font-size:12px;}
+.empty{color:var(--gray);font-size:13px;text-align:center;padding:28px 0;}
+.spacer{flex:1;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="adm-head">
+    <div class="brand">✳ liweijie<span class="tag">ADMIN / 1993</span></div>
+    <div class="adm-head__right">
+      <span class="status" id="globalStatus"></span>
+      <button class="btn" id="logoutBtn" type="button" hidden>退出登录</button>
+    </div>
+  </header>
+
+  <!-- ============ 登录 ============ -->
+  <section class="ticket login" id="loginView" hidden>
+    <span class="ticket__no">NO. ADMIN-1993</span>
+    <h1>后台登录</h1>
+    <p class="muted">账号密码由服务端环境变量 ADMIN_USER / ADMIN_PASS 校验,<br>凭据仅保存在本次会话(sessionStorage)。</p>
+    <input type="text" id="userInput" placeholder="账号 USER" autocomplete="off">
+    <input type="password" id="passInput" placeholder="密码 PASS" autocomplete="off">
+    <div style="margin-top:16px">
+      <button class="btn btn--primary" id="loginBtn" type="button">进入后台 →</button>
+    </div>
+    <p class="err" id="loginErr"></p>
+  </section>
+
+  <!-- ============ 后台 ============ -->
+  <section id="adminView" hidden>
+    <nav class="tabs" id="tabs" aria-label="内容页签"></nav>
+    <div id="panels"></div>
+  </section>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var PAGES = [
+    { id: 'index', cn: '首页', en: 'INDEX' },
+    { id: 'works', cn: '作品', en: 'WORKS' },
+    { id: 'about', cn: '关于', en: 'ABOUT' },
+    { id: 'notes', cn: '碎碎念', en: 'NOTES' }
+  ];
+  var SESSION_KEY = 'lx:admin';
+
+  var creds = null;
+  try { creds = JSON.parse(sessionStorage.getItem(SESSION_KEY) || 'null'); } catch (e) { /* ignore */ }
+
+  var loginView = document.getElementById('loginView');
+  var adminView = document.getElementById('adminView');
+  var loginErr = document.getElementById('loginErr');
+  var globalStatus = document.getElementById('globalStatus');
+  var logoutBtn = document.getElementById('logoutBtn');
+
+  function setStatus(el, msg, cls) {
+    if (!el) return;
+    el.textContent = msg || '';
+    el.className = 'status' + (cls ? ' ' + cls : '');
+  }
+  function setGlobal(msg, cls) { setStatus(globalStatus, msg, cls); }
+
+  /* ---------- 凭据(仅 sessionStorage) ---------- */
+  function saveCreds(u, p) {
+    creds = { u: u, p: p };
+    try { sessionStorage.setItem(SESSION_KEY, JSON.stringify(creds)); } catch (e) { /* ignore */ }
+  }
+  function clearCreds() {
+    creds = null;
+    try { sessionStorage.removeItem(SESSION_KEY); } catch (e) { /* ignore */ }
+  }
+  function adminHeaders(extra) {
+    var h = { 'x-admin-user': creds.u, 'x-admin-pass': creds.p };
+    if (extra) for (var k in extra) h[k] = extra[k];
+    return h;
+  }
+
+  /* ---------- 统一请求:401 自动退回登录 ---------- */
+  function api(url, opts) {
+    opts = opts || {};
+    opts.headers = adminHeaders(opts.headers);
+    return fetch(url, opts).then(function (r) {
+      if (r.status === 401) {
+        forceLogout('登录已失效,请重新登录');
+        throw new Error('unauthorized');
+      }
+      return r;
+    });
+  }
+
+  function forceLogout(msg) {
+    clearCreds();
+    adminView.hidden = true;
+    loginView.hidden = false;
+    logoutBtn.hidden = true;
+    loginErr.textContent = msg || '';
+    setGlobal('');
+  }
+
+  function enterAdmin() {
+    loginView.hidden = true;
+    adminView.hidden = false;
+    logoutBtn.hidden = false;
+    setGlobal('已登录 ✓', 'ok');
+    window.setTimeout(function () { setGlobal(''); }, 2500);
+    switchTab(currentTab);
+  }
+
+  /* ---------- 登录:GET /api/content?probe=1 ---------- */
+  function probe(u, p, onOk, onErr) {
+    fetch('/api/content?probe=1', {
+      method: 'GET',
+      headers: { 'x-admin-user': u, 'x-admin-pass': p }
+    }).then(function (r) {
+      if (r.status === 401) { onErr('账号或密码错误'); return; }
+      if (!r.ok) { onErr('登录失败(' + r.status + '),请重试'); return; }
+      onOk();
+    }).catch(function () { onErr('网络错误,请检查连接'); });
+  }
+
+  function doLogin() {
+    var u = document.getElementById('userInput').value.trim();
+    var p = document.getElementById('passInput').value;
+    if (!u || !p) { loginErr.textContent = '请输入账号和密码'; return; }
+    loginErr.textContent = '';
+    var btn = document.getElementById('loginBtn');
+    btn.disabled = true;
+    btn.textContent = '校验中…';
+    probe(u, p, function () {
+      btn.disabled = false;
+      btn.textContent = '进入后台 →';
+      saveCreds(u, p);
+      enterAdmin();
+    }, function (msg) {
+      btn.disabled = false;
+      btn.textContent = '进入后台 →';
+      loginErr.textContent = msg;
+    });
+  }
+
+  document.getElementById('loginBtn').addEventListener('click', doLogin);
+  document.getElementById('userInput').addEventListener('keydown', function (e) { if (e.key === 'Enter') doLogin(); });
+  document.getElementById('passInput').addEventListener('keydown', function (e) { if (e.key === 'Enter') doLogin(); });
+  logoutBtn.addEventListener('click', function () { forceLogout('已退出登录'); });
+
+  /* =====================================================================
+     四个内容页签:textarea + 校验/格式化/保存/恢复默认
+     ===================================================================== */
+  var tabsNav = document.getElementById('tabs');
+  var panelsBox = document.getElementById('panels');
+  var currentTab = 'index';
+  var loadedTabs = {};
+  var panelRefs = {};
+
+  PAGES.forEach(function (pg) {
+    var b = document.createElement('button');
+    b.className = 'tab';
+    b.type = 'button';
+    b.setAttribute('data-tab', pg.id);
+    b.textContent = pg.cn + ' ' + pg.en;
+    b.addEventListener('click', function () { switchTab(pg.id); });
+    tabsNav.appendChild(b);
+
+    var panel = document.createElement('div');
+    panel.className = 'panel';
+    panel.setAttribute('data-panel', pg.id);
+    panel.hidden = true;
+
+    var ticket = document.createElement('div');
+    ticket.className = 'ticket';
+    var no = document.createElement('span');
+    no.className = 'ticket__no';
+    no.textContent = 'NO. CMS-' + pg.en;
+    ticket.appendChild(no);
+
+    var bar = document.createElement('div');
+    bar.className = 'panel__bar';
+    var title = document.createElement('span');
+    title.className = 'panel__title';
+    title.textContent = pg.cn;
+    var en = document.createElement('span');
+    en.className = 'en';
+    en.textContent = '/api/content?page=' + pg.id;
+    title.appendChild(en);
+    var status = document.createElement('span');
+    status.className = 'status';
+    bar.appendChild(title);
+    bar.appendChild(status);
+    ticket.appendChild(bar);
+
+    var ta = document.createElement('textarea');
+    ta.className = 'json';
+    ta.setAttribute('spellcheck', 'false');
+    ta.setAttribute('aria-label', pg.cn + '内容 JSON');
+    ticket.appendChild(ta);
+
+    var actions = document.createElement('div');
+    actions.className = 'panel__actions';
+    function mkBtn(label, cls) {
+      var x = document.createElement('button');
+      x.className = 'btn' + (cls ? ' ' + cls : '');
+      x.type = 'button';
+      x.textContent = label;
+      actions.appendChild(x);
+      return x;
+    }
+    var validateBtn = mkBtn('校验 JSON');
+    var formatBtn = mkBtn('格式化');
+    var reloadBtn = mkBtn('重新加载');
+    var defaultsBtn = mkBtn('恢复默认');
+    var saveBtn = mkBtn('保存', 'btn--primary');
+    ticket.appendChild(actions);
+
+    var hint = document.createElement('p');
+    hint.className = 'hint';
+    hint.textContent = '编辑 JSON 后点「保存」生效;「恢复默认」只载入种子内容到编辑器,需再点保存。字段说明见前台页面文案一一对应。';
+    ticket.appendChild(hint);
+    panel.appendChild(ticket);
+    panelsBox.appendChild(panel);
+
+    var refs = { ta: ta, status: status, saveBtn: saveBtn };
+    panelRefs[pg.id] = refs;
+
+    validateBtn.addEventListener('click', function () {
+      var err = validateJson(pg.id);
+      setStatus(status, err ? 'JSON 无效:' + err : 'JSON 有效 ✓', err ? 'bad' : 'ok');
+    });
+    formatBtn.addEventListener('click', function () {
+      try {
+        ta.value = JSON.stringify(JSON.parse(ta.value), null, 2);
+        ta.classList.remove('invalid');
+        setStatus(status, '已格式化 ✓', 'ok');
+      } catch (e) {
+        ta.classList.add('invalid');
+        setStatus(status, '无法格式化:' + e.message, 'bad');
+      }
+    });
+    reloadBtn.addEventListener('click', function () { loadContent(pg.id, true); });
+    defaultsBtn.addEventListener('click', function () { loadDefaults(pg.id); });
+    saveBtn.addEventListener('click', function () { saveContent(pg.id); });
+    ta.addEventListener('input', function () { ta.classList.remove('invalid'); });
+  });
+
+  // 碎碎念页签:追加留言管理
+  buildNotesAdmin();
+
+  function switchTab(id) {
+    currentTab = id;
+    var btns = tabsNav.querySelectorAll('.tab');
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].classList.toggle('is-active', btns[i].getAttribute('data-tab') === id);
+    }
+    var panels = panelsBox.querySelectorAll('.panel');
+    for (var j = 0; j < panels.length; j++) {
+      panels[j].hidden = panels[j].getAttribute('data-panel') !== id;
+    }
+    if (!loadedTabs[id]) {
+      loadedTabs[id] = true;
+      loadContent(id, false);
+      if (id === 'notes') loadNotes();
+    }
+  }
+
+  function validateJson(id) {
+    var refs = panelRefs[id];
+    try {
+      var v = JSON.parse(refs.ta.value);
+      if (!v || typeof v !== 'object' || Array.isArray(v)) return '顶层必须是 JSON 对象 {}';
+      refs.ta.classList.remove('invalid');
+      return null;
+    } catch (e) {
+      refs.ta.classList.add('invalid');
+      return e.message;
+    }
+  }
+
+  function loadContent(id, manual) {
+    var refs = panelRefs[id];
+    setStatus(refs.status, '加载中…');
+    api('/api/content?page=' + encodeURIComponent(id), { method: 'GET' })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        refs.ta.value = JSON.stringify(d, null, 2);
+        refs.ta.classList.remove('invalid');
+        setStatus(refs.status, manual ? '已重新加载 ✓' : '已加载 ✓', 'ok');
+      })
+      .catch(function (e) {
+        if (e.message !== 'unauthorized') setStatus(refs.status, '加载失败,请点「重新加载」', 'bad');
+      });
+  }
+
+  function loadDefaults(id) {
+    var refs = panelRefs[id];
+    setStatus(refs.status, '载入默认内容…');
+    // 种子内容本身即公开文案,GET 无需鉴权;仍走 api() 以便 401 统一处理
+    api('/api/content?page=' + encodeURIComponent(id) + '&defaults=1', { method: 'GET' })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        refs.ta.value = JSON.stringify(d, null, 2);
+        refs.ta.classList.remove('invalid');
+        setStatus(refs.status, '已载入默认内容(未保存,点「保存」生效)', 'ok');
+      })
+      .catch(function (e) {
+        if (e.message !== 'unauthorized') setStatus(refs.status, '载入默认失败', 'bad');
+      });
+  }
+
+  function saveContent(id) {
+    var refs = panelRefs[id];
+    var err = validateJson(id);
+    if (err) { setStatus(refs.status, 'JSON 无效:' + err, 'bad'); return; }
+    var body = refs.ta.value;
+    refs.saveBtn.disabled = true;
+    setStatus(refs.status, '保存中…');
+    api('/api/content?page=' + encodeURIComponent(id), {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: body
+    }).then(function (r) {
+      if (!r.ok) throw new Error('http_' + r.status);
+      return r.json();
+    }).then(function (d) {
+      refs.saveBtn.disabled = false;
+      refs.ta.value = JSON.stringify(d, null, 2);
+      setStatus(refs.status, '已保存 ✓ 前台刷新后生效', 'ok');
+    }).catch(function (e) {
+      refs.saveBtn.disabled = false;
+      if (e.message !== 'unauthorized') setStatus(refs.status, '保存失败:' + e.message, 'bad');
+    });
+  }
+
+  /* =====================================================================
+     碎碎念:留言管理(GET /api/notes,删除/编辑/清空 带 admin headers)
+     ===================================================================== */
+  var notesStatus, notesList;
+  function buildNotesAdmin() {
+    var panel = panelsBox.querySelector('[data-panel="notes"]');
+    var box = document.createElement('div');
+    box.className = 'ticket';
+
+    var bar = document.createElement('div');
+    bar.className = 'panel__bar';
+    var title = document.createElement('span');
+    title.className = 'panel__title';
+    title.textContent = '留言管理';
+    var en = document.createElement('span');
+    en.className = 'en';
+    en.textContent = '/api/notes';
+    title.appendChild(en);
+    notesStatus = document.createElement('span');
+    notesStatus.className = 'status';
+    var spacer = document.createElement('span');
+    spacer.className = 'spacer';
+    var refreshBtn = document.createElement('button');
+    refreshBtn.className = 'btn';
+    refreshBtn.type = 'button';
+    refreshBtn.textContent = '刷新';
+    var clearBtn = document.createElement('button');
+    clearBtn.className = 'btn btn--danger';
+    clearBtn.type = 'button';
+    clearBtn.textContent = '清空全部留言';
+    bar.appendChild(title);
+    bar.appendChild(notesStatus);
+    bar.appendChild(spacer);
+    bar.appendChild(refreshBtn);
+    bar.appendChild(clearBtn);
+    box.appendChild(bar);
+
+    notesList = document.createElement('div');
+    notesList.className = 'nlist';
+    box.appendChild(notesList);
+    panel.appendChild(box);
+
+    refreshBtn.addEventListener('click', loadNotes);
+    clearBtn.addEventListener('click', function () {
+      if (!window.confirm('确定清空全部留言吗?此操作不可恢复。')) return;
+      setStatus(notesStatus, '清空中…');
+      api('/api/notes?all=1', { method: 'DELETE' })
+        .then(function (r) { if (!r.ok) throw new Error('http_' + r.status); return r.json(); })
+        .then(function () {
+          setStatus(notesStatus, '已清空 ✓', 'ok');
+          loadNotes();
+        })
+        .catch(function (e) {
+          if (e.message !== 'unauthorized') setStatus(notesStatus, '清空失败', 'bad');
+        });
+    });
+  }
+
+  function fmtTs(ts) {
+    if (!ts) return '';
+    var d = new Date(Number(ts));
+    function p(n) { return (n < 10 ? '0' : '') + n; }
+    return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
+  }
+
+  function loadNotes() {
+    setStatus(notesStatus, '加载中…');
+    api('/api/notes', { method: 'GET' })
+      .then(function (r) { return r.json(); })
+      .then(function (arr) {
+        if (!Array.isArray(arr)) arr = [];
+        setStatus(notesStatus, '共 ' + arr.length + ' 条', 'ok');
+        notesList.textContent = '';
+        if (!arr.length) {
+          var em = document.createElement('div');
+          em.className = 'empty';
+          em.textContent = '暂无留言';
+          notesList.appendChild(em);
+          return;
+        }
+        arr.forEach(function (n) { notesList.appendChild(renderNote(n)); });
+      })
+      .catch(function (e) {
+        if (e.message !== 'unauthorized') setStatus(notesStatus, '加载失败', 'bad');
+      });
+  }
+
+  function renderNote(n) {
+    var item = document.createElement('div');
+    item.className = 'nitem';
+
+    var meta = document.createElement('div');
+    meta.className = 'meta';
+    var name = document.createElement('span');
+    name.className = 'name';
+    name.textContent = n.name || '匿名';
+    var time = document.createElement('span');
+    time.textContent = fmtTs(n.ts);
+    meta.appendChild(name);
+    meta.appendChild(time);
+    if (n.edited) {
+      var ed = document.createElement('span');
+      ed.className = 'edited';
+      ed.textContent = '已编辑';
+      meta.appendChild(ed);
+    }
+
+    var content = document.createElement('div');
+    content.className = 'content';
+    content.textContent = n.content || '';
+
+    var row = document.createElement('div');
+    row.className = 'row';
+    var editBtn = document.createElement('button');
+    editBtn.className = 'btn';
+    editBtn.type = 'button';
+    editBtn.textContent = '编辑';
+    var delBtn = document.createElement('button');
+    delBtn.className = 'btn btn--danger';
+    delBtn.type = 'button';
+    delBtn.textContent = '删除';
+    row.appendChild(editBtn);
+    row.appendChild(delBtn);
+
+    item.appendChild(meta);
+    item.appendChild(content);
+    item.appendChild(row);
+
+    editBtn.addEventListener('click', function () {
+      var ta = document.createElement('textarea');
+      ta.value = n.content || '';
+      item.replaceChild(ta, content);
+      editBtn.textContent = '保存';
+      delBtn.textContent = '取消';
+      editBtn.onclick = function () {
+        var v = ta.value.trim();
+        if (!v) { setStatus(notesStatus, '内容不能为空', 'bad'); return; }
+        setStatus(notesStatus, '保存中…');
+        api('/api/notes?id=' + encodeURIComponent(n.id), {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content: v })
+        }).then(function (r) { if (!r.ok) throw new Error('http_' + r.status); return r.json(); })
+          .then(function () {
+            setStatus(notesStatus, '已保存 ✓', 'ok');
+            loadNotes();
+          })
+          .catch(function (e) {
+            if (e.message !== 'unauthorized') setStatus(notesStatus, '保存失败', 'bad');
+          });
+      };
+      delBtn.onclick = function () { loadNotes(); };
+    });
+
+    delBtn.addEventListener('click', function () {
+      if (!window.confirm('确定删除这条留言?')) return;
+      setStatus(notesStatus, '删除中…');
+      api('/api/notes?id=' + encodeURIComponent(n.id), { method: 'DELETE' })
+        .then(function (r) { if (!r.ok) throw new Error('http_' + r.status); return r.json(); })
+        .then(function () {
+          setStatus(notesStatus, '已删除 ✓', 'ok');
+          loadNotes();
+        })
+        .catch(function (e) {
+          if (e.message !== 'unauthorized') setStatus(notesStatus, '删除失败', 'bad');
+        });
+    });
+
+    return item;
+  }
+
+  /* ---------- 启动:已有会话凭据则先探测 ---------- */
+  if (creds && creds.u && creds.p) {
+    probe(creds.u, creds.p, enterAdmin, function () {
+      clearCreds();
+      loginView.hidden = false;
+      loginErr.textContent = '登录已失效,请重新登录';
+    });
+  } else {
+    loginView.hidden = false;
+  }
+})();
+</script>
+</body>
+</html>

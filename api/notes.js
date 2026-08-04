@@ -46,19 +46,18 @@ module.exports = async (req, res) => {
   // ---- 后台管理鉴权（账号 + 密码） ----
   // 后台鉴权：仅读取 Vercel 环境变量 ADMIN_USER / ADMIN_PASS。未设置则拒绝登录（fail-closed）。
   function getAdminCreds(req) {
-    const q = req.query || {};
     const h = req.headers || {};
     const b = (req.body && typeof req.body === 'object' && !Array.isArray(req.body)) ? req.body : {};
     return {
-      user: (q.user || b.user || (h['x-admin-user'] || '')).toString(),
-      pass: (q.pass || b.pass || (h['x-admin-pass'] || '')).toString()
+      user: (b.user || (h['x-admin-user'] || '')).toString(),
+      pass: (b.pass || (h['x-admin-pass'] || '')).toString()
     };
   }
   function isAdmin(req) {
     const ADMIN_USER = process.env.ADMIN_USER;
     const ADMIN_PASS = process.env.ADMIN_PASS;
     const c = getAdminCreds(req);
-    return c.user === ADMIN_USER && c.pass === ADMIN_PASS;
+    return Boolean(ADMIN_USER) && Boolean(ADMIN_PASS) && c.user === ADMIN_USER && c.pass === ADMIN_PASS;
   }
   // 通用后台管理逻辑（删除单条 / 编辑单条 / 清空全部），传入仓储读写函数
   async function handleAdmin(req, res, store) {

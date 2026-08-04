@@ -1,5 +1,5 @@
 /* ==========================================================================
-   LXLYLZL — static MPA runtime (no dependencies, no build step)
+   liweijie — static MPA runtime (no dependencies, no build step)
    Port of the React DollyProvider / NextPeekRail / PullIndicator behavior to
    plain multi-page navigation with Cross-Document View Transitions.
    ========================================================================== */
@@ -23,6 +23,7 @@
 
   var NAV_KEY = 'lx:nav';
   var WORK_KEY = 'dolly:work-target';
+  var CMS_TIMEOUT = 1500; // CMS fetch 超时:超时后保留静态 HTML 回退
 
   /* transition lock + trigger suppression (work overlay / rewind) */
   var locked = false;
@@ -501,7 +502,7 @@
      works page: filters (same-document view transition) + detail overlay +
      homepage handoff (scroll-park + red locating flash)
      ======================================================================== */
-  if (PAGE === 1) {
+  function initWorksPage() {
     var filterBtns = document.querySelectorAll('.filter-btn');
     var cards = Array.prototype.slice.call(document.querySelectorAll('.work-card'));
 
@@ -569,10 +570,18 @@
           s.textContent = t;
           ovTags.appendChild(s);
         });
-        ovDl.innerHTML =
-          '<div><dt>ROLE:</dt><dd>' + (card.getAttribute('data-role') || '') + '</dd></div>' +
-          '<div><dt>YEAR:</dt><dd>' + (card.getAttribute('data-year') || '') + '</dd></div>' +
-          '<div><dt>DELIVERABLES:</dt><dd>' + (card.getAttribute('data-deliverables') || '') + '</dd></div>';
+        // DOM 构建(不拼 innerHTML):data-* 可能来自后台 JSON,一律按纯文本处理
+        ovDl.textContent = '';
+        [['ROLE:', 'data-role'], ['YEAR:', 'data-year'], ['DELIVERABLES:', 'data-deliverables']].forEach(function (pair) {
+          var row = document.createElement('div');
+          var dt = document.createElement('dt');
+          dt.textContent = pair[0];
+          var dd = document.createElement('dd');
+          dd.textContent = card.getAttribute(pair[1]) || '';
+          row.appendChild(dt);
+          row.appendChild(dd);
+          ovDl.appendChild(row);
+        });
         ovDesc.textContent = card.getAttribute('data-desc') || '';
       }
       function openOverlay(card) {
@@ -659,6 +668,15 @@
     }
   }
 
+  // 作品页:先拉后台内容渲染卡片/筛选(失败或超时保留静态 HTML),
+  // 渲染完成后再初始化 filters / overlay / homepage handoff
+  if (PAGE === 1) {
+    cmsFetch('works', function (d) {
+      if (d && typeof d === 'object') applyWorksData(d);
+      initWorksPage();
+    });
+  }
+
   /* ========================================================================
      about page: wechat copy + toast
      ======================================================================== */
@@ -669,7 +687,8 @@
       var toastTimer = 0;
       wechatBtn.addEventListener('click', function () {
         try {
-          if (navigator.clipboard) navigator.clipboard.writeText('lxlylzl').catch(function () { });
+          var wx = wechatBtn.getAttribute('data-wechat') || 'lxlylzl';
+          if (navigator.clipboard) navigator.clipboard.writeText(wx).catch(function () { });
         } catch (e) { /* ignore */ }
         toast.classList.add('is-on');
         window.clearTimeout(toastTimer);
@@ -683,7 +702,7 @@
      ======================================================================== */
   if (PAGE === 3) {
     var STORAGE_KEY = 'lx:notes:messages';
-    var SEEDS = [
+    var DEFAULT_SEEDS = [
       { text: 'ai 盛行之后,大片平面设计师沦为美工', ts: '07.12', mine: true },
       { text: 'ai 在让人类变蠢～或者说 ai 在让人类两极分化…', ts: '07.15', mine: true },
       { text: '2026.07.17 - 碎碎念!上线!', ts: '07.17', mine: true },
@@ -767,32 +786,74 @@
       return el;
     }
 
-    var guests = loadGuests();
-    if (board) {
-      var all = SEEDS.concat(guests);
+    function renderBoard(seeds, guests) {
+      if (!board) return;
+      board.textContent = '';
+      var all = seeds.concat(guests);
       var slots = takeSlots(all.length);
       all.forEach(function (s, i) {
         board.appendChild(makeFrag(s, slots[i], false));
       });
     }
-    function post() {
-      if (!input) return;
-      var text = input.value.trim();
-      if (!text) return;
-      var msg = { text: text.slice(0, 80), ts: stamp(new Date()) };
-      guests.push(msg);
-      saveGuests(guests);
-      if (board) {
-        var slot = SLOTS[Math.floor(Math.random() * SLOTS.length)];
-        board.appendChild(makeFrag(msg, [slot[0] + rand(-3, 3), slot[1] + rand(-3, 3)], true));
-      }
-      input.value = '';
-      input.focus();
+    function appendFresh(msg) {
+      if (!board) return;
+      var slot = SLOTS[Math.floor(Math.random() * SLOTS.length)];
+      board.appendChild(makeFrag(msg, [slot[0] + rand(-3, 3), slot[1] + rand(-3, 3)], true));
     }
-    if (sendBtn) sendBtn.addEventListener('click', post);
-    if (input) {
-      input.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter') { e.stopPropagation(); post(); }
+    function readInput() {
+      if (!input) return '';
+      return input.value.trim().slice(0, 80);
+    }
+    function bindPost(post) {
+      if (sendBtn) sendBtn.addEventListener('click', post);
+      if (input) {
+        input.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter') { e.stopPropagation(); post(); }
+        });
+      }
+    }
+
+    // 公开留言:优先 GET /api/notes,发布 POST /api/notes;
+    // API 失败(超时/非 2xx)时回退到 localStorage demo 行为
+    function initNotesBoard(seeds) {
+      fetchWithTimeout('/api/notes', CMS_TIMEOUT, function (list) {
+        if (list && Array.isArray(list)) {
+          var apiGuests = list.map(function (n) {
+            if (!n || typeof n.content !== 'string') return null;
+            return { text: n.content, ts: n.ts ? stamp(new Date(Number(n.ts))) : '', mine: false };
+          }).filter(Boolean);
+          renderBoard(seeds, apiGuests);
+          bindPost(function () {
+            var text = readInput();
+            if (!text) return;
+            fetch('/api/notes', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ content: text })
+            }).then(function (r) {
+              if (!r.ok) throw new Error('http_' + r.status);
+              return r.json();
+            }).then(function () {
+              appendFresh({ text: text, ts: stamp(new Date()) });
+              if (input) { input.value = ''; input.focus(); }
+            }).catch(function () {
+              if (input) input.setAttribute('placeholder', '发布失败,请稍后再试');
+            });
+          });
+          return;
+        }
+        // ---- 回退:localStorage demo ----
+        var guests = loadGuests();
+        renderBoard(seeds, guests);
+        bindPost(function () {
+          var text = readInput();
+          if (!text) return;
+          var msg = { text: text, ts: stamp(new Date()) };
+          guests.push(msg);
+          saveGuests(guests);
+          appendFresh(msg);
+          if (input) { input.value = ''; input.focus(); }
+        });
       });
     }
 
@@ -826,6 +887,20 @@
         }, 1200);
       });
     }
+
+    // 后台内容:heading/seeds/notice/REWIND 文案(失败或超时保留静态 HTML),
+    // 然后初始化留言板
+    cmsFetch('notes', function (d) {
+      var seeds = DEFAULT_SEEDS;
+      if (d && typeof d === 'object') {
+        applyNotes(d);
+        if (Array.isArray(d.seeds)) {
+          var clean = d.seeds.filter(function (s) { return s && typeof s.text === 'string'; });
+          if (clean.length) seeds = clean;
+        }
+      }
+      initNotesBoard(seeds);
+    });
   }
 
   /* ========================================================================
@@ -838,13 +913,564 @@
       rows[sr].addEventListener('click', function () {
         var subject = this.getAttribute('data-service-subject');
         if (ctaMail && subject) {
-          ctaMail.setAttribute('href', 'mailto:hello@lxlylzl.xyz?subject=' + encodeURIComponent(subject));
+          var current = ctaMail.getAttribute('href') || 'mailto:hello@lxlylzl.xyz';
+          var email = current.replace(/^mailto:/i, '').split('?')[0] || 'hello@lxlylzl.xyz';
+          ctaMail.setAttribute('href', 'mailto:' + email + '?subject=' + encodeURIComponent(subject));
         }
         var target = document.getElementById('availability');
         if (target) target.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' });
       });
     }
   }
+
+  /* ========================================================================
+     CMS loader:启动时 fetch /api/content?page=<当前页>(1.5s 超时),
+     成功后把内容应用到当前页;失败/超时保留静态 HTML。
+     安全:所有动态文本一律 textContent / setAttribute,禁止 innerHTML 注入。
+     ======================================================================== */
+  function isArr(v) { return Array.isArray(v); }
+  function qs(sel, root) { return (root || document).querySelector(sel); }
+  function qsa(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+  function setText(el, v) { if (el && typeof v === 'string') el.textContent = v; }
+
+  function fetchWithTimeout(url, ms, cb) {
+    var done = false;
+    function finish(v) {
+      if (done) return;
+      done = true;
+      cb(v);
+    }
+    var timer = window.setTimeout(function () { finish(null); }, ms);
+    try {
+      fetch(url).then(function (r) {
+        if (!r.ok) throw new Error('http_' + r.status);
+        return r.json();
+      }).then(function (d) {
+        window.clearTimeout(timer);
+        finish(d);
+      }).catch(function () {
+        window.clearTimeout(timer);
+        finish(null);
+      });
+    } catch (e) {
+      window.clearTimeout(timer);
+      finish(null);
+    }
+  }
+  function cmsFetch(page, cb) {
+    fetchWithTimeout('/api/content?page=' + encodeURIComponent(page), CMS_TIMEOUT, cb);
+  }
+
+  var cmsFooterApplied = false;
+  function applyMarqueeFooter(d) {
+    if (typeof d.marquee === 'string' && d.marquee) {
+      var txt = d.marquee + ' ' + d.marquee + ' ';
+      qsa('.marquee__seg').forEach(function (s) { s.textContent = txt; });
+    }
+    if (typeof d.footer === 'string' && d.footer) {
+      cmsFooterApplied = true;
+      qsa('.footer-copy').forEach(function (f) { f.textContent = d.footer; });
+    }
+  }
+
+  // 品牌:site.brand 应用到导航 logo 与 footer(页面内容自带 footer 时以页面为准)
+  function applySite(s) {
+    if (!s || typeof s !== 'object') return;
+    var brand = typeof s.brand === 'string' && s.brand ? s.brand : '';
+    if (!brand) return;
+    qsa('.nav__logo').forEach(function (l) { l.textContent = '✳ ' + brand; });
+    if (!cmsFooterApplied) {
+      qsa('.footer-copy').forEach(function (f) { f.textContent = '©2026 ' + brand + ' · MADE IN FUTIAN SZ'; });
+    }
+  }
+
+  function applyIndex(d) {
+    var h = d.hero || {};
+    if (isArr(h.strip)) {
+      var stripSpans = qsa('.hero__strip > span').filter(function (s) {
+        return !s.classList.contains('arrow-line');
+      });
+      stripSpans.forEach(function (s, i) {
+        if (typeof h.strip[i] === 'string') s.textContent = h.strip[i];
+      });
+    }
+    if (typeof h.letters === 'string' && h.letters) {
+      qsa('.hero__title .ltr').forEach(function (l, i) {
+        if (h.letters.charAt(i)) l.textContent = h.letters.charAt(i);
+      });
+    }
+    if (isArr(h.seals)) {
+      qsa('.hero__seal').forEach(function (s, i) {
+        if (typeof h.seals[i] === 'string') s.textContent = h.seals[i];
+      });
+    }
+    setText(qs('.hero__barline .tagline'), h.tagline);
+    if (isArr(h.words)) {
+      qsa('.hero__words .w').forEach(function (w, i) {
+        if (typeof h.words[i] === 'string') w.textContent = h.words[i];
+      });
+    }
+    if (isArr(h.bottom)) {
+      qsa('.hero__bottombar > span').forEach(function (s, i) {
+        if (typeof h.bottom[i] === 'string') s.textContent = h.bottom[i];
+      });
+    }
+
+    var pos = d.position || {};
+    setText(qs('[data-cms="pos-kicker"]'), pos.kicker);
+    setText(qs('[data-cms="pos-text"]'), pos.text);
+
+    var mf = d.manifesto || {};
+    if (isArr(mf.rows) && mf.rows.length) {
+      var mt = qs('.manifesto__text');
+      if (mt) {
+        mt.textContent = '';
+        var delay = 0;
+        mf.rows.forEach(function (row, ri) {
+          if (ri > 0) mt.appendChild(document.createElement('br'));
+          (isArr(row) ? row : []).forEach(function (cell) {
+            var sp = document.createElement('span');
+            sp.className = 'mw' + (cell && cell.red ? ' red' : '');
+            sp.style.transitionDelay = delay + 'ms';
+            delay += 80;
+            sp.textContent = cell && typeof cell.t === 'string' ? cell.t : '';
+            mt.appendChild(sp);
+          });
+        });
+      }
+    }
+    setText(qs('.manifesto .kicker'), mf.kicker);
+
+    var sv = d.services || {};
+    var firstRow = qs('.service-row');
+    var svcSection = firstRow && firstRow.closest ? firstRow.closest('section') : null;
+    if (svcSection) {
+      setText(qs('.section-head .kicker', svcSection), sv.kicker);
+      setText(qs('.section-head .h2', svcSection), sv.title);
+      setText(qs('.section-head .lead', svcSection), sv.lead);
+      if (isArr(sv.rows)) {
+        qsa('.service-row', svcSection).forEach(function (row, i) {
+          var r = sv.rows[i];
+          if (!r) return;
+          setText(qs('.service-row__no', row), r.no);
+          setText(qs('.service-row__cn', row), r.cn);
+          setText(qs('.service-row__en', row), r.en);
+          setText(qs('.service-row__price', row), r.price);
+          if (typeof r.subject === 'string') row.setAttribute('data-service-subject', r.subject);
+          setText(qs('.service-row__desc span', row), r.desc);
+        });
+      }
+    }
+
+    var sel = d.selected || {};
+    var wrail = qs('.wrail');
+    if (wrail) {
+      var kicks = qsa('.section-head .kicker', wrail);
+      if (kicks[0]) setText(kicks[0], sel.kicker);
+      if (kicks[1]) setText(kicks[1], sel.meta);
+      setText(qs('.section-head .h2', wrail), sel.title);
+      var track = qs('.wrail__track', wrail);
+      if (track && isArr(sel.items) && sel.items.length) {
+        track.textContent = '';
+        sel.items.forEach(function (it, i) {
+          it = it || {};
+          var a = document.createElement('a');
+          a.className = 'wcard';
+          a.setAttribute('href', 'works.html');
+          if (it.target) a.setAttribute('data-work-target', String(it.target));
+          var cover = document.createElement('span');
+          cover.className = 'wcard__cover';
+          if (it.cover) {
+            var img = document.createElement('img');
+            img.src = String(it.cover);
+            img.alt = String(it.title || '') + ' — 项目封面';
+            img.width = 960;
+            img.height = 1200;
+            img.loading = 'lazy';
+            img.decoding = 'async';
+            cover.appendChild(img);
+          }
+          var meta = document.createElement('span');
+          meta.className = 'wcard__meta';
+          var no = document.createElement('span');
+          no.className = 'wcard__no';
+          no.textContent = String(i + 1).padStart(2, '0');
+          var tt = document.createElement('span');
+          tt.className = 'wcard__title';
+          tt.textContent = String(it.title || '');
+          var tg = document.createElement('span');
+          tg.className = 'wcard__tags';
+          tg.textContent = String(it.tags || '');
+          meta.appendChild(no); meta.appendChild(tt); meta.appendChild(tg);
+          a.appendChild(cover); a.appendChild(meta);
+          track.appendChild(a);
+        });
+        var more = sel.more || {};
+        var ma = document.createElement('a');
+        ma.className = 'wrail__more';
+        ma.setAttribute('href', 'works.html');
+        var mTop = document.createElement('span');
+        mTop.className = 'top';
+        mTop.textContent = more.top || 'FULL ARCHIVE';
+        var mMid = document.createElement('span');
+        var mBig = document.createElement('span');
+        mBig.className = 'big';
+        mBig.textContent = more.big || '';
+        var mZh = document.createElement('span');
+        mZh.className = 'zh';
+        mZh.appendChild(document.createTextNode((more.zh || '查看全部作品') + ' '));
+        var mArrow = document.createElement('i');
+        mArrow.textContent = '→';
+        mZh.appendChild(mArrow);
+        mMid.appendChild(mBig); mMid.appendChild(mZh);
+        var mBot = document.createElement('span');
+        mBot.className = 'bot';
+        mBot.textContent = more.bot || '';
+        ma.appendChild(mTop); ma.appendChild(mMid); ma.appendChild(mBot);
+        track.appendChild(ma);
+      }
+    }
+
+    var pr = d.process || {};
+    var grid = qs('.process-grid');
+    if (grid) {
+      var psec = grid.closest ? grid.closest('section') : null;
+      if (psec) {
+        setText(qs('.section-head .h2', psec), pr.title);
+        setText(qs('.section-head .kicker', psec), pr.kicker);
+      }
+      if (isArr(pr.steps)) {
+        qsa('.pstep', grid).forEach(function (step, i) {
+          var s = pr.steps[i];
+          if (!s) return;
+          setText(qs('.ticket__no', step), s.no);
+          var t = qs('.pstep__title', step);
+          if (t && typeof s.title === 'string') {
+            t.textContent = s.title;
+            if (s.en) {
+              var em = document.createElement('em');
+              em.textContent = s.en;
+              t.appendChild(em);
+            }
+          }
+          setText(qs('.pstep__desc', step), s.desc);
+        });
+      }
+    }
+
+    var av = d.availability || {};
+    var tf = qs('#availability');
+    if (tf) {
+      setText(qs('.tf-upper .kicker', tf), av.kicker);
+      setText(qs('.tf-upper .h2', tf), av.title);
+      var badge = qs('.tf-badge', tf);
+      if (badge && typeof av.badge === 'string') {
+        var dotEl = qs('.blink-dot', badge);
+        badge.textContent = '';
+        if (dotEl) badge.appendChild(dotEl);
+        badge.appendChild(document.createTextNode(av.badge));
+      }
+      setText(qs('.tf-desc', tf), av.desc);
+      var mail = qs('.tf-mail', tf);
+      if (mail && typeof av.email === 'string' && av.email) {
+        mail.textContent = av.email;
+        mail.setAttribute('href', 'mailto:' + av.email);
+      }
+      if (typeof av.wechat === 'string' && av.wechat) setText(qs('.tf-wechat', tf), 'WECHAT: ' + av.wechat);
+      setText(qs('.ticket__no', tf), av.no);
+    }
+    applyMarqueeFooter(d);
+  }
+
+  function applyWorksData(d) {
+    var hd = d.head || {};
+    var headSec = qs('.works-head');
+    var projects = isArr(d.projects)
+      ? d.projects.filter(function (p) { return p && typeof p === 'object'; })
+      : null;
+    if (headSec) {
+      setText(qs('.works-head__row .kicker', headSec), hd.kicker);
+      setText(qs('.works-head__title .cn', headSec), hd.cn);
+      setText(qs('.works-head__title .en', headSec), hd.en);
+      setText(qs('.works-head__side', headSec), typeof hd.side === 'string'
+        ? hd.side
+        : (projects ? 'TOTAL ' + projects.length + ' · 2022—2026 · DES/DEV/BRAND/PKG' : undefined));
+    }
+    if (projects && projects.length) {
+      var cols = qs('.works-grid__cols');
+      if (cols) {
+        cols.textContent = '';
+        projects.forEach(function (p, i) {
+          var btn = document.createElement('button');
+          btn.className = 'work-card';
+          btn.type = 'button';
+          btn.setAttribute('data-work-id', String(p.id || ('work-' + (i + 1))));
+          btn.setAttribute('data-cats', String(p.cats || ''));
+          btn.setAttribute('data-title', String(p.title || ''));
+          btn.setAttribute('data-tags', String(p.tags || ''));
+          btn.setAttribute('data-year', String(p.year || ''));
+          btn.setAttribute('data-role', String(p.role || ''));
+          btn.setAttribute('data-deliverables', String(p.deliverables || ''));
+          btn.setAttribute('data-desc', String(p.desc || ''));
+          var cover = document.createElement('span');
+          cover.className = 'work-card__cover ' + (p.ratio === 'r34' ? 'r34' : 'r45');
+          if (p.cover) {
+            var img = document.createElement('img');
+            img.src = String(p.cover);
+            img.alt = String(p.title || '') + ' — 项目封面';
+            img.width = 960;
+            img.height = 1200;
+            img.loading = 'lazy';
+            img.decoding = 'async';
+            cover.appendChild(img);
+          } else {
+            var ph = document.createElement('span');
+            ph.className = 'cover-ph';
+            var pa = p.ph && typeof p.ph.a === 'string' ? p.ph.a : '#2b2b30';
+            var pb = p.ph && typeof p.ph.b === 'string' ? p.ph.b : '#45454c';
+            ph.setAttribute('style', '--ph-a:' + pa + ';--ph-b:' + pb);
+            var big = document.createElement('span');
+            big.className = 'big';
+            big.textContent = String(i + 1).padStart(2, '0');
+            var lbl = document.createElement('span');
+            lbl.className = 'lbl';
+            lbl.textContent = 'PROJECT / 待发布';
+            ph.appendChild(big); ph.appendChild(lbl);
+            cover.appendChild(ph);
+          }
+          var meta = document.createElement('span');
+          meta.className = 'wcard__meta';
+          var no = document.createElement('span');
+          no.className = 'wcard__no';
+          no.textContent = String(i + 1).padStart(2, '0');
+          var tt = document.createElement('span');
+          tt.className = 'wcard__title';
+          tt.textContent = String(p.title || '');
+          var tg = document.createElement('span');
+          tg.className = 'wcard__tags';
+          var cats = String(p.cats || '').split(' ').filter(Boolean).join('/');
+          tg.textContent = (p.year ? String(p.year) + ' · ' : '') + cats;
+          meta.appendChild(no); meta.appendChild(tt); meta.appendChild(tg);
+          btn.appendChild(cover); btn.appendChild(meta);
+          cols.appendChild(btn);
+        });
+      }
+      // filters:数量按 projects 自动重算
+      var filters = isArr(d.filters) ? d.filters : ['设计', '开发', '品牌', '包装'];
+      var fwrap = qs('.filters');
+      if (fwrap) {
+        fwrap.textContent = '';
+        var mk = function (key, label) {
+          var b = document.createElement('button');
+          b.className = 'filter-btn';
+          b.type = 'button';
+          b.setAttribute('data-filter', key);
+          b.setAttribute('aria-pressed', key === 'all' ? 'true' : 'false');
+          b.textContent = label;
+          fwrap.appendChild(b);
+        };
+        mk('all', '全部 ' + projects.length);
+        filters.forEach(function (f) {
+          if (typeof f !== 'string' || !f) return;
+          var c = projects.filter(function (p) {
+            return String(p.cats || '').split(' ').indexOf(f) !== -1;
+          }).length;
+          mk(f, f + ' ' + c);
+        });
+      }
+    }
+    var end = d.end || {};
+    var tf = qs('#availability');
+    if (tf) {
+      setText(qs('.tf-upper .kicker', tf), end.kicker);
+      setText(qs('.tf-upper .h2', tf), end.title);
+      setText(qs('.btn-wipe span', tf), end.cta);
+      var mail = qs('.tf-mail', tf);
+      if (mail && typeof end.email === 'string' && end.email) {
+        var oldHref = mail.getAttribute('href') || '';
+        var query = oldHref.indexOf('?') >= 0 ? oldHref.slice(oldHref.indexOf('?')) : '';
+        mail.textContent = end.email;
+        mail.setAttribute('href', 'mailto:' + end.email + query);
+      }
+      if (typeof end.wechat === 'string' && end.wechat) setText(qs('.tf-wechat', tf), 'WECHAT: ' + end.wechat);
+      setText(qs('.ticket__no', tf), end.no);
+    }
+    applyMarqueeFooter(d);
+  }
+
+  function applyAbout(d) {
+    var pf = d.portrait || {};
+    setText(qs('.about-hero__id'), pf.id);
+    var pimg = qs('.about-hero__portrait img');
+    if (pimg && typeof pf.img === 'string' && pf.img) {
+      pimg.src = pf.img;
+      if (typeof pf.alt === 'string') pimg.alt = pf.alt;
+    }
+    setText(qs('.about-hero__caption'), pf.caption);
+    var bio = qs('.about-hero__bio');
+    if (bio) setText(qs('.kicker', bio), d.kicker);
+    var t = d.title || {};
+    var h1 = qs('.about-hero__title');
+    if (h1 && (typeof t.pre === 'string' || typeof t.name === 'string' || typeof t.post === 'string')) {
+      h1.textContent = '';
+      h1.appendChild(document.createTextNode(t.pre || ''));
+      var red = document.createElement('span');
+      red.className = 'red';
+      red.textContent = t.name || '';
+      h1.appendChild(red);
+      h1.appendChild(document.createTextNode(t.post || ''));
+    }
+    if (isArr(d.paras) && d.paras.length) {
+      var box = qs('.about-hero__paras');
+      if (box) {
+        box.textContent = '';
+        d.paras.forEach(function (p, i) {
+          if (typeof p !== 'string') return;
+          var el = document.createElement('p');
+          el.className = 'rv in';
+          el.style.transitionDelay = ((i + 1) * 100) + 'ms';
+          el.textContent = p;
+          box.appendChild(el);
+        });
+      }
+    }
+    var st = d.status || {};
+    var open = qs('.about-hero__status .open');
+    if (open && typeof st.open === 'string') {
+      var odot = qs('.blink-dot', open);
+      open.textContent = '';
+      if (odot) open.appendChild(odot);
+      open.appendChild(document.createTextNode(st.open));
+    }
+    setText(qs('.about-hero__status .tags'), st.tags);
+
+    var capGrid = qs('.caps-grid');
+    var capSec = capGrid && capGrid.closest ? capGrid.closest('section') : null;
+    if (capSec) setText(qs('.h2', capSec), d.capsTitle);
+    if (isArr(d.caps)) {
+      qsa('.caps-grid .cap').forEach(function (cap, i) {
+        var c = d.caps[i];
+        if (!c) return;
+        setText(qs('.kicker', cap), c.key);
+        setText(qs('h3', cap), c.title);
+        if (isArr(c.items)) {
+          var ul = qs('ul', cap);
+          if (ul) {
+            ul.textContent = '';
+            c.items.forEach(function (it, j) {
+              if (typeof it !== 'string') return;
+              var li = document.createElement('li');
+              var idx = document.createElement('span');
+              idx.className = 'idx';
+              idx.textContent = String(j + 1).padStart(2, '0');
+              li.appendChild(idx);
+              li.appendChild(document.createTextNode(it));
+              ul.appendChild(li);
+            });
+          }
+        }
+      });
+    }
+    setText(qs('.caps-tools'), d.tools);
+
+    var tlSec = qs('.timeline');
+    if (tlSec) setText(qs('.h2', tlSec), d.timelineTitle);
+    if (isArr(d.timeline) && d.timeline.length) {
+      ['.timeline__h', '.timeline__v'].forEach(function (sel2) {
+        var wrap = qs(sel2);
+        if (!wrap) return;
+        qsa('.tl-node', wrap).forEach(function (n) { n.remove(); });
+        d.timeline.forEach(function (node, i) {
+          if (!node) return;
+          var div = document.createElement('div');
+          div.className = 'tl-node rv in';
+          if (i > 0) div.style.transitionDelay = (i * 120) + 'ms';
+          var dot = document.createElement('span');
+          dot.className = 'dot';
+          dot.setAttribute('aria-hidden', 'true');
+          var y = document.createElement('p');
+          y.className = 'year';
+          y.textContent = String(node.year || '');
+          var x = document.createElement('p');
+          x.className = 'txt';
+          x.textContent = String(node.text || '');
+          div.appendChild(dot); div.appendChild(y); div.appendChild(x);
+          wrap.appendChild(div);
+        });
+      });
+    }
+
+    var ct = d.contact || {};
+    var rows = qs('.contact-rows');
+    var ticket = rows && rows.closest ? rows.closest('.ticket') : null;
+    if (ticket) {
+      setText(qs('.tf-upper .kicker', ticket), ct.kicker);
+      setText(qs('.tf-upper .h2', ticket), ct.title);
+      setText(qs('.tf-upper .lead', ticket), ct.lead);
+      setText(qs('.ticket__no', ticket), ct.no);
+      setText(qs('.contact-stub .hint', ticket), ct.hint);
+    }
+    if (rows) {
+      var mailRow = qs('a.contact-row', rows);
+      if (mailRow && typeof ct.email === 'string' && ct.email) {
+        mailRow.setAttribute('href', 'mailto:' + ct.email);
+        setText(qs('.val', mailRow), ct.email);
+      }
+      var wxRow = qs('[data-copy-wechat]', rows);
+      if (wxRow && typeof ct.wechat === 'string' && ct.wechat) {
+        wxRow.setAttribute('data-wechat', ct.wechat);
+        setText(qs('.val', wxRow), ct.wechat);
+      }
+      var socRow = qs('div.contact-row', rows);
+      if (socRow) setText(qs('.val', socRow), ct.social);
+    }
+    applyMarqueeFooter(d);
+  }
+
+  function applyNotes(d) {
+    var hd = d.heading || {};
+    var nh = qs('.notes-head');
+    if (nh) {
+      setText(qs('.kicker', nh), hd.kicker);
+      setText(qs('h1', nh), hd.title);
+      setText(qs('.sub', nh), hd.sub);
+      var anon = qs('.anon', nh);
+      if (anon && typeof hd.anon === 'string') {
+        var m = /^(.*?)(✳)?$/.exec(hd.anon);
+        anon.textContent = '';
+        anon.appendChild(document.createTextNode(m && m[1] ? m[1] : hd.anon));
+        if (m && m[2]) {
+          var r = document.createElement('span');
+          r.className = 'red';
+          r.textContent = '✳';
+          anon.appendChild(r);
+        }
+      }
+    }
+    setText(qs('.notes-input__notice'), d.notice);
+    var rw = d.rewind || {};
+    var rt = qs('.rewind__title');
+    if (rt && (typeof rw.title === 'string' || typeof rw.en === 'string')) {
+      rt.textContent = '';
+      rt.appendChild(document.createTextNode((rw.title || '') + ' '));
+      var en = document.createElement('span');
+      en.className = 'en';
+      en.textContent = rw.en || '';
+      rt.appendChild(en);
+    }
+    setText(qs('.rewind__loop'), rw.loop);
+    applyMarqueeFooter(d);
+  }
+
+  // 首页 / 关于页:绑定保持不动,仅异步替换文案(textContent-only)
+  if (PAGE === 0) {
+    cmsFetch('index', function (d) { if (d && typeof d === 'object') applyIndex(d); });
+  }
+  if (PAGE === 2) {
+    cmsFetch('about', function (d) { if (d && typeof d === 'object') applyAbout(d); });
+  }
+  // 品牌元信息:应用到所有页(导航 logo / footer)
+  cmsFetch('site', applySite);
 
   /* ---------- boot ---------- */
   renderBarcodes();
