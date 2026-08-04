@@ -107,6 +107,27 @@ textarea.json{
 }
 textarea.json:focus{border-color:var(--red);}
 textarea.json.invalid{border-color:var(--red);box-shadow:0 0 0 1px var(--red);}
+
+/* ---------- editor + preview split ---------- */
+.edit-grid{display:grid;grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr);gap:18px;align-items:start;}
+.edit-grid__code,.edit-grid__preview{min-width:0;}
+.preview{
+  position:sticky;top:18px;border:1px solid var(--line);background:#0e0e10;
+  padding:12px;
+}
+.preview__bar{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+.preview__title{font-family:var(--font-mono);font-size:11px;letter-spacing:.18em;color:var(--gray);}
+.preview__frame{
+  display:block;width:100%;height:min(64vh,620px);min-height:420px;border:1px solid var(--line);
+  background:var(--ink);
+}
+.preview__open{color:var(--paper);text-decoration:none;font-size:12px;border-bottom:1px solid var(--line-strong);}
+.preview__open:hover{color:var(--red);border-color:var(--red);}
+@media(max-width:980px){
+  .edit-grid{grid-template-columns:1fr;}
+  .preview{position:static;}
+  .preview__frame{height:56vh;min-height:360px;}
+}
 .hint{font-size:12px;color:var(--gray);line-height:1.7;margin-top:10px;}
 .hint .red{color:var(--red);}
 
@@ -166,10 +187,10 @@ textarea.json.invalid{border-color:var(--red);box-shadow:0 0 0 1px var(--red);}
   'use strict';
 
   var PAGES = [
-    { id: 'index', cn: '首页', en: 'INDEX' },
-    { id: 'works', cn: '作品', en: 'WORKS' },
-    { id: 'about', cn: '关于', en: 'ABOUT' },
-    { id: 'notes', cn: '碎碎念', en: 'NOTES' }
+    { id: 'index', cn: '首页', en: 'INDEX', url: '/' },
+    { id: 'works', cn: '作品', en: 'WORKS', url: '/works' },
+    { id: 'about', cn: '关于', en: 'ABOUT', url: '/about' },
+    { id: 'notes', cn: '碎碎念', en: 'NOTES', url: '/notes' }
   ];
   var SESSION_KEY = 'lx:admin';
 
@@ -317,11 +338,16 @@ textarea.json.invalid{border-color:var(--red);box-shadow:0 0 0 1px var(--red);}
     bar.appendChild(status);
     ticket.appendChild(bar);
 
+    var split = document.createElement('div');
+    split.className = 'edit-grid';
+
+    var codeCol = document.createElement('div');
+    codeCol.className = 'edit-grid__code';
     var ta = document.createElement('textarea');
     ta.className = 'json';
     ta.setAttribute('spellcheck', 'false');
     ta.setAttribute('aria-label', pg.cn + '内容 JSON');
-    ticket.appendChild(ta);
+    codeCol.appendChild(ta);
 
     var actions = document.createElement('div');
     actions.className = 'panel__actions';
@@ -338,16 +364,54 @@ textarea.json.invalid{border-color:var(--red);box-shadow:0 0 0 1px var(--red);}
     var reloadBtn = mkBtn('重新加载');
     var defaultsBtn = mkBtn('恢复默认');
     var saveBtn = mkBtn('保存', 'btn--primary');
-    ticket.appendChild(actions);
+    codeCol.appendChild(actions);
 
     var hint = document.createElement('p');
     hint.className = 'hint';
-    hint.textContent = '编辑 JSON 后点「保存」生效;「恢复默认」只载入种子内容到编辑器,需再点保存。字段说明见前台页面文案一一对应。';
-    ticket.appendChild(hint);
+    hint.textContent = '左侧编辑 JSON,点「保存」后生效并自动刷新右侧预览;「恢复默认」只载入种子到编辑器,需再点保存。';
+    codeCol.appendChild(hint);
+
+    var previewCol = document.createElement('div');
+    previewCol.className = 'edit-grid__preview';
+    var preview = document.createElement('div');
+    preview.className = 'preview';
+    var pbar = document.createElement('div');
+    pbar.className = 'preview__bar';
+    var ptitle = document.createElement('span');
+    ptitle.className = 'preview__title';
+    ptitle.textContent = 'PREVIEW / ' + pg.en;
+    var pspacer = document.createElement('span');
+    pspacer.className = 'spacer';
+    var refreshPreviewBtn = document.createElement('button');
+    refreshPreviewBtn.className = 'btn';
+    refreshPreviewBtn.type = 'button';
+    refreshPreviewBtn.textContent = '刷新预览';
+    var openLink = document.createElement('a');
+    openLink.className = 'preview__open';
+    openLink.target = '_blank';
+    openLink.rel = 'noopener';
+    openLink.textContent = '打开前台 ↗';
+    openLink.href = pg.url;
+    pbar.appendChild(ptitle);
+    pbar.appendChild(pspacer);
+    pbar.appendChild(refreshPreviewBtn);
+    pbar.appendChild(openLink);
+    var frame = document.createElement('iframe');
+    frame.className = 'preview__frame';
+    frame.setAttribute('title', pg.cn + '前台预览');
+    frame.setAttribute('loading', 'lazy');
+    frame.src = pg.url;
+    preview.appendChild(pbar);
+    preview.appendChild(frame);
+    previewCol.appendChild(preview);
+
+    split.appendChild(codeCol);
+    split.appendChild(previewCol);
+    ticket.appendChild(split);
     panel.appendChild(ticket);
     panelsBox.appendChild(panel);
 
-    var refs = { ta: ta, status: status, saveBtn: saveBtn };
+    var refs = { ta: ta, status: status, saveBtn: saveBtn, frame: frame, url: pg.url };
     panelRefs[pg.id] = refs;
 
     validateBtn.addEventListener('click', function () {
@@ -367,8 +431,21 @@ textarea.json.invalid{border-color:var(--red);box-shadow:0 0 0 1px var(--red);}
     reloadBtn.addEventListener('click', function () { loadContent(pg.id, true); });
     defaultsBtn.addEventListener('click', function () { loadDefaults(pg.id); });
     saveBtn.addEventListener('click', function () { saveContent(pg.id); });
+    refreshPreviewBtn.addEventListener('click', function () { refreshPreview(pg.id, true); });
     ta.addEventListener('input', function () { ta.classList.remove('invalid'); });
   });
+
+  function previewUrl(id, bust) {
+    var refs = panelRefs[id];
+    var base = refs && refs.url ? refs.url : '/';
+    return base + (bust ? (base.indexOf('?') >= 0 ? '&' : '?') + 'cms_preview=' + Date.now() : '');
+  }
+  function refreshPreview(id, manual) {
+    var refs = panelRefs[id];
+    if (!refs || !refs.frame) return;
+    refs.frame.src = previewUrl(id, true);
+    if (manual) setStatus(refs.status, '预览已刷新 ✓', 'ok');
+  }
 
   // 碎碎念页签:追加留言管理
   buildNotesAdmin();
@@ -383,6 +460,7 @@ textarea.json.invalid{border-color:var(--red);box-shadow:0 0 0 1px var(--red);}
     for (var j = 0; j < panels.length; j++) {
       panels[j].hidden = panels[j].getAttribute('data-panel') !== id;
     }
+    refreshPreview(id, false);
     if (!loadedTabs[id]) {
       loadedTabs[id] = true;
       loadContent(id, false);
@@ -451,7 +529,8 @@ textarea.json.invalid{border-color:var(--red);box-shadow:0 0 0 1px var(--red);}
     }).then(function (d) {
       refs.saveBtn.disabled = false;
       refs.ta.value = JSON.stringify(d, null, 2);
-      setStatus(refs.status, '已保存 ✓ 前台刷新后生效', 'ok');
+      refreshPreview(id, false);
+      setStatus(refs.status, '已保存 ✓ 右侧预览已刷新', 'ok');
     }).catch(function (e) {
       refs.saveBtn.disabled = false;
       if (e.message !== 'unauthorized') setStatus(refs.status, '保存失败:' + e.message, 'bad');
