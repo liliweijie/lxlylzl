@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>lxlylzl</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* ===== 5-COLOR STANDARD PALETTE ===== */
+  :root {
+    --bg: #0E0E0E;
+    --text: #F9F9F9;
+    --text-muted: #DBDBDB;
+    --panel: #262626;
+    --accent: #F24C30;
+    --pill-bg: rgba(255,255,255,0.08);
+    --pill-border: rgba(255,255,255,0.14);
+  }
+  [data-theme="light"] {
+    --bg: #F9F9F9;
+    --text: #0E0E0E;
+    --text-muted: #262626;
+    --panel: #DBDBDB;
+    --pill-bg: rgba(0,0,0,0.07);
+    --pill-border: rgba(0,0,0,0.12);
+  }
+
+  html, body { height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans SC', 'Inter', sans-serif;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    transition: background 0.45s ease, color 0.45s ease;
+  }
+
+  /* ===== TOP NAV: logo left / links centered / toggle right (fixed, full-screen) ===== */
+  .top-nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1000;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 40px;
+    pointer-events: none;
+  }
+  .top-nav * { pointer-events: auto; }
+  .nav-center {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  /* Logo pill */
+  .nav-logo-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--pill-bg);
+    border: 1px solid var(--pill-border);
+    cursor: pointer;
+    transition: opacity 0.2s, background 0.25s;
+    flex-shrink: 0;
+  }
+  .nav-logo-wrap:hover { opacity: 0.75; }
+  .nav-logo {
+    height: 24px;
+    width: auto;
+  }
+
+  /* Each nav item = its own solid capsule */
+  .nav-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    padding: 0 28px;
+    border-radius: 100px;
+    background: var(--pill-bg);
+    border: 1px solid var(--pill-border);
+    color: var(--text);
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+    transition: background 0.25s, border-color 0.25s, transform 0.15s;
+  }
+  .nav-link:hover {
+    background: var(--panel);
+    border-color: var(--accent);
+    transform: translateY(-1px);
+  }
+  .nav-link.is-active {
+    background: var(--panel);
+    border-color: var(--text-muted);
+    font-weight: 600;
+  }
+
+  /* Theme toggle */
+  .theme-btn {
+    width: 40px; height: 40px;
+    border: none; background: var(--pill-bg);
+    border: 1px solid var(--pill-border);
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center; justify-content: center;
+    transition: color 0.3s, background 0.25s;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .theme-btn:hover { color: var(--accent); background: var(--panel); }
+  .theme-btn svg {
+    width: 18px; height: 18px;
+    stroke: currentColor; fill: none;
+    stroke-width: 1.8;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+
+  /* ===== INK CURSOR (墨水形变) ===== */
+  body, body * { cursor: none !important; }
+  #inkLayer {
+    position: fixed; inset: 0;
+    z-index: 9999; pointer-events: none;
+    filter: drop-shadow(0 0 1.5px rgba(255,255,255,0.85));
+  }
+  .ink-goo { position: absolute; inset: 0; filter: url(#ink-goo); }
+  .ink-blob {
+    position: absolute; top: 0; left: 0;
+    width: 22px; height: 22px;
+    margin: -11px 0 0 -11px;
+    border-radius: 50%;
+    background: #0E0E0E;
+    will-change: transform;
+  }
+  #inkLayer.is-hidden { opacity: 0; }
+
+  /* ===== NOTES / 碎碎念 — 飘浮云朵 + 鼠标排异 ===== */
+  .notes-sky {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 1; /* below nav(1000), above bg */
+    overflow: hidden;
+    pointer-events: none; /* let mouse events pass through to detect ink cursor pos */
+  }
+
+  /* 每条留言 = 一朵飘浮的云（位移/飘动/排异全部由 JS 的 physicsLoop 控制，CSS 不碰 transform） */
+  .cloud {
+    position: absolute;
+    left: 0; top: 0;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 10px 20px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.14);
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    max-width: 340px;
+    pointer-events: auto;
+    will-change: transform;
+    opacity: 0;                 /* 由 JS 淡入 */
+    user-select: none;
+    -webkit-user-select: none;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+    transition: opacity 0.6s ease;
+  }
+  .cloud.is-in { opacity: 0.55; }
+  .cloud:hover { opacity: 0.9; border-color: rgba(255,255,255,0.28); }
+  .cloud .cloud-text {
+    opacity: 1;
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  /* 云朵上的小日期 */
+  .cloud .cloud-date {
+    margin-top: 2px;
+    font-size: 5px;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    color: var(--text-muted);
+    opacity: 0.45;
+    white-space: nowrap;
+  }
+
+  /* 底部输入色块（背景透明，仅输入框本身是暗色 pill，避免下方多一块暗色） */
+  .notes-compose {
+    position: fixed;
+    left: 50%; right: 0;
+    bottom: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 0 26px;
+    transform: translateX(-50%);
+    width: 520px;
+    max-width: 90vw;
+  }
+
+  .notes-input-wrap {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 52px;
+    padding: 0 8px 0 22px;
+    border-radius: 999px;
+    background: var(--panel);
+    border: 1px solid var(--pill-border);
+    transition: border-color 0.25s, box-shadow 0.25s;
+  }
+  .notes-input-wrap:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(242,76,48,0.12);
+  }
+
+  .notes-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 15px;
+    outline: none;
+    letter-spacing: 0.01em;
+  }
+  .notes-input::placeholder { color: var(--text-muted); opacity: 0.35; }
+
+  .notes-send {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: none;
+    background: var(--text);
+    color: var(--bg);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.15s, background 0.2s;
+  }
+  .notes-send:hover { transform: scale(1.08); }
+  .notes-send:active { transform: scale(0.94); }
+  .notes-send svg {
+    width: 20px; height: 20px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2.2;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+
+  /* ===== 发送时整块颤一颤 ===== */
+  @keyframes sendShake {
+    0%   { transform: translateX(-50%) translateY(0); }
+    15%  { transform: translateX(calc(-50% + 5px)) translateY(-2px); }
+    30%  { transform: translateX(calc(-50% - 4px)) translateY(1px); }
+    45%  { transform: translateX(calc(-50% + 3px)) translateY(-1px); }
+    60%  { transform: translateX(calc(-50% - 2px)) translateY(0.5px); }
+    75%  { transform: translateX(calc(-50% + 1px)) translateY(0); }
+    100% { transform: translateX(-50%) translateY(0); }
+  }
+  .notes-compose.is-shaking {
+    animation: sendShake 0.45s cubic-bezier(.36,.07,.19,.97);
+  }
+
+  /* ===== 抓住态：回复面板 ===== */
+  .cloud.is-caught {
+    opacity: 0.96 !important;
+    border-color: var(--accent);
+    z-index: 60;
+  }
+
+  /* 抓住后跟随在云朵下方的面板（毛玻璃） */
+  .cloud-catch {
+    position: absolute;
+    left: 0; top: 0;
+    width: 300px;
+    max-width: 82vw;
+    padding: 14px 16px 14px;
+    border-radius: 18px;
+    background: rgba(18,18,18,0.72);
+    border: 1px solid rgba(255,255,255,0.18);
+    box-shadow: 0 12px 44px rgba(0,0,0,0.45);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    z-index: 55;
+    display: none;
+    pointer-events: auto;
+    will-change: transform;
+  }
+  [data-theme="light"] .cloud-catch { background: rgba(245,245,245,0.82); }
+  .cloud-catch.is-on { display: block; }
+
+  /* 评论态蒙版：10% 透明度全屏遮罩，点击退出评论（压在普通云之上、抓住的云与面板之下） */
+  .cloud-catch-mask {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.10);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 50;
+    transition: opacity 0.25s ease;
+  }
+  .cloud-catch-mask.is-on { opacity: 1; pointer-events: auto; }
+
+  .catch-replies {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 168px;
+    overflow-y: auto;
+    margin-bottom: 10px;
+  }
+  /* 面板顶部：原留言 + 日期 */
+  .catch-head {
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.10);
+  }
+  [data-theme="light"] .catch-head { border-color: rgba(0,0,0,0.10); }
+  .catch-head-text {
+    font-size: 14px; line-height: 1.45; color: var(--text);
+    word-break: break-word;
+  }
+  .catch-head-date {
+    font-size: 11px; color: var(--text-muted); opacity: 0.6; margin-top: 5px;
+  }
+
+  .catch-reply {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--text-muted);
+    padding: 8px 11px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.10);
+    word-break: break-word;
+  }
+  .catch-reply-text { flex: 1; }
+  .catch-reply-date {
+    font-size: 10px;
+    color: var(--text-muted);
+    opacity: 0.55;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .catch-form { display: flex; align-items: center; gap: 8px; }
+  /* 回复发送时颤一颤（独立 keyframes，不含 translateX(-50%)，避免被面板定位干扰） */
+  @keyframes catchShake {
+    0%   { transform: translate(0,0); }
+    20%  { transform: translate(4px,-1px); }
+    40%  { transform: translate(-3px,1px); }
+    60%  { transform: translate(2px,0); }
+    80%  { transform: translate(-1px,0); }
+    100% { transform: translate(0,0); }
+  }
+  .catch-form.is-shaking { animation: catchShake 0.4s ease; }
+  .catch-input {
+    flex: 1;
+    height: 40px;
+    padding: 0 14px;
+    border-radius: 999px;
+    background: var(--panel);
+    border: 1px solid var(--pill-border);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 13px;
+    outline: none;
+    letter-spacing: 0.01em;
+  }
+  .catch-input::placeholder { color: var(--text-muted); opacity: 0.4; }
+  .catch-input:focus { border-color: var(--accent); }
+  .catch-send {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: var(--text);
+    color: var(--bg);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.15s;
+  }
+  .catch-send:hover { transform: scale(1.08); }
+  .catch-send:active { transform: scale(0.94); }
+  .catch-send svg {
+    width: 18px; height: 18px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 900px) {
+    .top-nav { padding: 16px 24px; gap: 10px; }
+    .nav-link { height: 42px; padding: 0 22px; font-size: 0.95rem; }
+    .nav-logo-wrap { width: 42px; height: 42px; }
+    .nav-logo { height: 21px; }
+  }
+  @media (max-width: 600px) {
+    .top-nav { padding: 14px 16px; gap: 8px; }
+    .nav-link { height: 36px; padding: 0 16px; font-size: 0.85rem; }
+    .nav-logo-wrap { width: 36px; height: 36px; }
+    .nav-logo { height: 18px; }
+    .theme-btn { width: 34px; height: 34px; }
+  }
+
+  /* ===== NOTES HEADING（数据驱动：/api/content?page=notes） ===== */
+  .notes-heading{ position: fixed; top: 92px; left: 50%; transform: translateX(-50%); z-index: 20; text-align: center; pointer-events: none; }
+  .notes-heading h1{ font-size: 22px; font-weight: 700; letter-spacing: 0.08em; margin: 0; }
+  .notes-heading p{ font-size: 13px; color: var(--text-muted); margin-top: 6px; opacity: 0.8; }
+</style>
+</head>
+<body>
+
+  <!-- ===== TOP NAV ===== -->
+  <nav class="top-nav">
+    <div class="nav-logo-wrap" id="logoBtn">
+      <img class="nav-logo" src="logo.svg" alt="LX Logo">
+    </div>
+
+    <div class="nav-center">
+      <a class="nav-link" href="index.html">首页</a>
+      <a class="nav-link" href="works.html">作品</a>
+      <a class="nav-link" href="about.html">关于</a>
+      <a class="nav-link is-active" href="notes.html">碎碎念</a>
+    </div>
+
+    <button class="theme-btn" id="themeBtn" aria-label="切换明暗模式">
+      <svg class="icon-sun" viewBox="0 0 24 24" style="display:none;">
+        <circle cx="12" cy="12" r="5"/>
+        <line x1="12" y1="1" x2="12" y2="3"/>
+        <line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/>
+        <line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+      <svg class="icon-moon" viewBox="0 0 24 24">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+    </button>
+  </nav>
+
+  <!-- ===== 碎碎念 — 飘浮天空 ===== -->
+  <div class="notes-heading" id="notesHeading">
+    <h1 id="notesHeadingTitle"></h1>
+    <p id="notesHeadingSub"></p>
+  </div>
+  <script>
+  (function(){
+    const DEFAULT = { heading: '碎碎念', subtitle: '一些随手写下的碎片。' };
+    function render(n){ document.getElementById('notesHeadingTitle').textContent = n.heading || ''; document.getElementById('notesHeadingSub').textContent = n.subtitle || ''; }
+    render(DEFAULT);
+    fetch('/api/content?page=notes').then(function(r){return r.json();}).then(function(c){ if(c) render(c); }).catch(function(){});
+  })();
+  </script>
+  <div class="notes-sky" id="notesSky"></div>
+
+  <!-- ===== 底部输入色块 ===== -->
+  <form class="notes-compose" id="notesForm" autocomplete="off">
+    <div class="notes-input-wrap">
+      <input class="notes-input" id="notesInput" type="text" maxlength="500" placeholder="Message..." aria-label="留言内容">
+    </div>
+    <button class="notes-send" type="submit" aria-label="发送">
+      <svg viewBox="0 0 24 24"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+    </button>
+  </form>
+
+  <div id="inkLayer" class="is-hidden">
+    <div class="ink-goo">
+      <div class="ink-blob"></div>
+      <div class="ink-blob"></div>
+      <div class="ink-blob"></div>
+      <div class="ink-blob"></div>
+      <div class="ink-blob"></div>
+    </div>
+  </div>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <filter id="ink-goo">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur"/>
+        <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 16 -6" result="goo"/>
+        <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+      </filter>
+    </defs>
+  </svg>
+
+<script>
+// ===== THEME =====
+(function() {
+  function getPreferredTheme() {
+    const stored = localStorage.getItem('theme');
+    if (stored) return stored;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    const iconSun = document.querySelector('.icon-sun');
+    const iconMoon = document.querySelector('.icon-moon');
+    if (theme === 'light') {
+      iconSun.style.display = '';
+      iconMoon.style.display = 'none';
+    } else {
+      iconSun.style.display = 'none';
+      iconMoon.style.display = '';
+    }
+    const logoImg = document.querySelector('.nav-logo');
+    if (logoImg) logoImg.src = theme === 'light' ? 'logo-light.svg' : 'logo.svg';
+  }
+  applyTheme(getPreferredTheme());
+  document.getElementById('themeBtn').addEventListener('click', function() {
+    const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    localStorage.setItem('theme', next);
+    applyTheme(next);
+  });
+
+  // Logo click -> home
+  document.getElementById('logoBtn').addEventListener('click', function() {
+    window.location.href = 'index.html';
+  });
+})();
+
+// ===== INK CURSOR (墨水形变) =====
+(function() {
+  const layer = document.getElementById('inkLayer');
+  if (!layer) return;
+  const blobs = Array.prototype.slice.call(layer.querySelectorAll('.ink-blob'));
+  const n = blobs.length;
+  if (!n) return;
+  const base = [];
+  for (let i = 0; i < n; i++) base[i] = Math.pow(0.78, i); // 越往后越细
+  const pos = blobs.map(function() { return { x: window.innerWidth / 2, y: window.innerHeight / 2 }; });
+  const mouse = { x: pos[0].x, y: pos[0].y };
+  const last = { x: pos[0].x, y: pos[0].y };
+  let hoverK = 1, hoverTarget = 1, shown = false;
+
+  document.addEventListener('mousemove', function(e) {
+    mouse.x = e.clientX; mouse.y = e.clientY;
+    if (!shown) { shown = true; layer.classList.remove('is-hidden'); }
+  });
+  document.addEventListener('mouseover', function(e) {
+    hoverTarget = e.target.closest('a, button') ? 1.7 : 1;
+  });
+
+  function ease(cur, t, f) { cur.x += (t.x - cur.x) * f; cur.y += (t.y - cur.y) * f; }
+
+  function tick() {
+    ease(pos[0], mouse, 0.5);
+    for (let i = 1; i < n; i++) ease(pos[i], pos[i - 1], 0.32);
+
+    const dx = pos[0].x - last.x, dy = pos[0].y - last.y;
+    const speed = Math.min(Math.hypot(dx, dy), 70);
+    const ang = Math.atan2(dy, dx);
+    const stretch = 1 + speed / 45;
+    const squash = 1 - speed / 160;
+    hoverK += (hoverTarget - hoverK) * 0.15;
+
+    blobs[0].style.transform = 'translate(' + pos[0].x + 'px,' + pos[0].y + 'px) rotate(' + ang + 'rad) scale(' + (stretch * base[0] * hoverK) + ',' + (squash * base[0] * hoverK) + ')';
+    for (let i = 1; i < n; i++) {
+      blobs[i].style.transform = 'translate(' + pos[i].x + 'px,' + pos[i].y + 'px) scale(' + (base[i] * hoverK) + ')';
+    }
+    last.x = pos[0].x; last.y = pos[0].y;
+    requestAnimationFrame(tick);
+  }
+  tick();
+})();
+
+// ===== NOTES / 碎碎念 — 飘浮云朵 + 鼠标排异 + 抓住/回复（全部由 JS 控制 transform）=====
+(function() {
+  var sky = document.getElementById('notesSky');
+  var form = document.getElementById('notesForm');
+  var inputI = document.getElementById('notesInput');
+  if (!sky || !form) return;
+
+  // ---- 配置 ----
+  var REPEL_RADIUS = 150;   // 排异感应半径(px)
+  var REPEL_FORCE = 100;    // 排斥力度（回到 100：逃离明显但仍可追逐）
+  var CATCH_RADIUS = 60;    // 点击抓取半径(px)：按下时抓住指针最近、在此范围内的云
+  var RETURN_SPEED = 0.05;  // 回归原位速度
+  var FRICTION = 0.86;      // 摩擦力(速度衰减)
+  var NAV_H = 90;           // 导航栏占用高度
+  var INPUT_H = 110;        // 底部输入区占用高度
+  var PADDING = 36;         // 边距
+  var DRIFT_AMP = 16;       // 持续漂移幅度(px)
+  var CATCH_SCALE = 1.12;   // 抓住时放大系数
+  var startT = performance.now();
+
+  // ---- 状态 ----
+  var clouds = [];          // { el, panel, replyList, replyForm, note, replies, homeX, homeY, x, y, vx, vy, w, h, phase, speed, caught, near }
+  var mouse = { x: -9999, y: -9999 };
+  var commenting = false;   // 是否处于“抓住评论”态（冻结其他云排异，仅一朵被评论）
+
+  document.addEventListener('mousemove', function(e) {
+    mouse.x = e.clientX; mouse.y = e.clientY;
+  });
+
+  // 评论态蒙版：10% 透明度全屏遮罩，点击退出评论（位于普通云之上、抓住的云与面板之下）
+  var mask = document.createElement('div');
+  mask.className = 'cloud-catch-mask';
+  sky.appendChild(mask);
+  mask.addEventListener('mousedown', function(e) {
+    e.stopPropagation();
+    exitComment();
+  });
+
+  function randHome(w, h) {
+    var areaW = window.innerWidth - PADDING * 2 - w;
+    var areaH = window.innerHeight - NAV_H - INPUT_H - PADDING * 2 - h;
+    return {
+      x: PADDING + Math.random() * Math.max(areaW, 60),
+      y: NAV_H + PADDING + Math.random() * Math.max(areaH, 60)
+    };
+  }
+
+  // 释放所有被抓住的云（仅复位云状态，不动蒙版/commenting）
+  function releaseAll() {
+    for (var i = 0; i < clouds.length; i++) {
+      var c = clouds[i];
+      if (c.caught) {
+        c.caught = false;
+        c.el.classList.remove('is-caught');
+        c.panel.classList.remove('is-on');
+      }
+    }
+  }
+  // 退出评论态：释放云 + 隐藏蒙版 + 恢复排异
+  function exitComment() {
+    releaseAll();
+    mask.classList.remove('is-on');
+    commenting = false;
+  }
+  // 抓住某朵云进入评论态：释放其他 + 放大 + 显示面板 + 显示蒙版 + 冻结排异
+  function catchCloud(c) {
+    releaseAll();
+    c.caught = true;
+    c.el.classList.add('is-caught');
+    c.panel.classList.add('is-on');
+    // 面板宽度跟随放大后的云朵宽度（最小 240px），与框左对齐、同宽，视觉成一体
+    c.panel.style.width = Math.max(Math.round(c.w * CATCH_SCALE), 240) + 'px';
+    mask.classList.add('is-on');
+    commenting = true;
+  }
+
+  // ---- 日期格式化 ----
+  function pad2(n) { return (n < 10 ? '0' : '') + n; }
+  function fmtDate(ts) {
+    var d = new Date(ts);
+    return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()) + ' ' + pad2(d.getHours()) + ':' + pad2(d.getMinutes());
+  }
+  function fmtDateShort(ts) {
+    var d = new Date(ts);
+    return pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()) + ' ' + pad2(d.getHours()) + ':' + pad2(d.getMinutes());
+  }
+
+  // ---- 创建一朵云（note = { id, name, content, ts, replies }） ----
+  function makeCloud(note, fromBottom) {
+    var el = document.createElement('div');
+    el.className = 'cloud';
+    var textSpan = document.createElement('span');
+    textSpan.className = 'cloud-text';
+    textSpan.textContent = note.content; // textContent 防 XSS
+    el.appendChild(textSpan);
+    var dateSpan = document.createElement('span');
+    dateSpan.className = 'cloud-date';
+    dateSpan.textContent = fmtDateShort(note.ts); // 云朵上显示短日期
+    el.appendChild(dateSpan);
+    sky.appendChild(el);
+
+    // 抓住后的面板（原留言 + 日期 + 回复列表 + 回复框）
+    var panel = document.createElement('div');
+    panel.className = 'cloud-catch';
+    var head = document.createElement('div');
+    head.className = 'catch-head';
+    var headText = document.createElement('div');
+    headText.className = 'catch-head-text';
+    headText.textContent = note.content;
+    var headDate = document.createElement('div');
+    headDate.className = 'catch-head-date';
+    headDate.textContent = fmtDate(note.ts); // 面板里显示完整日期
+    head.appendChild(headText);
+    head.appendChild(headDate);
+    var replyList = document.createElement('div');
+    replyList.className = 'catch-replies';
+    var replyForm = document.createElement('form');
+    replyForm.className = 'catch-form';
+    replyForm.innerHTML = '<input class="catch-input" type="text" maxlength="500" placeholder="回复这条..." aria-label="回复内容">' +
+      '<button class="catch-send" type="submit" aria-label="回复"><svg viewBox="0 0 24 24"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg></button>';
+    panel.appendChild(head);
+    panel.appendChild(replyList);
+    panel.appendChild(replyForm);
+    sky.appendChild(panel);
+
+    var cloud = {
+      el: el, panel: panel, replyList: replyList, replyForm: replyForm,
+      note: note, replies: note.replies || [],
+      homeX: 0, homeY: 0,
+      x: 0, y: 0, vx: 0, vy: 0,
+      w: 0, h: 0,
+      phase: Math.random() * Math.PI * 2,
+      speed: 0.4 + Math.random() * 0.7,
+      caught: false, near: false
+    };
+    var c = cloud;
+
+    function renderReplies() {
+      replyList.innerHTML = '';
+      for (var k = 0; k < c.replies.length; k++) {
+        var rp = c.replies[k];
+        var row = document.createElement('div');
+        row.className = 'catch-reply';
+        var rtext = document.createElement('span');
+        rtext.className = 'catch-reply-text';
+        rtext.textContent = rp.content;
+        var rdate = document.createElement('span');
+        rdate.className = 'catch-reply-date';
+        rdate.textContent = fmtDateShort(rp.ts);
+        row.appendChild(rtext);
+        row.appendChild(rdate);
+        replyList.appendChild(row);
+      }
+      replyList.scrollTop = replyList.scrollHeight;
+    }
+    c.renderReplies = renderReplies;
+    renderReplies();
+
+    // 测量尺寸
+    var rect = el.getBoundingClientRect();
+    var w = Math.max(rect.width, 90);
+    var h = Math.max(rect.height, 34);
+    var home = randHome(w, h);
+    c.w = w; c.h = h; c.homeX = home.x; c.homeY = home.y;
+    c.x = home.x; c.y = home.y;
+
+    // 新留言从输入栏附近飘上来
+    if (fromBottom) {
+      c.x = window.innerWidth / 2 - w / 2;
+      c.y = window.innerHeight - INPUT_H - 30;
+      c.vy = -3;
+    }
+    clouds.push(c);
+
+    // 抓取改由 document 级 mousedown 统一处理（见下方），按最近云 + 抓取半径判定
+
+    // 回复提交（乐观 + 持久化 + 颤一颤）
+    replyForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      var inp = replyForm.querySelector('.catch-input');
+      var content2 = inp.value.trim();
+      if (!content2) return;
+      // 发送颤一颤（与主留言框一致）
+      replyForm.classList.remove('is-shaking');
+      void replyForm.offsetWidth;
+      replyForm.classList.add('is-shaking');
+      setTimeout(function() { replyForm.classList.remove('is-shaking'); }, 400);
+      var reply = { id: Date.now(), name: '匿名', content: content2, ts: Date.now() };
+      c.replies.push(reply);
+      renderReplies();
+      inp.value = '';
+      fetch('/api/notes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: content2, parentId: c.note.id })
+      }).catch(function() {});
+    });
+
+    // 淡入
+    requestAnimationFrame(function() { el.classList.add('is-in'); });
+    return c;
+  }
+
+  // 点击抓取：按下时抓住“指针最近、且在 CATCH_RADIUS 内”的云（点击才抓，不自动）；退出由蒙版点击处理
+  document.addEventListener('mousedown', function(e) {
+    if (commenting) return;                        // 评论态：退出交给蒙版，这里不抢抓
+    if (e.target.closest('.notes-compose') || e.target.closest('#notesForm')) return; // 底部输入区不触发
+    var nearest = null, nd = 1e9;
+    for (var i = 0; i < clouds.length; i++) {
+      var c = clouds[i];
+      var rx = Math.max(c.x - mouse.x, 0, mouse.x - (c.x + c.w));
+      var ry = Math.max(c.y - mouse.y, 0, mouse.y - (c.y + c.h));
+      var d = Math.sqrt(rx * rx + ry * ry);
+      if (d < nd) { nd = d; nearest = c; }
+    }
+    if (nearest && nd <= CATCH_RADIUS) catchCloud(nearest);
+  });
+
+  // ---- 物理循环：持续漂移 + 鼠标排异 + 抓住态 ----
+  function physicsLoop() {
+    var t = (performance.now() - startT) / 1000;
+    var iw = window.innerWidth, ih = window.innerHeight;
+    for (var i = 0; i < clouds.length; i++) {
+      var c = clouds[i];
+
+      // 抓住态：钉住静止（不逃离、不回归），仅放大显示 + 面板跟随
+      if (c.caught) {
+        var maxX = iw - c.w - PADDING, maxY = ih - INPUT_H - c.h - PADDING;
+        c.x = Math.max(PADDING, Math.min(c.x, maxX));
+        c.y = Math.max(NAV_H, Math.min(c.y, maxY));
+        c.el.style.transform = 'translate(' + c.x + 'px,' + c.y + 'px) scale(' + CATCH_SCALE + ')';
+        // 面板跟随到云朵框正下方，并补偿 scale(1.12) 以中心放大导致的左/右外扩，做到真正的框对框左对齐
+        var off = (c.w * (CATCH_SCALE - 1)) / 2;
+        c.panel.style.transform = 'translate(' + (c.x - off) + 'px,' + (c.y + c.h + 10) + 'px)';
+        continue;
+      }
+
+      // 持续漂移的 home 点（正弦）
+      var driftX = Math.sin(t * c.speed + c.phase) * DRIFT_AMP;
+      var driftY = Math.cos(t * c.speed * 0.8 + c.phase) * DRIFT_AMP;
+      var hx = c.homeX + driftX;
+      var hy = c.homeY + driftY;
+
+      // 鼠标排异（评论态冻结，避免影响其他云）
+      if (!commenting) {
+        var cx = c.x + c.w / 2, cy = c.y + c.h / 2;
+        var dx = cx - mouse.x, dy = cy - mouse.y;
+        var dist = Math.sqrt(dx * dx + dy * dy) || 1;
+        if (dist < REPEL_RADIUS) {
+          var force = (1 - dist / REPEL_RADIUS) * REPEL_FORCE;
+          c.vx += (dx / dist) * force;
+          c.vy += (dy / dist) * force;
+        }
+      }
+
+      // 弹簧回拉到漂移中的 home
+      c.vx += (hx - c.x) * RETURN_SPEED;
+      c.vy += (hy - c.y) * RETURN_SPEED;
+
+      // 摩擦衰减 + 积分
+      c.vx *= FRICTION; c.vy *= FRICTION;
+      c.x += c.vx; c.y += c.vy;
+
+      // 边界约束
+      var maxX2 = iw - c.w - PADDING, maxY2 = ih - INPUT_H - c.h - PADDING;
+      c.x = Math.max(PADDING, Math.min(c.x, maxX2));
+      c.y = Math.max(NAV_H, Math.min(c.y, maxY2));
+
+      // 唯一控制 transform 的地方
+      c.el.style.transform = 'translate(' + c.x + 'px,' + c.y + 'px)';
+    }
+    requestAnimationFrame(physicsLoop);
+  }
+  physicsLoop();
+
+  // ---- 加载已有留言 ----
+  fetch('/api/notes')
+    .then(function(r) { return r.json(); })
+    .then(function(arr) {
+      if (Array.isArray(arr)) arr.forEach(function(n) { makeCloud(n, false); });
+    })
+    .catch(function() {});
+
+  // ---- 发送顶层留言（乐观：先显示，再存后端） ----
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    var content = inputI.value.trim();
+    if (!content) return;
+
+    // 输入栏颤一颤
+    form.classList.remove('is-shaking');
+    void form.offsetWidth;
+    form.classList.add('is-shaking');
+    setTimeout(function() { form.classList.remove('is-shaking'); }, 500);
+
+    inputI.value = '';
+    var note = { id: Date.now(), name: '匿名', content: content, ts: Date.now(), replies: [] };
+    makeCloud(note, true); // 立刻飘出来
+
+    fetch('/api/notes', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ content: content })
+    }).catch(function() {});
+  });
+})();
+
+</script>
+</body>
+</html>

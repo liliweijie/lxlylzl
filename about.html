@@ -1,310 +1,228 @@
-<!DOCTYPE html>
-<html lang="zh-CN" data-theme="dark">
+<!doctype html>
+<html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>lxlylzl</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>关于 ABOUT · LXLYLZL — 你好,我是李伟杰</title>
+<meta name="description" content="李伟杰(LXLYLZL),独立设计师 &amp; 创意开发者,base 深圳福田。做品牌视觉出身,后来自己学会了写代码——设计稿即成品,一个人闭环。">
+<link rel="canonical" href="https://lxlylzl.xyz/about.html">
+<meta property="og:type" content="profile">
+<meta property="og:site_name" content="LXLYLZL">
+<meta property="og:title" content="关于 ABOUT · LXLYLZL — 你好,我是李伟杰">
+<meta property="og:description" content="独立设计师 &amp; 创意开发者,深圳福田。品牌视觉出身,设计稿即成品。">
+<meta property="og:url" content="https://lxlylzl.xyz/about.html">
+<meta property="og:image" content="https://lxlylzl.xyz/assets/portrait-liweijie.webp">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  /* ===== 5-COLOR STANDARD PALETTE ===== */
-  :root {
-    --bg: #0E0E0E;
-    --text: #F9F9F9;
-    --text-muted: #DBDBDB;
-    --panel: #262626;
-    --accent: #F24C30;
-    --pill-bg: rgba(255,255,255,0.08);
-    --pill-border: rgba(255,255,255,0.14);
-  }
-  [data-theme="light"] {
-    --bg: #F9F9F9;
-    --text: #0E0E0E;
-    --text-muted: #262626;
-    --panel: #DBDBDB;
-    --pill-bg: rgba(0,0,0,0.07);
-    --pill-border: rgba(0,0,0,0.12);
-  }
-
-  html, body { height: 100%; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Noto Sans SC', 'Inter', sans-serif;
-    overflow: hidden;
-    height: 100vh;
-    width: 100vw;
-    transition: background 0.45s ease, color 0.45s ease;
-  }
-
-  /* ===== TOP NAV: logo left / links centered / toggle right (fixed, full-screen) ===== */
-  .top-nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 1000;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px 40px;
-    pointer-events: none;
-  }
-  .top-nav * { pointer-events: auto; }
-  .nav-center {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  /* Logo pill */
-  .nav-logo-wrap {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: var(--pill-bg);
-    border: 1px solid var(--pill-border);
-    cursor: pointer;
-    transition: opacity 0.2s, background 0.25s;
-    flex-shrink: 0;
-  }
-  .nav-logo-wrap:hover { opacity: 0.75; }
-  .nav-logo {
-    height: 24px;
-    width: auto;
-  }
-
-  /* Each nav item = its own solid capsule */
-  .nav-link {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    height: 48px;
-    padding: 0 28px;
-    border-radius: 100px;
-    background: var(--pill-bg);
-    border: 1px solid var(--pill-border);
-    color: var(--text);
-    text-decoration: none;
-    font-size: 1.05rem;
-    font-weight: 500;
-    letter-spacing: 0.06em;
-    white-space: nowrap;
-    transition: background 0.25s, border-color 0.25s, transform 0.15s;
-  }
-  .nav-link:hover {
-    background: var(--panel);
-    border-color: var(--accent);
-    transform: translateY(-1px);
-  }
-  .nav-link.is-active {
-    background: var(--panel);
-    border-color: var(--text-muted);
-    font-weight: 600;
-  }
-
-  /* Theme toggle */
-  .theme-btn {
-    width: 40px; height: 40px;
-    border: none; background: var(--pill-bg);
-    border: 1px solid var(--pill-border);
-    color: var(--text-muted);
-    cursor: pointer;
-    display: flex;
-    align-items: center; justify-content: center;
-    transition: color 0.3s, background 0.25s;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-  .theme-btn:hover { color: var(--accent); background: var(--panel); }
-  .theme-btn svg {
-    width: 18px; height: 18px;
-    stroke: currentColor; fill: none;
-    stroke-width: 1.8;
-    stroke-linecap: round; stroke-linejoin: round;
-  }
-
-  /* ===== INK CURSOR (墨水形变) ===== */
-  body, body * { cursor: none !important; }
-  #inkLayer {
-    position: fixed; inset: 0;
-    z-index: 9999; pointer-events: none;
-    filter: drop-shadow(0 0 1.5px rgba(255,255,255,0.85));
-  }
-  .ink-goo { position: absolute; inset: 0; filter: url(#ink-goo); }
-  .ink-blob {
-    position: absolute; top: 0; left: 0;
-    width: 22px; height: 22px;
-    margin: -11px 0 0 -11px;
-    border-radius: 50%;
-    background: #0E0E0E;
-    will-change: transform;
-  }
-  #inkLayer.is-hidden { opacity: 0; }
-
-  /* ===== RESPONSIVE ===== */
-  @media (max-width: 900px) {
-    .top-nav { padding: 16px 24px; gap: 10px; }
-    .nav-link { height: 42px; padding: 0 22px; font-size: 0.95rem; }
-    .nav-logo-wrap { width: 42px; height: 42px; }
-    .nav-logo { height: 21px; }
-  }
-  @media (max-width: 600px) {
-    .top-nav { padding: 14px 16px; gap: 8px; }
-    .nav-link { height: 36px; padding: 0 16px; font-size: 0.85rem; }
-    .nav-logo-wrap { width: 36px; height: 36px; }
-    .nav-logo { height: 18px; }
-    .theme-btn { width: 34px; height: 34px; }
-  }
-
-  /* ===== PAGE: 纯净背景（导航+光标） ===== */
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Cormorant+Garamond:ital,wght@1,500&amp;family=JetBrains+Mono:wght@400;500&amp;family=Noto+Sans+SC:wght@400;500;700;900&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/site.css">
+<script>
+(function(){try{
+if(localStorage.getItem('lx:theme')==='light')document.documentElement.classList.add('light');
+var n=JSON.parse(sessionStorage.getItem('lx:nav')||'null');
+if(n&&(Date.now()-n.ts)<8000)document.documentElement.setAttribute('data-nav-dir',String(n.dir));
+}catch(e){}})();
+</script>
 </head>
-<body>
+<body data-page="2">
+<a class="skip-link" href="#main">跳到内容</a>
 
-  <!-- ===== TOP NAV ===== -->
-  <nav class="top-nav">
-    <div class="nav-logo-wrap" id="logoBtn">
-      <img class="nav-logo" src="logo.svg" alt="LX Logo">
-    </div>
-
-    <div class="nav-center">
-      <a class="nav-link" href="index.html">首页</a>
-      <a class="nav-link" href="works.html">作品</a>
-      <a class="nav-link is-active" href="about.html">关于</a>
-      <a class="nav-link" href="notes.html">碎碎念</a>
-    </div>
-
-    <button class="theme-btn" id="themeBtn" aria-label="切换明暗模式">
-      <svg class="icon-sun" viewBox="0 0 24 24" style="display:none;">
-        <circle cx="12" cy="12" r="5"/>
-        <line x1="12" y1="1" x2="12" y2="3"/>
-        <line x1="12" y1="21" x2="12" y2="23"/>
-        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-        <line x1="1" y1="12" x2="3" y2="12"/>
-        <line x1="21" y1="12" x2="23" y2="12"/>
-        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-      </svg>
-      <svg class="icon-moon" viewBox="0 0 24 24">
-        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-      </svg>
-    </button>
-  </nav>
-
-  <div id="inkLayer" class="is-hidden">
-    <div class="ink-goo">
-      <div class="ink-blob"></div>
-      <div class="ink-blob"></div>
-      <div class="ink-blob"></div>
-      <div class="ink-blob"></div>
-      <div class="ink-blob"></div>
+<header class="nav">
+  <div class="nav__inner">
+    <a class="nav__logo" href="index.html">✳ LXLYLZL</a>
+    <nav class="nav__pills" aria-label="页面导航">
+      <a class="nav__pill" href="index.html"><span class="pill-cn">首页</span><span class="pill-no">01</span></a>
+      <a class="nav__pill" href="works.html"><span class="pill-cn">作品</span><span class="pill-no">02</span></a>
+      <a class="nav__pill" href="about.html" aria-current="page"><span class="pill-cn">关于</span><span class="pill-no">03</span></a>
+      <a class="nav__pill" href="notes.html"><span class="pill-cn">碎碎念</span><span class="pill-no">04</span></a>
+    </nav>
+    <div class="nav__meta">
+      <button class="nav__theme" type="button" aria-label="切换明暗主题">
+        <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <span aria-hidden="true">03/04</span>
     </div>
   </div>
-  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-    <defs>
-      <filter id="ink-goo">
-        <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur"/>
-        <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 16 -6" result="goo"/>
-        <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
-      </filter>
-    </defs>
+</header>
+
+<div class="peek-rail" aria-hidden="true">
+  <div class="peek-rail__wash"><span>碎碎念 NOTES</span></div>
+  <div class="peek-rail__ticket">
+    <span class="peek-rail__no">04/04</span>
+    <span class="peek-rail__name">碎碎念 · NOTES</span>
+    <span class="peek-rail__barcode" data-barcode="52,18,16"></span>
+    <span class="peek-rail__pct">20%</span>
+  </div>
+</div>
+
+<div class="pull-indicator" aria-hidden="true">
+  <svg width="26" height="26" viewBox="0 0 26 26">
+    <circle class="pull-indicator__track" cx="13" cy="13" r="11"></circle>
+    <circle class="pull-indicator__ring" cx="13" cy="13" r="11" stroke-dasharray="69.115" stroke-dashoffset="69.115"></circle>
   </svg>
+  <span class="pull-indicator__label">继续下滑 · 进入碎碎念 →</span>
+  <span class="pull-indicator__pct">0%</span>
+</div>
 
-<!-- 关于页内容待做图填充 -->
+<div class="pull-peek" aria-hidden="true">
+  <span class="pull-peek__name">作品 · WORKS</span>
+  <span class="pull-peek__pct">0%</span>
+</div>
 
-<script>
-// ===== THEME =====
-(function() {
-  function getPreferredTheme() {
-    const stored = localStorage.getItem('theme');
-    if (stored) return stored;
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  }
-  function applyTheme(theme) {
-    document.documentElement.setAttribute('data-theme', theme);
-    const iconSun = document.querySelector('.icon-sun');
-    const iconMoon = document.querySelector('.icon-moon');
-    if (theme === 'light') {
-      iconSun.style.display = '';
-      iconMoon.style.display = 'none';
-    } else {
-      iconSun.style.display = 'none';
-      iconMoon.style.display = '';
-    }
-    const logoImg = document.querySelector('.nav-logo');
-    if (logoImg) logoImg.src = theme === 'light' ? 'logo-light.svg' : 'logo.svg';
-  }
-  applyTheme(getPreferredTheme());
-  document.getElementById('themeBtn').addEventListener('click', function() {
-    const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-    localStorage.setItem('theme', next);
-    applyTheme(next);
-  });
+<div class="scanline" aria-hidden="true"></div>
 
-  // Logo click -> home
-  document.getElementById('logoBtn').addEventListener('click', function() {
-    window.location.href = 'index.html';
-  });
-})();
+<main id="main">
+  <!-- ============ hero: portrait + bio ============ -->
+  <section class="container about-hero">
+    <div class="about-hero__grid">
+      <div>
+        <div class="rv">
+          <div class="ticket about-hero__portrait">
+            <span class="ticket__tear ticket__tear--top" aria-hidden="true"></span>
+            <span class="ticket__notch ticket__notch--left ticket__notch--top" aria-hidden="true"></span>
+            <span class="ticket__notch ticket__notch--right ticket__notch--top" aria-hidden="true"></span>
+            <span class="about-hero__id">ID. 1993-LWJ</span>
+            <img src="assets/portrait-liweijie.webp" alt="李伟杰肖像 — 工作台前,红色氛围灯勾边" width="960" height="1200" decoding="async" fetchpriority="high">
+          </div>
+          <p class="kicker about-hero__caption">LI WEIJIE · b.1993 · FUTIAN, SHENZHEN</p>
+        </div>
+      </div>
+      <div class="about-hero__bio">
+        <p class="kicker rv">ABOUT / 03</p>
+        <h1 class="about-hero__title rv">你好,我是<span class="red">李伟杰</span>。</h1>
+        <div class="about-hero__paras">
+          <p class="rv" style="transition-delay:100ms">独立设计师 &amp; 创意开发者,base 深圳福田。</p>
+          <p class="rv" style="transition-delay:200ms">做品牌视觉出身,后来自己学会了写代码——所以现在从我手里出去的东西,设计稿即成品:海报、VI、网站、动效,一个人闭环。</p>
+          <p class="rv" style="transition-delay:300ms">相信三件事:不确定唯一,争议和多元解读;好看和好用不该是选择题;小团队 + AI 工作流,可以做出超规格的东西。</p>
+        </div>
+        <div class="about-hero__status rv" style="transition-delay:400ms">
+          <span class="open"><span class="blink-dot" aria-hidden="true"></span>OPEN FOR PROJECTS — 2026 Q1</span>
+          <span class="tags">DES / DEV / BRAND</span>
+        </div>
+      </div>
+    </div>
+  </section>
 
-// ===== INK CURSOR (墨水形变) =====
-(function() {
-  const layer = document.getElementById('inkLayer');
-  if (!layer) return;
-  const blobs = Array.prototype.slice.call(layer.querySelectorAll('.ink-blob'));
-  const n = blobs.length;
-  if (!n) return;
-  const base = [];
-  for (let i = 0; i < n; i++) base[i] = Math.pow(0.78, i); // 越往后越细
-  const pos = blobs.map(function() { return { x: window.innerWidth / 2, y: window.innerHeight / 2 }; });
-  const mouse = { x: pos[0].x, y: pos[0].y };
-  const last = { x: pos[0].x, y: pos[0].y };
-  let hoverK = 1, hoverTarget = 1, shown = false;
+  <!-- ============ capabilities ============ -->
+  <section class="container section">
+    <h2 class="h2 rv" style="margin-bottom:64px">能做什么</h2>
+    <div class="caps-grid">
+      <div class="cap">
+        <div class="edge rv-line"></div>
+        <div class="cap__body rv">
+          <p class="kicker">A — DESIGN</p>
+          <h3>设计</h3>
+          <ul>
+            <li><span class="idx">01</span>品牌识别 / VI 系统</li>
+            <li><span class="idx">02</span>海报与编辑排版</li>
+            <li><span class="idx">03</span>包装</li>
+            <li><span class="idx">04</span>字体与色彩系统</li>
+          </ul>
+        </div>
+      </div>
+      <div class="cap">
+        <div class="edge rv-line" style="transition-delay:120ms"></div>
+        <div class="cap__body rv" style="transition-delay:150ms">
+          <p class="kicker">B — DEV</p>
+          <h3>开发</h3>
+          <ul>
+            <li><span class="idx">01</span>React / Next 站点</li>
+            <li><span class="idx">02</span>GSAP / Framer Motion 动效</li>
+            <li><span class="idx">03</span>Three.js / WebGL 实验</li>
+            <li><span class="idx">04</span>性能与可访问性</li>
+          </ul>
+        </div>
+      </div>
+      <div class="cap">
+        <div class="edge rv-line" style="transition-delay:240ms"></div>
+        <div class="cap__body rv" style="transition-delay:270ms">
+          <p class="kicker">C — FLOW</p>
+          <h3>工作流</h3>
+          <ul>
+            <li><span class="idx">01</span>Figma → 代码直达</li>
+            <li><span class="idx">02</span>AI 辅助视觉生成</li>
+            <li><span class="idx">03</span>3–4 天一次进度同步</li>
+            <li><span class="idx">04</span>源文件全量交付</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <p class="kicker caps-tools rv">常用工具:Figma · Photoshop · Blender · VS Code · Cursor</p>
+  </section>
 
-  document.addEventListener('mousemove', function(e) {
-    mouse.x = e.clientX; mouse.y = e.clientY;
-    if (!shown) { shown = true; layer.classList.remove('is-hidden'); }
-  });
-  document.addEventListener('mouseover', function(e) {
-    hoverTarget = e.target.closest('a, button') ? 1.7 : 1;
-  });
+  <!-- ============ timeline ============ -->
+  <section class="container section timeline">
+    <h2 class="h2 rv" style="margin-bottom:64px">这些年</h2>
 
-  function ease(cur, t, f) { cur.x += (t.x - cur.x) * f; cur.y += (t.y - cur.y) * f; }
+    <div class="timeline__h">
+      <div class="timeline__line-h rv-line" aria-hidden="true"></div>
+      <div class="tl-node rv"><span class="dot" aria-hidden="true"></span><p class="year">1993</p><p class="txt">生于广东。</p></div>
+      <div class="tl-node rv" style="transition-delay:120ms"><span class="dot" aria-hidden="true"></span><p class="year">2016</p><p class="txt">入行,广告公司做品牌视觉。</p></div>
+      <div class="tl-node rv" style="transition-delay:240ms"><span class="dot" aria-hidden="true"></span><p class="year">2019</p><p class="txt">开始独立接单,第一个客户是朋友的面馆。</p></div>
+      <div class="tl-node rv" style="transition-delay:360ms"><span class="dot" aria-hidden="true"></span><p class="year">2022</p><p class="txt">自学前端,把设计稿亲手写成代码。</p></div>
+      <div class="tl-node rv" style="transition-delay:480ms"><span class="dot" aria-hidden="true"></span><p class="year">2026</p><p class="txt">这个站上线,继续开放合作。</p></div>
+    </div>
 
-  function tick() {
-    ease(pos[0], mouse, 0.5);
-    for (let i = 1; i < n; i++) ease(pos[i], pos[i - 1], 0.32);
+    <div class="timeline__v">
+      <div class="timeline__line-v" aria-hidden="true"></div>
+      <div class="tl-node rv"><span class="dot" aria-hidden="true"></span><p class="year">1993</p><p class="txt">生于广东。</p></div>
+      <div class="tl-node rv"><span class="dot" aria-hidden="true"></span><p class="year">2016</p><p class="txt">入行,广告公司做品牌视觉。</p></div>
+      <div class="tl-node rv"><span class="dot" aria-hidden="true"></span><p class="year">2019</p><p class="txt">开始独立接单,第一个客户是朋友的面馆。</p></div>
+      <div class="tl-node rv"><span class="dot" aria-hidden="true"></span><p class="year">2022</p><p class="txt">自学前端,把设计稿亲手写成代码。</p></div>
+      <div class="tl-node rv"><span class="dot" aria-hidden="true"></span><p class="year">2026</p><p class="txt">这个站上线,继续开放合作。</p></div>
+    </div>
+  </section>
 
-    const dx = pos[0].x - last.x, dy = pos[0].y - last.y;
-    const speed = Math.min(Math.hypot(dx, dy), 70);
-    const ang = Math.atan2(dy, dx);
-    const stretch = 1 + speed / 45;
-    const squash = 1 - speed / 160;
-    hoverK += (hoverTarget - hoverK) * 0.15;
+  <!-- ============ contact ============ -->
+  <section style="margin-top:32px">
+    <div class="container">
+      <div class="rv">
+        <div class="ticket">
+          <span class="ticket__no">NO. CONTACT-01</span>
+          <div class="tf-upper" style="padding-bottom:40px">
+            <p class="kicker" style="margin-bottom:16px">CONTACT / TAIL</p>
+            <h2 class="h2">聊聊你的项目</h2>
+            <p class="lead" style="margin-top:16px">有需求直接发,没需求也可以先认识一下。</p>
+          </div>
+          <div class="contact-rows">
+            <a class="contact-row" href="mailto:hello@lxlylzl.xyz">
+              <span class="lbl">MAIL</span>
+              <span class="val">hello@lxlylzl.xyz</span>
+            </a>
+            <button class="contact-row" type="button" data-copy-wechat>
+              <span class="lbl">WECHAT · 点击复制</span>
+              <span class="val">lxlylzl</span>
+            </button>
+            <div class="contact-row">
+              <span class="lbl">SOCIAL</span>
+              <span class="val small">小红书 / 微博 / Instagram: <span class="red">@lxlylzl</span></span>
+            </div>
+          </div>
+          <div class="contact-stub">
+            <span data-barcode="41,48,44" data-barcode-label="NO. CONTACT-01"></span>
+            <span class="hint">24H 内回复</span>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    blobs[0].style.transform = 'translate(' + pos[0].x + 'px,' + pos[0].y + 'px) rotate(' + ang + 'rad) scale(' + (stretch * base[0] * hoverK) + ',' + (squash * base[0] * hoverK) + ')';
-    for (let i = 1; i < n; i++) {
-      blobs[i].style.transform = 'translate(' + pos[i].x + 'px,' + pos[i].y + 'px) scale(' + (base[i] * hoverK) + ')';
-    }
-    last.x = pos[0].x; last.y = pos[0].y;
-    requestAnimationFrame(tick);
-  }
-  tick();
-})();
+    <div style="margin-top:96px">
+      <div class="marquee" aria-hidden="true">
+        <div class="marquee__track">
+          <span class="marquee__seg">BE DIFFERENT AROUND IT ✳ LET'S WORK TOGETHER ✳ DESIGN × AI × FUTURE ✳ BE DIFFERENT AROUND IT ✳ LET'S WORK TOGETHER ✳ DESIGN × AI × FUTURE ✳&nbsp;</span>
+          <span class="marquee__seg">BE DIFFERENT AROUND IT ✳ LET'S WORK TOGETHER ✳ DESIGN × AI × FUTURE ✳ BE DIFFERENT AROUND IT ✳ LET'S WORK TOGETHER ✳ DESIGN × AI × FUTURE ✳&nbsp;</span>
+        </div>
+      </div>
+      <p class="footer-copy">©2026 LIWEIJIE · MADE IN FUTIAN SZ</p>
+    </div>
+  </section>
+</main>
 
-// 关于页内容待做图填充
+<div class="toast" role="status">已复制 ✓</div>
 
-</script>
+<script src="js/site.js" defer></script>
 </body>
 </html>

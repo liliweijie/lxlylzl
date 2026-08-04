@@ -1,6 +1,9 @@
 {
   "rewrites": [
     {"source": "/1993", "destination": "/1993.html"},
+    {"source": "/works", "destination": "/works.html"},
+    {"source": "/about", "destination": "/about.html"},
+    {"source": "/notes", "destination": "/notes.html"},
     {"source": "/(.*)", "destination": "/index.html"}
   ]
 }

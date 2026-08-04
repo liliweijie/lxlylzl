@@ -1,5 +1,4 @@
-# Assets (large images - deploy separately)
-assets/
+# Assets are committed for the static multi-page package (webp ~2MB total).
 
 # macOS
 .DS_Store
