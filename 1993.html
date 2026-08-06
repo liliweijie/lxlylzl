@@ -131,6 +131,57 @@ textarea.json.invalid{border-color:var(--red);box-shadow:0 0 0 1px var(--red);}
 .hint{font-size:12px;color:var(--gray);line-height:1.7;margin-top:10px;}
 .hint .red{color:var(--red);}
 
+/* ---------- friendly form ---------- */
+.form__note{font-size:12px;color:var(--gray);line-height:1.7;margin-bottom:14px;}
+.form{display:flex;flex-direction:column;gap:16px;margin-bottom:16px;}
+.fgroup{border:1px solid var(--line);background:rgba(244,241,234,.02);padding:14px 14px 12px;}
+.fgroup__title{font-weight:900;font-size:13px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px dashed var(--line);}
+.ffield{margin-bottom:10px;}
+.ffield:last-child{margin-bottom:0;}
+.flabel{display:block;font-size:12px;color:var(--gray);margin-bottom:4px;}
+.finput,.ftext,.fselect{
+  width:100%;padding:8px 10px;background:rgba(244,241,234,.05);
+  border:1px solid var(--line);color:var(--paper);font-size:13px;
+}
+.finput:focus,.ftext:focus,.fselect:focus{border-color:var(--red);}
+.ftext{min-height:64px;resize:vertical;line-height:1.6;}
+.fselect{cursor:pointer;}
+.fselect option{background:var(--ink-2);color:var(--paper);}
+.fhelp{font-size:11px;color:var(--gray);margin-top:4px;line-height:1.6;}
+.fgrid2,.fgrid3{display:grid;gap:10px;}
+.fgrid2{grid-template-columns:1fr 1fr;}
+.fgrid3{grid-template-columns:1fr 1fr 1fr;}
+@media(max-width:640px){.fgrid2,.fgrid3{grid-template-columns:1fr;}}
+.flist{display:flex;flex-direction:column;gap:10px;}
+.fitem{border:1px dashed var(--line-strong);padding:10px 12px;background:rgba(244,241,234,.02);}
+.fitem__bar{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+.fitem__no{font-family:var(--font-mono);font-size:11px;color:var(--red);letter-spacing:.12em;}
+.fitem__ctrl{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap;}
+.btn--mini{padding:4px 10px;font-size:11px;}
+.btn--add{border-style:dashed;width:100%;padding:9px;text-align:center;}
+.fseg{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.fseg .finput{flex:1;}
+.fseg label{font-size:11px;color:var(--gray);display:flex;align-items:center;gap:4px;white-space:nowrap;cursor:pointer;}
+.imgfield{display:flex;flex-direction:column;gap:6px;}
+.imgfield__row{display:flex;gap:8px;}
+.imgfield__row .finput{flex:1;min-width:0;}
+.imgfield__row .fselect{width:150px;flex:none;}
+@media(max-width:640px){.imgfield__row{flex-direction:column;}.imgfield__row .fselect{width:100%;}}
+.imgfield__thumb{
+  height:64px;width:auto;max-width:100%;border:1px solid var(--line);
+  object-fit:cover;background:#0e0e10;align-self:flex-start;
+}
+.imgfield__ph{font-size:11px;color:var(--gray);}
+.fcolorrow{display:flex;gap:8px;align-items:center;}
+input.fcolor{width:44px;height:32px;padding:2px;background:transparent;border:1px solid var(--line);cursor:pointer;}
+
+/* ---------- advanced JSON (collapsed) ---------- */
+.advjson{margin:0 0 14px;border:1px solid var(--line);padding:10px 12px;background:rgba(244,241,234,.02);}
+.advjson>summary{cursor:pointer;font-size:13px;color:var(--gray);list-style-position:inside;}
+.advjson>summary:hover{color:var(--red);}
+.advjson textarea.json{margin-top:10px;min-height:260px;}
+.advjson .panel__actions{margin-top:10px;}
+
 /* ---------- notes admin ---------- */
 .nlist{display:flex;flex-direction:column;gap:10px;margin-top:6px;}
 .nitem{border:1px solid var(--line);padding:12px 14px;background:rgba(244,241,234,.03);}
@@ -209,6 +260,14 @@ textarea.json.invalid{border-color:var(--red);box-shadow:0 0 0 1px var(--red);}
     el.className = 'status' + (cls ? ' ' + cls : '');
   }
   function setGlobal(msg, cls) { setStatus(globalStatus, msg, cls); }
+
+  // 统一建元素:只用 textContent / setAttribute,绝不 innerHTML 拼接数据
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
 
   /* ---------- 凭据(仅 sessionStorage) ---------- */
   function saveCreds(u, p) {
@@ -343,11 +402,46 @@ textarea.json.invalid{border-color:var(--red);box-shadow:0 0 0 1px var(--red);}
 
     var codeCol = document.createElement('div');
     codeCol.className = 'edit-grid__code';
+
+    var formNote = document.createElement('p');
+    formNote.className = 'form__note';
+    formNote.textContent = '下面是白话表单:直接改这里,代码会自动生成。图片可以粘贴 assets/ 路径或 https 图片地址、或从下拉选已有素材;暂不支持本地上传图片(如需上传,要另开 Vercel Blob/对象存储)。';
+    codeCol.appendChild(formNote);
+
+    var formBox = document.createElement('div');
+    formBox.className = 'form';
+    codeCol.appendChild(formBox);
+
+    // 高级 JSON:折叠区,不熟悉可忽略
+    var adv = document.createElement('details');
+    adv.className = 'advjson';
+    var advSum = document.createElement('summary');
+    advSum.textContent = '高级 JSON(不熟悉可忽略)';
+    adv.appendChild(advSum);
     var ta = document.createElement('textarea');
     ta.className = 'json';
     ta.setAttribute('spellcheck', 'false');
     ta.setAttribute('aria-label', pg.cn + '内容 JSON');
-    codeCol.appendChild(ta);
+    adv.appendChild(ta);
+    var advTip = document.createElement('p');
+    advTip.className = 'fhelp';
+    advTip.textContent = '表单里每次输入都会自动更新这段 JSON;手动改了 JSON 后,点「用 JSON 重建表单」让上面的表单同步。';
+    adv.appendChild(advTip);
+    var advActions = document.createElement('div');
+    advActions.className = 'panel__actions';
+    function mkAdvBtn(label, cls) {
+      var x = document.createElement('button');
+      x.className = 'btn' + (cls ? ' ' + cls : '');
+      x.type = 'button';
+      x.textContent = label;
+      advActions.appendChild(x);
+      return x;
+    }
+    var validateBtn = mkAdvBtn('校验 JSON');
+    var formatBtn = mkAdvBtn('格式化');
+    var rebuildBtn = mkAdvBtn('用 JSON 重建表单');
+    adv.appendChild(advActions);
+    codeCol.appendChild(adv);
 
     var actions = document.createElement('div');
     actions.className = 'panel__actions';
@@ -359,8 +453,6 @@ textarea.json.invalid{border-color:var(--red);box-shadow:0 0 0 1px var(--red);}
       actions.appendChild(x);
       return x;
     }
-    var validateBtn = mkBtn('校验 JSON');
-    var formatBtn = mkBtn('格式化');
     var reloadBtn = mkBtn('重新加载');
     var defaultsBtn = mkBtn('恢复默认');
     var saveBtn = mkBtn('保存', 'btn--primary');
@@ -368,7 +460,7 @@ textarea.json.invalid{border-color:var(--red);box-shadow:0 0 0 1px var(--red);}
 
     var hint = document.createElement('p');
     hint.className = 'hint';
-    hint.textContent = '左侧编辑 JSON,点「保存」后生效并自动刷新右侧预览;「恢复默认」只载入种子到编辑器,需再点保存。';
+    hint.textContent = '表单改完点「保存」后生效并自动刷新右侧预览;「恢复默认」只载入种子到编辑器,需再点保存。';
     codeCol.appendChild(hint);
 
     var previewCol = document.createElement('div');
@@ -411,7 +503,7 @@ textarea.json.invalid{border-color:var(--red);box-shadow:0 0 0 1px var(--red);}
     panel.appendChild(ticket);
     panelsBox.appendChild(panel);
 
-    var refs = { ta: ta, status: status, saveBtn: saveBtn, frame: frame, url: pg.url };
+    var refs = { ta: ta, status: status, saveBtn: saveBtn, frame: frame, url: pg.url, formBox: formBox };
     panelRefs[pg.id] = refs;
 
     validateBtn.addEventListener('click', function () {
@@ -428,12 +520,590 @@ textarea.json.invalid{border-color:var(--red);box-shadow:0 0 0 1px var(--red);}
         setStatus(status, '无法格式化:' + e.message, 'bad');
       }
     });
+    rebuildBtn.addEventListener('click', function () {
+      if (rebuildForm(pg.id, false)) setStatus(status, '已用 JSON 重建表单 ✓', 'ok');
+    });
     reloadBtn.addEventListener('click', function () { loadContent(pg.id, true); });
     defaultsBtn.addEventListener('click', function () { loadDefaults(pg.id); });
     saveBtn.addEventListener('click', function () { saveContent(pg.id); });
     refreshPreviewBtn.addEventListener('click', function () { refreshPreview(pg.id, true); });
     ta.addEventListener('input', function () { ta.classList.remove('invalid'); });
   });
+
+  /* =====================================================================
+     白话表单:表单 <-> JSON 双向同步(所有值只走 value/textContent/setAttribute)
+     ===================================================================== */
+  var ASSETS = [
+    'favicon.svg', 'portrait-liweijie.webp', 'work-central-on-air.webp', 'work-hom.webp',
+    'work-lens.webp', 'work-overmind-ai.webp', 'work-patch-system.webp',
+    'work-radical-face.webp', 'work-unis-footwear.webp', 'work-zaza.webp'
+  ];
+  var formState = {};
+
+  function ensureObj(o, k) { if (!o[k] || typeof o[k] !== 'object' || Array.isArray(o[k])) o[k] = {}; return o[k]; }
+  function ensureArr(o, k) { if (!Array.isArray(o[k])) o[k] = []; return o[k]; }
+  function splitLines(v) {
+    return String(v).split('\n').map(function (s) { return s.trim(); }).filter(Boolean);
+  }
+
+  function fGroup(titleText) {
+    var g = el('div', 'fgroup');
+    g.appendChild(el('div', 'fgroup__title', titleText));
+    return g;
+  }
+  function fField(labelText, control, help) {
+    var w = el('div', 'ffield');
+    w.appendChild(el('label', 'flabel', labelText));
+    w.appendChild(control);
+    if (help) w.appendChild(el('p', 'fhelp', help));
+    return w;
+  }
+  function fText(obj, key, sync, ph) {
+    var i = el('input', 'finput');
+    i.type = 'text';
+    if (ph) i.setAttribute('placeholder', ph);
+    i.value = obj[key] == null ? '' : String(obj[key]);
+    i.addEventListener('input', function () { obj[key] = i.value; sync(); });
+    return i;
+  }
+  function fArea(obj, key, sync, minh) {
+    var t = el('textarea', 'ftext');
+    if (minh) t.style.minHeight = minh;
+    t.value = obj[key] == null ? '' : String(obj[key]);
+    t.addEventListener('input', function () { obj[key] = t.value; sync(); });
+    return t;
+  }
+  function fLines(get, set, sync, minh) {
+    var t = el('textarea', 'ftext');
+    if (minh) t.style.minHeight = minh;
+    t.setAttribute('spellcheck', 'false');
+    t.value = get();
+    t.addEventListener('input', function () { set(t.value); sync(); });
+    return t;
+  }
+  // 图片字段:文本框 + 已有素材下拉 + 小缩略预览(不假装支持本地上传)
+  function imageField(obj, key, sync, emptyNote) {
+    var w = el('div', 'imgfield');
+    var row = el('div', 'imgfield__row');
+    var inp = el('input', 'finput');
+    inp.type = 'text';
+    inp.value = obj[key] == null ? '' : String(obj[key]);
+    inp.setAttribute('placeholder', 'assets/xxx.webp 或 https://图片地址');
+    var sel = el('select', 'fselect');
+    sel.setAttribute('aria-label', '选择已有素材');
+    var o0 = el('option');
+    o0.value = '';
+    o0.textContent = '选择已有素材…';
+    sel.appendChild(o0);
+    ASSETS.forEach(function (a) {
+      var o = el('option');
+      o.value = 'assets/' + a;
+      o.textContent = a;
+      sel.appendChild(o);
+    });
+    row.appendChild(inp);
+    row.appendChild(sel);
+    var thumb = el('img', 'imgfield__thumb');
+    thumb.alt = '图片预览';
+    var ph = el('span', 'imgfield__ph', emptyNote || '');
+    function upd() {
+      var v = inp.value.trim();
+      if (v) {
+        thumb.setAttribute('src', v);
+        thumb.hidden = false;
+        ph.hidden = true;
+      } else {
+        thumb.hidden = true;
+        thumb.removeAttribute('src');
+        ph.hidden = !emptyNote;
+      }
+    }
+    inp.addEventListener('input', function () { obj[key] = inp.value; upd(); sync(); });
+    sel.addEventListener('change', function () {
+      if (!sel.value) return;
+      inp.value = sel.value;
+      obj[key] = sel.value;
+      sel.value = '';
+      upd();
+      sync();
+    });
+    w.appendChild(row);
+    w.appendChild(thumb);
+    w.appendChild(ph);
+    upd();
+    return w;
+  }
+  function ratioField(item, sync) {
+    var s = el('select', 'fselect');
+    [['r45', '4:5(偏高)'], ['r34', '3:4(偏方)']].forEach(function (p) {
+      var o = el('option');
+      o.value = p[0];
+      o.textContent = p[1];
+      s.appendChild(o);
+    });
+    s.value = item.ratio === 'r34' ? 'r34' : 'r45';
+    s.addEventListener('change', function () { item.ratio = s.value; sync(); });
+    return s;
+  }
+  function colorField(obj, key, sync) {
+    var c = el('input', 'fcolor');
+    c.type = 'color';
+    c.setAttribute('aria-label', '占位渐变颜色');
+    c.value = /^#[0-9a-fA-F]{6}$/.test(obj[key] || '') ? obj[key] : '#2b2b30';
+    c.addEventListener('input', function () { obj[key] = c.value; sync(); });
+    return c;
+  }
+  // 列表编辑器:加 / 删 / 上移 / 下移
+  function listEditor(opts) {
+    var wrap = el('div', 'flist');
+    function refresh() {
+      wrap.textContent = '';
+      opts.items.forEach(function (item, i) {
+        var it = el('div', 'fitem');
+        var bar = el('div', 'fitem__bar');
+        bar.appendChild(el('span', 'fitem__no', opts.itemName + ' ' + (i + 1)));
+        var ctrl = el('span', 'fitem__ctrl');
+        function mb(t, fn, dis) {
+          var b = el('button', 'btn btn--mini', t);
+          b.type = 'button';
+          if (dis) b.disabled = true;
+          b.addEventListener('click', fn);
+          ctrl.appendChild(b);
+        }
+        mb('上移', function () { opts.items.splice(i - 1, 0, opts.items.splice(i, 1)[0]); refresh(); opts.sync(); }, i === 0);
+        mb('下移', function () { opts.items.splice(i + 1, 0, opts.items.splice(i, 1)[0]); refresh(); opts.sync(); }, i === opts.items.length - 1);
+        mb('删除', function () { opts.items.splice(i, 1); refresh(); opts.sync(); });
+        bar.appendChild(ctrl);
+        it.appendChild(bar);
+        var body = el('div', 'fitem__body');
+        it.appendChild(body);
+        opts.render(body, item, i);
+        wrap.appendChild(it);
+      });
+      var add = el('button', 'btn btn--mini btn--add', opts.addLabel);
+      add.type = 'button';
+      add.addEventListener('click', function () { opts.items.push(opts.makeNew()); refresh(); opts.sync(); });
+      wrap.appendChild(add);
+    }
+    refresh();
+    return wrap;
+  }
+  // 宣言:按行编辑,每行若干片段,片段可标红
+  function manifestoEditor(box, man, sync) {
+    var rows = ensureArr(man, 'rows');
+    var wrap = el('div', 'flist');
+    function refresh() {
+      wrap.textContent = '';
+      rows.forEach(function (row, ri) {
+        if (!Array.isArray(row)) { row = [{ t: String(row || '') }]; rows[ri] = row; }
+        var it = el('div', 'fitem');
+        var bar = el('div', 'fitem__bar');
+        bar.appendChild(el('span', 'fitem__no', '第 ' + (ri + 1) + ' 行'));
+        var ctrl = el('span', 'fitem__ctrl');
+        var addSeg = el('button', 'btn btn--mini', '+ 片段');
+        addSeg.type = 'button';
+        addSeg.addEventListener('click', function () { rows[ri].push({ t: '' }); refresh(); sync(); });
+        var del = el('button', 'btn btn--mini', '删除此行');
+        del.type = 'button';
+        del.addEventListener('click', function () { rows.splice(ri, 1); refresh(); sync(); });
+        ctrl.appendChild(addSeg);
+        ctrl.appendChild(del);
+        bar.appendChild(ctrl);
+        it.appendChild(bar);
+        row.forEach(function (seg, si) {
+          if (!seg || typeof seg !== 'object') { seg = { t: String(seg || '') }; row[si] = seg; }
+          var line = el('div', 'fseg');
+          var inp = el('input', 'finput');
+          inp.type = 'text';
+          inp.value = seg.t || '';
+          inp.addEventListener('input', function () { seg.t = inp.value; sync(); });
+          var lab = el('label');
+          var cb = document.createElement('input');
+          cb.type = 'checkbox';
+          cb.checked = !!seg.red;
+          cb.addEventListener('change', function () {
+            if (cb.checked) seg.red = true; else delete seg.red;
+            sync();
+          });
+          lab.appendChild(cb);
+          lab.appendChild(document.createTextNode('标红'));
+          line.appendChild(inp);
+          line.appendChild(lab);
+          if (row.length > 1) {
+            var x = el('button', 'btn btn--mini', '✕');
+            x.type = 'button';
+            x.addEventListener('click', function () { row.splice(si, 1); refresh(); sync(); });
+            line.appendChild(x);
+          }
+          it.appendChild(line);
+        });
+        wrap.appendChild(it);
+      });
+      var add = el('button', 'btn btn--mini btn--add', '+ 添加一行');
+      add.type = 'button';
+      add.addEventListener('click', function () { rows.push([{ t: '' }]); refresh(); sync(); });
+      wrap.appendChild(add);
+    }
+    refresh();
+    box.appendChild(wrap);
+  }
+
+  /* ---------- 首页 ---------- */
+  function buildIndexForm(box, d, sync) {
+    var g, i;
+    var av = ensureObj(d, 'availability');
+
+    g = fGroup('联系方式 & 全站小字');
+    g.appendChild(fField('邮箱', fText(av, 'email', sync)));
+    g.appendChild(fField('微信号', fText(av, 'wechat', sync)));
+    g.appendChild(fField('档期(红色小徽章)', fText(av, 'badge', sync)));
+    g.appendChild(fField('页脚一行小字', fText(d, 'footer', sync)));
+    g.appendChild(fField('底部滚动标语', fText(d, 'marquee', sync)));
+    box.appendChild(g);
+
+    g = fGroup('首页顶部');
+    var hero = ensureObj(d, 'hero');
+    var strip = ensureArr(hero, 'strip');
+    var stripRow = el('div', 'fgrid3');
+    for (i = 0; i < 3; i++) stripRow.appendChild(fField('顶部小字 ' + (i + 1), fText(strip, i, sync)));
+    g.appendChild(stripRow);
+    g.appendChild(fField('主标题大字母', fText(hero, 'letters', sync), '例如 LXYZI,前台会拆成一个个字母展示'));
+    var seals = ensureArr(hero, 'seals');
+    var sealRow = el('div', 'fgrid2');
+    sealRow.appendChild(fField('年份印章 · 左', fText(seals, 0, sync)));
+    sealRow.appendChild(fField('年份印章 · 右', fText(seals, 1, sync)));
+    g.appendChild(sealRow);
+    var words = ensureArr(hero, 'words');
+    var wRow = el('div', 'fgrid3');
+    for (i = 0; i < 3; i++) wRow.appendChild(fField('红色区大字 ' + (i + 1), fText(words, i, sync)));
+    g.appendChild(wRow);
+    box.appendChild(g);
+
+    g = fGroup('定位段(我是谁)');
+    var pos = ensureObj(d, 'position');
+    g.appendChild(fField('小字', fText(pos, 'kicker', sync)));
+    g.appendChild(fField('正文', fArea(pos, 'text', sync)));
+    box.appendChild(g);
+
+    g = fGroup('宣言(按行编辑,可标红)');
+    var man = ensureObj(d, 'manifesto');
+    g.appendChild(fField('小字', fText(man, 'kicker', sync)));
+    manifestoEditor(g, man, sync);
+    box.appendChild(g);
+
+    g = fGroup('服务四项');
+    var sv = ensureObj(d, 'services');
+    var svRows = ensureArr(sv, 'rows');
+    g.appendChild(fField('标题', fText(sv, 'title', sync)));
+    g.appendChild(fField('一句话介绍', fText(sv, 'lead', sync)));
+    g.appendChild(listEditor({
+      items: svRows, itemName: '服务', addLabel: '+ 添加一项服务', sync: sync,
+      makeNew: function () { return { no: '0' + (svRows.length + 1), cn: '新服务', en: '', price: '', subject: '', desc: '' }; },
+      render: function (body, it) {
+        var r1 = el('div', 'fgrid2');
+        r1.appendChild(fField('序号', fText(it, 'no', sync)));
+        r1.appendChild(fField('价格', fText(it, 'price', sync)));
+        body.appendChild(r1);
+        var r2 = el('div', 'fgrid2');
+        r2.appendChild(fField('中文名', fText(it, 'cn', sync)));
+        r2.appendChild(fField('英文名', fText(it, 'en', sync)));
+        body.appendChild(r2);
+        body.appendChild(fField('咨询主题(点「咨询」时带给邮箱的标题)', fText(it, 'subject', sync)));
+        body.appendChild(fField('说明', fArea(it, 'desc', sync)));
+      }
+    }));
+    box.appendChild(g);
+
+    g = fGroup('精选作品(首页六条)');
+    var sel = ensureObj(d, 'selected');
+    g.appendChild(fField('标题', fText(sel, 'title', sync)));
+    g.appendChild(fField('右侧小字', fText(sel, 'meta', sync)));
+    g.appendChild(listEditor({
+      items: ensureArr(sel, 'items'), itemName: '作品', addLabel: '+ 添加一条', sync: sync,
+      makeNew: function () { return { title: '新作品', tags: '', cover: '', target: '' }; },
+      render: function (body, it) {
+        body.appendChild(fField('标题', fText(it, 'title', sync)));
+        body.appendChild(fField('标签(如 + DESIGN + BRANDING)', fText(it, 'tags', sync)));
+        body.appendChild(fField('封面图', imageField(it, 'cover', sync)));
+        body.appendChild(fField('点击后跳转的作品 id', fText(it, 'target', sync), '对应「作品」页里某个项目的 id'));
+      }
+    }));
+    box.appendChild(g);
+
+    g = fGroup('合作流程');
+    var pr = ensureObj(d, 'process');
+    var steps = ensureArr(pr, 'steps');
+    g.appendChild(fField('标题', fText(pr, 'title', sync)));
+    g.appendChild(fField('小字', fText(pr, 'kicker', sync)));
+    g.appendChild(listEditor({
+      items: steps, itemName: '步骤', addLabel: '+ 添加一步', sync: sync,
+      makeNew: function () { return { no: '0' + (steps.length + 1), title: '新步骤', en: '', desc: '' }; },
+      render: function (body, it) {
+        var r = el('div', 'fgrid2');
+        r.appendChild(fField('序号', fText(it, 'no', sync)));
+        r.appendChild(fField('英文名', fText(it, 'en', sync)));
+        body.appendChild(r);
+        body.appendChild(fField('步骤名', fText(it, 'title', sync)));
+        body.appendChild(fField('说明', fArea(it, 'desc', sync)));
+      }
+    }));
+    box.appendChild(g);
+
+    g = fGroup('有项目想聊聊(底部 CTA)');
+    g.appendChild(fField('标题', fText(av, 'title', sync)));
+    g.appendChild(fField('说明', fArea(av, 'desc', sync)));
+    g.appendChild(fField('票根编号', fText(av, 'no', sync)));
+    box.appendChild(g);
+  }
+
+  /* ---------- 作品 ---------- */
+  function buildWorksForm(box, d, sync) {
+    var g = fGroup('页头');
+    var hd = ensureObj(d, 'head');
+    g.appendChild(fField('小字', fText(hd, 'kicker', sync)));
+    var r = el('div', 'fgrid2');
+    r.appendChild(fField('中文标题', fText(hd, 'cn', sync)));
+    r.appendChild(fField('英文标题', fText(hd, 'en', sync)));
+    g.appendChild(r);
+    g.appendChild(fField('侧边统计小字', fText(hd, 'side', sync)));
+    box.appendChild(g);
+
+    g = fGroup('筛选词');
+    g.appendChild(fField('筛选词', fLines(
+      function () { return ensureArr(d, 'filters').join(', '); },
+      function (v) { d.filters = v.split(/[,，]/).map(function (s) { return s.trim(); }).filter(Boolean); },
+      sync
+    ), '用逗号分隔,会出现在作品页顶部的筛选栏'));
+    box.appendChild(g);
+
+    g = fGroup('项目列表');
+    g.appendChild(listEditor({
+      items: ensureArr(d, 'projects'), itemName: '项目', addLabel: '+ 添加一条', sync: sync,
+      makeNew: function () {
+        return {
+          id: 'work-' + Date.now().toString(36), title: '新项目', year: '2026', role: '',
+          deliverables: '', desc: '', tags: '', cats: '设计', cover: '', ratio: 'r45',
+          ph: { a: '#2b2b30', b: '#45454c' }
+        };
+      },
+      render: function (body, p) {
+        var r1 = el('div', 'fgrid2');
+        r1.appendChild(fField('id(英文小写短横线,链接用)', fText(p, 'id', sync)));
+        r1.appendChild(fField('年份', fText(p, 'year', sync)));
+        body.appendChild(r1);
+        body.appendChild(fField('标题', fText(p, 'title', sync)));
+        var r2 = el('div', 'fgrid2');
+        r2.appendChild(fField('分类(空格分隔)', fText(p, 'cats', sync), '如:设计 开发,对应上面的筛选词'));
+        r2.appendChild(fField('标签', fText(p, 'tags', sync), '如 + DESIGN + BRANDING'));
+        body.appendChild(r2);
+        var r3 = el('div', 'fgrid2');
+        r3.appendChild(fField('我的角色', fText(p, 'role', sync)));
+        r3.appendChild(fField('交付内容', fText(p, 'deliverables', sync)));
+        body.appendChild(r3);
+        body.appendChild(fField('一句话描述', fArea(p, 'desc', sync)));
+        body.appendChild(fField('封面图', imageField(p, 'cover', sync, '留空 → 前台自动用右边的占位渐变色')));
+        var r4 = el('div', 'fgrid2');
+        r4.appendChild(fField('图片比例', ratioField(p, sync)));
+        var ph = ensureObj(p, 'ph');
+        var cw = el('div', 'fcolorrow');
+        cw.appendChild(colorField(ph, 'a', sync));
+        cw.appendChild(colorField(ph, 'b', sync));
+        r4.appendChild(fField('占位渐变(无封面时用)', cw));
+        body.appendChild(r4);
+      }
+    }));
+    box.appendChild(g);
+
+    g = fGroup('结尾「聊聊你的项目」');
+    var en = ensureObj(d, 'end');
+    g.appendChild(fField('小字', fText(en, 'kicker', sync)));
+    g.appendChild(fField('标题', fText(en, 'title', sync)));
+    g.appendChild(fField('按钮文字', fText(en, 'cta', sync)));
+    g.appendChild(fField('票根编号', fText(en, 'no', sync)));
+    box.appendChild(g);
+
+    g = fGroup('联系方式 & 全站小字');
+    g.appendChild(fField('邮箱', fText(en, 'email', sync)));
+    g.appendChild(fField('微信号', fText(en, 'wechat', sync)));
+    g.appendChild(fField('页脚一行小字', fText(d, 'footer', sync)));
+    g.appendChild(fField('底部滚动标语', fText(d, 'marquee', sync)));
+    box.appendChild(g);
+  }
+
+  /* ---------- 关于 ---------- */
+  function buildAboutForm(box, d, sync) {
+    var g = fGroup('肖像');
+    var pt = ensureObj(d, 'portrait');
+    g.appendChild(fField('编号小字', fText(pt, 'id', sync)));
+    g.appendChild(fField('照片', imageField(pt, 'img', sync)));
+    g.appendChild(fField('照片下方说明', fText(pt, 'caption', sync)));
+    g.appendChild(fField('替代文本(图片加载失败/读屏时用)', fText(pt, 'alt', sync)));
+    box.appendChild(g);
+
+    g = fGroup('大标题');
+    var tt = ensureObj(d, 'title');
+    g.appendChild(fField('前缀', fText(tt, 'pre', sync)));
+    g.appendChild(fField('姓名(红色)', fText(tt, 'name', sync)));
+    g.appendChild(fField('后缀', fText(tt, 'post', sync)));
+    box.appendChild(g);
+
+    g = fGroup('自我介绍');
+    g.appendChild(fField('段落(每行一段)', fLines(
+      function () { return ensureArr(d, 'paras').join('\n'); },
+      function (v) { d.paras = splitLines(v); },
+      sync, '110px'
+    )));
+    box.appendChild(g);
+
+    g = fGroup('当前状态');
+    var st = ensureObj(d, 'status');
+    g.appendChild(fField('状态一行', fText(st, 'open', sync)));
+    g.appendChild(fField('小标签', fText(st, 'tags', sync)));
+    box.appendChild(g);
+
+    g = fGroup('三栏能力');
+    g.appendChild(fField('区块标题', fText(d, 'capsTitle', sync)));
+    g.appendChild(listEditor({
+      items: ensureArr(d, 'caps'), itemName: '能力栏', addLabel: '+ 添加一栏', sync: sync,
+      makeNew: function () { return { key: 'D — NEW', title: '新能力', items: [] }; },
+      render: function (body, c) {
+        var r = el('div', 'fgrid2');
+        r.appendChild(fField('小字(kicker)', fText(c, 'key', sync)));
+        r.appendChild(fField('栏目标题', fText(c, 'title', sync)));
+        body.appendChild(r);
+        body.appendChild(fField('条目(每行一条)', fLines(
+          function () { return (Array.isArray(c.items) ? c.items : []).join('\n'); },
+          function (v) { c.items = splitLines(v); },
+          sync
+        )));
+      }
+    }));
+    box.appendChild(g);
+
+    g = fGroup('常用工具');
+    g.appendChild(fField('一行文字', fText(d, 'tools', sync)));
+    box.appendChild(g);
+
+    g = fGroup('时间线');
+    g.appendChild(fField('区块标题', fText(d, 'timelineTitle', sync)));
+    g.appendChild(fField('经历(每行:年份|内容)', fLines(
+      function () {
+        return ensureArr(d, 'timeline').map(function (t) { return (t.year || '') + '|' + (t.text || ''); }).join('\n');
+      },
+      function (v) {
+        d.timeline = splitLines(v).map(function (l) {
+          var p = l.split('|');
+          return { year: (p[0] || '').trim(), text: (p.slice(1).join('|') || '').trim() };
+        });
+      },
+      sync, '110px'
+    )));
+    box.appendChild(g);
+
+    g = fGroup('联系区');
+    var ct = ensureObj(d, 'contact');
+    g.appendChild(fField('标题', fText(ct, 'title', sync)));
+    g.appendChild(fField('说明', fText(ct, 'lead', sync)));
+    g.appendChild(fField('邮箱', fText(ct, 'email', sync)));
+    g.appendChild(fField('微信号', fText(ct, 'wechat', sync)));
+    g.appendChild(fField('社交账号', fText(ct, 'social', sync)));
+    g.appendChild(fField('小提示', fText(ct, 'hint', sync)));
+    box.appendChild(g);
+
+    g = fGroup('全站小字');
+    g.appendChild(fField('页脚一行小字', fText(d, 'footer', sync)));
+    g.appendChild(fField('底部滚动标语', fText(d, 'marquee', sync)));
+    box.appendChild(g);
+  }
+
+  /* ---------- 碎碎念 ---------- */
+  function buildNotesForm(box, d, sync) {
+    var g = fGroup('页面文案');
+    var hd = ensureObj(d, 'heading');
+    g.appendChild(fField('标题', fText(hd, 'title', sync)));
+    g.appendChild(fField('副标题', fText(hd, 'sub', sync)));
+    g.appendChild(fField('匿名提示(标题旁边)', fText(hd, 'anon', sync)));
+    g.appendChild(fField('小字', fText(hd, 'kicker', sync)));
+    box.appendChild(g);
+
+    g = fGroup('留言输入框');
+    g.appendChild(fField('输入框下方提示', fText(d, 'notice', sync)));
+    box.appendChild(g);
+
+    g = fGroup('我的碎片(首屏漂浮的那些)');
+    g.appendChild(fField('每行一条:内容|日期|是否我', fLines(
+      function () {
+        return ensureArr(d, 'seeds').map(function (s) {
+          return (s.text || '') + '|' + (s.ts || '') + '|' + (s.mine ? '是' : '否');
+        }).join('\n');
+      },
+      function (v) {
+        d.seeds = splitLines(v).map(function (l) {
+          var p = l.split('|');
+          var s = { text: (p[0] || '').trim(), ts: (p[1] || '').trim() };
+          if (/^(1|true|是|mine|我)$/i.test((p[2] || '').trim())) s.mine = true;
+          return s;
+        });
+      },
+      sync, '140px'
+    ), '「是否我」填 是/否;是我写的,前台会显示成红色碎片'));
+    box.appendChild(g);
+
+    g = fGroup('REWIND(回首页按钮)');
+    var rw = ensureObj(d, 'rewind');
+    g.appendChild(fField('中文', fText(rw, 'title', sync)));
+    g.appendChild(fField('英文', fText(rw, 'en', sync)));
+    g.appendChild(fField('循环小字', fText(rw, 'loop', sync)));
+    box.appendChild(g);
+
+    g = fGroup('全站小字');
+    g.appendChild(fField('页脚一行小字', fText(d, 'footer', sync)));
+    box.appendChild(g);
+  }
+
+  var FORM_BUILDERS = {
+    index: buildIndexForm,
+    works: buildWorksForm,
+    about: buildAboutForm,
+    notes: buildNotesForm
+  };
+
+  // 表单 -> JSON:每次输入实时更新折叠区里的 JSON
+  function syncJson(id) {
+    var refs = panelRefs[id];
+    if (!refs || !formState[id]) return;
+    refs.ta.value = JSON.stringify(formState[id], null, 2);
+    refs.ta.classList.remove('invalid');
+  }
+  function buildForm(id) {
+    var refs = panelRefs[id];
+    var builder = FORM_BUILDERS[id];
+    if (!refs || !refs.formBox || !builder || !formState[id]) return;
+    refs.formBox.textContent = '';
+    builder(refs.formBox, formState[id], function () { syncJson(id); });
+  }
+  // JSON -> 表单:解析折叠区 JSON 并重建表单(加载/保存/手动点按钮都会走这里)
+  function rebuildForm(id, silent) {
+    var refs = panelRefs[id];
+    if (!refs) return false;
+    try {
+      var v = JSON.parse(refs.ta.value);
+      if (!v || typeof v !== 'object' || Array.isArray(v)) throw new Error('顶层必须是 JSON 对象 {}');
+      formState[id] = v;
+    } catch (e) {
+      if (!silent) {
+        refs.ta.classList.add('invalid');
+        setStatus(refs.status, 'JSON 无效,无法重建表单:' + e.message, 'bad');
+      }
+      return false;
+    }
+    refs.ta.classList.remove('invalid');
+    buildForm(id);
+    return true;
+  }
+
+  // 调试/自检用句柄(不含任何凭据)
+  window.__admin = { panelRefs: panelRefs, formState: formState, rebuildForm: rebuildForm, syncJson: syncJson };
 
   function previewUrl(id, bust) {
     var refs = panelRefs[id];
@@ -489,6 +1159,7 @@ textarea.json.invalid{border-color:var(--red);box-shadow:0 0 0 1px var(--red);}
       .then(function (d) {
         refs.ta.value = JSON.stringify(d, null, 2);
         refs.ta.classList.remove('invalid');
+        rebuildForm(id, true);
         setStatus(refs.status, manual ? '已重新加载 ✓' : '已加载 ✓', 'ok');
       })
       .catch(function (e) {
@@ -505,6 +1176,7 @@ textarea.json.invalid{border-color:var(--red);box-shadow:0 0 0 1px var(--red);}
       .then(function (d) {
         refs.ta.value = JSON.stringify(d, null, 2);
         refs.ta.classList.remove('invalid');
+        rebuildForm(id, true);
         setStatus(refs.status, '已载入默认内容(未保存,点「保存」生效)', 'ok');
       })
       .catch(function (e) {
@@ -529,6 +1201,7 @@ textarea.json.invalid{border-color:var(--red);box-shadow:0 0 0 1px var(--red);}
     }).then(function (d) {
       refs.saveBtn.disabled = false;
       refs.ta.value = JSON.stringify(d, null, 2);
+      rebuildForm(id, true);
       refreshPreview(id, false);
       setStatus(refs.status, '已保存 ✓ 右侧预览已刷新', 'ok');
     }).catch(function (e) {
