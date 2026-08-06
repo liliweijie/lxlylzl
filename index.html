@@ -1,648 +1,393 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>liweijie · 李伟杰 — 独立设计师 & 创意开发者</title>
-<style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-html, body {
-  width: 100%; height: 100%;
-  overflow: hidden;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif;
-  background: #0a0a0a;
-  color: #fff;
-}
-
-/* ===== 全屏区块 ===== */
-.fs-section {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 40px;
-  transition: transform 0.9s cubic-bezier(0.65, 0, 0.35, 1), opacity 0.6s ease;
-  will-change: transform, opacity;
-  overflow: hidden;
-}
-.fs-section.up { transform: translateY(-100%); opacity: 0; pointer-events: none; }
-.fs-section.down { transform: translateY(100%); opacity: 0; pointer-events: none; }
-.fs-section.active { transform: translateY(0); opacity: 1; z-index: 2; pointer-events: auto; }
-
-/* ===== 导航 ===== */
-.fs-nav {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 24px 40px;
-  z-index: 100;
-  pointer-events: none;
-}
-.fs-nav a, .fs-nav span {
-  color: rgba(255,255,255,0.4);
-  text-decoration: none;
-  font-size: 13px;
-  font-weight: 500;
-  pointer-events: auto;
-  cursor: pointer;
-  transition: color 0.25s;
-  letter-spacing: 1px;
-}
-.fs-nav a:hover, .fs-nav span:hover, .fs-nav .nav-active { color: #fff; }
-.fs-logo { font-size: 16px !important; font-weight: 600 !important; letter-spacing: 3px !important; color: #fff !important; }
-
-/* ===== 右侧圆点指示器 ===== */
-.fs-dots {
-  position: fixed;
-  right: 32px;
-  top: 50%;
-  transform: translateY(-50%);
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  z-index: 100;
-}
-.fs-dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.15);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-.fs-dot.active {
-  background: #fff;
-  box-shadow: 0 0 10px rgba(255,255,255,0.3);
-}
-
-/* ===== 页码 ===== */
-.page-num {
-  position: fixed;
-  bottom: 28px;
-  left: 40px;
-  font-family: 'SF Mono', Monaco, monospace;
-  font-size: 11px;
-  color: rgba(255,255,255,0.2);
-  z-index: 100;
-  letter-spacing: 2px;
-}
-
-/* ===== 滚动提示 ===== */
-.scroll-hint {
-  position: fixed;
-  bottom: 28px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 11px;
-  color: rgba(255,255,255,0.2);
-  z-index: 100;
-  letter-spacing: 2px;
-  animation: pulse 2.5s ease infinite;
-  pointer-events: none;
-}
-@keyframes pulse {
-  0%, 100% { opacity: 0.15; }
-  50% { opacity: 0.5; }
-}
-
-/* ==================== 首页 ==================== */
-.page-home {
-  background: #0a0a0a;
-  text-align: center;
-}
-.home-code {
-  font-family: 'SF Mono', Monaco, monospace;
-  font-size: 11px;
-  color: rgba(255,255,255,0.25);
-  letter-spacing: 5px;
-  margin-bottom: 28px;
-}
-.home-title {
-  font-size: clamp(32px, 8vw, 72px);
-  font-weight: 600;
-  letter-spacing: 8px;
-  margin-bottom: 20px;
-  line-height: 1.05;
-}
-.home-sub {
-  font-size: 13px;
-  color: rgba(255,255,255,0.35);
-  letter-spacing: 3px;
-  margin-bottom: 48px;
-}
-.home-tags {
-  display: flex;
-  gap: 16px;
-  justify-content: center;
-  margin-bottom: 56px;
-  flex-wrap: wrap;
-}
-.home-tag {
-  font-size: 12px;
-  padding: 8px 20px;
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 24px;
-  color: rgba(255,255,255,0.5);
-  transition: all 0.3s;
-}
-.home-tag:hover {
-  border-color: rgba(255,255,255,0.3);
-  color: #fff;
-}
-.home-desc {
-  font-size: 14px;
-  color: rgba(255,255,255,0.4);
-  max-width: 420px;
-  line-height: 1.8;
-}
-
-/* ==================== 作品页 ==================== */
-.page-works {
-  background: #0a0a0a;
-  padding: 80px 32px 32px;
-}
-.works-header {
-  position: absolute;
-  top: 80px; left: 40px;
-  z-index: 10;
-}
-.works-header h2 {
-  font-size: 22px;
-  font-weight: 600;
-  margin-bottom: 6px;
-  letter-spacing: 1px;
-}
-.works-header p {
-  font-size: 12px;
-  color: rgba(255,255,255,0.3);
-  letter-spacing: 1px;
-}
-.works-grid {
-  display: flex;
-  gap: 14px;
-  width: 100%;
-  height: 100%;
-  padding-top: 40px;
-}
-.works-col {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  overflow: hidden;
-}
-.w-card {
-  border-radius: 10px;
-  overflow: hidden;
-  border: 1px solid rgba(255,255,255,0.06);
-  background: #111;
-  flex-shrink: 0;
-  transition: transform 0.25s, box-shadow 0.25s;
-  cursor: pointer;
-}
-.w-card:hover {
-  transform: translateY(-3px) scale(1.01);
-  box-shadow: 0 12px 32px rgba(0,0,0,0.5);
-}
-.w-card .w-img {
-  width: 100%;
-  aspect-ratio: 4/5;
-  background: linear-gradient(135deg, #1a1a2e, #16213e);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  color: rgba(255,255,255,0.25);
-  position: relative;
-  overflow: hidden;
-}
-.w-card .w-img video {
-  width: 100%; height: 100%;
-  object-fit: cover;
-}
-.w-card .w-info { padding: 10px 12px; }
-.w-card .w-title { font-size: 13px; font-weight: 500; margin-bottom: 3px; }
-.w-card .w-tags { font-size: 10px; color: rgba(255,255,255,0.35); }
-
-/* ==================== 关于页 ==================== */
-.page-about {
-  background: #0a0a0a;
-  flex-direction: row;
-  gap: 60px;
-  padding: 80px 48px;
-}
-.about-left {
-  flex: 0 0 32%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-.about-portrait {
-  width: 100%;
-  aspect-ratio: 3/4;
-  background: linear-gradient(135deg, #141414, #1f1f1f);
-  border-radius: 10px;
-  border: 1px solid rgba(255,255,255,0.06);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: rgba(255,255,255,0.15);
-  font-size: 12px;
-  margin-bottom: 20px;
-  overflow: hidden;
-}
-.about-portrait img {
-  width: 100%; height: 100%;
-  object-fit: cover;
-}
-.about-meta {
-  font-size: 11px;
-  color: rgba(255,255,255,0.25);
-  letter-spacing: 1px;
-  line-height: 1.8;
-}
-.about-right {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  max-width: 600px;
-}
-.about-label {
-  font-size: 11px;
-  color: rgba(255,255,255,0.3);
-  letter-spacing: 3px;
-  margin-bottom: 20px;
-}
-.about-title {
-  font-size: clamp(24px, 4vw, 36px);
-  font-weight: 600;
-  margin-bottom: 24px;
-  line-height: 1.2;
-}
-.about-body {
-  font-size: 14px;
-  color: rgba(255,255,255,0.5);
-  line-height: 1.8;
-  margin-bottom: 40px;
-}
-.about-skills {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
-.skill-group h4 {
-  font-size: 12px;
-  font-weight: 600;
-  margin-bottom: 10px;
-  color: rgba(255,255,255,0.7);
-  letter-spacing: 1px;
-}
-.skill-group ul {
-  list-style: none;
-  font-size: 12px;
-  color: rgba(255,255,255,0.35);
-  line-height: 2;
-}
-
-/* ==================== 联系页 ==================== */
-.page-contact {
-  background: #0a0a0a;
-  text-align: center;
-}
-.contact-label {
-  font-size: 11px;
-  color: rgba(255,255,255,0.25);
-  letter-spacing: 4px;
-  margin-bottom: 28px;
-}
-.contact-title {
-  font-size: clamp(28px, 5vw, 48px);
-  font-weight: 600;
-  margin-bottom: 20px;
-}
-.contact-sub {
-  font-size: 15px;
-  color: rgba(255,255,255,0.4);
-  margin-bottom: 56px;
-  line-height: 1.7;
-}
-.contact-email {
-  font-size: 18px;
-  font-weight: 500;
-  letter-spacing: 1px;
-  padding: 16px 40px;
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 48px;
-  display: inline-block;
-  margin-bottom: 48px;
-  transition: all 0.3s;
-  cursor: pointer;
-  color: #fff;
-  text-decoration: none;
-}
-.contact-email:hover {
-  border-color: rgba(255,255,255,0.35);
-  background: rgba(255,255,255,0.04);
-}
-.contact-links {
-  display: flex;
-  gap: 28px;
-  justify-content: center;
-}
-.contact-links a {
-  color: rgba(255,255,255,0.3);
-  text-decoration: none;
-  font-size: 13px;
-  transition: color 0.25s;
-  letter-spacing: 1px;
-}
-.contact-links a:hover { color: #fff; }
-
-/* ==================== 响应式 ==================== */
-@media (max-width: 768px) {
-  .page-about { flex-direction: column; gap: 32px; padding: 80px 24px 24px; }
-  .about-left { flex: none; width: 100%; }
-  .about-portrait { aspect-ratio: 16/9; }
-  .about-skills { grid-template-columns: 1fr; }
-  .works-grid { flex-direction: column; }
-  .fs-nav { padding: 20px 24px; }
-  .fs-dots { right: 16px; gap: 10px; }
-  .home-title { letter-spacing: 4px; }
-}
-</style>
-</head>
-<body>
-
-<!-- 导航 -->
-<div class="fs-nav">
-  <a href="/" class="fs-logo" onclick="goTo(0); return false;">LXLYLZL</a>
-  <div style="display:flex;gap:28px;">
-    <span onclick="goTo(0)" id="nav-0">首页</span>
-    <span onclick="goTo(1)" id="nav-1">作品</span>
-    <span onclick="goTo(2)" id="nav-2">关于</span>
-    <span onclick="goTo(3)" id="nav-3">联系</span>
-  </div>
-</div>
-
-<!-- 圆点指示器 -->
-<div class="fs-dots">
-  <div class="fs-dot active" onclick="goTo(0)"></div>
-  <div class="fs-dot" onclick="goTo(1)"></div>
-  <div class="fs-dot" onclick="goTo(2)"></div>
-  <div class="fs-dot" onclick="goTo(3)"></div>
-</div>
-
-<!-- 页码 -->
-<div class="page-num" id="pageNum">01 / 04</div>
-
-<!-- 滚动提示 -->
-<div class="scroll-hint" id="scrollHint">SCROLL ↓</div>
-
-<!-- ==================== 首页 ==================== -->
-<div class="fs-section page-home active" id="sec-0">
-  <div class="home-code">LX1993YZ2026I</div>
-  <div class="home-title">LIWEIJIE</div>
-  <div class="home-sub">BE DIFFERENT AROUND IT · LET'S START AND WORK TOGETHER</div>
-  <div class="home-tags">
-    <div class="home-tag">DESIGN</div>
-    <div class="home-tag">DEV</div>
-    <div class="home-tag">BRAND</div>
-  </div>
-  <div class="home-desc">
-    独立设计师 & 创意开发者 · 深圳福田。<br>
-    从一张海报到一个完整的站，一个人也能是一支小队。
-  </div>
-</div>
-
-<!-- ==================== 作品页 ==================== -->
-<div class="fs-section page-works down" id="sec-1">
-  <div class="works-header">
-    <h2>SELECTED WORKS</h2>
-    <p>06 / 14 PROJECTS · 点击任意作品直达详情 →</p>
-  </div>
-  <div class="works-grid">
-    <div class="works-col" id="wcol1">
-      <div class="w-card" onclick="window.location.href='/works/'">
-        <div class="w-img">
-          <video muted loop playsinline autoplay poster="">
-            <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4">
-          </video>
-        </div>
-        <div class="w-info"><div class="w-title">梦境枷锁</div><div class="w-tags">剧本 · 悬疑 · 科幻</div></div>
-      </div>
-      <div class="w-card" onclick="window.location.href='/works/'">
-        <div class="w-img" style="background:linear-gradient(135deg,#1a237e,#3949ab)"></div>
-        <div class="w-info"><div class="w-title">Central on Air</div><div class="w-tags">Design · Dev · Branding</div></div>
-      </div>
-      <div class="w-card" onclick="window.location.href='/works/'">
-        <div class="w-img" style="background:linear-gradient(135deg,#e65100,#ff9800)"></div>
-        <div class="w-info"><div class="w-title">HŌM</div><div class="w-tags">Design · Dev · Packaging</div></div>
-      </div>
-    </div>
-    <div class="works-col" id="wcol2">
-      <div class="w-card" onclick="window.location.href='/works/'">
-        <div class="w-img" style="background:linear-gradient(135deg,#2962ff,#448aff)"></div>
-        <div class="w-info"><div class="w-title">Patch System</div><div class="w-tags">Design · Dev</div></div>
-      </div>
-      <div class="w-card" onclick="window.location.href='/works/'">
-        <div class="w-img" style="background:linear-gradient(135deg,#f9a825,#cddc39,#9c27b0)"></div>
-        <div class="w-info"><div class="w-title">ZaZa</div><div class="w-tags">Design · Branding</div></div>
-      </div>
-      <div class="w-card" onclick="window.location.href='/works/'">
-        <div class="w-img" style="background:linear-gradient(135deg,#5d4037,#8d6e63)"></div>
-        <div class="w-info"><div class="w-title">Radical Face</div><div class="w-tags">Design · Dev</div></div>
-      </div>
-      <div class="w-card" onclick="window.location.href='/works/'">
-        <div class="w-img">
-          <video muted loop playsinline autoplay poster="">
-            <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
-          </video>
-        </div>
-        <div class="w-info"><div class="w-title">像素冒险</div><div class="w-tags">游戏 · 像素风</div></div>
-      </div>
-    </div>
-    <div class="works-col" id="wcol3">
-      <div class="w-card" onclick="window.location.href='/works/'">
-        <div class="w-img" style="background:linear-gradient(135deg,#b71c1c,#f44336)"></div>
-        <div class="w-info"><div class="w-title">Unis Footwear</div><div class="w-tags">Design · Dev</div></div>
-      </div>
-      <div class="w-card" onclick="window.location.href='/works/'">
-        <div class="w-img" style="background:linear-gradient(135deg,#004d40,#00695c)"></div>
-        <div class="w-info"><div class="w-title">Overmind</div><div class="w-tags">Design · Branding</div></div>
-      </div>
-      <div class="w-card" onclick="window.location.href='/works/'">
-        <div class="w-img" style="background:linear-gradient(135deg,#4a148c,#7b1fa2)"></div>
-        <div class="w-info"><div class="w-title">Lens</div><div class="w-tags">Design · Branding</div></div>
-      </div>
-      <div class="w-card" onclick="window.location.href='/works/'">
-        <div class="w-img">
-          <video muted loop playsinline autoplay poster="">
-            <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" type="video/mp4">
-          </video>
-        </div>
-        <div class="w-info"><div class="w-title">语音助手</div><div class="w-tags">AI · 语音 · 交互</div></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ==================== 关于页 ==================== -->
-<div class="fs-section page-about down" id="sec-2">
-  <div class="about-left">
-    <div class="about-portrait">
-      <!-- 替换为你的肖像图 -->
-      <span style="color:rgba(255,255,255,0.15)">[PORTRAIT]</span>
-    </div>
-    <div class="about-meta">
-      LI WEIJIE — DESIGNER / DEVELOPER<br>
-      PORTFOLIO · FUTIAN STUDIO<br>
-      N° 001 — 2026
-    </div>
-  </div>
-  <div class="about-right">
-    <div class="about-label">ABOUT / 001</div>
-    <div class="about-title">你好，我是李伟杰。</div>
-    <div class="about-body">
-      独立设计师 & 创意开发者，base 深圳福田。<br><br>
-      做品牌视觉出身，后来自己学会了写代码——所以现在从我手里出去的东西，设计稿即成品：海报、VI、网站、动效，一个人闭环。<br><br>
-      相信三件事：不确定唯一，争议和多元解读；好看和好用不该是选择题；小团队 + AI 工作流，可以做出超规格的东西。
-    </div>
-    <div class="about-skills">
-      <div class="skill-group">
-        <h4>A — DESIGN</h4>
-        <ul>
-          <li>品牌识别 / VI</li>
-          <li>海报与排版</li>
-          <li>包装</li>
-          <li>字体与色彩</li>
-        </ul>
-      </div>
-      <div class="skill-group">
-        <h4>B — DEV</h4>
-        <ul>
-          <li>React / Next</li>
-          <li>GSAP / Framer</li>
-          <li>Three.js / WebGL</li>
-          <li>性能与可访问性</li>
-        </ul>
-      </div>
-      <div class="skill-group">
-        <h4>C — FLOW</h4>
-        <ul>
-          <li>Figma → 代码</li>
-          <li>AI 辅助视觉</li>
-          <li>3–4 天同步</li>
-          <li>源文件全交付</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ==================== 联系页 ==================== -->
-<div class="fs-section page-contact down" id="sec-3">
-  <div class="contact-label">NO. CONTACT-01</div>
-  <div class="contact-title">聊聊你的项目</div>
-  <div class="contact-sub">
-    有需求直接发，没需求也可以先认识一下。<br>
-    24H 内回复。
-  </div>
-  <a href="mailto:hello@lxlylzl.xyz" class="contact-email">hello@lxlylzl.xyz</a>
-  <div class="contact-links">
-    <a href="#">WeChat</a>
-    <a href="https://github.com/liliweijie" target="_blank">GitHub</a>
-    <a href="#">Dribbble</a>
-    <a href="#">X / Twitter</a>
-  </div>
-</div>
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>liweijie · 李伟杰 — 独立设计师 &amp; 创意开发者 · 深圳福田</title>
+<meta name="description" content="李伟杰(liweijie),独立设计师 &amp; 创意开发者,base 深圳福田。品牌视觉、网站体验、创意前端与 AI 工作流,一个人闭环。2026 Q1 档期开放中。">
+<link rel="canonical" href="https://lxlylzl.xyz/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="liweijie">
+<meta property="og:title" content="liweijie · 李伟杰 — 独立设计师 &amp; 创意开发者">
+<meta property="og:description" content="品牌视觉 / 网站体验 / 创意前端 / AI 工作流。深圳福田,2026 Q1 档期开放中。">
+<meta property="og:url" content="https://lxlylzl.xyz/">
+<meta property="og:image" content="https://lxlylzl.xyz/assets/work-central-on-air.webp">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Cormorant+Garamond:ital,wght@1,500&amp;family=JetBrains+Mono:wght@400;500&amp;family=Noto+Sans+SC:wght@400;500;700;900&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/site.css">
 <script>
-(function() {
-  let current = 0;
-  const total = 4;
-  let isAnimating = false;
-  const sections = [];
-  for (let i = 0; i < total; i++) sections.push(document.getElementById('sec-' + i));
-
-  function update() {
-    for (let i = 0; i < total; i++) {
-      const sec = sections[i];
-      const dot = document.querySelectorAll('.fs-dot')[i];
-      const nav = document.getElementById('nav-' + i);
-
-      sec.classList.remove('active', 'up', 'down');
-      dot.classList.remove('active');
-      if (nav) nav.classList.remove('nav-active');
-
-      if (i === current) {
-        sec.classList.add('active');
-        dot.classList.add('active');
-        if (nav) nav.classList.add('nav-active');
-      } else if (i < current) {
-        sec.classList.add('up');
-      } else {
-        sec.classList.add('down');
-      }
-    }
-    document.getElementById('pageNum').textContent = '0' + (current + 1) + ' / 0' + total;
-    document.getElementById('scrollHint').style.display = current === total - 1 ? 'none' : 'block';
-  }
-
-  window.goTo = function(index) {
-    if (isAnimating || index === current || index < 0 || index >= total) return;
-    isAnimating = true;
-    current = index;
-    update();
-    setTimeout(() => { isAnimating = false; }, 900);
-  };
-
-  function next() { if (current < total - 1) goTo(current + 1); }
-  function prev() { if (current > 0) goTo(current - 1); }
-
-  // 滚轮（带阈值，防止误触）
-  let wheelAccum = 0;
-  let wheelTimeout = null;
-  window.addEventListener('wheel', (e) => {
-    e.preventDefault();
-    wheelAccum += e.deltaY;
-    if (wheelTimeout) clearTimeout(wheelTimeout);
-    wheelTimeout = setTimeout(() => { wheelAccum = 0; }, 150);
-    if (Math.abs(wheelAccum) > 60) {
-      if (wheelAccum > 0) next();
-      else prev();
-      wheelAccum = 0;
-    }
-  }, { passive: false });
-
-  // 键盘
-  window.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === 'PageDown') next();
-    if (e.key === 'ArrowUp' || e.key === 'ArrowLeft' || e.key === 'PageUp') prev();
-    if (e.key === 'Home') goTo(0);
-    if (e.key === 'End') goTo(total - 1);
-  });
-
-  // 触摸
-  let touchStartY = 0;
-  window.addEventListener('touchstart', (e) => {
-    touchStartY = e.touches[0].clientY;
-  }, { passive: true });
-  window.addEventListener('touchend', (e) => {
-    const delta = touchStartY - e.changedTouches[0].clientY;
-    if (Math.abs(delta) > 50) {
-      if (delta > 0) next();
-      else prev();
-    }
-  }, { passive: true });
-
-  update();
-})();
+(function(){try{
+if(localStorage.getItem('lx:theme')==='light')document.documentElement.classList.add('light');
+var n=JSON.parse(sessionStorage.getItem('lx:nav')||'null');
+if(n&&(Date.now()-n.ts)<8000)document.documentElement.setAttribute('data-nav-dir',String(n.dir));
+}catch(e){}})();
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "李伟杰",
+  "alternateName": "liweijie",
+  "url": "https://lxlylzl.xyz/",
+  "email": "mailto:hello@lxlylzl.xyz",
+  "jobTitle": "独立设计师 & 创意开发者",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "深圳市福田区",
+    "addressCountry": "CN"
+  },
+  "knowsAbout": ["品牌视觉", "网站设计", "创意前端", "React", "GSAP", "AI 工作流"]
+}
+</script>
+</head>
+<body data-page="0">
+<a class="skip-link" href="#main">跳到内容</a>
 
+<header class="nav">
+  <div class="nav__inner">
+    <a class="nav__logo" href="index.html">✳ liweijie</a>
+    <nav class="nav__pills" aria-label="页面导航">
+      <a class="nav__pill" href="index.html" aria-current="page"><span class="pill-cn">首页</span><span class="pill-no">01</span></a>
+      <a class="nav__pill" href="works.html"><span class="pill-cn">作品</span><span class="pill-no">02</span></a>
+      <a class="nav__pill" href="about.html"><span class="pill-cn">关于</span><span class="pill-no">03</span></a>
+      <a class="nav__pill" href="notes.html"><span class="pill-cn">碎碎念</span><span class="pill-no">04</span></a>
+    </nav>
+    <div class="nav__meta">
+      <button class="nav__theme" type="button" aria-label="切换明暗主题">
+        <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <span aria-hidden="true">01/04</span>
+    </div>
+  </div>
+</header>
+
+<div class="peek-rail" aria-hidden="true">
+  <div class="peek-rail__wash"><span>作品 WORKS</span></div>
+  <div class="peek-rail__ticket">
+    <span class="peek-rail__no">02/04</span>
+    <span class="peek-rail__name">作品 · WORKS</span>
+    <span class="peek-rail__barcode" data-barcode="26,18,16"></span>
+    <span class="peek-rail__pct">20%</span>
+  </div>
+</div>
+
+<div class="pull-indicator" aria-hidden="true">
+  <svg width="26" height="26" viewBox="0 0 26 26">
+    <circle class="pull-indicator__track" cx="13" cy="13" r="11"></circle>
+    <circle class="pull-indicator__ring" cx="13" cy="13" r="11" stroke-dasharray="69.115" stroke-dashoffset="69.115"></circle>
+  </svg>
+  <span class="pull-indicator__label">继续下滑 · 进入作品 →</span>
+  <span class="pull-indicator__pct">0%</span>
+</div>
+
+<div class="pull-peek" aria-hidden="true">
+  <span class="pull-peek__name">碎碎念 · NOTES</span>
+  <span class="pull-peek__pct">0%</span>
+</div>
+
+<div class="scanline" aria-hidden="true"></div>
+
+<main id="main">
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero__strip">
+        <span>⊙ LIWEIJIE</span>
+        <span class="arrow-line" aria-hidden="true"></span>
+        <span>PORTFOLIO</span>
+        <span class="arrow-line" aria-hidden="true"></span>
+        <span>DESIGNER ⊙</span>
+      </div>
+    </div>
+
+    <div class="container hero__body">
+      <h1 class="hero__title" aria-label="LXYZI">
+        <span class="hero__letter"><span class="ltr" style="animation-delay:0.15s">L</span></span><span class="hero__letter"><span class="ltr" style="animation-delay:0.22s">X</span><span class="hero__seal" style="animation-delay:1.05s">1993</span></span><span class="hero__letter"><span class="ltr" style="animation-delay:0.29s">Y</span></span><span class="hero__letter"><span class="ltr" style="animation-delay:0.36s">Z</span><span class="hero__seal" style="animation-delay:1.17s">2026</span></span><span class="hero__letter"><span class="ltr" style="animation-delay:0.43s">I</span></span>
+      </h1>
+
+      <div class="hero__barline">
+        <span data-barcode="3,40,30"></span>
+        <span class="tagline">✳ BE DIFFERENT AROUND IT · LET'S START AND WORK TOGETHER ©2026 ✳</span>
+        <span data-barcode="17,40,30"></span>
+      </div>
+
+      <div class="hero__red">
+        <canvas aria-hidden="true"></canvas>
+        <div class="noise" aria-hidden="true"></div>
+        <span class="corner corner--tl" aria-hidden="true">+</span>
+        <span class="corner corner--tr" aria-hidden="true">+</span>
+        <span class="corner corner--bl" aria-hidden="true">+</span>
+        <span class="corner corner--br" aria-hidden="true">+</span>
+        <div class="hero__words">
+          <span class="w">DESIGN</span><span class="x">✳</span><span class="w">AI</span><span class="x">✳</span><span class="w">FUTURE</span>
+        </div>
+      </div>
+
+      <div class="hero__stubs" aria-hidden="true">
+        <div class="stub" style="background:#efb9c8;transform:rotate(-6deg)"><b>#Z4✳30</b>Off→Grid<br>Phase one<span class="foot">✳ Friend</span></div>
+        <div class="stub" style="background:var(--red);transform:rotate(4deg);margin-left:28px"><b>#26✳62</b>Off→Grid<br>Phase one<span class="foot">✳ Friend</span></div>
+        <div class="stub" style="background:var(--paper);transform:rotate(-3deg);margin-left:-12px"><b>#f9✳9F9</b>Off→Grid<br>Phase one<span class="foot">✳ Friend</span></div>
+      </div>
+
+      <div class="hero__offgrid" aria-hidden="true">
+        <div>
+          <p class="og-title">Off<em>→</em>Grid</p>
+          <div class="ruler">
+            <span><i style="height:16px"></i>023</span>
+            <span><i style="height:8px"></i>024</span>
+            <span><i style="height:16px"></i>025</span>
+            <span><i style="height:8px"></i>026</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero__scrollhint" aria-hidden="true">
+        <span class="zh">不确定唯一 · 争议和多元解读</span>
+        <span class="en"><b>↓</b>SCROLL / 下滑探索</span>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="hero__bottombar">
+        <span>㉚ BE DIFFERENT AROUND IT ㉖</span>
+        <span class="mid">FUTIAN SZ</span>
+        <span>DES / DEV / BRAND</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 定位条 ============ -->
+  <section class="section container" style="padding-block:64px">
+    <p class="kicker rv" data-cms="pos-kicker">POSITION / 000</p>
+    <p class="rv" data-cms="pos-text" style="margin-top:16px;font-size:17px;line-height:1.85;max-width:38em;color:var(--paper)">
+      独立设计师 &amp; 创意开发者 · 深圳福田。连接品牌视觉、网站体验、创意前端与 AI 工作流——从一张海报到一个完整的站,一个人也能是一支小队。
+    </p>
+  </section>
+
+  <!-- ============ MANIFESTO ============ -->
+  <section class="manifesto">
+    <div class="noise" aria-hidden="true" style="background-color:var(--red);opacity:0.04"></div>
+    <div class="container">
+      <p class="manifesto__text">
+        <span class="mw" style="transition-delay:0ms">我不做“安全”的</span>
+        <span class="mw" style="transition-delay:80ms">设计。</span><br>
+        <span class="mw" style="transition-delay:160ms">每一个像素</span>
+        <span class="mw" style="transition-delay:240ms">都应该有</span>
+        <span class="mw red" style="transition-delay:320ms">立场</span><br>
+        <span class="mw" style="transition-delay:400ms">每一次点击</span>
+        <span class="mw" style="transition-delay:480ms">都值得</span>
+        <span class="mw red" style="transition-delay:560ms">回应。</span>
+      </p>
+      <p class="kicker">MANIFESTO / 001 — 独立设计师 &amp; 创意开发者,深圳·福田</p>
+    </div>
+  </section>
+
+  <!-- ============ SERVICES ============ -->
+  <section class="section container">
+    <div class="section-head">
+      <div>
+        <p class="kicker rv">SERVICES / 002</p>
+        <h2 class="h2 rv">我能帮你做什么</h2>
+      </div>
+      <p class="lead rv">从一张海报到一个完整的站,一个人也能是一支小队。</p>
+    </div>
+
+    <div>
+      <button class="service-row rv" type="button" data-service-subject="项目咨询:品牌视觉 BRANDING">
+        <span class="service-row__main">
+          <span class="service-row__no">01</span>
+          <span class="service-row__cn">品牌视觉</span>
+          <span class="service-row__en">Branding</span>
+          <span class="service-row__price">¥8k 起</span>
+          <span class="service-row__arrow" aria-hidden="true">→</span>
+        </span>
+        <span class="service-row__desc"><span>Logo、VI、字体与色彩系统。让品牌一眼被记住。</span></span>
+      </button>
+      <button class="service-row rv" type="button" data-service-subject="项目咨询:网站/产品体验 WEB &amp; PRODUCT" style="transition-delay:80ms">
+        <span class="service-row__main">
+          <span class="service-row__no">02</span>
+          <span class="service-row__cn">网站 / 产品体验</span>
+          <span class="service-row__en">Web &amp; Product</span>
+          <span class="service-row__price">¥12k 起</span>
+          <span class="service-row__arrow" aria-hidden="true">→</span>
+        </span>
+        <span class="service-row__desc"><span>官网 / 作品集 / 产品页。拒绝模板,每站一张脸。</span></span>
+      </button>
+      <button class="service-row rv" type="button" data-service-subject="项目咨询:创意前端 CREATIVE DEV" style="transition-delay:160ms">
+        <span class="service-row__main">
+          <span class="service-row__no">03</span>
+          <span class="service-row__cn">创意前端</span>
+          <span class="service-row__en">Creative Dev</span>
+          <span class="service-row__price">¥15k 起</span>
+          <span class="service-row__arrow" aria-hidden="true">→</span>
+        </span>
+        <span class="service-row__desc"><span>React / GSAP / Three.js,把动效做到能落地。</span></span>
+      </button>
+      <button class="service-row rv" type="button" data-service-subject="项目咨询:AI 工作流 AI WORKFLOW" style="transition-delay:240ms">
+        <span class="service-row__main">
+          <span class="service-row__no">04</span>
+          <span class="service-row__cn">AI 工作流</span>
+          <span class="service-row__en">AI Workflow</span>
+          <span class="service-row__price">聊聊看</span>
+          <span class="service-row__arrow" aria-hidden="true">→</span>
+        </span>
+        <span class="service-row__desc"><span>AI 辅助视觉生成与快速原型,把三周的活压到三天。</span></span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ============ SELECTED WORKS ============ -->
+  <section class="wrail">
+    <div class="container section-head" style="margin-bottom:16px">
+      <div>
+        <p class="kicker rv">SELECTED / 003</p>
+        <h2 class="h2 rv">精选作品</h2>
+      </div>
+      <p class="kicker rv">06 / 14 PROJECTS · 点击任意作品直达作品页 →</p>
+    </div>
+    <div class="container">
+      <div class="wrail__progress"><div class="wrail__bar"></div></div>
+    </div>
+    <div class="wrail__track">
+      <a class="wcard" href="works.html" data-work-target="central-on-air">
+        <span class="wcard__cover"><img src="assets/work-central-on-air.webp" alt="Central on Air — 项目封面" width="960" height="1200" loading="lazy" decoding="async"></span>
+        <span class="wcard__meta"><span class="wcard__no">01</span><span class="wcard__title">Central on Air</span><span class="wcard__tags">+ DESIGN + BRANDING</span></span>
+      </a>
+      <a class="wcard" href="works.html" data-work-target="patch-system">
+        <span class="wcard__cover"><img src="assets/work-patch-system.webp" alt="Patch System — 项目封面" width="960" height="1200" loading="lazy" decoding="async"></span>
+        <span class="wcard__meta"><span class="wcard__no">02</span><span class="wcard__title">Patch System</span><span class="wcard__tags">+ GENERATIVE + DEV</span></span>
+      </a>
+      <a class="wcard" href="works.html" data-work-target="unis-footwear">
+        <span class="wcard__cover"><img src="assets/work-unis-footwear.webp" alt="Unis Footwear — 项目封面" width="960" height="1200" loading="lazy" decoding="async"></span>
+        <span class="wcard__meta"><span class="wcard__no">03</span><span class="wcard__title">Unis Footwear</span><span class="wcard__tags">+ BRANDING + POSTER</span></span>
+      </a>
+      <a class="wcard" href="works.html" data-work-target="hom">
+        <span class="wcard__cover"><img src="assets/work-hom.webp" alt="HŌM — 项目封面" width="960" height="1200" loading="lazy" decoding="async"></span>
+        <span class="wcard__meta"><span class="wcard__no">04</span><span class="wcard__title">HŌM</span><span class="wcard__tags">+ BRANDING + EDITORIAL</span></span>
+      </a>
+      <a class="wcard" href="works.html" data-work-target="zaza">
+        <span class="wcard__cover"><img src="assets/work-zaza.webp" alt="ZaZa — 项目封面" width="960" height="1200" loading="lazy" decoding="async"></span>
+        <span class="wcard__meta"><span class="wcard__no">05</span><span class="wcard__title">ZaZa</span><span class="wcard__tags">+ BRANDING + ILLUSTRATION</span></span>
+      </a>
+      <a class="wcard" href="works.html" data-work-target="radical-face">
+        <span class="wcard__cover"><img src="assets/work-radical-face.webp" alt="Radical Face — 项目封面" width="960" height="1200" loading="lazy" decoding="async"></span>
+        <span class="wcard__meta"><span class="wcard__no">06</span><span class="wcard__title">Radical Face</span><span class="wcard__tags">+ MUSIC + ARTWORK</span></span>
+      </a>
+      <a class="wrail__more" href="works.html">
+        <span class="top">FULL ARCHIVE</span>
+        <span>
+          <span class="big">+ 8 MORE</span>
+          <span class="zh">查看全部作品 <i>→</i></span>
+        </span>
+        <span class="bot">NEXT FRAME · 02 WORKS</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ============ PROCESS ============ -->
+  <section class="section container">
+    <div class="section-head">
+      <h2 class="h2 rv">合作流程</h2>
+      <p class="kicker rv">PROCESS / 004 · 一般 2–6 周</p>
+    </div>
+    <div class="process-grid">
+      <div class="pstep rv">
+        <div class="ticket">
+          <span class="ticket__tear ticket__tear--top" aria-hidden="true"></span>
+          <span class="ticket__notch ticket__notch--left ticket__notch--top" aria-hidden="true"></span>
+          <span class="ticket__notch ticket__notch--right ticket__notch--top" aria-hidden="true"></span>
+          <span class="ticket__no">01</span>
+          <div class="pstep__body">
+            <p class="pstep__title">聊聊<em>Talk</em></p>
+            <p class="pstep__desc">30 分钟语音或文字,讲清楚你要什么、卡在哪。</p>
+          </div>
+        </div>
+      </div>
+      <span class="parrow" aria-hidden="true">⤍</span>
+      <div class="pstep rv" style="transition-delay:120ms">
+        <div class="ticket">
+          <span class="ticket__tear ticket__tear--top" aria-hidden="true"></span>
+          <span class="ticket__notch ticket__notch--left ticket__notch--top" aria-hidden="true"></span>
+          <span class="ticket__notch ticket__notch--right ticket__notch--top" aria-hidden="true"></span>
+          <span class="ticket__no">02</span>
+          <div class="pstep__body">
+            <p class="pstep__title">提案<em>Proposal</em></p>
+            <p class="pstep__desc">3 天内给方向稿 + 排期 + 报价,不合适直接说。</p>
+          </div>
+        </div>
+      </div>
+      <span class="parrow" aria-hidden="true">⤍</span>
+      <div class="pstep rv" style="transition-delay:240ms">
+        <div class="ticket">
+          <span class="ticket__tear ticket__tear--top" aria-hidden="true"></span>
+          <span class="ticket__notch ticket__notch--left ticket__notch--top" aria-hidden="true"></span>
+          <span class="ticket__notch ticket__notch--right ticket__notch--top" aria-hidden="true"></span>
+          <span class="ticket__no">03</span>
+          <div class="pstep__body">
+            <p class="pstep__title">创作<em>Create</em></p>
+            <p class="pstep__desc">每 3–4 天同步一次进度,过程透明可打断。</p>
+          </div>
+        </div>
+      </div>
+      <span class="parrow" aria-hidden="true">⤍</span>
+      <div class="pstep rv" style="transition-delay:360ms">
+        <div class="ticket">
+          <span class="ticket__tear ticket__tear--top" aria-hidden="true"></span>
+          <span class="ticket__notch ticket__notch--left ticket__notch--top" aria-hidden="true"></span>
+          <span class="ticket__notch ticket__notch--right ticket__notch--top" aria-hidden="true"></span>
+          <span class="ticket__no">04</span>
+          <div class="pstep__body">
+            <p class="pstep__title">交付 &amp; 陪跑<em>Deliver</em></p>
+            <p class="pstep__desc">源文件全交,上线后再陪跑 2 周。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ AVAILABILITY ============ -->
+  <div class="container">
+    <footer class="ticket-footer" id="availability">
+      <div class="rv" style="position:relative">
+        <span class="tf-scan rv-line" aria-hidden="true"></span>
+        <div class="ticket">
+          <span class="ticket__tear ticket__tear--middle" aria-hidden="true"></span>
+          <span class="ticket__notch ticket__notch--left ticket__notch--mid" aria-hidden="true"></span>
+          <span class="ticket__notch ticket__notch--right ticket__notch--mid" aria-hidden="true"></span>
+          <span class="ticket__no">NO. 20260101</span>
+          <div class="tf-upper">
+            <p class="kicker" style="margin-bottom:16px">AVAILABILITY / 005</p>
+            <h2 class="h2">有项目想聊聊?</h2>
+            <span class="tf-badge"><span class="blink-dot" aria-hidden="true"></span>2026 Q1 档期开放中</span>
+            <p class="lead tf-desc">品牌 / 网站 / 开发,或只是一张海报——发需求到邮箱,24h 内回复。</p>
+          </div>
+          <div class="tf-lower">
+            <div>
+              <a class="tf-mail" id="cta-mail" href="mailto:hello@lxlylzl.xyz">hello@lxlylzl.xyz</a>
+              <p class="tf-wechat">WECHAT: lxlylzl</p>
+            </div>
+            <span data-barcode="23,44,44" data-barcode-label="NO. 20260101"></span>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <div style="margin-top:96px">
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track">
+        <span class="marquee__seg">BE DIFFERENT AROUND IT ✳ LET'S WORK TOGETHER ✳ DESIGN × AI × FUTURE ✳ BE DIFFERENT AROUND IT ✳ LET'S WORK TOGETHER ✳ DESIGN × AI × FUTURE ✳&nbsp;</span>
+        <span class="marquee__seg">BE DIFFERENT AROUND IT ✳ LET'S WORK TOGETHER ✳ DESIGN × AI × FUTURE ✳ BE DIFFERENT AROUND IT ✳ LET'S WORK TOGETHER ✳ DESIGN × AI × FUTURE ✳&nbsp;</span>
+      </div>
+    </div>
+    <p class="footer-copy">©2026 liweijie · MADE IN FUTIAN SZ</p>
+  </div>
+</main>
+
+<script src="js/site.js" defer></script>
 </body>
 </html>
