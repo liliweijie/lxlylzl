@@ -543,10 +543,22 @@
       var current = -1;
 
       function fillOverlay(card) {
+        var vid = card.querySelector('video');
         var img = card.querySelector('img');
         var ph = card.querySelector('.cover-ph');
-        ovCover.innerHTML = '';
-        if (img) {
+        ovCover.textContent = '';
+        if (vid) {
+          var v = document.createElement('video');
+          v.src = vid.currentSrc || vid.src;
+          if (vid.poster) v.poster = vid.poster;
+          v.controls = true;
+          v.loop = true;
+          v.muted = true;
+          v.playsInline = true;
+          v.setAttribute('playsinline', '');
+          if (!reduced) v.autoplay = true;
+          ovCover.appendChild(v);
+        } else if (img) {
           var c = document.createElement('img');
           c.src = img.currentSrc || img.src;
           c.alt = img.alt;
@@ -598,6 +610,7 @@
         document.body.style.overflow = '';
         suppressed = false;
         current = -1;
+        ovCover.textContent = ''; // 停掉并释放详情浮层里的视频
       }
       function stepOverlay(d) {
         if (current === -1) return;
@@ -1200,9 +1213,18 @@
       var cols = qs('.works-grid__cols');
       if (cols) {
         cols.textContent = '';
+        cols.classList.add('works-grid__cols--flow');
+        var autoSizes = ['m', 'l', 's', 'm', 'xl', 's', 'l', 'm', 's', 'l', 'm', 'xl', 's', 'm'];
         projects.forEach(function (p, i) {
+          if (!p || typeof p !== 'object') return;
+          var videoUrl = typeof p.video === 'string' ? p.video.trim() : '';
+          var hasVideo = videoUrl.length > 4;
+          var size = ['s', 'm', 'l', 'xl'].indexOf(p.size) >= 0
+            ? p.size
+            : (hasVideo ? (i % 3 === 0 ? 'xl' : 'l') : autoSizes[i % autoSizes.length]);
+          var shift = i % 5 === 1 ? ' flow-card--shift-a' : (i % 5 === 3 ? ' flow-card--shift-b' : (i % 5 === 4 ? ' flow-card--shift-c' : ''));
           var btn = document.createElement('button');
-          btn.className = 'work-card';
+          btn.className = 'work-card flow-card flow-card--' + size + shift + (hasVideo ? ' work-card--video flow-card--video' : '');
           btn.type = 'button';
           btn.setAttribute('data-work-id', String(p.id || ('work-' + (i + 1))));
           btn.setAttribute('data-cats', String(p.cats || ''));
@@ -1212,9 +1234,29 @@
           btn.setAttribute('data-role', String(p.role || ''));
           btn.setAttribute('data-deliverables', String(p.deliverables || ''));
           btn.setAttribute('data-desc', String(p.desc || ''));
+          if (hasVideo) {
+            btn.setAttribute('data-video', videoUrl);
+            if (p.poster) btn.setAttribute('data-poster', String(p.poster));
+          }
           var cover = document.createElement('span');
-          cover.className = 'work-card__cover ' + (p.ratio === 'r34' ? 'r34' : 'r45');
-          if (p.cover) {
+          cover.className = 'work-card__cover flow-cover';
+          if (hasVideo) {
+            var vid = document.createElement('video');
+            vid.src = videoUrl;
+            var poster = p.poster || p.cover || '';
+            if (poster) vid.poster = String(poster);
+            vid.muted = true;
+            vid.loop = true;
+            vid.playsInline = true;
+            vid.setAttribute('playsinline', '');
+            vid.preload = 'metadata';
+            vid.setAttribute('data-flow-video', '1');
+            cover.appendChild(vid);
+            var badge = document.createElement('span');
+            badge.className = 'flow-card__badge';
+            badge.textContent = 'VIDEO ▶';
+            cover.appendChild(badge);
+          } else if (p.cover) {
             var img = document.createElement('img');
             img.src = String(p.cover);
             img.alt = String(p.title || '') + ' — 项目封面';
@@ -1238,6 +1280,10 @@
             ph.appendChild(big); ph.appendChild(lbl);
             cover.appendChild(ph);
           }
+          var idx = document.createElement('span');
+          idx.className = 'flow-card__index';
+          idx.textContent = String(i + 1).padStart(2, '0');
+          cover.appendChild(idx);
           var meta = document.createElement('span');
           meta.className = 'wcard__meta';
           var no = document.createElement('span');
@@ -1249,11 +1295,24 @@
           var tg = document.createElement('span');
           tg.className = 'wcard__tags';
           var cats = String(p.cats || '').split(' ').filter(Boolean).join('/');
-          tg.textContent = (p.year ? String(p.year) + ' · ' : '') + cats;
+          tg.textContent = (p.year ? String(p.year) + ' · ' : '') + cats + (hasVideo ? ' · VIDEO' : '');
           meta.appendChild(no); meta.appendChild(tt); meta.appendChild(tg);
           btn.appendChild(cover); btn.appendChild(meta);
           cols.appendChild(btn);
         });
+        if (!reduced && !coarse) {
+          var flowVids = cols.querySelectorAll('video[data-flow-video]');
+          for (var fv = 0; fv < flowVids.length; fv++) {
+            (function (v) {
+              var card = v.closest('.flow-card');
+              if (!card) return;
+              card.addEventListener('mouseenter', function () { var pr = v.play(); if (pr && pr.catch) pr.catch(function () { }); });
+              card.addEventListener('mouseleave', function () { v.pause(); });
+              card.addEventListener('focus', function () { var pr = v.play(); if (pr && pr.catch) pr.catch(function () { }); });
+              card.addEventListener('blur', function () { v.pause(); });
+            })(flowVids[fv]);
+          }
+        }
       }
       // filters:数量按 projects 自动重算
       var filters = isArr(d.filters) ? d.filters : ['设计', '开发', '品牌', '包装'];

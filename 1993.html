@@ -633,6 +633,19 @@ input.fcolor{width:44px;height:32px;padding:2px;background:transparent;border:1p
     upd();
     return w;
   }
+  function videoField(obj, key, sync, emptyNote) {
+    var w = el('div', 'imgfield');
+    var inp = el('input', 'finput');
+    inp.type = 'text';
+    inp.value = obj[key] == null ? '' : String(obj[key]);
+    inp.setAttribute('placeholder', 'assets/xxx.mp4 或 https://视频地址');
+    var ph = el('span', 'imgfield__ph', emptyNote || '');
+    ph.hidden = !emptyNote;
+    inp.addEventListener('input', function () { obj[key] = inp.value; sync(); });
+    w.appendChild(inp);
+    w.appendChild(ph);
+    return w;
+  }
   function ratioField(item, sync) {
     var s = el('select', 'fselect');
     [['r45', '4:5(偏高)'], ['r34', '3:4(偏方)']].forEach(function (p) {
@@ -643,6 +656,21 @@ input.fcolor{width:44px;height:32px;padding:2px;background:transparent;border:1p
     });
     s.value = item.ratio === 'r34' ? 'r34' : 'r45';
     s.addEventListener('change', function () { item.ratio = s.value; sync(); });
+    return s;
+  }
+  function sizeField(item, sync) {
+    var s = el('select', 'fselect');
+    [['auto', '自动(推荐)'], ['s', '小'], ['m', '中'], ['l', '大'], ['xl', '超大/通栏']].forEach(function (p) {
+      var o = el('option');
+      o.value = p[0];
+      o.textContent = p[1];
+      s.appendChild(o);
+    });
+    s.value = ['s', 'm', 'l', 'xl'].indexOf(item.size) >= 0 ? item.size : 'auto';
+    s.addEventListener('change', function () {
+      if (s.value === 'auto') delete item.size; else item.size = s.value;
+      sync();
+    });
     return s;
   }
   function colorField(obj, key, sync) {
@@ -883,7 +911,7 @@ input.fcolor{width:44px;height:32px;padding:2px;background:transparent;border:1p
         return {
           id: 'work-' + Date.now().toString(36), title: '新项目', year: '2026', role: '',
           deliverables: '', desc: '', tags: '', cats: '设计', cover: '', ratio: 'r45',
-          ph: { a: '#2b2b30', b: '#45454c' }
+          size: '', video: '', poster: '', ph: { a: '#2b2b30', b: '#45454c' }
         };
       },
       render: function (body, p) {
@@ -901,15 +929,18 @@ input.fcolor{width:44px;height:32px;padding:2px;background:transparent;border:1p
         r3.appendChild(fField('交付内容', fText(p, 'deliverables', sync)));
         body.appendChild(r3);
         body.appendChild(fField('一句话描述', fArea(p, 'desc', sync)));
-        body.appendChild(fField('封面图', imageField(p, 'cover', sync, '留空 → 前台自动用右边的占位渐变色')));
         var r4 = el('div', 'fgrid2');
-        r4.appendChild(fField('图片比例', ratioField(p, sync)));
+        r4.appendChild(fField('版面大小', sizeField(p, sync), '作品页是错落流水,建议大部分用自动'));
+        r4.appendChild(fField('图片比例(旧静态回退用)', ratioField(p, sync)));
+        body.appendChild(r4);
+        body.appendChild(fField('封面图', imageField(p, 'cover', sync, '留空 → 前台自动用下方的占位渐变色')));
+        body.appendChild(fField('视频地址(可选)', videoField(p, 'video', sync, '填了就按视频卡片展示;可填 assets/xxx.mp4 或 https 视频地址')));
+        body.appendChild(fField('视频封面 poster(可选)', imageField(p, 'poster', sync, '不填则优先用上面的封面图/视频首帧')));
         var ph = ensureObj(p, 'ph');
         var cw = el('div', 'fcolorrow');
         cw.appendChild(colorField(ph, 'a', sync));
         cw.appendChild(colorField(ph, 'b', sync));
-        r4.appendChild(fField('占位渐变(无封面时用)', cw));
-        body.appendChild(r4);
+        body.appendChild(fField('占位渐变(无封面/视频时用)', cw));
       }
     }));
     box.appendChild(g);
