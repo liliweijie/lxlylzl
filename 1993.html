@@ -172,6 +172,11 @@ textarea.json.invalid{border-color:var(--red);box-shadow:0 0 0 1px var(--red);}
   object-fit:cover;background:#0e0e10;align-self:flex-start;
 }
 .imgfield__ph{font-size:11px;color:var(--gray);}
+.uploadrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.uploadrow .btn{white-space:nowrap;}
+.uploadstatus{font-family:var(--font-mono);font-size:11px;color:var(--gray);}
+.uploadstatus.ok{color:#7fd08a;}
+.uploadstatus.bad{color:var(--red);}
 .fcolorrow{display:flex;gap:8px;align-items:center;}
 input.fcolor{width:44px;height:32px;padding:2px;background:transparent;border:1px solid var(--line);cursor:pointer;}
 
@@ -405,7 +410,7 @@ input.fcolor{width:44px;height:32px;padding:2px;background:transparent;border:1p
 
     var formNote = document.createElement('p');
     formNote.className = 'form__note';
-    formNote.textContent = '下面是白话表单:直接改这里,代码会自动生成。图片可以粘贴 assets/ 路径或 https 图片地址、或从下拉选已有素材;暂不支持本地上传图片(如需上传,要另开 Vercel Blob/对象存储)。';
+    formNote.textContent = '下面是白话表单:直接改这里,代码会自动生成。图片/视频可以上传本地文件,也可以粘贴 assets/ 路径、https 地址,或从下拉选已有图片素材。';
     codeCol.appendChild(formNote);
 
     var formBox = document.createElement('div');
@@ -581,7 +586,131 @@ input.fcolor{width:44px;height:32px;padding:2px;background:transparent;border:1p
     t.addEventListener('input', function () { set(t.value); sync(); });
     return t;
   }
-  // 图片字段:文本框 + 已有素材下拉 + 小缩略预览(不假装支持本地上传)
+  /* ---------- 本地图片/视频上传:浏览器直传 Vercel Blob ---------- */
+  var BLOB_SDK_URL = 'https://esm.sh/@vercel/blob@2.7.0/client?bundle';
+  var blobSdkPromise = null;
+  var MAX_UPLOAD_BYTES = 500 * 1024 * 1024;
+  var UPLOAD_TYPES = {
+    image: {
+      label: '图片',
+      accept: 'image/jpeg,image/png,image/webp,image/gif,image/svg+xml',
+      mimes: ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml'],
+      exts: ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg']
+    },
+    video: {
+      label: '视频',
+      accept: 'video/mp4,video/webm,video/quicktime',
+      mimes: ['video/mp4', 'video/webm', 'video/quicktime'],
+      exts: ['mp4', 'webm', 'mov', 'm4v']
+    }
+  };
+
+  function loadBlobSdk() {
+    if (!blobSdkPromise) blobSdkPromise = import(BLOB_SDK_URL);
+    return blobSdkPromise;
+  }
+  function checkBlobReady() {
+    return api('/api/blob-upload?probe=1', { method: 'GET' }).then(function (r) {
+      return r.json().catch(function () { return {}; }).then(function (body) {
+        if (r.status === 503 || body.error === 'blob_not_configured') {
+          throw new Error(body.message || '还没有配置 Vercel Blob,请先在 Vercel 连接 Blob Storage');
+        }
+        if (!r.ok) throw new Error(body.error || ('上传配置检查失败(' + r.status + ')'));
+        return body;
+      });
+    });
+  }
+  function fileExt(name) {
+    var clean = String(name || '').toLowerCase().split('?')[0].split('#')[0];
+    var dot = clean.lastIndexOf('.');
+    return dot >= 0 ? clean.substring(dot + 1) : '';
+  }
+  function safeFileName(name, fallbackExt) {
+    var base = String(name || ('file.' + fallbackExt)).split(/[\\/]/).pop().toLowerCase();
+    base = base.replace(/[^a-z0-9._-]+/g, '-').replace(/^-+|-+$/g, '').substring(0, 72);
+    if (!base) base = 'file.' + fallbackExt;
+    if (base.indexOf('.') < 0) base += '.' + fallbackExt;
+    return base;
+  }
+  function randToken() {
+    try {
+      var buf = new Uint32Array(2);
+      window.crypto.getRandomValues(buf);
+      return buf[0].toString(36) + buf[1].toString(36);
+    } catch (e) {
+      return Math.random().toString(36).substring(2) + Date.now().toString(36);
+    }
+  }
+  function validateUploadFile(file, kind) {
+    var cfg = UPLOAD_TYPES[kind];
+    var ext = fileExt(file.name);
+    if (cfg.exts.indexOf(ext) === -1) throw new Error('这个' + cfg.label + '格式暂不支持,可用:' + cfg.exts.join(' / '));
+    if (file.type && cfg.mimes.indexOf(file.type) === -1) throw new Error('浏览器识别的文件类型是 ' + file.type + ',请换标准' + cfg.label + '文件');
+    if (file.size > MAX_UPLOAD_BYTES) throw new Error('文件超过 500MB,请先压缩后再上传');
+    if (!file.size) throw new Error('文件是空的,请重新选择');
+  }
+  function uploadLocalFile(file, kind, onProgress) {
+    validateUploadFile(file, kind);
+    return checkBlobReady().then(function () {
+      return loadBlobSdk();
+    }).then(function (mod) {
+      var ext = fileExt(file.name) || (kind === 'video' ? 'mp4' : 'webp');
+      var day = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+      var pathname = 'uploads/1993/' + day + '/' + Date.now().toString(36) + '-' + randToken() + '-' + safeFileName(file.name, ext);
+      return mod.upload(pathname, file, {
+        access: 'public',
+        handleUploadUrl: '/api/blob-upload',
+        headers: adminHeaders(),
+        clientPayload: JSON.stringify({ kind: kind }),
+        contentType: file.type || undefined,
+        multipart: file.size > 100 * 1024 * 1024,
+        onUploadProgress: onProgress
+      });
+    });
+  }
+  function uploadControl(inp, obj, key, sync, refresh, kind) {
+    var cfg = UPLOAD_TYPES[kind];
+    var row = el('div', 'uploadrow');
+    var btn = el('button', 'btn btn--mini', '上传本地' + cfg.label);
+    btn.type = 'button';
+    var file = el('input');
+    file.type = 'file';
+    file.accept = cfg.accept;
+    file.hidden = true;
+    var status = el('span', 'uploadstatus');
+    btn.addEventListener('click', function () { file.click(); });
+    file.addEventListener('change', function () {
+      var f = file.files && file.files[0];
+      file.value = '';
+      if (!f) return;
+      btn.disabled = true;
+      status.className = 'uploadstatus';
+      status.textContent = '检查上传配置…';
+      uploadLocalFile(f, kind, function (p) {
+        if (p && typeof p.percentage === 'number') status.textContent = '上传中 ' + Math.round(p.percentage) + '%';
+        else status.textContent = '上传中…';
+      }).then(function (blob) {
+        if (!blob || !blob.url) throw new Error('上传完成但没有拿到文件地址');
+        inp.value = blob.url;
+        obj[key] = blob.url;
+        refresh();
+        sync();
+        status.className = 'uploadstatus ok';
+        status.textContent = '上传完成 ✓ 已填入地址';
+      }).catch(function (err) {
+        status.className = 'uploadstatus bad';
+        status.textContent = (err && err.message) ? err.message : '上传失败,请重试';
+      }).then(function () {
+        btn.disabled = false;
+      });
+    });
+    row.appendChild(btn);
+    row.appendChild(status);
+    row.appendChild(file);
+    return row;
+  }
+
+  // 图片字段:文本框 + 已有素材下拉 + 本地上传 + 小缩略预览
   function imageField(obj, key, sync, emptyNote) {
     var w = el('div', 'imgfield');
     var row = el('div', 'imgfield__row');
@@ -628,6 +757,7 @@ input.fcolor{width:44px;height:32px;padding:2px;background:transparent;border:1p
       sync();
     });
     w.appendChild(row);
+    w.appendChild(uploadControl(inp, obj, key, sync, upd, 'image'));
     w.appendChild(thumb);
     w.appendChild(ph);
     upd();
@@ -639,11 +769,29 @@ input.fcolor{width:44px;height:32px;padding:2px;background:transparent;border:1p
     inp.type = 'text';
     inp.value = obj[key] == null ? '' : String(obj[key]);
     inp.setAttribute('placeholder', 'assets/xxx.mp4 或 https://视频地址');
+    var preview = el('video', 'imgfield__thumb');
+    preview.controls = true;
+    preview.muted = true;
+    preview.preload = 'metadata';
     var ph = el('span', 'imgfield__ph', emptyNote || '');
-    ph.hidden = !emptyNote;
-    inp.addEventListener('input', function () { obj[key] = inp.value; sync(); });
+    function upd() {
+      var v = inp.value.trim();
+      if (v) {
+        preview.setAttribute('src', v);
+        preview.hidden = false;
+        ph.hidden = true;
+      } else {
+        preview.hidden = true;
+        preview.removeAttribute('src');
+        ph.hidden = !emptyNote;
+      }
+    }
+    inp.addEventListener('input', function () { obj[key] = inp.value; upd(); sync(); });
     w.appendChild(inp);
+    w.appendChild(uploadControl(inp, obj, key, sync, upd, 'video'));
+    w.appendChild(preview);
     w.appendChild(ph);
+    upd();
     return w;
   }
   function ratioField(item, sync) {
@@ -934,7 +1082,7 @@ input.fcolor{width:44px;height:32px;padding:2px;background:transparent;border:1p
         r4.appendChild(fField('图片比例(旧静态回退用)', ratioField(p, sync)));
         body.appendChild(r4);
         body.appendChild(fField('封面图', imageField(p, 'cover', sync, '留空 → 前台自动用下方的占位渐变色')));
-        body.appendChild(fField('视频地址(可选)', videoField(p, 'video', sync, '填了就按视频卡片展示;可填 assets/xxx.mp4 或 https 视频地址')));
+        body.appendChild(fField('视频地址(可选)', videoField(p, 'video', sync, '填了就按视频卡片展示;可点上方按钮上传,或填 assets/xxx.mp4 / https 视频地址')));
         body.appendChild(fField('视频封面 poster(可选)', imageField(p, 'poster', sync, '不填则优先用上面的封面图/视频首帧')));
         var ph = ensureObj(p, 'ph');
         var cw = el('div', 'fcolorrow');
