@@ -2,11 +2,8 @@
   "name": "lxlylzl-website",
   "version": "1.0.0",
   "private": true,
-  "engines": {
-    "node": "22.x"
-  },
   "dependencies": {
-    "@vercel/blob": "^2.7.0",
+    "@vercel/blob": "^1.1.1",
     "ioredis": "^5.4.1"
   }
 }
