@@ -165,8 +165,13 @@
   var peek = document.querySelector('.pull-peek');
   var peekPct = peek ? peek.querySelector('.pull-peek__pct') : null;
   var RING_C = 2 * Math.PI * 11;
-  var IDLE_W = 56;
-  var RIGHT_OFFSET = 12;
+  var IDLE_W = window.innerWidth <= 700 ? 28 : 40;
+  var RIGHT_OFFSET = window.innerWidth <= 700 ? 4 : 8;
+  window.addEventListener('resize', function () {
+    IDLE_W = window.innerWidth <= 700 ? 28 : 40;
+    RIGHT_OFFSET = window.innerWidth <= 700 ? 4 : 8;
+    chargeTo(0, 0);
+  });
 
   var pullProgress = 0; // 0..1
   var pullDir = 0; // 1 next, -1 prev, 0 idle
