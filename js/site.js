@@ -12,10 +12,11 @@
     { path: 'works.html', cn: '作品', en: 'WORKS' },
     { path: 'about.html', cn: '关于', en: 'ABOUT' },
     { path: 'notes.html', cn: '碎碎念', en: 'NOTES' },
+    { path: 'contact.html', cn: '联系', en: 'CONTACT' },
   ];
   var PAGE = parseInt(document.body.getAttribute('data-page') || '0', 10) || 0;
-  var NEXT = FRAMES[(PAGE + 1) % 4];
-  var PREV = FRAMES[(PAGE + 3) % 4];
+  var NEXT = FRAMES[(PAGE + 1) % FRAMES.length];
+  var PREV = FRAMES[(PAGE + FRAMES.length - 1) % FRAMES.length];
 
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var coarse = window.matchMedia('(pointer: coarse)').matches;
@@ -41,9 +42,9 @@
   }
 
   function goTo(i) {
-    var t = ((i % 4) + 4) % 4;
+    var t = ((i % FRAMES.length) + FRAMES.length) % FRAMES.length;
     if (t === PAGE || locked) return;
-    var fwd = (t - PAGE + 4) % 4;
+    var fwd = (t - PAGE + FRAMES.length) % FRAMES.length;
     var dir = fwd <= 2 ? 1 : -1;
     lock();
     setNavFlag(dir);
@@ -95,7 +96,7 @@
     if (!href) return -1;
     var base = href.split('#')[0].split('?')[0];
     var name = base.substring(base.lastIndexOf('/') + 1);
-    if (name === '' || name === '/') name = 'index.html';
+    if (name === '' || name === '/' || name === 'index.html') name = FRAMES[0].path;
     for (var i = 0; i < FRAMES.length; i++) if (FRAMES[i].path === name) return i;
     return -1;
   }
@@ -107,7 +108,7 @@
     if (/^(mailto:|tel:|https?:|javascript:)/i.test(href)) return;
     var to = frameIndexOfHref(href);
     if (to === -1 || to === PAGE) return;
-    var fwd = (to - PAGE + 4) % 4;
+    var fwd = (to - PAGE + FRAMES.length) % FRAMES.length;
     setNavFlag(fwd <= 2 ? 1 : -1);
     // default navigation proceeds — relative .html link, no SPA fallback needed
     var work = a.getAttribute('data-work-target');
@@ -882,7 +883,7 @@
         suppressed = true;
         if (reduced) {
           setNavFlag(-1);
-          window.location.href = 'index.html';
+          window.location.href = FRAMES[0].path;
           return;
         }
         rewindOverlay.classList.add('is-on');
@@ -896,7 +897,7 @@
         window.setTimeout(function () {
           window.clearInterval(iv);
           setNavFlag(-1);
-          window.location.href = 'index.html';
+          window.location.href = FRAMES[0].path;
         }, 1200);
       });
     }

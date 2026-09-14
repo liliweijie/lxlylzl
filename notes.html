@@ -18,6 +18,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Cormorant+Garamond:ital,wght@1,500&amp;family=JetBrains+Mono:wght@400;500&amp;family=Noto+Sans+SC:wght@400;500;700;900&amp;display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/site.css">
+<link rel="stylesheet" href="css/editorial-pages.css">
 <script>
 (function(){try{
 if(localStorage.getItem('lx:theme')==='light')document.documentElement.classList.add('light');
@@ -25,6 +26,7 @@ var n=JSON.parse(sessionStorage.getItem('lx:nav')||'null');
 if(n&&(Date.now()-n.ts)<8000)document.documentElement.setAttribute('data-nav-dir',String(n.dir));
 }catch(e){}})();
 </script>
+<link rel="stylesheet" href="css/space-system.css">
 </head>
 <body data-page="3">
 <a class="skip-link" href="#main">跳到内容</a>
@@ -78,7 +80,7 @@ if(n&&(Date.now()-n.ts)<8000)document.documentElement.setAttribute('data-nav-dir
   <!-- ============ header ============ -->
   <section class="container notes-head">
     <p class="kicker">NOTES / 04</p>
-    <h1>碎碎念</h1>
+    <h1>LOOSE<br><i>thoughts.</i></h1>
     <p class="sub">一些随手写下的碎片。</p>
     <p class="anon">公开留言 · 匿名 · 请友善 <span class="red">✳</span></p>
   </section>
@@ -119,5 +121,6 @@ if(n&&(Date.now()-n.ts)<8000)document.documentElement.setAttribute('data-nav-dir
 </div>
 
 <script src="js/site.js" defer></script>
+<script src="js/editorial-navigation.js" defer></script>
 </body>
 </html>

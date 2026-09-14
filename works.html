@@ -18,6 +18,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Cormorant+Garamond:ital,wght@1,500&amp;family=JetBrains+Mono:wght@400;500&amp;family=Noto+Sans+SC:wght@400;500;700;900&amp;display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/site.css">
+<link rel="stylesheet" href="css/editorial-pages.css">
 <script>
 (function(){try{
 if(localStorage.getItem('lx:theme')==='light')document.documentElement.classList.add('light');
@@ -25,6 +26,7 @@ var n=JSON.parse(sessionStorage.getItem('lx:nav')||'null');
 if(n&&(Date.now()-n.ts)<8000)document.documentElement.setAttribute('data-nav-dir',String(n.dir));
 }catch(e){}})();
 </script>
+<link rel="stylesheet" href="css/space-system.css">
 </head>
 <body data-page="1">
 <a class="skip-link" href="#main">跳到内容</a>
@@ -82,7 +84,7 @@ if(n&&(Date.now()-n.ts)<8000)document.documentElement.setAttribute('data-nav-dir
         <p class="kicker" style="margin-bottom:16px">ARCHIVE / 02</p>
         <h1 class="works-head__title">
           <span class="cn">作品</span>
-          <span class="en">WORKS</span>
+          <span class="en">SELECTED<br><i>works.</i></span>
         </h1>
       </div>
       <p class="works-head__side">TOTAL 14 · 2022—2026 · DES/DEV/BRAND/PKG</p>
@@ -304,5 +306,6 @@ if(n&&(Date.now()-n.ts)<8000)document.documentElement.setAttribute('data-nav-dir
 </div>
 
 <script src="js/site.js" defer></script>
+<script src="js/editorial-navigation.js" defer></script>
 </body>
 </html>

@@ -18,6 +18,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Cormorant+Garamond:ital,wght@1,500&amp;family=JetBrains+Mono:wght@400;500&amp;family=Noto+Sans+SC:wght@400;500;700;900&amp;display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/site.css">
+<link rel="stylesheet" href="css/editorial-pages.css">
 <script>
 (function(){try{
 if(localStorage.getItem('lx:theme')==='light')document.documentElement.classList.add('light');
@@ -25,6 +26,7 @@ var n=JSON.parse(sessionStorage.getItem('lx:nav')||'null');
 if(n&&(Date.now()-n.ts)<8000)document.documentElement.setAttribute('data-nav-dir',String(n.dir));
 }catch(e){}})();
 </script>
+<link rel="stylesheet" href="css/space-system.css">
 </head>
 <body data-page="2">
 <a class="skip-link" href="#main">跳到内容</a>
@@ -92,7 +94,8 @@ if(n&&(Date.now()-n.ts)<8000)document.documentElement.setAttribute('data-nav-dir
       </div>
       <div class="about-hero__bio">
         <p class="kicker rv">ABOUT / 03</p>
-        <h1 class="about-hero__title rv">你好,我是<span class="red">李伟杰</span>。</h1>
+        <h1 class="about-hero__title rv">ALWAYS<br><i>curious.</i></h1>
+        <p class="editorial-name">你好，我是李伟杰。</p>
         <div class="about-hero__paras">
           <p class="rv" style="transition-delay:100ms">独立设计师 &amp; 创意开发者,base 深圳福田。</p>
           <p class="rv" style="transition-delay:200ms">做品牌视觉出身,后来自己学会了写代码——所以现在从我手里出去的东西,设计稿即成品:海报、VI、网站、动效,一个人闭环。</p>
@@ -224,5 +227,6 @@ if(n&&(Date.now()-n.ts)<8000)document.documentElement.setAttribute('data-nav-dir
 <div class="toast" role="status">已复制 ✓</div>
 
 <script src="js/site.js" defer></script>
+<script src="js/editorial-navigation.js" defer></script>
 </body>
 </html>
