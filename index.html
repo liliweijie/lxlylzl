@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>lxlylzl</title>
   <meta name="description" content="李伟杰的个人创作空间。探索品牌视觉、影像、网页与交互设计。">
-  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/space-mark-small.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=JetBrains+Mono:wght@400;500&amp;family=Noto+Sans+SC:wght@500;700;900&amp;display=swap" rel="stylesheet">
@@ -27,7 +27,7 @@
       overflow: hidden;
       color: var(--paper);
       font-family: var(--mono);
-      cursor: crosshair;
+      cursor: auto;
       transition: background-color .45s ease, color .45s ease;
     }
     body.signal {
@@ -359,30 +359,24 @@
     }
   </style>
   <link rel="stylesheet" href="css/offgrid-editorial.css">
-<link rel="stylesheet" href="css/space-system.css">
 <link rel="canonical" href="https://lxlylzl.xyz/">
 <meta property="og:title" content="lxlylzl">
 <meta property="og:description" content="设计、影像与交互。给好奇心，留一点空间。">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://lxlylzl.xyz/">
+<link rel="stylesheet" href="css/space-system.css">
+<link rel="stylesheet" href="css/emblem-system.css">
+<link rel="stylesheet" href="css/responsive-system.css">
+<link rel="stylesheet" href="css/spatial-type.css">
+<link rel="stylesheet" href="css/wireframe-system.css">
+<link rel="stylesheet" href="css/rail-gate.css">
 </head>
 <body>
+<header class="space-header"><a class="space-logo" href="index.html" aria-label="lxlylzl 首页"><img src="assets/space-mark.svg" alt=""><span><b>lXlYlZl</b><small>SPACE FOR IDEAS</small></span></a><nav class="space-links" aria-label="主要导航"><a href="index.html" aria-current="page">HOME</a><a href="works.html">WORK</a><a href="about.html">ABOUT</a><a href="notes.html">NOTES</a><a href="contact.html">CONTACT</a></nav><div class="space-meta"><span>01 / 05</span></div></header>
   <main class="stage" id="stage">
     <canvas id="trace" aria-hidden="true"></canvas>
 
-    <header class="topbar">
-      <span class="brand"><i>✳</i> LXLYLZL / STUDIO</span>
-      <nav class="primary-nav" aria-label="主要导航">
-        <a href="works.html">WORK</a>
-        <a href="about.html">ABOUT</a>
-        <a href="notes.html">NOTES</a>
-        <a href="mailto:hello@lxlylzl.xyz">CONTACT</a>
-      </nav>
-      <span class="top-actions">
-        <span class="status" id="clock">SZ · CN&nbsp;&nbsp;&nbsp;--:--:--</span>
-        <button class="mode-btn" id="mode" type="button" aria-label="切换 1993 信号模式">1993 / SIGNAL</button>
-      </span>
-    </header>
+
 
     <span class="coordinates">22.5431° N · 114.0579° E · FUTIAN</span>
 
@@ -418,6 +412,7 @@
         <span class="meter__track"><span class="meter__fill" id="meterFill"></span></span>
       </div>
       <span class="bottom-actions">
+<button class="mode-btn" id="mode" type="button" aria-label="切换 1993 信号模式">1993 / SIGNAL</button>
         <button class="reset-btn shuffle-btn" id="shuffle" type="button">SCATTER / S</button>
         <button class="reset-btn" id="reset" type="button">RESET / R</button>
       </span>
@@ -710,7 +705,7 @@
 
       function updateClock() {
         var now = new Date();
-        clock.innerHTML = 'SZ · CN&nbsp;&nbsp;&nbsp;' + now.toLocaleTimeString('zh-CN', { hour12: false });
+        if (clock) clock.innerHTML = 'SZ · CN&nbsp;&nbsp;&nbsp;' + now.toLocaleTimeString('zh-CN', { hour12: false });
       }
 
       modeButton.addEventListener('click', function () {
