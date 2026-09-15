@@ -18,7 +18,7 @@
     header.innerHTML='<a class="space-logo" href="'+home+'" aria-label="lxlylzl 首页"><img src="assets/space-mark.svg" alt=""><span><b>lxlylzl</b><small>SPACE FOR IDEAS</small></span></a><nav class="space-links" aria-label="主要导航">'+routes.map(function(r,i){return '<a href="'+r[0]+'"'+(i===page?' aria-current="page"':'')+'>'+r[1]+'</a>';}).join('')+'</nav><div class="space-meta"><span>'+String(page+1).padStart(2,'0')+' / 05</span></div>';
     if(mode){var controls=document.querySelector('.bottom-actions');if(controls)controls.prepend(mode);}
     oldHeader.remove();document.body.prepend(header);
-    header.querySelector('.space-logo b').innerHTML='<span class="wordmark-l">l</span>X<span class="wordmark-l">l</span>Y<span class="wordmark-l">l</span>Z<span class="wordmark-l">l</span>';
+    header.querySelector('.space-logo b').textContent='lXlYlZl';
   }
   document.querySelectorAll('a[href="offgrid-demo.html"]').forEach(function(a){a.href=home;});
   var logo=document.querySelector('.nav__logo');if(logo)logo.textContent='✳ LXLYLZL / STUDIO';
