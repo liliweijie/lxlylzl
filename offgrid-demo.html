@@ -560,7 +560,7 @@
           ctx.fill();
         });
 
-        if (pointer.active) {
+        if (false) { // Native pointer: no canvas reticle.
           ctx.globalAlpha = .3;
           ctx.beginPath();
           ctx.arc(pointer.x, pointer.y, 28, 0, Math.PI * 2);
