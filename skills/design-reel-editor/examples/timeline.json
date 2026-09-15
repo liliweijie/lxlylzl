@@ -1,0 +1,769 @@
+{
+  "schemaVersion": 1,
+  "profile": "Rogue-inspired Design Reel",
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "totalFrames": 450,
+  "loop": true,
+  "assets": [
+    {
+      "id": "A",
+      "path": "PLACEHOLDER/A.png",
+      "type": "image",
+      "status": "placeholder",
+      "description": "示意素材，需替换并重新分析 Hero 与构图"
+    },
+    {
+      "id": "A_DETAIL",
+      "path": "PLACEHOLDER/A_DETAIL.png",
+      "type": "image",
+      "status": "placeholder",
+      "description": "示意素材，需替换并重新分析 Hero 与构图"
+    },
+    {
+      "id": "B",
+      "path": "PLACEHOLDER/B.png",
+      "type": "image",
+      "status": "placeholder",
+      "description": "示意素材，需替换并重新分析 Hero 与构图"
+    },
+    {
+      "id": "B_TYPE",
+      "path": "PLACEHOLDER/B_TYPE.png",
+      "type": "image",
+      "status": "placeholder",
+      "description": "示意素材，需替换并重新分析 Hero 与构图"
+    },
+    {
+      "id": "C",
+      "path": "PLACEHOLDER/C.png",
+      "type": "image",
+      "status": "placeholder",
+      "description": "示意素材，需替换并重新分析 Hero 与构图"
+    },
+    {
+      "id": "D",
+      "path": "PLACEHOLDER/D.png",
+      "type": "image",
+      "status": "placeholder",
+      "description": "示意素材，需替换并重新分析 Hero 与构图"
+    }
+  ],
+  "shots": [
+    {
+      "id": "S01",
+      "startFrame": 0,
+      "durationFrames": 21,
+      "assetId": "A",
+      "sourceInSeconds": null,
+      "sourceOutSeconds": null,
+      "playbackRate": 1,
+      "idea": "Hero 静帧",
+      "energy": "still",
+      "target": "asset",
+      "fit": "contain",
+      "keyframes": [
+        {
+          "f": 0,
+          "scale": 1,
+          "position": [
+            960,
+            540
+          ],
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "mask": null,
+          "opacity": 1,
+          "easing": "hold"
+        },
+        {
+          "f": 20,
+          "scale": 1,
+          "position": [
+            960,
+            540
+          ],
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "mask": null,
+          "opacity": 1,
+          "easing": "hold"
+        }
+      ],
+      "transitionOut": {
+        "type": "hard-cut",
+        "toShot": "S02",
+        "overlapFrames": 0,
+        "reason": "信息成立后切换"
+      }
+    },
+    {
+      "id": "S02",
+      "startFrame": 21,
+      "durationFrames": 21,
+      "assetId": "A",
+      "sourceInSeconds": null,
+      "sourceOutSeconds": null,
+      "playbackRate": 1,
+      "idea": "Hero 轻缩放",
+      "energy": "local-motion",
+      "target": "asset",
+      "fit": "contain",
+      "keyframes": [
+        {
+          "f": 0,
+          "scale": 1,
+          "position": [
+            960,
+            540
+          ],
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "mask": null,
+          "opacity": 1,
+          "easing": "cubic-bezier(0.16,1,0.3,1)"
+        },
+        {
+          "f": 20,
+          "scale": 1.08,
+          "position": [
+            960,
+            540
+          ],
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "mask": null,
+          "opacity": 1,
+          "easing": "cubic-bezier(0.16,1,0.3,1)"
+        }
+      ],
+      "transitionOut": {
+        "type": "hard-cut",
+        "toShot": "S03",
+        "overlapFrames": 0,
+        "reason": "信息成立后切换"
+      }
+    },
+    {
+      "id": "S03",
+      "startFrame": 42,
+      "durationFrames": 21,
+      "assetId": "A_DETAIL",
+      "sourceInSeconds": null,
+      "sourceOutSeconds": null,
+      "playbackRate": 1,
+      "idea": "圆形细节",
+      "energy": "still",
+      "target": "asset",
+      "fit": "contain",
+      "keyframes": [
+        {
+          "f": 0,
+          "scale": 1,
+          "position": [
+            960,
+            540
+          ],
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "mask": null,
+          "opacity": 1,
+          "easing": "hold"
+        },
+        {
+          "f": 20,
+          "scale": 1,
+          "position": [
+            960,
+            540
+          ],
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "mask": null,
+          "opacity": 1,
+          "easing": "hold"
+        }
+      ],
+      "transitionOut": {
+        "type": "graphic-match",
+        "toShot": "S04",
+        "overlapFrames": 0,
+        "reason": "示意：中心圆形位置与占比对齐，待实际素材验证"
+      }
+    },
+    {
+      "id": "S04",
+      "startFrame": 63,
+      "durationFrames": 27,
+      "assetId": "B",
+      "sourceInSeconds": null,
+      "sourceOutSeconds": null,
+      "playbackRate": 1,
+      "idea": "圆形匹配到 B",
+      "energy": "still",
+      "target": "asset",
+      "fit": "contain",
+      "keyframes": [
+        {
+          "f": 0,
+          "scale": 1,
+          "position": [
+            960,
+            540
+          ],
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "mask": null,
+          "opacity": 1,
+          "easing": "hold"
+        },
+        {
+          "f": 26,
+          "scale": 1,
+          "position": [
+            960,
+            540
+          ],
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "mask": null,
+          "opacity": 1,
+          "easing": "hold"
+        }
+      ],
+      "transitionOut": {
+        "type": "hard-cut",
+        "toShot": "S05",
+        "overlapFrames": 0,
+        "reason": "信息成立后切换"
+      }
+    },
+    {
+      "id": "S05",
+      "startFrame": 90,
+      "durationFrames": 15,
+      "assetId": "B_TYPE",
+      "sourceInSeconds": null,
+      "sourceOutSeconds": null,
+      "playbackRate": 1,
+      "idea": "字体切入",
+      "energy": "still",
+      "target": "asset",
+      "fit": "contain",
+      "keyframes": [
+        {
+          "f": 0,
+          "scale": 1,
+          "position": [
+            960,
+            540
+          ],
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "mask": null,
+          "opacity": 1,
+          "easing": "hold"
+        },
+        {
+          "f": 14,
+          "scale": 1,
+          "position": [
+            960,
+            540
+          ],
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "mask": null,
+          "opacity": 1,
+          "easing": "hold"
+        }
+      ],
+      "transitionOut": {
+        "type": "hard-cut",
+        "toShot": "S06",
+        "overlapFrames": 0,
+        "reason": "信息成立后切换"
+      }
+    },
+    {
+      "id": "S06",
+      "startFrame": 105,
+      "durationFrames": 30,
+      "assetId": "B",
+      "sourceInSeconds": null,
+      "sourceOutSeconds": null,
+      "playbackRate": 1,
+      "idea": "B 局部运动",
+      "energy": "local-motion",
+      "target": "asset",
+      "fit": "contain",
+      "keyframes": [
+        {
+          "f": 0,
+          "scale": 1,
+          "position": [
+            960,
+            540
+          ],
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "mask": null,
+          "opacity": 1,
+          "easing": "cubic-bezier(0.16,1,0.3,1)"
+        },
+        {
+          "f": 29,
+          "scale": 1.08,
+          "position": [
+            960,
+            540
+          ],
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "mask": null,
+          "opacity": 1,
+          "easing": "cubic-bezier(0.16,1,0.3,1)"
+        }
+      ],
+      "transitionOut": {
+        "type": "hard-cut",
+        "toShot": "S07",
+        "overlapFrames": 0,
+        "reason": "信息成立后切换"
+      }
+    },
+    {
+      "id": "S07",
+      "startFrame": 135,
+      "durationFrames": 21,
+      "assetId": "B",
+      "sourceInSeconds": null,
+      "sourceOutSeconds": null,
+      "playbackRate": 1,
+      "idea": "静帧呼吸",
+      "energy": "still",
+      "target": "asset",
+      "fit": "contain",
+      "keyframes": [
+        {
+          "f": 0,
+          "scale": 1,
+          "position": [
+            960,
+            540
+          ],
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "mask": null,
+          "opacity": 1,
+          "easing": "hold"
+        },
+        {
+          "f": 20,
+          "scale": 1,
+          "position": [
+            960,
+            540
+          ],
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "mask": null,
+          "opacity": 1,
+          "easing": "hold"
+        }
+      ],
+      "transitionOut": {
+        "type": "hard-cut",
+        "toShot": "S08",
+        "overlapFrames": 0,
+        "reason": "信息成立后切换"
+      }
+    },
+    {
+      "id": "S08",
+      "startFrame": 156,
+      "durationFrames": 24,
+      "assetId": "C",
+      "sourceInSeconds": null,
+      "sourceOutSeconds": null,
+      "playbackRate": 1,
+      "idea": "产品切入",
+      "energy": "still",
+      "target": "asset",
+      "fit": "contain",
+      "keyframes": [
+        {
+          "f": 0,
+          "scale": 1,
+          "position": [
+            960,
+            540
+          ],
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "mask": null,
+          "opacity": 1,
+          "easing": "hold"
+        },
+        {
+          "f": 23,
+          "scale": 1,
+          "position": [
+            960,
+            540
+          ],
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "mask": null,
+          "opacity": 1,
+          "easing": "hold"
+        }
+      ],
+      "transitionOut": {
+        "type": "hard-cut",
+        "toShot": "S09",
+        "overlapFrames": 0,
+        "reason": "信息成立后切换"
+      }
+    },
+    {
+      "id": "S09",
+      "startFrame": 180,
+      "durationFrames": 45,
+      "assetId": "C",
+      "sourceInSeconds": null,
+      "sourceOutSeconds": null,
+      "playbackRate": 1,
+      "idea": "产品细节轻推",
+      "energy": "local-motion",
+      "target": "asset",
+      "fit": "contain",
+      "keyframes": [
+        {
+          "f": 0,
+          "scale": 1,
+          "position": [
+            960,
+            540
+          ],
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "mask": null,
+          "opacity": 1,
+          "easing": "cubic-bezier(0.16,1,0.3,1)"
+        },
+        {
+          "f": 44,
+          "scale": 1.08,
+          "position": [
+            960,
+            540
+          ],
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "mask": null,
+          "opacity": 1,
+          "easing": "cubic-bezier(0.16,1,0.3,1)"
+        }
+      ],
+      "transitionOut": {
+        "type": "hard-cut",
+        "toShot": "S10",
+        "overlapFrames": 0,
+        "reason": "信息成立后切换"
+      }
+    },
+    {
+      "id": "S10",
+      "startFrame": 225,
+      "durationFrames": 30,
+      "assetId": "B_TYPE",
+      "sourceInSeconds": null,
+      "sourceOutSeconds": null,
+      "playbackRate": 1,
+      "idea": "字体停顿",
+      "energy": "still",
+      "target": "asset",
+      "fit": "contain",
+      "keyframes": [
+        {
+          "f": 0,
+          "scale": 1,
+          "position": [
+            960,
+            540
+          ],
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "mask": null,
+          "opacity": 1,
+          "easing": "hold"
+        },
+        {
+          "f": 29,
+          "scale": 1,
+          "position": [
+            960,
+            540
+          ],
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "mask": null,
+          "opacity": 1,
+          "easing": "hold"
+        }
+      ],
+      "transitionOut": {
+        "type": "hard-cut",
+        "toShot": "S11",
+        "overlapFrames": 0,
+        "reason": "信息成立后切换"
+      }
+    },
+    {
+      "id": "S11",
+      "startFrame": 255,
+      "durationFrames": 45,
+      "assetId": "D",
+      "sourceInSeconds": null,
+      "sourceOutSeconds": null,
+      "playbackRate": 1,
+      "idea": "网页局部变化",
+      "energy": "local-motion",
+      "target": "asset",
+      "fit": "contain",
+      "keyframes": [
+        {
+          "f": 0,
+          "scale": 1,
+          "position": [
+            960,
+            540
+          ],
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "mask": null,
+          "opacity": 1,
+          "easing": "cubic-bezier(0.16,1,0.3,1)"
+        },
+        {
+          "f": 44,
+          "scale": 1.08,
+          "position": [
+            960,
+            540
+          ],
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "mask": null,
+          "opacity": 1,
+          "easing": "cubic-bezier(0.16,1,0.3,1)"
+        }
+      ],
+      "transitionOut": {
+        "type": "hard-cut",
+        "toShot": "S12",
+        "overlapFrames": 0,
+        "reason": "信息成立后切换"
+      }
+    },
+    {
+      "id": "S12",
+      "startFrame": 300,
+      "durationFrames": 60,
+      "assetId": "D",
+      "sourceInSeconds": null,
+      "sourceOutSeconds": null,
+      "playbackRate": 1,
+      "idea": "全貌留白",
+      "energy": "still",
+      "target": "asset",
+      "fit": "contain",
+      "keyframes": [
+        {
+          "f": 0,
+          "scale": 1,
+          "position": [
+            960,
+            540
+          ],
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "mask": null,
+          "opacity": 1,
+          "easing": "hold"
+        },
+        {
+          "f": 59,
+          "scale": 1,
+          "position": [
+            960,
+            540
+          ],
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "mask": null,
+          "opacity": 1,
+          "easing": "hold"
+        }
+      ],
+      "transitionOut": {
+        "type": "hard-cut",
+        "toShot": "S13",
+        "overlapFrames": 0,
+        "reason": "信息成立后切换"
+      }
+    },
+    {
+      "id": "S13",
+      "startFrame": 360,
+      "durationFrames": 45,
+      "assetId": "A",
+      "sourceInSeconds": null,
+      "sourceOutSeconds": null,
+      "playbackRate": 1,
+      "idea": "回到 A",
+      "energy": "local-motion",
+      "target": "asset",
+      "fit": "contain",
+      "keyframes": [
+        {
+          "f": 0,
+          "scale": 1.08,
+          "position": [
+            960,
+            540
+          ],
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "mask": null,
+          "opacity": 1,
+          "easing": "cubic-bezier(0.16,1,0.3,1)"
+        },
+        {
+          "f": 44,
+          "scale": 1,
+          "position": [
+            960,
+            540
+          ],
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "mask": null,
+          "opacity": 1,
+          "easing": "cubic-bezier(0.16,1,0.3,1)"
+        }
+      ],
+      "transitionOut": {
+        "type": "hard-cut",
+        "toShot": "S14",
+        "overlapFrames": 0,
+        "reason": "信息成立后切换"
+      }
+    },
+    {
+      "id": "S14",
+      "startFrame": 405,
+      "durationFrames": 45,
+      "assetId": "A",
+      "sourceInSeconds": null,
+      "sourceOutSeconds": null,
+      "playbackRate": 1,
+      "idea": "稳定首帧构图",
+      "energy": "still",
+      "target": "asset",
+      "fit": "contain",
+      "keyframes": [
+        {
+          "f": 0,
+          "scale": 1,
+          "position": [
+            960,
+            540
+          ],
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "mask": null,
+          "opacity": 1,
+          "easing": "hold"
+        },
+        {
+          "f": 44,
+          "scale": 1,
+          "position": [
+            960,
+            540
+          ],
+          "anchor": [
+            0.5,
+            0.5
+          ],
+          "mask": null,
+          "opacity": 1,
+          "easing": "hold"
+        }
+      ],
+      "transitionOut": {
+        "type": "hard-cut",
+        "toShot": "S01",
+        "overlapFrames": 0,
+        "reason": "回到同一 A 静帧，检查循环接缝"
+      }
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "设计型动态剪辑"
+  short_description: "将品牌与界面素材编排成动态作品集，输出分镜、帧级时间线和制作建议"
+  default_prompt: "使用 $design-reel-editor 分析我的素材，按 Rogue-inspired Design Reel 编排 15 秒动态作品集，输出分镜和帧级制作参数。"
