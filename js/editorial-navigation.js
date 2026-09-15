@@ -31,28 +31,8 @@
   var railWash=document.querySelector('.peek-rail__wash span');if(railWash)railWash.textContent=frames[next].join(' ');
   var railNo=document.querySelector('.peek-rail__no');if(railNo)railNo.textContent=String(next+1).padStart(2,'0')+'/05';
   var loop=document.querySelector('.rewind__loop');if(loop)loop.textContent='01 首页 · 02 作品 · 03 关于 · 04 碎碎念 · 05 联系';
-  var hint=document.createElement('span');hint.className='editorial-swipe-hint';hint.textContent='← 拖动空白处，进入下一页';document.body.appendChild(hint);
+  var gateStyle=document.createElement('link');gateStyle.rel='stylesheet';gateStyle.href='css/rail-gate.css';document.head.appendChild(gateStyle);
+  var gate=document.createElement('script');gate.src='js/rail-gate.js';document.body.appendChild(gate);
   if(!document.getElementById('stage'))return;
-  var start=null,dragged=false;
-  var stage=document.getElementById('stage');
-  var homeRail=document.querySelector('.peek-rail');
-  function railProgress(p){var narrow=matchMedia('(max-width:700px)').matches;var idle=narrow?28:40;homeRail.style.width=(idle+p*(innerWidth-idle-8))+'px';homeRail.classList.toggle('is-pulling',p>0);homeRail.querySelector('.peek-rail__pct').textContent=Math.round(20+80*p)+'%';homeRail.querySelector('.peek-rail__wash').style.opacity=p;}
-  function clearDrag(){start=null;dragged=false;stage.style.translate='';railProgress(0);}
-  document.querySelectorAll('.letter').forEach(function(letter){
-    var volume=document.createElement('span');volume.className='glyph-volume';volume.setAttribute('aria-hidden','true');
-    for(var depth=-18;depth<=0;depth+=2){var layer=document.createElement('span');layer.className='glyph-layer'+(depth===0?' glyph-front':'');layer.style.setProperty('--depth',depth+'px');layer.textContent=letter.dataset.letter;volume.appendChild(layer);}
-    Array.from(letter.childNodes).forEach(function(n){if(n.nodeType===3)n.remove();});letter.prepend(volume);letter.setAttribute('aria-label',letter.dataset.letter);
-  });
-  var tiltFrame=0,tiltX=0,tiltY=0;
-  window.addEventListener('pointermove',function(e){if(e.pointerType==='touch'||matchMedia('(prefers-reduced-motion:reduce)').matches)return;tiltX=-9-(e.clientY/innerHeight-.5)*10;tiltY=-13+(e.clientX/innerWidth-.5)*18;if(!tiltFrame)tiltFrame=requestAnimationFrame(function(){document.querySelectorAll('.letter').forEach(function(l){l.style.setProperty('--tilt-x',tiltX+'deg');l.style.setProperty('--tilt-y',tiltY+'deg');});tiltFrame=0;});});
-  window.addEventListener('pointerdown',function(e){
-    if(e.pointerType==='touch'||e.button!==0||e.isPrimary===false||e.target.closest('a,button,input,textarea,select,.letter,[contenteditable],[data-no-dolly]'))return;
-    if(window.getSelection()&&window.getSelection().toString())return;
-    start={x:e.clientX,y:e.clientY};dragged=false;
-  });
-  window.addEventListener('pointermove',function(e){if(!start)return;var dx=e.clientX-start.x,dy=e.clientY-start.y;if(Math.abs(dx)>16&&Math.abs(dx)>Math.abs(dy)*1.5){dragged=true;stage.style.translate=Math.max(-85,Math.min(85,dx*.18))+'px 0';railProgress(dx<0?Math.min(1,-dx/280):0);}});
-  window.addEventListener('pointerup',function(e){if(!start)return;var dx=e.clientX-start.x,dy=e.clientY-start.y;var navigate=dragged&&Math.abs(dx)>120&&Math.abs(dx)>Math.abs(dy)*1.5;clearDrag();if(navigate){try{sessionStorage.setItem('lx:nav',JSON.stringify({dir:dx<0?1:-1,ts:Date.now()}));}catch(err){}location.href=dx<0?'works.html':'contact.html';}});
-  window.addEventListener('pointercancel',clearDrag);
-  window.addEventListener('blur',clearDrag);
   var wireScript=document.createElement('script');wireScript.src='js/wireframe-type.js';document.body.appendChild(wireScript);
 })();

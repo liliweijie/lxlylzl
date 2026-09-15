@@ -18,6 +18,7 @@
   var NEXT = FRAMES[(PAGE + 1) % FRAMES.length];
   var PREV = FRAMES[(PAGE + FRAMES.length - 1) % FRAMES.length];
 
+  var railOnlyNavigation = true;
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var coarse = window.matchMedia('(pointer: coarse)').matches;
   if (!reduced) document.documentElement.classList.add('js-motion');
@@ -233,7 +234,7 @@
   }
 
   /* ---------- trigger 1: wheel overscroll pull (genuine edges only) ---------- */
-  if (!reduced) {
+  if (!railOnlyNavigation && !reduced) {
     var W_THRESHOLD = 320;
     var wCharge = 0;
     var wEdge = 0;
@@ -268,7 +269,7 @@
 
   /* ---------- trigger 2: mouse/pen horizontal drag (touch excluded — the
      browser owns touch gestures; audit B3) ---------- */
-  if (!reduced) {
+  if (!railOnlyNavigation && !reduced) {
     var sx = 0, sy = 0, dragging = false, dragActive = false;
     var dragReset = function () {
       if (dragging && dragActive) chargeTo(0, 0);
@@ -310,7 +311,7 @@
   /* ---------- trigger 5: touch overscroll pull (coarse pointers, passive,
      overscroll-behavior contains native pull-to-refresh instead of
      hijacking with preventDefault) ---------- */
-  if (!reduced && coarse) {
+  if (!railOnlyNavigation && !reduced && coarse) {
     var T_DAMPING = 0.6;
     var T_THRESHOLD = 320;
     var root = document.documentElement;
@@ -366,7 +367,7 @@
 
   /* ---------- trigger 4: keyboard (edges only for ↑/↓/PgUp/PgDn; audit B12) ---------- */
   window.addEventListener('keydown', function (e) {
-    if (e.repeat || locked || suppressed) return;
+    if (railOnlyNavigation || e.repeat || locked || suppressed) return;
     var el = e.target;
     if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT' || el.isContentEditable)) return;
     if (e.metaKey || e.ctrlKey || e.altKey) return;
