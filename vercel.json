@@ -1,4 +1,7 @@
 {
+  "redirects": [
+    {"source": "/offgrid-demo.html", "destination": "/", "permanent": true}
+  ],
   "rewrites": [
     {"source": "/1993", "destination": "/1993.html"},
     {"source": "/works", "destination": "/works.html"},

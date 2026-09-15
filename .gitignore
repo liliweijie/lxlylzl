@@ -3,3 +3,10 @@
 # macOS
 .DS_Store
 ._*
+
+# Local dependencies and deployment credentials
+node_modules/
+.vercel/
+.env
+.env.*
+!.env.example

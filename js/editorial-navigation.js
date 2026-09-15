@@ -20,7 +20,6 @@
     oldHeader.remove();document.body.prepend(header);
     header.querySelector('.space-logo b').textContent='lXlYlZl';
   }
-  document.querySelectorAll('a[href="offgrid-demo.html"]').forEach(function(a){a.href=home;});
   var logo=document.querySelector('.nav__logo');if(logo)logo.textContent='✳ LXLYLZL / STUDIO';
   var nav=document.querySelector('.nav__pills');if(nav&&!nav.querySelector('a[href="contact.html"]')){var link=document.createElement('a');link.href='contact.html';link.className='nav__pill';link.textContent='联系';nav.appendChild(link);}
   document.querySelectorAll('.primary-nav a').forEach(function(a){if(a.textContent.trim()==='CONTACT')a.href='contact.html';});
