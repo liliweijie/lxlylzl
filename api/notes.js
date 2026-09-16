@@ -11,6 +11,15 @@ module.exports = async (req, res) => {
   const GIST_ID = process.env.GIST_ID;
   const GH_TOKEN = process.env.GITHUB_TOKEN;
   const KEY = 'notes';
+  const noteColor = body => /^#[0-9a-f]{6}$/i.test(body.color || '') ? body.color : '#ed5945';
+  function replyTarget(list, body) {
+    let target = list.find(o => String(o.id) === String(body.parentId) || o.seedKey === body.parentId);
+    if (!target && /^seed-[0-9a-f]{1,8}$/.test(String(body.parentId)) && typeof body.parentContent === 'string' && body.parentContent.trim()) {
+      target = { id: Date.now(), seedKey: body.parentId, content: body.parentContent.trim().slice(0, 500), ts: Date.now(), replies: [] };
+      list.push(target);
+    }
+    return target;
+  }
 
   // 兼容多种 Upstash / Vercel Redis 注入的变量名
   // （KV 默认注入 KV_REST_API_URL；Redis 用自定义前缀如 STORAGE 注入 STORAGE_REST_API_URL）
@@ -120,7 +129,7 @@ module.exports = async (req, res) => {
         if (body.parentId) {
           const raw = await kv(['LRANGE', KEY, '0', '-1']);
           const list = (raw || []).map(function (s) { try { return JSON.parse(s); } catch (e) { return null; } }).filter(Boolean);
-          const target = list.find(function (o) { return o.id === body.parentId; });
+          const target = replyTarget(list, body);
           if (!target) return res.status(404).json({ error: 'not_found' });
           target.replies = target.replies || [];
           target.replies.push({ id: Date.now(), name: name || '匿名', content: content, ts: Date.now() });
@@ -128,7 +137,7 @@ module.exports = async (req, res) => {
           await kv(['RPUSH', KEY].concat(list.map(function (o) { return JSON.stringify(o); })));
           return res.json(target);
         }
-        const note = { id: Date.now(), name: name || '匿名', content: content, ts: Date.now(), replies: [] };
+        const note = { id: Date.now(), name: name || '匿名', content: content, color: noteColor(body), ts: Date.now(), replies: [] };
         await kv(['RPUSH', KEY, JSON.stringify(note)]);
         return res.json(note);
       }
@@ -184,14 +193,14 @@ module.exports = async (req, res) => {
         if (body.parentId) {
           const raw = await r.lrange(KEY, '0', '-1');
           const list = (raw || []).map(function (s) { try { return JSON.parse(s); } catch (e) { return null; } }).filter(Boolean);
-          const target = list.find(function (o) { return o.id === body.parentId; });
+          const target = replyTarget(list, body);
           if (!target) return res.status(404).json({ error: 'not_found' });
           target.replies = target.replies || [];
           target.replies.push({ id: Date.now(), name: name || '匿名', content: content, ts: Date.now() });
           await r.multi().del(KEY).rpush(KEY, ...list.map(function (o) { return JSON.stringify(o); })).exec();
           return res.json(target);
         }
-        const note = { id: Date.now(), name: name || '匿名', content: content, ts: Date.now(), replies: [] };
+        const note = { id: Date.now(), name: name || '匿名', content: content, color: noteColor(body), ts: Date.now(), replies: [] };
         await r.rpush(KEY, JSON.stringify(note));
         return res.json(note);
       }
@@ -248,8 +257,16 @@ module.exports = async (req, res) => {
         const content = (body.content || '').toString().trim().slice(0, 500);
         if (!content) return res.status(400).json({ error: 'empty' });
         const name = (body.name || '').toString().trim().slice(0, 20);
-        const note = { id: Date.now(), name: name || '匿名', content: content, ts: Date.now() };
         const arr = await readGist();
+        if (body.parentId) {
+          const target = replyTarget(arr, body);
+          if (!target) return res.status(404).json({ error: 'not_found' });
+          target.replies = target.replies || [];
+          target.replies.push({ id: Date.now(), name: name || '匿名', content, ts: Date.now() });
+          await writeGist(arr);
+          return res.json(target);
+        }
+        const note = { id: Date.now(), name: name || '匿名', content, color: noteColor(body), ts: Date.now(), replies: [] };
         arr.push(note);
         await writeGist(arr);
         return res.json(note);

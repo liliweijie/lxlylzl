@@ -685,6 +685,7 @@
     // 公开留言:优先 GET /api/notes,发布 POST /api/notes;
     // API 失败(超时/非 2xx)时回退到 localStorage demo 行为
     function initNotesBoard(seeds) {
+      if (window.LxNotes) { window.LxNotes.init(seeds); return; }
       fetchWithTimeout('/api/notes', CMS_TIMEOUT, function (list) {
         if (list && Array.isArray(list)) {
           var apiGuests = list.map(function (n) {
