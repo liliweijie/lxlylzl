@@ -7,7 +7,7 @@
   var railWash=document.querySelector('.peek-rail__wash span');if(railWash)railWash.textContent=frames[next].join(' ');
   var railNo=document.querySelector('.peek-rail__no');if(railNo)railNo.textContent=String(next+1).padStart(2,'0')+'/05';
   var loop=document.querySelector('.rewind__loop');if(loop)loop.textContent='01 首页 · 02 作品 · 03 关于 · 04 碎碎念 · 05 联系';
-  var gate=document.createElement('script');gate.src='js/rail-gate.js';document.body.appendChild(gate);
+  var gate=document.createElement('script');gate.src='js/rail-gate.js?v=nav-wipe-1';document.body.appendChild(gate);
   if(!document.getElementById('stage'))return;
   var wireScript=document.createElement('script');wireScript.src='js/wireframe-type.js';document.body.appendChild(wireScript);
 })();
