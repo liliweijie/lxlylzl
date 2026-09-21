@@ -6,9 +6,9 @@
   var layer=document.createElement('div');layer.className='page-glass';layer.setAttribute('aria-hidden','true');document.body.appendChild(layer);
   var button=document.createElement('button');button.className='glass-toggle';button.type='button';
   (header.querySelector('.space-meta')||header).appendChild(button);
-  function surface(mode){root.dataset.surface=mode;document.body.classList.remove('light');button.textContent=mode==='glass'?'Dark':'Glass';button.setAttribute('aria-label',mode==='glass'?'切换到 Dark 模式':'切换到 Glass 模式');button.setAttribute('aria-pressed',String(mode==='glass'));}
+  function surface(mode){root.dataset.surface='dark';document.body.classList.remove('light');button.classList.toggle('is-dark-button',mode==='glass');button.textContent=mode==='glass'?'Dark':'Glass';button.setAttribute('aria-label',mode==='glass'?'切换按钮为 Glass':'切换按钮为 Dark');button.setAttribute('aria-pressed',String(mode==='glass'));}
   try{surface(localStorage.getItem('lx:surface')==='glass'?'glass':'dark')}catch(e){surface('dark')}
-  button.addEventListener('click',function(){var mode=root.dataset.surface==='glass'?'dark':'glass';surface(mode);try{localStorage.setItem('lx:surface',mode)}catch(e){}});
+  button.addEventListener('click',function(){var mode=button.classList.contains('is-dark-button')?'dark':'glass';surface(mode);try{localStorage.setItem('lx:surface',mode)}catch(e){}});
   function update(){var value=hover?0:progress;root.style.setProperty('--nav-collapse',value);header.classList.toggle('is-compact',value>.5)}
   function compact(){progress=1;update()}
   function schedule(){clearTimeout(timer);timer=setTimeout(compact,2200)}

@@ -25,4 +25,12 @@ html[data-surface=glass] .space-header,html[data-surface=glass] .peek-rail{backg
 html[data-surface=glass] .space-links a,html[data-surface=glass] .glass-toggle{color:white;text-shadow:0 0 12px #fff5}
 @media(max-width:1000px){.space-links{left:55%;gap:10px!important}.space-links a{font-size:14px;padding:7px 9px!important}.glass-toggle{font-size:13px}.space-logo b{font-size:18px!important}}
 @media(max-width:700px){:root{--nav-height:calc(96px - 40px * var(--nav-collapse))}.space-header{align-items:flex-start!important;padding-top:12px!important}.space-logo{min-height:30px}.space-logo img{width:26px!important;height:26px!important}.space-logo b{font-size:16px!important}.space-meta{min-height:30px}.space-links{top:52px;left:50%;width:92%;justify-content:space-between;transform:translateX(-50%);transition:opacity .25s,top .4s}.space-links a{font-size:13px}.space-header.is-compact:not(:hover):not(:focus-within) .space-links{opacity:0;pointer-events:none;top:32px}.glass-toggle{padding:7px 12px}.peek-rail{width:24px!important}.peek-rail__ticket{width:24px!important}.rail-signature{font-size:19px}}
-@media(prefers-reduced-motion:reduce){.space-header,.space-links,.space-logo *,.glass-toggle,.page-glass{transition:none!important}}
+/* Resting rail is an empty orange edge; its content appears only on expansion. */
+.peek-rail:not(:hover):not(:focus-visible):not(.rail-expanded):not(.rail-dragging):not(.rail-cover){width:10px!important;background:#f24c30!important;border-color:#f24c30!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+.peek-rail:not(:hover):not(:focus-visible):not(.rail-expanded):not(.rail-dragging):not(.rail-cover) .peek-rail__ticket{opacity:0;visibility:hidden}
+.peek-rail:hover,.peek-rail:focus-visible,.peek-rail.rail-expanded{width:40px!important}
+.peek-rail .peek-rail__ticket{width:40px!important;transition:opacity .18s ease}
+.peek-rail:is(:hover,:focus-visible,.rail-expanded,.rail-dragging):not(.rail-cover) .peek-rail__ticket{opacity:1;visibility:visible}
+.peek-rail.rail-cover{background:#0f0f0f!important}
+.glass-toggle.is-dark-button{background:#000;color:#fff;border-color:#ffffff99}
+@media(prefers-reduced-motion:reduce){.space-header,.space-links,.space-logo *,.glass-toggle,.page-glass,.peek-rail__ticket{transition:none!important}}
