@@ -8,6 +8,8 @@
   var railNo=document.querySelector('.peek-rail__no');if(railNo)railNo.textContent=String(next+1).padStart(2,'0')+'/05';
   var loop=document.querySelector('.rewind__loop');if(loop)loop.textContent='01 首页 · 02 作品 · 03 关于 · 04 碎碎念 · 05 联系';
   var gate=document.createElement('script');gate.src='js/rail-gate.js?v=nav-wipe-1';document.body.appendChild(gate);
+  var shellStyle=document.createElement('link');shellStyle.rel='stylesheet';shellStyle.href='css/navigation-shell.css';document.head.appendChild(shellStyle);
+  var shellScript=document.createElement('script');shellScript.src='js/navigation-shell.js';document.body.appendChild(shellScript);
   if(!document.getElementById('stage'))return;
   var wireScript=document.createElement('script');wireScript.src='js/wireframe-type.js';document.body.appendChild(wireScript);
 })();
