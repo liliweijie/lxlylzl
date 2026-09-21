@@ -1,0 +1,492 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="1880 515 40 270"><defs>
+    <style>
+      .cls-1, .cls-2, .cls-3, .cls-4 {
+        fill: none;
+      }
+
+      .cls-5 {
+        font-family: SourceHanSansCNVF-Regular, 'Source Han Sans CN VF';
+        font-variation-settings: 'wght' 400;
+      }
+
+      .cls-5, .cls-6 {
+        font-size: 8px;
+      }
+
+      .cls-5, .cls-6, .cls-7, .cls-8, .cls-9, .cls-10 {
+        fill: #fdfdfd;
+      }
+
+      .cls-2 {
+        opacity: .1;
+      }
+
+      .cls-2, .cls-11, .cls-12, .cls-3, .cls-4 {
+        stroke-miterlimit: 10;
+      }
+
+      .cls-2, .cls-11, .cls-3, .cls-4 {
+        stroke: #fdfdfd;
+      }
+
+      .cls-11, .cls-12 {
+        stroke-width: .5px;
+      }
+
+      .cls-11, .cls-12, .cls-13 {
+        fill: #0f0f0f;
+      }
+
+      .cls-14, .cls-15 {
+        fill: #f9f9f9;
+      }
+
+      .cls-14, .cls-16 {
+        opacity: .3;
+      }
+
+      .cls-12 {
+        stroke: #fd7b03;
+      }
+
+      .cls-3 {
+        opacity: 0;
+      }
+
+      .cls-6, .cls-8, .cls-9 {
+        font-family: Inter-Regular, Inter;
+      }
+
+      .cls-17 {
+        fill: #f24c30;
+        font-family: BaDingShiWeiTi-16, 'BaDingShiWeiTi 16';
+        font-size: 9.06px;
+      }
+
+      .cls-18 {
+        opacity: .8;
+      }
+
+      .cls-7 {
+        font-family: Inter-SemiBold, Inter;
+        font-size: 24px;
+        font-weight: 600;
+      }
+
+      .cls-19 {
+        letter-spacing: -.08em;
+      }
+
+      .cls-20 {
+        letter-spacing: -.13em;
+      }
+
+      .cls-21 {
+        letter-spacing: -.05em;
+      }
+
+      .cls-22 {
+        letter-spacing: -.03em;
+      }
+
+      .cls-8 {
+        font-size: 12px;
+      }
+
+      .cls-9 {
+        font-size: 20px;
+      }
+
+      .cls-23 {
+        clip-path: url(#clippath);
+      }
+    </style>
+    <clipPath id="clippath">
+      <rect class="cls-1" x="1345.25" y="625.25" width="1110" height="40" transform="translate(1255 2545.5) rotate(-90)" />
+    </clipPath>
+  </defs>
+  <g class="cls-23">
+        <g class="cls-16">
+          <g>
+            <g>
+              <polygon class="cls-15" points="1910.67 588.3 1912.23 586.74 1912.23 586.74 1913.8 588.3 1910.67 588.3" />
+              <rect class="cls-15" x="1910.67" y="588.3" width="3.13" height="3.13" transform="translate(2502.1 -1322.37) rotate(90)" />
+              <rect class="cls-15" x="1910.67" y="591.43" width="3.13" height="3.13" transform="translate(2505.23 -1319.23) rotate(90)" />
+            </g>
+            <g>
+              <rect class="cls-15" x="1910.67" y="594.57" width="3.13" height="3.13" transform="translate(2508.37 -1316.1) rotate(90)" />
+              <polygon class="cls-15" points="1912.23 599.26 1910.67 597.7 1913.8 597.7 1912.23 599.26 1912.23 599.26" />
+            </g>
+            <g>
+              <polygon class="cls-15" points="1897.82 588.3 1899.38 586.74 1899.38 586.74 1900.95 588.3 1897.82 588.3" />
+              <rect class="cls-15" x="1897.82" y="588.3" width="3.13" height="3.13" transform="translate(2489.25 -1309.52) rotate(90)" />
+              <rect class="cls-15" x="1897.82" y="591.43" width="3.13" height="3.13" transform="translate(2492.39 -1306.38) rotate(90)" />
+            </g>
+            <g>
+              <rect class="cls-15" x="1897.82" y="594.57" width="3.13" height="3.13" transform="translate(2495.52 -1303.25) rotate(90)" />
+              <polygon class="cls-15" points="1899.38 599.26 1897.82 597.7 1900.95 597.7 1899.38 599.26 1899.38 599.26" />
+            </g>
+            <g>
+              <polygon class="cls-15" points="1886.7 588.3 1888.27 586.74 1888.27 586.74 1889.83 588.3 1886.7 588.3" />
+              <rect class="cls-15" x="1886.7" y="588.3" width="3.13" height="3.13" transform="translate(2478.13 -1298.4) rotate(90)" />
+              <rect class="cls-15" x="1886.7" y="591.43" width="3.13" height="3.13" transform="translate(2481.27 -1295.27) rotate(90)" />
+            </g>
+            <g>
+              <rect class="cls-15" x="1886.7" y="594.57" width="3.13" height="3.13" transform="translate(2484.4 -1292.13) rotate(90)" />
+              <polygon class="cls-15" points="1888.27 599.26 1886.7 597.7 1889.83 597.7 1888.27 599.26 1888.27 599.26" />
+            </g>
+            <polygon class="cls-15" points="1910.5 585 1912.07 586.56 1912.07 586.56 1910.5 588.13 1910.5 585" />
+            <rect class="cls-15" x="1907.37" y="585" width="3.13" height="3.13" transform="translate(3817.87 1173.13) rotate(180)" />
+            <rect class="cls-15" x="1904.24" y="585" width="3.13" height="3.13" transform="translate(3811.61 1173.13) rotate(180)" />
+            <rect class="cls-15" x="1901.11" y="585" width="3.13" height="3.13" transform="translate(3805.35 1173.13) rotate(180)" />
+            <polygon class="cls-15" points="1899.54 586.56 1901.11 585 1901.11 588.13 1899.54 586.56 1899.54 586.56" />
+            <polygon class="cls-15" points="1897.66 585 1899.23 586.56 1899.23 586.56 1897.66 588.13 1897.66 585" />
+            <rect class="cls-15" x="1894.53" y="585" width="3.13" height="3.13" transform="translate(3792.19 1173.13) rotate(180)" />
+            <rect class="cls-15" x="1889.83" y="585" width="4.7" height="3.13" transform="translate(3784.36 1173.13) rotate(180)" />
+            <polygon class="cls-15" points="1888.27 586.56 1889.83 585 1889.83 588.13 1888.27 586.56 1888.27 586.56" />
+            <g>
+              <polygon class="cls-15" points="1910.67 530.86 1912.23 529.29 1912.23 529.29 1913.8 530.86 1910.67 530.86" />
+              <rect class="cls-15" x="1910.67" y="530.86" width="3.13" height="3.13" transform="translate(2444.66 -1379.81) rotate(90)" />
+              <rect class="cls-15" x="1910.67" y="533.99" width="3.13" height="3.13" transform="translate(2447.79 -1376.68) rotate(90)" />
+            </g>
+            <g>
+              <rect class="cls-15" x="1910.67" y="537.12" width="3.13" height="3.13" transform="translate(2450.92 -1373.55) rotate(90)" />
+              <polygon class="cls-15" points="1912.23 541.82 1910.67 540.25 1913.8 540.25 1912.23 541.82 1912.23 541.82" />
+            </g>
+            <polygon class="cls-15" points="1910.5 527.55 1912.07 529.12 1912.07 529.12 1910.5 530.68 1910.5 527.55" />
+            <rect class="cls-15" x="1907.37" y="527.55" width="3.13" height="3.13" transform="translate(3817.87 1058.23) rotate(180)" />
+            <rect class="cls-15" x="1904.24" y="527.55" width="3.13" height="3.13" transform="translate(3811.61 1058.23) rotate(180)" />
+            <rect class="cls-15" x="1901.11" y="527.55" width="3.13" height="3.13" transform="translate(3805.35 1058.23) rotate(180)" />
+            <polygon class="cls-15" points="1899.54 529.12 1901.11 527.55 1901.11 530.68 1899.54 529.12 1899.54 529.12" />
+            <polygon class="cls-15" points="1907.37 533.99 1908.94 533.99 1910.5 535.55 1910.5 535.55 1908.94 537.12 1907.37 537.12 1907.37 533.99" />
+            <rect class="cls-15" x="1904.24" y="533.99" width="3.13" height="3.13" transform="translate(3811.61 1071.11) rotate(180)" />
+            <rect class="cls-15" x="1901.11" y="533.99" width="3.13" height="3.13" transform="translate(3805.35 1071.11) rotate(180)" />
+            <polygon class="cls-15" points="1899.54 535.55 1901.11 533.99 1901.11 537.12 1899.54 535.55 1899.54 535.55" />
+            <polygon class="cls-15" points="1897.66 527.55 1899.23 529.12 1899.23 529.12 1897.66 530.68 1897.66 527.55" />
+            <rect class="cls-15" x="1894.53" y="527.55" width="3.13" height="3.13" transform="translate(3792.19 1058.23) rotate(180)" />
+            <rect class="cls-15" x="1891.4" y="527.55" width="3.13" height="3.13" transform="translate(3785.93 1058.23) rotate(180)" />
+            <rect class="cls-15" x="1888.27" y="527.55" width="3.13" height="3.13" transform="translate(3779.66 1058.23) rotate(180)" />
+            <polygon class="cls-15" points="1886.7 529.12 1888.27 527.55 1888.27 530.68 1886.7 529.12 1886.7 529.12" />
+            <polygon class="cls-15" points="1910.5 540.41 1912.07 541.98 1912.07 541.98 1910.5 543.54 1910.5 540.41" />
+            <rect class="cls-15" x="1907.37" y="540.41" width="3.13" height="3.13" transform="translate(3817.87 1083.95) rotate(180)" />
+            <rect class="cls-15" x="1904.24" y="540.41" width="3.13" height="3.13" transform="translate(3811.61 1083.95) rotate(180)" />
+            <rect class="cls-15" x="1901.11" y="540.41" width="3.13" height="3.13" transform="translate(3805.35 1083.95) rotate(180)" />
+            <polygon class="cls-15" points="1899.54 541.98 1901.11 540.41 1901.11 543.54 1899.54 541.98 1899.54 541.98" />
+            <polygon class="cls-15" points="1897.66 540.41 1899.23 541.98 1899.23 541.98 1897.66 543.54 1897.66 540.41" />
+            <rect class="cls-15" x="1894.53" y="540.41" width="3.13" height="3.13" transform="translate(3792.19 1083.95) rotate(180)" />
+            <rect class="cls-15" x="1891.4" y="540.41" width="3.13" height="3.13" transform="translate(3785.93 1083.95) rotate(180)" />
+            <rect class="cls-15" x="1888.27" y="540.41" width="3.13" height="3.13" transform="translate(3779.66 1083.95) rotate(180)" />
+            <polygon class="cls-15" points="1886.7 541.98 1888.27 540.41 1888.27 543.54 1886.7 541.98 1886.7 541.98" />
+            <polygon class="cls-15" points="1910.67 549.98 1912.23 548.41 1912.23 548.41 1913.8 549.98 1910.67 549.98" />
+            <rect class="cls-15" x="1910.67" y="549.98" width="3.13" height="3.13" transform="translate(2463.78 -1360.69) rotate(90)" />
+            <rect class="cls-15" x="1910.67" y="553.11" width="3.13" height="3.13" transform="translate(2466.91 -1357.56) rotate(90)" />
+            <g>
+              <rect class="cls-15" x="1910.67" y="556.24" width="3.13" height="3.13" transform="translate(2470.04 -1354.42) rotate(90)" />
+              <polygon class="cls-15" points="1912.23 560.94 1910.67 559.38 1913.8 559.38 1912.23 560.94 1912.23 560.94" />
+            </g>
+            <polygon class="cls-15" points="1910.5 546.67 1912.07 548.24 1912.07 548.24 1910.5 549.81 1910.5 546.67" />
+            <rect class="cls-15" x="1907.37" y="546.67" width="3.13" height="3.13" transform="translate(3817.87 1096.48) rotate(180)" />
+            <rect class="cls-15" x="1904.24" y="546.67" width="3.13" height="3.13" transform="translate(3811.61 1096.48) rotate(180)" />
+            <rect class="cls-15" x="1901.11" y="546.67" width="3.13" height="3.13" transform="translate(3805.35 1096.48) rotate(180)" />
+            <polygon class="cls-15" points="1899.54 548.24 1901.11 546.67 1901.11 549.81 1899.54 548.24 1899.54 548.24" />
+            <polygon class="cls-15" points="1900.95 557.03 1900.95 559.38 1899.38 560.94 1899.38 560.94 1897.82 559.38 1897.82 557.03 1900.95 557.03" />
+            <rect class="cls-15" x="1897.82" y="553.9" width="3.13" height="3.13" transform="translate(1343.92 2454.85) rotate(-90)" />
+            <rect class="cls-15" x="1897.43" y="550.37" width="3.91" height="3.13" transform="translate(1347.45 2451.32) rotate(-90)" />
+            <polygon class="cls-15" points="1899.38 548.41 1900.95 549.98 1897.82 549.98 1899.38 548.41 1899.38 548.41" />
+            <polygon class="cls-15" points="1897.66 546.67 1899.23 548.24 1899.23 548.24 1897.66 549.81 1897.66 546.67" />
+            <rect class="cls-15" x="1894.53" y="546.67" width="3.13" height="3.13" transform="translate(3792.19 1096.48) rotate(180)" />
+            <rect class="cls-15" x="1891.4" y="546.67" width="3.13" height="3.13" transform="translate(3785.93 1096.48) rotate(180)" />
+            <rect class="cls-15" x="1888.27" y="546.67" width="3.13" height="3.13" transform="translate(3779.66 1096.48) rotate(180)" />
+            <polygon class="cls-15" points="1886.7 548.24 1888.27 546.67 1888.27 549.81 1886.7 548.24 1886.7 548.24" />
+            <polygon class="cls-15" points="1910.5 559.53 1912.07 561.1 1912.07 561.1 1910.5 562.67 1910.5 559.53" />
+            <rect class="cls-15" x="1907.37" y="559.53" width="3.13" height="3.13" transform="translate(3817.87 1122.2) rotate(180)" />
+            <rect class="cls-15" x="1904.24" y="559.53" width="3.13" height="3.13" transform="translate(3811.61 1122.2) rotate(180)" />
+            <rect class="cls-15" x="1901.11" y="559.53" width="3.13" height="3.13" transform="translate(3805.35 1122.2) rotate(180)" />
+            <polygon class="cls-15" points="1899.54 561.1 1901.11 559.53 1901.11 562.67 1899.54 561.1 1899.54 561.1" />
+            <polygon class="cls-15" points="1897.66 559.53 1899.23 561.1 1899.23 561.1 1897.66 562.67 1897.66 559.53" />
+            <rect class="cls-15" x="1894.53" y="559.53" width="3.13" height="3.13" transform="translate(3792.19 1122.2) rotate(180)" />
+            <rect class="cls-15" x="1891.4" y="559.53" width="3.13" height="3.13" transform="translate(3785.93 1122.2) rotate(180)" />
+            <rect class="cls-15" x="1888.27" y="559.53" width="3.13" height="3.13" transform="translate(3779.66 1122.2) rotate(180)" />
+            <polygon class="cls-15" points="1886.7 561.1 1888.27 559.53 1888.27 562.67 1886.7 561.1 1886.7 561.1" />
+            <rect class="cls-15" x="1910.67" y="569.1" width="3.13" height="3.13" transform="translate(2482.9 -1341.56) rotate(90)" />
+            <rect class="cls-15" x="1910.67" y="565.8" width="3.13" height="3.13" transform="translate(2479.6 -1344.87) rotate(90)" />
+            <rect class="cls-15" x="1910.67" y="572.24" width="3.13" height="3.13" transform="translate(2486.04 -1338.43) rotate(90)" />
+            <g>
+              <rect class="cls-15" x="1910.67" y="575.37" width="3.13" height="3.13" transform="translate(2489.17 -1335.3) rotate(90)" />
+              <polygon class="cls-15" points="1912.23 580.07 1910.67 578.5 1913.8 578.5 1912.23 580.07 1912.23 580.07" />
+            </g>
+            <rect class="cls-15" x="1886.7" y="569.1" width="3.13" height="3.13" transform="translate(2458.94 -1317.6) rotate(90)" />
+            <rect class="cls-15" x="1886.7" y="565.8" width="3.13" height="3.13" transform="translate(2455.63 -1320.9) rotate(90)" />
+            <rect class="cls-15" x="1886.7" y="572.24" width="3.13" height="3.13" transform="translate(2462.07 -1314.46) rotate(90)" />
+            <g>
+              <rect class="cls-15" x="1886.7" y="575.37" width="3.13" height="3.13" transform="translate(2465.2 -1311.33) rotate(90)" />
+              <polygon class="cls-15" points="1888.27 580.07 1886.7 578.5 1889.83 578.5 1888.27 580.07 1888.27 580.07" />
+            </g>
+            <rect class="cls-15" x="1907.37" y="565.8" width="3.13" height="3.13" transform="translate(3817.87 1134.73) rotate(180)" />
+            <rect class="cls-15" x="1904.24" y="565.8" width="3.13" height="3.13" transform="translate(3811.61 1134.73) rotate(180)" />
+            <rect class="cls-15" x="1901.11" y="565.8" width="3.13" height="3.13" transform="translate(3805.35 1134.73) rotate(180)" />
+            <polygon class="cls-15" points="1899.54 567.36 1901.11 565.8 1901.11 568.93 1899.54 567.36 1899.54 567.36" />
+            <polygon class="cls-15" points="1897.66 565.8 1899.23 567.36 1899.23 567.36 1897.66 568.93 1897.66 565.8" />
+            <rect class="cls-15" x="1894.53" y="565.8" width="3.13" height="3.13" transform="translate(3792.19 1134.73) rotate(180)" />
+            <rect class="cls-15" x="1889.99" y="565.8" width="4.54" height="3.13" transform="translate(3784.52 1134.73) rotate(180)" />
+            <polygon class="cls-15" points="1910.5 578.73 1912.07 580.3 1912.07 580.3 1910.5 581.86 1910.5 578.73" />
+            <rect class="cls-15" x="1907.37" y="578.73" width="3.13" height="3.13" transform="translate(3817.87 1160.6) rotate(180)" />
+            <rect class="cls-15" x="1904.24" y="578.73" width="3.13" height="3.13" transform="translate(3811.61 1160.6) rotate(180)" />
+            <rect class="cls-15" x="1901.11" y="578.73" width="3.13" height="3.13" transform="translate(3805.35 1160.6) rotate(180)" />
+            <polygon class="cls-15" points="1899.54 580.3 1901.11 578.73 1901.11 581.86 1899.54 580.3 1899.54 580.3" />
+            <polygon class="cls-15" points="1897.66 578.73 1899.23 580.3 1899.23 580.3 1897.66 581.86 1897.66 578.73" />
+            <rect class="cls-15" x="1894.53" y="578.73" width="3.13" height="3.13" transform="translate(3792.19 1160.6) rotate(180)" />
+            <rect class="cls-15" x="1889.83" y="578.73" width="4.7" height="3.13" transform="translate(3784.36 1160.6) rotate(180)" />
+            <polygon class="cls-15" points="1888.27 580.3 1889.83 578.73 1889.83 581.86 1888.27 580.3 1888.27 580.3" />
+          </g>
+          <g>
+            <g>
+              <g>
+                <polygon class="cls-15" points="1897.82 633.85 1899.38 632.29 1899.38 632.29 1900.95 633.85 1897.82 633.85" />
+                <rect class="cls-15" x="1897.82" y="633.85" width="3.13" height="3.13" transform="translate(2534.8 -1263.97) rotate(90)" />
+                <rect class="cls-15" x="1897.82" y="636.98" width="3.13" height="3.13" transform="translate(2537.93 -1260.84) rotate(90)" />
+              </g>
+              <g>
+                <rect class="cls-15" x="1897.82" y="640.12" width="3.13" height="3.13" transform="translate(2541.07 -1257.7) rotate(90)" />
+                <polygon class="cls-15" points="1899.38 644.81 1897.82 643.25 1900.95 643.25 1899.38 644.81 1899.38 644.81" />
+              </g>
+            </g>
+            <polygon class="cls-15" points="1912.23 630.55 1913.8 632.11 1913.8 632.11 1912.23 633.68 1912.23 630.55" />
+            <rect class="cls-15" x="1907.37" y="630.55" width="4.86" height="3.13" transform="translate(3819.6 1264.22) rotate(180)" />
+            <rect class="cls-15" x="1904.24" y="630.55" width="3.13" height="3.13" transform="translate(3811.61 1264.22) rotate(180)" />
+            <rect class="cls-15" x="1901.11" y="630.55" width="3.13" height="3.13" transform="translate(3805.35 1264.22) rotate(180)" />
+            <polygon class="cls-15" points="1899.54 632.11 1901.11 630.55 1901.11 633.68 1899.54 632.11 1899.54 632.11" />
+            <polygon class="cls-15" points="1912.23 643.41 1913.8 644.97 1913.8 644.97 1912.23 646.54 1912.23 643.41" />
+            <rect class="cls-15" x="1907.37" y="643.41" width="4.86" height="3.13" transform="translate(3819.6 1289.94) rotate(180)" />
+            <rect class="cls-15" x="1904.24" y="643.41" width="3.13" height="3.13" transform="translate(3811.61 1289.94) rotate(180)" />
+            <rect class="cls-15" x="1901.11" y="643.41" width="3.13" height="3.13" transform="translate(3805.35 1289.94) rotate(180)" />
+            <polygon class="cls-15" points="1899.54 644.97 1901.11 643.41 1901.11 646.54 1899.54 644.97 1899.54 644.97" />
+            <polygon class="cls-15" points="1897.66 643.41 1899.23 644.97 1899.23 644.97 1897.66 646.54 1897.66 643.41" />
+            <rect class="cls-15" x="1894.53" y="643.41" width="3.13" height="3.13" transform="translate(3792.19 1289.94) rotate(180)" />
+            <rect class="cls-15" x="1891.4" y="643.41" width="3.13" height="3.13" transform="translate(3785.93 1289.94) rotate(180)" />
+            <rect class="cls-15" x="1888.27" y="643.41" width="3.13" height="3.13" transform="translate(3779.66 1289.94) rotate(180)" />
+            <polygon class="cls-15" points="1886.7 644.97 1888.27 643.41 1888.27 646.54 1886.7 644.97 1886.7 644.97" />
+            <rect class="cls-15" x="1910.67" y="614.65" width="3.13" height="3.13" transform="translate(2528.45 -1296.01) rotate(90)" />
+            <rect class="cls-15" x="1910.67" y="611.35" width="3.13" height="3.13" transform="translate(2525.15 -1299.32) rotate(90)" />
+            <rect class="cls-15" x="1910.67" y="617.79" width="3.13" height="3.13" transform="translate(2531.59 -1292.88) rotate(90)" />
+            <g>
+              <rect class="cls-15" x="1910.67" y="620.92" width="3.13" height="3.13" transform="translate(2534.72 -1289.75) rotate(90)" />
+              <polygon class="cls-15" points="1912.23 625.62 1910.67 624.05 1913.8 624.05 1912.23 625.62 1912.23 625.62" />
+            </g>
+            <rect class="cls-15" x="1897.83" y="614.65" width="3.13" height="3.13" transform="translate(2515.62 -1283.18) rotate(90)" />
+            <rect class="cls-15" x="1897.83" y="617.79" width="3.13" height="3.13" transform="translate(2518.75 -1280.04) rotate(90)" />
+            <g>
+              <rect class="cls-15" x="1897.83" y="620.92" width="3.13" height="3.13" transform="translate(2521.88 -1276.91) rotate(90)" />
+              <polygon class="cls-15" points="1899.4 625.62 1897.83 624.05 1900.96 624.05 1899.4 625.62 1899.4 625.62" />
+              <polygon class="cls-15" points="1899.4 613.09 1897.83 614.65 1900.96 614.65 1899.4 613.09 1899.4 613.09" />
+            </g>
+            <rect class="cls-15" x="1886.7" y="614.65" width="3.13" height="3.13" transform="translate(2504.49 -1272.05) rotate(90)" />
+            <rect class="cls-15" x="1886.7" y="611.35" width="3.13" height="3.13" transform="translate(2501.18 -1275.35) rotate(90)" />
+            <rect class="cls-15" x="1886.7" y="617.79" width="3.13" height="3.13" transform="translate(2507.62 -1268.91) rotate(90)" />
+            <g>
+              <rect class="cls-15" x="1886.7" y="620.92" width="3.13" height="3.13" transform="translate(2510.75 -1265.78) rotate(90)" />
+              <polygon class="cls-15" points="1888.27 625.62 1886.7 624.05 1889.83 624.05 1888.27 625.62 1888.27 625.62" />
+            </g>
+            <rect class="cls-15" x="1907.37" y="611.35" width="3.13" height="3.13" transform="translate(3817.87 1225.83) rotate(180)" />
+            <rect class="cls-15" x="1904.24" y="611.35" width="3.13" height="3.13" transform="translate(3811.61 1225.83) rotate(180)" />
+            <rect class="cls-15" x="1901.11" y="611.35" width="3.13" height="3.13" transform="translate(3805.35 1225.83) rotate(180)" />
+            <polygon class="cls-15" points="1899.54 612.91 1901.11 611.35 1901.11 614.48 1899.54 612.91 1899.54 612.91" />
+            <polygon class="cls-15" points="1897.66 611.35 1899.23 612.91 1899.23 612.91 1897.66 614.48 1897.66 611.35" />
+            <rect class="cls-15" x="1894.53" y="611.35" width="3.13" height="3.13" transform="translate(3792.19 1225.83) rotate(180)" />
+            <rect class="cls-15" x="1889.99" y="611.35" width="4.54" height="3.13" transform="translate(3784.52 1225.83) rotate(180)" />
+            <polygon class="cls-15" points="1910.5 624.28 1912.07 625.85 1912.07 625.85 1910.5 627.41 1910.5 624.28" />
+            <rect class="cls-15" x="1907.37" y="624.28" width="3.13" height="3.13" transform="translate(3817.87 1251.7) rotate(180)" />
+            <rect class="cls-15" x="1904.24" y="624.28" width="3.13" height="3.13" transform="translate(3811.61 1251.7) rotate(180)" />
+            <rect class="cls-15" x="1901.11" y="624.28" width="3.13" height="3.13" transform="translate(3805.35 1251.7) rotate(180)" />
+            <polygon class="cls-15" points="1899.54 625.85 1901.11 624.28 1901.11 627.41 1899.54 625.85 1899.54 625.85" />
+            <polygon class="cls-15" points="1897.66 624.28 1899.23 625.85 1899.23 625.85 1897.66 627.41 1897.66 624.28" />
+            <rect class="cls-15" x="1894.53" y="624.28" width="3.13" height="3.13" transform="translate(3792.19 1251.7) rotate(180)" />
+            <rect class="cls-15" x="1889.83" y="624.28" width="4.7" height="3.13" transform="translate(3784.36 1251.7) rotate(180)" />
+            <polygon class="cls-15" points="1888.27 625.85 1889.83 624.28 1889.83 627.41 1888.27 625.85 1888.27 625.85" />
+          </g>
+          <g>
+            <g>
+              <polygon class="cls-15" points="1889.83 661.93 1888.27 660.36 1888.27 660.36 1886.7 661.93 1889.83 661.93" />
+              <rect class="cls-15" x="1886.7" y="661.93" width="3.13" height="3.13" transform="translate(2551.76 -1224.77) rotate(90)" />
+              <rect class="cls-15" x="1886.7" y="665.06" width="3.13" height="3.13" transform="translate(2554.89 -1221.64) rotate(90)" />
+            </g>
+            <g>
+              <rect class="cls-15" x="1886.7" y="668.19" width="3.13" height="3.13" transform="translate(2558.02 -1218.51) rotate(90)" />
+              <polygon class="cls-15" points="1888.27 672.89 1889.83 671.32 1886.7 671.32 1888.27 672.89 1888.27 672.89" />
+            </g>
+            <polygon class="cls-15" points="1890 658.62 1888.43 660.19 1888.43 660.19 1890 661.75 1890 658.62" />
+            <rect class="cls-15" x="1890" y="658.62" width="3.13" height="3.13" />
+            <rect class="cls-15" x="1893.13" y="658.62" width="3.13" height="3.13" />
+            <rect class="cls-15" x="1896.26" y="658.62" width="3.13" height="3.13" />
+            <polygon class="cls-15" points="1900.96 660.19 1899.39 658.62 1899.39 661.75 1900.96 660.19 1900.96 660.19" />
+            <polygon class="cls-15" points="1902.84 658.62 1901.27 660.19 1901.27 660.19 1902.84 661.75 1902.84 658.62" />
+            <rect class="cls-15" x="1902.84" y="658.62" width="3.13" height="3.13" />
+            <rect class="cls-15" x="1905.97" y="658.62" width="3.13" height="3.13" />
+            <rect class="cls-15" x="1909.1" y="658.62" width="3.13" height="3.13" />
+            <polygon class="cls-15" points="1913.8 660.19 1912.23 658.62 1912.23 661.75 1913.8 660.19 1913.8 660.19" />
+            <g>
+              <polygon class="cls-15" points="1910.67 704.71 1912.23 703.15 1912.23 703.15 1913.8 704.71 1910.67 704.71" />
+              <rect class="cls-15" x="1910.67" y="704.71" width="3.13" height="3.13" transform="translate(2618.51 -1205.95) rotate(90)" />
+              <rect class="cls-15" x="1910.67" y="707.85" width="3.13" height="3.13" transform="translate(2621.65 -1202.82) rotate(90)" />
+            </g>
+            <g>
+              <rect class="cls-15" x="1910.67" y="710.98" width="3.13" height="3.13" transform="translate(2624.78 -1199.69) rotate(90)" />
+              <polygon class="cls-15" points="1912.23 715.68 1910.67 714.11 1913.8 714.11 1912.23 715.68 1912.23 715.68" />
+            </g>
+            <g>
+              <polygon class="cls-15" points="1897.82 704.71 1899.38 703.15 1899.38 703.15 1900.95 704.71 1897.82 704.71" />
+              <rect class="cls-15" x="1897.82" y="704.71" width="3.13" height="3.13" transform="translate(2605.67 -1193.1) rotate(90)" />
+              <rect class="cls-15" x="1897.82" y="707.85" width="3.13" height="3.13" transform="translate(2608.8 -1189.97) rotate(90)" />
+            </g>
+            <g>
+              <rect class="cls-15" x="1897.82" y="710.98" width="3.13" height="3.13" transform="translate(2611.93 -1186.84) rotate(90)" />
+              <polygon class="cls-15" points="1899.38 715.68 1897.82 714.11 1900.95 714.11 1899.38 715.68 1899.38 715.68" />
+            </g>
+            <g>
+              <polygon class="cls-15" points="1886.7 704.71 1888.27 703.15 1888.27 703.15 1889.83 704.71 1886.7 704.71" />
+              <rect class="cls-15" x="1886.7" y="704.71" width="3.13" height="3.13" transform="translate(2594.55 -1181.99) rotate(90)" />
+              <rect class="cls-15" x="1886.7" y="707.85" width="3.13" height="3.13" transform="translate(2597.68 -1178.85) rotate(90)" />
+            </g>
+            <g>
+              <rect class="cls-15" x="1886.7" y="710.98" width="3.13" height="3.13" transform="translate(2600.81 -1175.72) rotate(90)" />
+              <polygon class="cls-15" points="1888.27 715.68 1886.7 714.11 1889.83 714.11 1888.27 715.68 1888.27 715.68" />
+            </g>
+            <polygon class="cls-15" points="1910.5 701.41 1912.07 702.97 1912.07 702.97 1910.5 704.54 1910.5 701.41" />
+            <rect class="cls-15" x="1907.37" y="701.41" width="3.13" height="3.13" transform="translate(3817.87 1405.95) rotate(180)" />
+            <rect class="cls-15" x="1904.24" y="701.41" width="3.13" height="3.13" transform="translate(3811.61 1405.95) rotate(180)" />
+            <rect class="cls-15" x="1901.11" y="701.41" width="3.13" height="3.13" transform="translate(3805.35 1405.95) rotate(180)" />
+            <polygon class="cls-15" points="1899.54 702.97 1901.11 701.41 1901.11 704.54 1899.54 702.97 1899.54 702.97" />
+            <polygon class="cls-15" points="1897.66 701.41 1899.23 702.97 1899.23 702.97 1897.66 704.54 1897.66 701.41" />
+            <rect class="cls-15" x="1894.53" y="701.41" width="3.13" height="3.13" transform="translate(3792.19 1405.95) rotate(180)" />
+            <rect class="cls-15" x="1889.83" y="701.41" width="4.7" height="3.13" transform="translate(3784.36 1405.95) rotate(180)" />
+            <polygon class="cls-15" points="1888.27 702.97 1889.83 701.41 1889.83 704.54 1888.27 702.97 1888.27 702.97" />
+            <g>
+              <polygon class="cls-15" points="1910.67 751.99 1912.23 750.42 1912.23 750.42 1913.8 751.99 1910.67 751.99" />
+              <rect class="cls-15" x="1910.67" y="751.99" width="3.13" height="3.13" transform="translate(2665.79 -1158.68) rotate(90)" />
+              <rect class="cls-15" x="1910.67" y="755.12" width="3.13" height="3.13" transform="translate(2668.92 -1155.55) rotate(90)" />
+            </g>
+            <g>
+              <rect class="cls-15" x="1910.67" y="758.25" width="3.13" height="3.13" transform="translate(2672.05 -1152.42) rotate(90)" />
+              <polygon class="cls-15" points="1912.23 762.95 1910.67 761.38 1913.8 761.38 1912.23 762.95 1912.23 762.95" />
+            </g>
+            <g>
+              <polygon class="cls-15" points="1897.82 751.99 1899.38 750.42 1899.38 750.42 1900.95 751.99 1897.82 751.99" />
+              <rect class="cls-15" x="1897.82" y="751.99" width="3.13" height="3.13" transform="translate(2652.94 -1145.83) rotate(90)" />
+              <rect class="cls-15" x="1897.82" y="755.12" width="3.13" height="3.13" transform="translate(2656.07 -1142.7) rotate(90)" />
+            </g>
+            <g>
+              <rect class="cls-15" x="1897.82" y="758.25" width="3.13" height="3.13" transform="translate(2659.2 -1139.57) rotate(90)" />
+              <polygon class="cls-15" points="1899.38 762.95 1897.82 761.38 1900.95 761.38 1899.38 762.95 1899.38 762.95" />
+            </g>
+            <g>
+              <polygon class="cls-15" points="1886.7 751.99 1888.27 750.42 1888.27 750.42 1889.83 751.99 1886.7 751.99" />
+              <rect class="cls-15" x="1886.7" y="751.99" width="3.13" height="3.13" transform="translate(2641.82 -1134.71) rotate(90)" />
+              <rect class="cls-15" x="1886.7" y="755.12" width="3.13" height="3.13" transform="translate(2644.95 -1131.58) rotate(90)" />
+            </g>
+            <g>
+              <rect class="cls-15" x="1886.7" y="758.25" width="3.13" height="3.13" transform="translate(2648.08 -1128.45) rotate(90)" />
+              <polygon class="cls-15" points="1888.27 762.95 1886.7 761.38 1889.83 761.38 1888.27 762.95 1888.27 762.95" />
+            </g>
+            <polygon class="cls-15" points="1910.5 748.68 1912.07 750.25 1912.07 750.25 1910.5 751.81 1910.5 748.68" />
+            <rect class="cls-15" x="1907.37" y="748.68" width="3.13" height="3.13" transform="translate(3817.87 1500.5) rotate(180)" />
+            <rect class="cls-15" x="1904.24" y="748.68" width="3.13" height="3.13" transform="translate(3811.61 1500.5) rotate(180)" />
+            <rect class="cls-15" x="1901.11" y="748.68" width="3.13" height="3.13" transform="translate(3805.35 1500.5) rotate(180)" />
+            <polygon class="cls-15" points="1899.54 750.25 1901.11 748.68 1901.11 751.81 1899.54 750.25 1899.54 750.25" />
+            <polygon class="cls-15" points="1897.66 748.68 1899.23 750.25 1899.23 750.25 1897.66 751.81 1897.66 748.68" />
+            <rect class="cls-15" x="1894.53" y="748.68" width="3.13" height="3.13" transform="translate(3792.19 1500.5) rotate(180)" />
+            <rect class="cls-15" x="1889.83" y="748.68" width="4.7" height="3.13" transform="translate(3784.36 1500.5) rotate(180)" />
+            <polygon class="cls-15" points="1888.27 750.25 1889.83 748.68 1889.83 751.81 1888.27 750.25 1888.27 750.25" />
+            <g>
+              <polygon class="cls-15" points="1889.83 694.97 1888.27 696.54 1888.27 696.54 1886.7 694.97 1889.83 694.97" />
+              <rect class="cls-15" x="1886.7" y="691.84" width="3.13" height="3.13" transform="translate(1194.86 2581.67) rotate(-90)" />
+              <rect class="cls-15" x="1886.7" y="688.71" width="3.13" height="3.13" transform="translate(1197.99 2578.54) rotate(-90)" />
+            </g>
+            <g>
+              <rect class="cls-15" x="1886.7" y="685.57" width="3.13" height="3.13" transform="translate(1201.13 2575.41) rotate(-90)" />
+              <polygon class="cls-15" points="1888.27 684.01 1889.83 685.57 1886.7 685.57 1888.27 684.01 1888.27 684.01" />
+            </g>
+            <polygon class="cls-15" points="1890 698.28 1888.43 696.71 1888.43 696.71 1890 695.14 1890 698.28" />
+            <rect class="cls-15" x="1890" y="695.14" width="3.13" height="3.13" />
+            <rect class="cls-15" x="1893.13" y="695.14" width="3.13" height="3.13" />
+            <rect class="cls-15" x="1896.26" y="695.14" width="3.13" height="3.13" />
+            <polygon class="cls-15" points="1900.96 696.71 1899.39 698.28 1899.39 695.14 1900.96 696.71 1900.96 696.71" />
+            <polygon class="cls-15" points="1893.13 691.84 1891.56 691.84 1890 690.27 1890 690.27 1891.56 688.71 1893.13 688.71 1893.13 691.84" />
+            <rect class="cls-15" x="1893.13" y="688.71" width="3.13" height="3.13" />
+            <rect class="cls-15" x="1896.26" y="688.71" width="3.13" height="3.13" />
+            <polygon class="cls-15" points="1900.96 690.27 1899.39 691.84 1899.39 688.71 1900.96 690.27 1900.96 690.27" />
+            <polygon class="cls-15" points="1902.84 698.28 1901.27 696.71 1901.27 696.71 1902.84 695.14 1902.84 698.28" />
+            <rect class="cls-15" x="1902.84" y="695.14" width="3.13" height="3.13" />
+            <rect class="cls-15" x="1905.97" y="695.14" width="3.13" height="3.13" />
+            <rect class="cls-15" x="1909.1" y="695.14" width="3.13" height="3.13" />
+            <polygon class="cls-15" points="1913.8 696.71 1912.23 698.28 1912.23 695.14 1913.8 696.71 1913.8 696.71" />
+            <polygon class="cls-15" points="1890 685.42 1888.43 683.85 1888.43 683.85 1890 682.28 1890 685.42" />
+            <rect class="cls-15" x="1890" y="682.28" width="3.13" height="3.13" />
+            <rect class="cls-15" x="1893.13" y="682.28" width="3.13" height="3.13" />
+            <rect class="cls-15" x="1896.26" y="682.28" width="3.13" height="3.13" />
+            <polygon class="cls-15" points="1900.96 683.85 1899.39 685.42 1899.39 682.28 1900.96 683.85 1900.96 683.85" />
+            <polygon class="cls-15" points="1902.84 685.42 1901.27 683.85 1901.27 683.85 1902.84 682.28 1902.84 685.42" />
+            <rect class="cls-15" x="1902.84" y="682.28" width="3.13" height="3.13" />
+            <rect class="cls-15" x="1905.97" y="682.28" width="3.13" height="3.13" />
+            <rect class="cls-15" x="1909.1" y="682.28" width="3.13" height="3.13" />
+            <polygon class="cls-15" points="1913.8 683.85 1912.23 685.42 1912.23 682.28 1913.8 683.85 1913.8 683.85" />
+            <polygon class="cls-15" points="1899.39 676.02 1900.96 677.59 1900.96 677.59 1899.39 679.15 1899.39 676.02" />
+            <rect class="cls-15" x="1896.26" y="676.02" width="3.13" height="3.13" transform="translate(3795.65 1355.17) rotate(180)" />
+            <rect class="cls-15" x="1893.13" y="676.02" width="3.13" height="3.13" transform="translate(3789.39 1355.17) rotate(180)" />
+            <rect class="cls-15" x="1888.43" y="676.02" width="4.7" height="3.13" transform="translate(3781.56 1355.17) rotate(180)" />
+            <polygon class="cls-15" points="1886.87 677.59 1888.43 676.02 1888.43 679.15 1886.87 677.59 1886.87 677.59" />
+            <polygon class="cls-15" points="1912.23 676.02 1913.8 677.59 1913.8 677.59 1912.23 679.15 1912.23 676.02" />
+            <rect class="cls-15" x="1909.1" y="676.02" width="3.13" height="3.13" transform="translate(3821.34 1355.17) rotate(180)" />
+            <rect class="cls-15" x="1905.97" y="676.02" width="3.13" height="3.13" transform="translate(3815.07 1355.17) rotate(180)" />
+            <rect class="cls-15" x="1902.84" y="676.02" width="3.13" height="3.13" transform="translate(3808.81 1355.17) rotate(180)" />
+            <polygon class="cls-15" points="1901.27 677.59 1902.84 676.02 1902.84 679.15 1901.27 677.59 1901.27 677.59" />
+            <polygon class="cls-15" points="1899.39 718.81 1900.96 720.37 1900.96 720.37 1899.39 721.94 1899.39 718.81" />
+            <rect class="cls-15" x="1896.26" y="718.81" width="3.13" height="3.13" transform="translate(3795.65 1440.75) rotate(180)" />
+            <rect class="cls-15" x="1893.13" y="718.81" width="3.13" height="3.13" transform="translate(3789.39 1440.75) rotate(180)" />
+            <rect class="cls-15" x="1888.43" y="718.81" width="4.7" height="3.13" transform="translate(3781.56 1440.75) rotate(180)" />
+            <polygon class="cls-15" points="1886.87 720.37 1888.43 718.81 1888.43 721.94 1886.87 720.37 1886.87 720.37" />
+            <polygon class="cls-15" points="1912.23 718.81 1913.8 720.37 1913.8 720.37 1912.23 721.94 1912.23 718.81" />
+            <rect class="cls-15" x="1909.1" y="718.81" width="3.13" height="3.13" transform="translate(3821.34 1440.75) rotate(180)" />
+            <rect class="cls-15" x="1905.97" y="718.81" width="3.13" height="3.13" transform="translate(3815.07 1440.75) rotate(180)" />
+            <rect class="cls-15" x="1902.84" y="718.81" width="3.13" height="3.13" transform="translate(3808.81 1440.75) rotate(180)" />
+            <polygon class="cls-15" points="1901.27 720.37 1902.84 718.81 1902.84 721.94 1901.27 720.37 1901.27 720.37" />
+            <polygon class="cls-15" points="1899.39 742.42 1900.96 743.98 1900.96 743.98 1899.39 745.55 1899.39 742.42" />
+            <rect class="cls-15" x="1896.26" y="742.42" width="3.13" height="3.13" transform="translate(3795.65 1487.97) rotate(180)" />
+            <rect class="cls-15" x="1893.13" y="742.42" width="3.13" height="3.13" transform="translate(3789.39 1487.97) rotate(180)" />
+            <rect class="cls-15" x="1888.43" y="742.42" width="4.7" height="3.13" transform="translate(3781.56 1487.97) rotate(180)" />
+            <polygon class="cls-15" points="1886.87 743.98 1888.43 742.42 1888.43 745.55 1886.87 743.98 1886.87 743.98" />
+            <polygon class="cls-15" points="1912.23 742.42 1913.8 743.98 1913.8 743.98 1912.23 745.55 1912.23 742.42" />
+            <rect class="cls-15" x="1909.1" y="742.42" width="3.13" height="3.13" transform="translate(3821.34 1487.97) rotate(180)" />
+            <rect class="cls-15" x="1905.97" y="742.42" width="3.13" height="3.13" transform="translate(3815.07 1487.97) rotate(180)" />
+            <rect class="cls-15" x="1902.84" y="742.42" width="3.13" height="3.13" transform="translate(3808.81 1487.97) rotate(180)" />
+            <polygon class="cls-15" points="1901.27 743.98 1902.84 742.42 1902.84 745.55 1901.27 743.98 1901.27 743.98" />
+            <g>
+              <polygon class="cls-15" points="1908.93 736.15 1910.49 736.15 1912.06 737.72 1912.06 737.72 1910.49 739.29 1908.93 739.29 1908.93 736.15" />
+              <rect class="cls-15" x="1905.97" y="736.15" width="3.13" height="3.13" transform="translate(3815.07 1475.44) rotate(180)" />
+              <rect class="cls-15" x="1902.84" y="736.15" width="3.13" height="3.13" transform="translate(3808.81 1475.44) rotate(180)" />
+              <polygon class="cls-15" points="1901.27 737.72 1902.84 736.15 1902.84 739.29 1901.27 737.72 1901.27 737.72" />
+            </g>
+            <g>
+              <polygon class="cls-15" points="1899.39 736.15 1900.96 737.72 1900.96 737.72 1899.39 739.29 1899.39 736.15" />
+              <rect class="cls-15" x="1896.26" y="736.15" width="3.13" height="3.13" transform="translate(3795.65 1475.44) rotate(180)" />
+              <rect class="cls-15" x="1893.13" y="736.15" width="3.13" height="3.13" transform="translate(3789.39 1475.44) rotate(180)" />
+              <rect class="cls-15" x="1890" y="736.15" width="3.13" height="3.13" transform="translate(3783.13 1475.44) rotate(180)" />
+              <polygon class="cls-15" points="1888.43 737.72 1890 736.15 1890 739.29 1888.43 737.72 1888.43 737.72" />
+            </g>
+            <g>
+              <polygon class="cls-15" points="1889.83 726.64 1888.27 725.07 1888.27 725.07 1886.7 726.64 1889.83 726.64" />
+              <rect class="cls-15" x="1886.7" y="726.64" width="3.13" height="3.13" transform="translate(2616.47 -1160.06) rotate(90)" />
+              <rect class="cls-15" x="1886.7" y="729.77" width="3.13" height="3.13" transform="translate(2619.6 -1156.93) rotate(90)" />
+            </g>
+            <g>
+              <rect class="cls-15" x="1886.7" y="732.9" width="3.13" height="3.13" transform="translate(2622.73 -1153.8) rotate(90)" />
+              <polygon class="cls-15" points="1888.27 737.6 1889.83 736.03 1886.7 736.03 1888.27 737.6 1888.27 737.6" />
+            </g>
+            <polygon class="cls-15" points="1913.8 732.87 1912.23 731.3 1912.23 731.3 1910.67 732.87 1913.8 732.87" />
+            <g>
+              <rect class="cls-15" x="1910.67" y="732.87" width="3.13" height="3.13" transform="translate(2646.67 -1177.8) rotate(90)" />
+              <polygon class="cls-15" points="1912.23 737.56 1913.8 736 1910.67 736 1912.23 737.56 1912.23 737.56" />
+            </g>
+          </g>
+        </g>
+      </g>
+      </svg>

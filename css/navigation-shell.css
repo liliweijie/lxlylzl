@@ -33,4 +33,10 @@ html[data-surface=glass] .space-links a,html[data-surface=glass] .glass-toggle{c
 .peek-rail:is(:hover,:focus-visible,.rail-expanded,.rail-dragging):not(.rail-cover) .peek-rail__ticket{opacity:1;visibility:visible}
 .peek-rail.rail-cover{background:#0f0f0f!important}
 .glass-toggle.is-dark-button{background:#000;color:#fff;border-color:#ffffff99}
+.rail-signature{top:39%;width:40px;height:clamp(145px,24vh,260px);writing-mode:horizontal-tb;display:block}
+.rail-signature img{width:100%;height:100%;object-fit:contain;display:block}
+.rail-loading{position:absolute;top:16%;left:50%;width:70px;height:14px;transform:translateX(-50%) rotate(90deg);transform-origin:center;pointer-events:none}
+.rail-loading img{display:block;width:100%;height:100%;object-fit:contain}
+.rail-join{top:24%}.rail-to{top:30%}
+.rail-instruction{font-size:12px;line-height:1.4;color:#fdfdfdcc;letter-spacing:.08em;top:auto;bottom:70px}
 @media(prefers-reduced-motion:reduce){.space-header,.space-links,.space-logo *,.glass-toggle,.page-glass,.peek-rail__ticket{transition:none!important}}
