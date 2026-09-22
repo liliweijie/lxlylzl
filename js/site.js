@@ -62,7 +62,7 @@
     } catch (e) { /* ignore */ }
     // consume the flag so plain refreshes / external entries never animate
     try { sessionStorage.removeItem(NAV_KEY); } catch (e) { /* ignore */ }
-    if (!flag || Date.now() - flag.ts >= 8000) {
+    if (!flag || flag.rail || Date.now() - flag.ts >= 8000) {
       document.documentElement.removeAttribute('data-nav-dir');
       return;
     }

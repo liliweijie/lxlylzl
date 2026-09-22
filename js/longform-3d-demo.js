@@ -95,6 +95,7 @@
     syncIndex();
   }
   function open(index){
+    if(window.parent!==window)window.parent.postMessage({type:'longform-open'},location.origin);
     selected=index;cards.forEach(function(card,i){card.classList.toggle('is-selected',i===index)});var item=works[index];phoneDoc.innerHTML=markup(item,index,true);readerNo.textContent=String(index+1).padStart(2,'0')+' / '+String(works.length).padStart(2,'0');readerTitle.textContent=item.title;readerType.textContent=item.segments?'长图设计':item.type+' · '+item.year;viewport.scrollTop=0;updateProgress();archive.classList.add('has-selection');reader.setAttribute('aria-hidden','false');window.setTimeout(function(){if(selected>=0)viewport.focus({preventScroll:true})},650);
   }
   function close(){selected=-1;archive.classList.remove('has-selection');reader.setAttribute('aria-hidden','true');focus(focused)}
@@ -107,7 +108,7 @@
   deck.addEventListener('pointermove',function(e){if(!drag||drag.phone)return;var delta=e.clientX-drag.x;if(Math.abs(delta)>12){drag.moved=true;targetPosition=drag.start-delta/130;focused=wrap(Math.round(targetPosition));syncIndex()}});
   deck.addEventListener('pointerup',function(e){var released=drag;if(drag&&deck.hasPointerCapture(e.pointerId))deck.releasePointerCapture(e.pointerId);drag=null;if(released&&released.button===0&&!released.moved&&released.card>=0)open(released.card)});
   document.addEventListener('pointerdown',function(e){if(selected<0||reader.contains(e.target)||e.target.closest('.space-header,.peek-rail'))return;close();e.preventDefault();e.stopPropagation()},true);
-  viewport.addEventListener('pointerdown',function(e){if(e.button!==0)return;drag={phone:true,y:e.clientY,scroll:viewport.scrollTop};viewport.classList.add('is-dragging');viewport.setPointerCapture(e.pointerId)});
+  viewport.addEventListener('pointerdown',function(e){if(e.button!==0||e.pointerType==='touch')return;drag={phone:true,y:e.clientY,scroll:viewport.scrollTop};viewport.classList.add('is-dragging');viewport.setPointerCapture(e.pointerId)});
   viewport.addEventListener('pointermove',function(e){if(!drag||!drag.phone)return;viewport.scrollTop=drag.scroll+(drag.y-e.clientY)});
   viewport.addEventListener('pointerup',function(e){if(drag&&drag.phone&&viewport.hasPointerCapture(e.pointerId))viewport.releasePointerCapture(e.pointerId);viewport.classList.remove('is-dragging');drag=null});
   document.addEventListener('keydown',function(e){if(e.key==='Escape'&&selected>=0)close();else if(e.key==='ArrowRight')step(1);else if(e.key==='ArrowLeft')step(-1)});

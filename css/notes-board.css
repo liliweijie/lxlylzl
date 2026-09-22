@@ -1,5 +1,6 @@
 .frag-board .frag{left:0;top:0;touch-action:pan-y;user-select:none;cursor:grab!important;will-change:transform}
 .frag-board .frag.is-dragging{cursor:grabbing!important;z-index:10}
+@media(pointer:coarse){.frag-board .frag{touch-action:none}.note-swatch{width:36px;height:36px}.frag-open{min-height:32px}}
 .frag-board .frag:focus-visible{outline:1px solid var(--note-color);outline-offset:5px;border-radius:18px}
 .frag-board .frag__drift,.frag-board .frag.fresh{animation:none!important}
 .frag-board .frag__float,.frag-board .frag.mine .frag__float{border-left:3px solid var(--note-color,#ed5945);transform:none!important}

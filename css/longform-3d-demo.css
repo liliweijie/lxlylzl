@@ -154,3 +154,22 @@ html{overflow-y:auto}body{overflow-x:hidden;overflow-y:auto}
 .embedded .archive-intro{top:40px}.embedded .reader{bottom:0}
 @media(max-width:720px){.long-card{width:9.75vh!important}.embedded .archive-intro{top:22px}.deck-index{left:8px;right:8px}.deck-index button{min-width:22px}.reader-meta strong{font-size:14px}}
 @media (prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition-duration:.01ms!important}.phone-shell{transform:none}}
+/* Size the reading device against its containing frame, including landscape. */
+.embedded .reader{padding:52px 20px 48px;grid-template-columns:minmax(80px,130px) minmax(0,1fr);gap:16px}
+.embedded .phone-shell{height:min(calc(100svh - 112px),720px);max-width:100%;justify-self:center;min-height:0;flex-shrink:0}
+.embedded .reader-meta{margin-top:20px;min-width:0}
+.embedded .deck-index{bottom:12px;gap:2px 6px}
+@media(max-width:720px){
+  .embedded .reader{grid-template-columns:minmax(0,1fr);padding:52px 12px 48px}
+  .embedded .reader-meta{margin:0;max-width:calc(100% - 72px)}
+  .embedded .archive-intro h1{font-size:28px}
+}
+@media(max-height:500px){
+  .embedded .archive-intro{top:18px;width:140px}
+  .embedded .archive-intro h1{font-size:24px;margin-bottom:8px}
+  .embedded .archive-intro p{display:none}
+  .embedded .archive-count{margin-bottom:8px}
+  .embedded .deck{top:16vh;height:58vh}
+  .embedded .long-card{height:45vh}
+  .embedded .reader-meta strong{font-size:16px}
+}
