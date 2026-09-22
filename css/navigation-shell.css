@@ -11,7 +11,7 @@
 .glass-toggle{font:calc(20px - 8px * var(--nav-collapse))/1 Arial,sans-serif;color:#ccc;background:none;border:1px solid #fdfdfd99;border-radius:14px;padding:8px 16px;cursor:pointer;transition:font-size .4s,padding .4s}
 .glass-toggle:focus-visible{outline:2px solid #fd7b03;outline-offset:4px}
 .peek-rail{top:calc(var(--nav-height) + 10px)!important;right:0!important;bottom:0!important;width:calc(40px - 20px * var(--nav-collapse))!important;background:#0f0f0f;border-color:#fd7b0380;z-index:5100!important}
-.peek-rail:hover,.peek-rail.rail-expanded,.peek-rail:focus-visible{width:40px!important}
+.peek-rail:not(.rail-cover):not(.rail-dragging):is(:hover,.rail-expanded,:focus-visible){width:40px!important}
 .peek-rail.rail-dragging{width:var(--drag-width)!important}.peek-rail.rail-cover{width:100vw!important;top:0!important;z-index:5200!important}
 .peek-rail__ticket{width:40px!important;right:auto;left:0;padding:0;display:block}
 .peek-rail__no,.peek-rail__name,.peek-rail__barcode,.peek-rail__tip{display:none!important}
@@ -28,10 +28,11 @@ html[data-surface=glass] .space-links a,html[data-surface=glass] .glass-toggle{c
 /* Resting rail is an empty orange edge; its content appears only on expansion. */
 .peek-rail:not(:hover):not(:focus-visible):not(.rail-expanded):not(.rail-dragging):not(.rail-cover){width:10px!important;background:#f24c30!important;border-color:#f24c30!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
 .peek-rail:not(:hover):not(:focus-visible):not(.rail-expanded):not(.rail-dragging):not(.rail-cover) .peek-rail__ticket{opacity:0;visibility:hidden}
-.peek-rail:hover,.peek-rail:focus-visible,.peek-rail.rail-expanded{width:40px!important}
+.peek-rail:not(.rail-cover):not(.rail-dragging):is(:hover,:focus-visible,.rail-expanded){width:40px!important}
 .peek-rail .peek-rail__ticket{width:40px!important;transition:opacity .18s ease}
 .peek-rail:is(:hover,:focus-visible,.rail-expanded,.rail-dragging):not(.rail-cover) .peek-rail__ticket{opacity:1;visibility:visible}
-.peek-rail.rail-cover{background:#0f0f0f!important}
+/* A committed wipe must not be resized when it moves underneath the pointer. */
+.peek-rail.rail-cover{width:100vw!important;top:0!important;bottom:0!important;right:0!important;background:#0f0f0f!important}
 .glass-toggle.is-dark-button{background:#000;color:#fff;border-color:#ffffff99}
 .rail-signature{top:39%;width:40px;height:clamp(145px,24vh,260px);writing-mode:horizontal-tb;display:block}
 .rail-signature img{width:100%;height:100%;object-fit:contain;display:block}

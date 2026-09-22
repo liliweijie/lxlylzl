@@ -37,6 +37,7 @@
   }
 
   function reset() {
+    if (committing) return;
     pressed = null;
     rail.classList.remove('rail-dragging', 'rail-expanded');
     rail.style.removeProperty('--drag-width');
@@ -50,7 +51,7 @@
     else if (href) target = href;
     committing = true;
     pressed = null;
-    rail.classList.remove('rail-dragging');
+    rail.classList.remove('rail-dragging', 'rail-expanded');
     rail.classList.add('rail-cover');
     if (progress) progress.textContent = '100%';
     try { sessionStorage.setItem('lx:nav', JSON.stringify({ dir: 1, ts: Date.now() })); } catch (e) {}
