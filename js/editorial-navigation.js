@@ -10,6 +10,6 @@
   var gate=document.createElement('script');gate.src='js/rail-gate.js?v=nav-wipe-1';document.body.appendChild(gate);
   if(!document.querySelector('link[href="css/navigation-shell.css"]')){var shellStyle=document.createElement('link');shellStyle.rel='stylesheet';shellStyle.href='css/navigation-shell.css';document.head.appendChild(shellStyle);}
   var shellScript=document.createElement('script');shellScript.src='js/navigation-shell.js';document.body.appendChild(shellScript);
-  if(!document.getElementById('stage'))return;
+  if(!document.getElementById('stage')||document.querySelector('.ring-home'))return;
   var wireScript=document.createElement('script');wireScript.src='js/wireframe-type.js';document.body.appendChild(wireScript);
 })();
