@@ -1,11 +1,11 @@
 /* Shared device layout, loaded after brand styles. */
 .about-hero__portrait img{display:block;height:auto}
 .longform-showcase{margin-right:10px!important}
-#longformShowcase{display:block;width:100%;height:clamp(260px,calc(100svh - 120px),900px);min-height:0;border:0}
+#longformShowcase{display:block;width:100%;height:max(320px,calc(100svh - 80px));min-height:0;border:0}
 @media(max-width:700px),(max-height:500px) and (pointer:coarse){
   .container{padding-right:var(--gutter)}
   .longform-showcase{margin-right:0!important}
-  #longformShowcase{height:clamp(260px,calc(100svh - 90px),900px)}
+  #longformShowcase{height:max(320px,calc(100svh - 74px))}
 }
 /* Let public-page artwork use the viewport; keep reading surfaces bounded. */
 .container{max-width:none;padding-right:max(var(--gutter),72px)}

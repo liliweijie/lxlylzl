@@ -13,7 +13,11 @@
     {title:'FIELD NOTES',type:'EXPERIMENTAL PAGE',year:'2022',tone:'#728879',images:['assets/work-radical-face.webp','assets/work-demo-tea.png']}
   ];
   works=window.LONGFORM_WORKS||works;
+  // Two complete sequences extend the loop without changing the source artwork.
+  works=works.concat(works);
   var archive=document.querySelector('.archive'),deck=document.getElementById('deck'),indexEl=document.getElementById('deckIndex');
+  // Navigation stays outside the visual crop so its buttons remain usable.
+  archive.appendChild(indexEl);
   var reader=document.getElementById('reader'),viewport=document.getElementById('phoneViewport'),phoneDoc=document.getElementById('phoneDocument');
   var activeNo=document.getElementById('activeNo'),totalNo=document.getElementById('totalNo'),readerNo=document.getElementById('readerNo'),readerTitle=document.getElementById('readerTitle'),readerType=document.getElementById('readerType');
   var progressBar=document.getElementById('progressBar'),progressText=document.getElementById('progressText');
@@ -58,30 +62,43 @@
   var hoverStrength=works.map(function(){return 0});
   function wrap(value){return ((value%works.length)+works.length)%works.length;}
   function offsetFor(index){return wrap(index-position+works.length/2)-works.length/2;}
+  var arcFocus=0;
+  // One quarter-ellipse cubic, mirrored around the pointer-controlled apex.
+  function arcAt(x,radius,height){
+    var side=x<0?-1:1,q=Math.min(1,Math.abs(x)/radius),lo=0,hi=1,t=0,k=.5522847498;
+    for(var n=0;n<12;n++){t=(lo+hi)/2;var u=1-t,bx=3*u*u*t*k+3*u*t*t+t*t*t;if(bx<q)lo=t;else hi=t;}
+    var u=1-t,y=3*u*t*t*(1-k)+t*t*t;
+    var dx=3*u*u*k+6*u*t*(1-k),dy=6*u*t*(1-k)+3*t*t*k;
+    return {y:y*height,slope:side*dy*height/Math.max(.001,dx*radius),distance:q};
+  }
   function animate(time){
     var dt=Math.min(50,time-(previousTime||time-16));previousTime=time;
     var ease=reduced?1:1-Math.exp(-dt/130);position+=(targetPosition-position)*ease;
     if(pointer&&!drag&&Math.abs(targetPosition-position)>.02)hoverCard(hitCard(pointer.x,pointer.y));
     var tx=0,ty=0;if(pointer&&hovered>=0){var bounds=cards[hovered].getBoundingClientRect();tx=Math.max(-1,Math.min(1,(pointer.y-bounds.top)/bounds.height*2-1))*-5;ty=Math.max(-1,Math.min(1,(pointer.x-bounds.left)/bounds.width*2-1))*9;}
     tiltX+=(tx-tiltX)*ease;tiltY+=(ty-tiltY)*ease;
-    var spacing=innerWidth<=720?104:Math.max(100,Math.min(148,innerWidth*.092));
+    var spacing=innerWidth<=720?86:Math.max(92,innerWidth*.075);
+    var deckBounds=deck.getBoundingClientRect();
+    var inside=pointer&&pointer.y>=deckBounds.top&&pointer.y<=deckBounds.bottom&&selected<0;
+    var desiredFocus=inside?Math.max(-innerWidth*.44,Math.min(innerWidth*.44,pointer.x-(deckBounds.left+deckBounds.width/2))):0;
+    arcFocus+=(desiredFocus-arcFocus)*(reduced?1:1-Math.exp(-dt/260));
+    deck.dataset.arcFocus=arcFocus.toFixed(1);
     cards.forEach(function(card,i){
       var offset=offsetFor(i);var distance=Math.abs(offset);
       hoverStrength[i]+=((i===hovered?1:0)-hoverStrength[i])*ease;
       lifts[i]+=((i===selected?1:0)-lifts[i])*ease;
       var hot=hoverStrength[i],lift=lifts[i];
-      var angle=(-42+Math.tanh(offset*.5)*14)*(1-lift)*(1-hot*.85);
-      /* Pointer focus cancels depth shrinkage, including at either edge. */
-      var depth=-distance*38*(1-hot)+hot*95+lift*150;
-      var spread=hovered<0||i===hovered?0:Math.sign(offset-offsetFor(hovered))*38;
+      var spread=hovered<0||i===hovered?0:Math.sign(offset-offsetFor(hovered))*14;
       spreads[i]+=(spread-spreads[i])*ease;
       var localX=offset*spacing+spreads[i];
-      /* Keep the focused sheet under the pointer as perspective depth changes. */
-      localX*=1-hot*.08;
-      card.style.transform='translateX(calc(-50% + '+localX+'px)) translateZ('+depth+'px) rotateX('+(!reduced?tiltX*hot:0)+'deg) rotateY('+(angle+(!reduced?tiltY*hot:0))+'deg) scale('+(1+hot*.14+lift*.06)+')';
-      var baseLight=Math.max(.38,.84-distance*.065);
+      var arc=arcAt(localX-arcFocus,Math.max(420,innerWidth*.85),innerHeight*.24);
+      // Preserve the live gallery's unified three-quarter perspective.
+      var angle=(-42+Math.tanh(((localX-arcFocus)/spacing)*.5)*14)*(1-lift)*(1-hot*.85);
+      var depth=40-arc.distance*180+lift*90;
+      card.style.transform='translateX(calc(-50% + '+localX+'px)) translateY('+arc.y+'px) translateZ('+depth+'px) rotateX('+(!reduced?tiltX*hot:0)+'deg) rotateY('+(angle+(!reduced?tiltY*hot:0))+'deg) scale('+(1+hot*.025+lift*.03)+')';
+      var baseLight=.96-arc.distance*.42;
       card.style.filter='brightness('+(baseLight+(1.12-baseLight)*hot+lift*.15)+')';
-      card.style.opacity=String(Math.max(hot,Math.min(1,Math.max(0,(5-distance)*2))));
+      card.style.opacity=String(Math.max(hot,Math.min(1,Math.max(0,(10-distance)*2))));
       card.style.zIndex=String(i===selected?100:i===hovered?90:50-Math.round(distance*5));
     });
     if(!document.hidden)requestAnimationFrame(animate);

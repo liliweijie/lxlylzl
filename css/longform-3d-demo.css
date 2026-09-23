@@ -144,6 +144,13 @@ html{overflow-y:auto}body{overflow-x:hidden;overflow-y:auto}
 .deck-index button:focus-visible{outline:1px solid #ff863b;outline-offset:3px}
 .long-card{width:min(11.75vh,115px)!important}
 .longform-preview{display:block;width:100%;height:auto;pointer-events:none}
+.embedded .deck{left:1%;right:1%;top:24vh;height:76vh;perspective:max(1200px,140vw);perspective-origin:50% 50%;align-items:center}
+.embedded .long-card{bottom:auto;transform-origin:50% 50%}
+/* Crop the projected sheets, not their individual geometry or baseline. */
+.embedded .deck-zone{perspective:none;clip-path:inset(0 0 max(0px,calc(100% - 87vh)) 0)}
+.embedded .long-card{width:max(22vh,9vw)!important;height:max(88vh,36vw)}
+@media(max-width:720px){.embedded .deck{left:1%;right:1%;top:26vh;height:66vh}.embedded .long-card{width:17vh!important;height:68vh}.embedded .deck-zone{clip-path:inset(0 0 max(0px,calc(100% - 84vh)) 0)}}
+@media(max-height:500px){.embedded .long-card{width:12vh!important;height:48vh}}
 .longform-segment{display:block;width:100%;height:auto;margin:0}
 .phone-document{height:auto!important;max-height:none;min-height:0;overflow:visible}
 .card-document{min-height:0}.reader-meta strong{overflow-wrap:anywhere;font-size:22px}
@@ -155,10 +162,10 @@ html{overflow-y:auto}body{overflow-x:hidden;overflow-y:auto}
 @media(max-width:720px){.long-card{width:9.75vh!important}.embedded .archive-intro{top:22px}.deck-index{left:8px;right:8px}.deck-index button{min-width:22px}.reader-meta strong{font-size:14px}}
 @media (prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition-duration:.01ms!important}.phone-shell{transform:none}}
 /* Size the reading device against its containing frame, including landscape. */
-.embedded .reader{padding:52px 20px 48px;grid-template-columns:minmax(80px,130px) minmax(0,1fr);gap:16px}
-.embedded .phone-shell{height:min(calc(100svh - 112px),720px);max-width:100%;justify-self:center;min-height:0;flex-shrink:0}
+.embedded .reader{padding:52px 20px 48px;grid-template-columns:minmax(80px,130px) minmax(0,1fr);gap:16px;perspective:max(1400px,220vh)}
+.embedded .phone-shell{height:calc(100svh - 112px);width:min(calc((100svh - 112px)*.515),371px);aspect-ratio:auto;max-width:100%;justify-self:center;min-height:0;flex-shrink:0}
 .embedded .reader-meta{margin-top:20px;min-width:0}
-.embedded .deck-index{bottom:12px;gap:2px 6px}
+.embedded .deck-index{bottom:12px;left:4%;right:4%;gap:2px 6px;flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;scrollbar-width:thin}
 @media(max-width:720px){
   .embedded .reader{grid-template-columns:minmax(0,1fr);padding:52px 12px 48px}
   .embedded .reader-meta{margin:0;max-width:calc(100% - 72px)}
