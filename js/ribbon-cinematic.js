@@ -50,8 +50,10 @@ mount.addEventListener('pointerdown',e=>{if(e.button!==0||e.pointerType==='touch
 mount.addEventListener('pointermove',e=>{if(!drag)return;dragX=THREE.MathUtils.clamp(drag.rx+(e.clientY-drag.y)/innerHeight*.9,-.22,.22);dragY=THREE.MathUtils.clamp(drag.ry+(e.clientX-drag.x)/innerWidth*.9,-.3,.3);shift.x=THREE.MathUtils.clamp((e.clientX-drag.x)/innerWidth*.4,-.12,.12);shift.y=THREE.MathUtils.clamp(-(e.clientY-drag.y)/innerHeight*.3,-.09,.09)});
 function release(){drag=null;mount.classList.remove('dragging')}
 mount.addEventListener('pointerup',release);mount.addEventListener('pointercancel',release);mount.addEventListener('lostpointercapture',release);
-let raf;
-function render(time){const dt=Math.min(50,time-(last||time-16));last=time;const ease=reduced?1:1-Math.exp(-dt/160);current+=(target-current)*ease;
+let raf=0;
+function wakeHero(){if(!raf&&!document.hidden){last=0;raf=requestAnimationFrame(render)}}
+addEventListener("scroll",wakeHero,{passive:true});
+function render(time){raf=0;const dt=Math.min(50,time-(last||time-16));last=time;const ease=reduced?1:1-Math.exp(-dt/160);current+=(target-current)*ease;
  const p=current,s=sample(p),endWeight=Math.max(0,1-Math.min(p,1-p)*8);
  if(!drag){dragX*=1-ease*.12;dragY*=1-ease*.12;shift.x*=1-ease*.12;shift.y*=1-ease*.12}
  tilt.x+=((mouse.y*.055+dragX)*endWeight-tilt.x)*ease;tilt.y+=((mouse.x*.085+dragY)*endWeight-tilt.y)*ease;
@@ -65,8 +67,8 @@ function render(time){const dt=Math.min(50,time-(last||time-16));last=time;const
  outerMaterial.color.setScalar(1);innerMaterial.color.setScalar(1);
  const exit=Math.max(0,Math.min(1,(scrollY-SCROLL_SCREENS*innerHeight)/innerHeight));for(const el of [mount,caption,document.querySelector('.controls'),document.querySelector('.scroll-mark')]){el.style.translate=`0 ${-exit*innerHeight}px`;el.style.opacity=String(1-exit);el.style.pointerEvents=exit>.95?'none':''}
  document.body.dataset.drag=drag?'active':'idle';document.body.dataset.exit=exit.toFixed(2);
- renderer.render(scene,camera);document.body.dataset.stage=String(stage+1);raf=requestAnimationFrame(render);
+ renderer.render(scene,camera);document.body.dataset.stage=String(stage+1);if(exit<1&&!document.hidden)raf=requestAnimationFrame(render);
 }
-document.addEventListener('visibilitychange',()=>{if(document.hidden)cancelAnimationFrame(raf);else{last=0;raf=requestAnimationFrame(render)}});
+document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelAnimationFrame(raf);raf=0}else wakeHero()});
 renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();cancelAnimationFrame(raf);status.textContent='3D 画面暂时中断，请刷新页面恢复。'});
 resize();raf=requestAnimationFrame(render);

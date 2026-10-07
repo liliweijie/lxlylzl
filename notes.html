@@ -9,7 +9,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="liweijie">
 <meta property="og:title" content="碎碎念 NOTES · liweijie">
-<meta property="og:description" content="一些随手写下的碎片。公开留言 · 匿名 · 请友善 ✳">
+<meta property="og:description" content="一些随手写下的碎片，在这里随心漂浮 ✳">
 <meta property="og:url" content="https://lxlylzl.xyz/notes.html">
 <meta property="og:image" content="https://lxlylzl.xyz/assets/work-lens.webp">
 <meta name="twitter:card" content="summary_large_image">
@@ -34,6 +34,7 @@ if(n&&(Date.now()-n.ts)<8000)document.documentElement.setAttribute('data-nav-dir
 <link rel="stylesheet" href="css/rail-gate.css">
 <link rel="stylesheet" href="css/navigation-shell.css">
 <link rel="stylesheet" href="css/notes-board.css">
+<link rel="stylesheet" href="css/site-motion.css?v=notes-float-1">
 </head>
 <body data-page="3">
 <a class="skip-link" href="#main">跳到内容</a>
@@ -72,7 +73,7 @@ if(n&&(Date.now()-n.ts)<8000)document.documentElement.setAttribute('data-nav-dir
     <p class="kicker">NOTES / 04</p>
     <h1>LOOSE<br><i>thoughts.</i></h1>
     <p class="sub">一些随手写下的碎片。</p>
-    <p class="anon">公开留言 · 匿名 · 请友善 <span class="red">✳</span></p>
+    <p class="anon" data-notes-motion-copy>便签随心漂浮，想聊就点开 <span class="red">✳</span></p>
   </section>
 
   <!-- ============ floating fragments board (JS renders seeds + localStorage) ============ -->
@@ -88,7 +89,7 @@ if(n&&(Date.now()-n.ts)<8000)document.documentElement.setAttribute('data-nav-dir
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 19V5m-7 7 7-7 7 7"/></svg>
       </button>
     </div>
-    <p class="notes-input__notice">公开留言会保存到服务器;匿名,请友善。</p>
+    <p class="notes-input__notice" data-notes-motion-copy>公开留言 · 匿名 · 请友善。</p>
   </section>
 
   <!-- ============ REWIND ============ -->
@@ -110,8 +111,8 @@ if(n&&(Date.now()-n.ts)<8000)document.documentElement.setAttribute('data-nav-dir
   <p class="rewind-overlay__label">◂◂ REWIND TO 01</p>
 </div>
 
-<script src="js/notes-board.js?v=elastic-2" defer></script>
-<script src="js/site.js?v=notes-motion-1" defer></script>
-<script src="js/editorial-navigation.js" defer></script>
+<script src="js/notes-board.js?v=notes-float-1" defer></script>
+<script src="js/site.js?v=notes-float-1" defer></script>
+<script src="js/editorial-navigation.js?v=5" defer></script>
 </body>
 </html>

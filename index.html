@@ -381,32 +381,41 @@
 <div class="caption" hidden><h1 id="heading"></h1><p id="hint"></p></div>
 <div class="controls"><label class="scrub">EXPLORE <input id="scrub" type="range" min="0" max="1000" value="0" aria-label="圆环展示进度"></label></div>
 </section>
-  <section class="playground" id="playground" aria-labelledby="play-title">
-    <div class="section-meta"><span>01 / VISUAL PLAYGROUND</span><span>独立创作 · 持续试验</span><span>2026 EDITION</span></div>
-    <h1 id="play-title">A LITTLE<br><em>out of</em> ORDER<span class="title-star">✳</span></h1>
-    <div class="editorial-intro"><span>给好奇心，留一点空间。</span><p>图像、字体、交互。<br>一些认真做出来的、不太正经的想法。</p></div>
-    <div class="experiment-grid">
-      <button class="experiment optical" type="button" aria-label="切换光学实验颜色"><span class="card-top">001 — OPTICAL STUDY ↗</span><span class="large-orb"></span><span class="card-bottom">CHANGE YOUR PERSPECTIVE <i>点击，换个视角</i></span></button>
-      <button class="experiment type-study" type="button" aria-label="切换字体实验"><span class="card-top">002 — TYPE IN MOTION ↗</span><span class="type-word">乱<br>有序</span><span class="card-bottom">HAPPY ACCIDENTS <i>点击，打破秩序</i></span></button>
-      <button class="experiment bloom" type="button" aria-label="切换空间图形"><span class="card-top">003 — SPACE & FORM ↗</span><span class="bloom-symbol"><img src="assets/space-mark.svg" alt="三向空间标志"></span><span class="card-bottom">THREE AXES. ONE SPACE. <i>点击，转换方向</i></span></button>
-    </div>
-    <div class="archive-link"><span>本页图形为概念实验，非正式项目案例。</span><a href="works.html">进入作品档案 ↗</a></div>
-  </section>
-  <div class="word-band" aria-hidden="true"><span>DESIGN ✳ IMAGE ✳ CODE ✳ CURIOSITY ✳ DESIGN ✳ IMAGE ✳ CODE ✳ CURIOSITY ✳</span></div>
-  <section class="about-scene" aria-label="关于李伟杰">
-    <div class="section-meta"><span>02 / THE HUMAN BEHIND</span><span>SHENZHEN, CN</span></div>
-    <div class="about-layout"><div class="human-art" aria-hidden="true"><span class="human-eye">◉ ◉</span><span class="human-mouth">⌣</span><small>A WORK IN PROGRESS.</small></div><div class="about-copy"><span class="eyebrow">你好，我是李伟杰。</span><h2>ALWAYS<br><em>curious.</em></h2><p>从品牌视觉，到网页和交互。<br>喜欢把脑子里的东西，做成真的。</p><a href="about.html">更多关于我 ↗</a><div class="now-note"><span>ON MY MIND</span><span>设计 × 代码 × 影像<br>下一件有意思的事。</span></div></div></div>
-  </section>
-  <footer class="contact-scene"><div class="section-meta"><span>03 / KEEP IN TOUCH</span><a href="notes.html">随手记 ↗</a></div><a class="hello-link" href="mailto:hello@lxlylzl.xyz">SAY <em>hello.</em><span>↗</span></a><div class="footer-line"><span>LXLYLZL © 2026</span><span>保持好奇，偶尔出格。</span><a href="#stage">BACK TO TOP ↑</a></div></footer>
-  <div class="cursor" id="cursor" aria-hidden="true"></div>
-  <script src="js/editorial-navigation.js" defer></script>
-  <script>
-    document.querySelectorAll('.experiment').forEach(function(card) {
-      card.addEventListener('click', function() { card.classList.toggle('remixed'); });
-    });
-  </script>
-
-
-<script type="module" src="js/ribbon-cinematic.js?v=4"></script>
+<main class="play-world" id="main">
+<section class="toy-chapter" id="playground" aria-labelledby="toy-title">
+ <div class="lab-meta"><span>01 / FORM IS A PLAYTHING</span><span>拖动 · 松手 · 看看会发生什么</span></div>
+ <div class="lab-heading"><h2 id="toy-title">MAKE<br><em>some noise.</em></h2><p>设计不一定从答案开始。<br>也可以从一次碰撞开始。</p></div>
+ <div class="toy-room" aria-label="图形实验场"><span class="room-watermark" aria-hidden="true">PLAY</span><div class="toy-floor" aria-hidden="true"></div>
+  <button class="toy toy-orb" aria-label="拖动条纹球，方向键移动，回车弹起"><span></span></button>
+  <button class="toy toy-star" aria-label="拖动星形，方向键移动，回车弹起">✳</button>
+  <button class="toy toy-block" aria-label="拖动方块，方向键移动，回车弹起">好<br>奇</button>
+  <button class="toy toy-ring" aria-label="拖动圆环，方向键移动，回车弹起"></button>
+  <button class="toy toy-mark" aria-label="拖动空间标志，方向键移动，回车弹起"><img src="assets/space-mark.svg" alt=""></button>
+  <button class="toy toy-pill" aria-label="拖动胶囊，方向键移动，回车弹起">WHY NOT?</button>
+ </div>
+ <div class="lab-controls"><div role="group" aria-label="图形玩法"><button data-toy-action="kick">碰一下 ↗</button><button data-toy-action="gravity" aria-pressed="true">重力：开 ↓</button><button data-toy-action="arrange">排整齐 ≡</button></div><span id="toy-status" role="status">拿起任意图形，松手抛出去。</span></div>
+</section>
+<section class="type-chapter" aria-labelledby="type-title">
+ <div class="lab-meta"><span>02 / HAPPY ACCIDENTS</span><span>有秩序，也有意外</span></div>
+ <div class="type-intro"><h2 id="type-title">把规矩，<br><em>玩松一点。</em></h2><p>文字也是形状。<br>拖走一个字，试试新的排列。</p></div>
+ <div class="type-arena" aria-label="可拖动的文字"><span class="type-guide" aria-hidden="true">THERE IS NO WRONG COMPOSITION.</span><button class="type-piece" aria-label="拖动文字保">保</button><button class="type-piece" aria-label="拖动文字持">持</button><button class="type-piece" aria-label="拖动文字好">好</button><button class="type-piece" aria-label="拖动文字奇">奇</button><span class="type-stamp" aria-hidden="true">✳</span></div>
+ <div class="lab-controls"><div><button data-type-action="scatter">打破秩序 ↗</button><button data-type-action="reset">重新排版 ≡</button></div><span>可拖动文字 · 按方向键移动</span></div>
+</section>
+<section class="film-chapter" aria-labelledby="film-title">
+ <div class="lab-meta"><span>03 / FROM PLAY TO PRACTICE</span><a href="works.html">完整作品档案 ↗</a></div>
+ <div class="film-heading"><h2 id="film-title">SOME THINGS<br><em>became real.</em></h2><p>把实验带回真实项目。<br>往下滚，沿着画面走。</p></div>
+ <div class="film-window"><div class="film-track">
+ <a class="film-card" href="works.html"><img src="assets/work-central-on-air.webp" alt="Central on Air 项目" loading="lazy"><span><small>01 / CULTURE</small> CENTRAL ON AIR ↗</span></a>
+ <a class="film-card" href="works.html"><img src="assets/work-patch-system.webp" alt="Patch System 项目" loading="lazy"><span><small>02 / VISUAL SYSTEM</small> PATCH SYSTEM ↗</span></a>
+ <a class="film-card" href="works.html"><img src="assets/work-unis-footwear.webp" alt="Unis Footwear 项目" loading="lazy"><span><small>03 / CAMPAIGN</small> UNIS FOOTWEAR ↗</span></a>
+ <a class="film-card" href="works.html"><img src="assets/work-zaza.webp" alt="ZAZA 项目" loading="lazy"><span><small>04 / OBJECTS</small> ZAZA ↗</span></a>
+ </div></div><div class="film-progress" aria-hidden="true"><span></span></div>
+</section>
+<section class="human-chapter" aria-labelledby="human-title"><div class="lab-meta"><span>04 / STILL A WORK IN PROGRESS</span><span>LI WEIJIE · SHENZHEN</span></div><div class="human-end"><div><p>你好，我是李伟杰。</p><h2 id="human-title">ALWAYS<br><em>curious.</em></h2><p>从品牌视觉，到网页和交互。<br>喜欢把脑子里的东西，做成真的。</p><a href="about.html">认识一下 ↗</a></div><a class="note-door" href="notes.html"><span>一些还没变成作品的想法</span><strong>NOTES<br>↗</strong><small>打开我的便签墙</small></a></div></section>
+<footer class="play-footer"><a href="contact.html">下一件好玩的事，<br><em>一起做？ ↗</em></a><div><span>LXLYLZL © 2026 · KEEP EXPLORING</span><a href="#stage">回到圆环 ↑</a></div></footer>
+</main>
+<link rel="stylesheet" href="css/play-world.css?v=5">
+<script src="js/editorial-navigation.js?v=5" defer></script>
+<script type="module" src="js/ribbon-cinematic.js?v=5"></script>
 </body>
 </html>

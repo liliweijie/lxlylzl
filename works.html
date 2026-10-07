@@ -33,6 +33,7 @@ if(n&&(Date.now()-n.ts)<8000)document.documentElement.setAttribute('data-nav-dir
 <link rel="stylesheet" href="css/wireframe-system.css">
 <link rel="stylesheet" href="css/rail-gate.css">
 <link rel="stylesheet" href="css/navigation-shell.css">
+<link rel="stylesheet" href="css/site-motion.css?v=5">
 </head>
 <body data-page="1">
 <a class="skip-link" href="#main">跳到内容</a>
@@ -66,25 +67,28 @@ if(n&&(Date.now()-n.ts)<8000)document.documentElement.setAttribute('data-nav-dir
 <div class="scanline" aria-hidden="true"></div>
 
 <main id="main">
-  <!-- ============ header ============ -->
-  <section class="container works-head">
-    <div class="works-head__row">
-      <div>
-        <p class="kicker" style="margin-bottom:16px">ARCHIVE / 02</p>
-        <h1 class="works-head__title">
-          <span class="cn">作品</span>
-          <span class="en">SELECTED<br><i>works.</i></span>
-        </h1>
-      </div>
-      <p class="works-head__side">TOTAL 14 · 2022—2026 · DES/DEV/BRAND/PKG</p>
+  <section class="works-stage" aria-labelledby="works-stage-title">
+    <div class="works-stage__heading">
+      <h1 id="works-stage-title"><span>SELECTED</span> <i>works.</i></h1>
+      <p>滑动，让作品环绕你。<br>展开档案，点击走进长图。</p>
     </div>
-
-    <div class="works-head__divider">
-      <span class="line" aria-hidden="true"></span>
-      <span data-barcode="2,56,26" data-barcode-label="ARCHIVE-02"></span>
-      <span class="line" aria-hidden="true"></span>
+    <div class="archive-modes" role="group" aria-label="档案运动方式">
+      <button type="button" data-archive-action="play" aria-pressed="true">暂停环绕</button>
+      <button type="button" data-archive-action="layout" aria-pressed="false">展开档案</button>
+      <button type="button" data-archive-action="shuffle">洗牌 ↗</button><span>滑动浏览 · 轻点阅读</span>
     </div>
-
+    <div class="longform-showcase">
+      <iframe id="longformShowcase" title="可拖动的长图作品档案" src="longform-3d-demo.html?embed=1&motion=5" loading="eager"></iframe>
+    </div>
+    <div class="works-stage__controls">
+      <div class="archive-selection" aria-live="polite"><small id="archiveCount">载入中</small><strong id="archiveTitle">长图作品档案</strong></div>
+      <button class="archive-control" data-archive-action="prev" type="button" aria-label="上一件长图" disabled>←</button>
+      <button class="archive-control" data-archive-action="next" type="button" aria-label="下一件长图" disabled>→</button>
+      <button class="archive-control" data-archive-action="read" type="button" disabled>打开阅读 ↗</button>
+    </div>
+  </section>
+  <section class="container works-filter-section" aria-labelledby="all-work-title">
+    <h2 id="all-work-title">项目档案</h2>
     <div class="filters" role="group" aria-label="作品筛选">
       <button class="filter-btn" type="button" data-filter="all" aria-pressed="true">全部 14</button>
       <button class="filter-btn" type="button" data-filter="设计" aria-pressed="false">设计 11</button>
@@ -93,18 +97,12 @@ if(n&&(Date.now()-n.ts)<8000)document.documentElement.setAttribute('data-nav-dir
       <button class="filter-btn" type="button" data-filter="包装" aria-pressed="false">包装 1</button>
     </div>
   </section>
-
-  <section class="longform-showcase" aria-label="长图作品档案" style="position:relative;margin-right:40px;isolation:isolate;z-index:1">
-    <iframe id="longformShowcase" title="3D 长图作品档案" src="longform-3d-demo.html?embed=1" loading="lazy" allow=""></iframe>
-  </section>
   <script>
   window.addEventListener('message',function(event){
     var frame=document.getElementById('longformShowcase');
     if(event.origin!==location.origin||event.source!==frame.contentWindow||!event.data)return;
-    if(event.data.type==='longform-open'){
-      var header=document.querySelector('.space-header');
-      window.scrollBy({top:frame.getBoundingClientRect().top-(header?header.getBoundingClientRect().height:104)-12,behavior:'instant'});
-    }else if(event.data.type==='longform-scroll'){
+    if(event.data.type==='longform-open')document.querySelector('.works-stage').scrollIntoView({block:'start',behavior:'instant'});
+    else if(event.data.type==='longform-scroll'){
       var delta=Number(event.data.delta);if(Number.isFinite(delta))window.scrollBy(0,Math.max(-1500,Math.min(1500,delta)));
     }
   });
@@ -310,6 +308,6 @@ if(n&&(Date.now()-n.ts)<8000)document.documentElement.setAttribute('data-nav-dir
 </div>
 
 <script src="js/site.js" defer></script>
-<script src="js/editorial-navigation.js" defer></script>
+<script src="js/editorial-navigation.js?v=5" defer></script>
 </body>
 </html>

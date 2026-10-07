@@ -1351,7 +1351,7 @@
       setText(qs('h1', nh), hd.title);
       setText(qs('.sub', nh), hd.sub);
       var anon = qs('.anon', nh);
-      if (anon && typeof hd.anon === 'string') {
+      if (anon && !anon.hasAttribute('data-notes-motion-copy') && typeof hd.anon === 'string') {
         var m = /^(.*?)(✳)?$/.exec(hd.anon);
         anon.textContent = '';
         anon.appendChild(document.createTextNode(m && m[1] ? m[1] : hd.anon));
@@ -1363,7 +1363,8 @@
         }
       }
     }
-    setText(qs('.notes-input__notice'), d.notice);
+    var notice = qs('.notes-input__notice');
+    if (notice && !notice.hasAttribute('data-notes-motion-copy')) setText(notice, d.notice);
     var rw = d.rewind || {};
     var rt = qs('.rewind__title');
     if (rt && (typeof rw.title === 'string' || typeof rw.en === 'string')) {

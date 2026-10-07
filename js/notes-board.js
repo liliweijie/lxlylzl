@@ -12,11 +12,16 @@
     const board=document.querySelector('.frag-board'),input=document.querySelector('.notes-input input'),send=document.querySelector('.notes-input__send');
     if(!board)return;
     board.setAttribute('aria-live','off');board.setAttribute('data-no-dolly','');
-    const local=read(KEY,[]),colors=read(COLOR_KEY,{});let remote=false,items=[],active=null,newColor=COLORS[0],posting=false;
+    const local=read(KEY,[]),colors=read(COLOR_KEY,{});let remote=false,items=[],active=null,newColor=COLORS[0],posting=false,paused=false;
     const reduced=matchMedia('(prefers-reduced-motion: reduce)');
     const tools=document.createElement('div');tools.className='notes-tools';
-    const hint=document.createElement('span');hint.textContent='拖动卡片 · 双击回复';tools.append(hint);board.parentElement.prepend(tools);
+    const hint=document.createElement('span');hint.textContent='随心漂浮 · 拖动便签 · 双击或回车回复';tools.append(hint);board.parentElement.prepend(tools);
+    const pause=document.createElement('button');pause.type='button';pause.className='notes-mode';pause.textContent='暂停漂浮';pause.setAttribute('aria-pressed','false');
+    pause.onclick=()=>{paused=!paused;pause.textContent=paused?'继续漂浮':'暂停漂浮';pause.setAttribute('aria-pressed',String(paused))};
+    pause.disabled=reduced.matches;
+    tools.append(pause);
     const status=document.createElement('p');status.className='notes-status';status.setAttribute('role','status');document.querySelector('.notes-input').append(status);
+    const notice=document.querySelector('.notes-input__notice');
     const dialog=document.createElement('dialog');dialog.className='note-dialog';dialog.setAttribute('data-no-dolly','');dialog.setAttribute('aria-labelledby','note-dialog-title');
     dialog.innerHTML='<header><h2 id="note-dialog-title">接着聊</h2><button class="note-close" type="button" aria-label="关闭回复">×</button></header><p class="note-original"></p><div class="dialog-colors"></div><p class="color-help">标签颜色保存在此设备</p><ul class="note-replies"></ul><form><textarea aria-label="回复内容" placeholder="写下你的回复…" maxlength="500" required></textarea><button class="note-submit" type="submit">发送回复</button><p class="note-dialog-status" role="status"></p></form>';
     document.body.append(dialog);
@@ -31,21 +36,39 @@
       const text=document.createElement('p');text.className='txt';text.textContent=note.content;
       const meta=document.createElement('div');meta.className='frag-meta';const count=document.createElement('button');count.type='button';count.className='frag-open';count.textContent='回复 '+(note.replies||[]).length;
       const ts=document.createElement('span');ts.className='ts';ts.textContent=note.displayDate||date(note.ts);meta.append(count,ts);inner.append(text,meta);el.append(inner);board.append(el);
-      const item={note,el,count,color:COLORS.includes(colors[note.id])?colors[note.id]:COLORS.includes(note.color)?note.color:COLORS[0],x:0,y:0,vx:(Math.random()<.5?-1:1)*(12+Math.random()*12),vy:(Math.random()<.5?-1:1)*(10+Math.random()*10),turn:2+Math.random()*4,hover:false,drag:null};
-      item.x=Math.random()*Math.max(0,board.clientWidth-el.offsetWidth);item.y=Math.random()*Math.max(0,board.clientHeight-el.offsetHeight);el.style.setProperty('--note-color',item.color);items.push(item);position(item);
+      const item={note,el,count,color:COLORS.includes(colors[note.id])?colors[note.id]:COLORS.includes(note.color)?note.color:COLORS[0],x:0,y:0,vx:(Math.random()<.5?-1:1)*(12+Math.random()*12),vy:(Math.random()<.5?-1:1)*(10+Math.random()*10),turn:2+Math.random()*4,phase:Math.random()*6.28,rotation:(Math.random()-.5)*8,hover:false,drag:null};
+      el.style.setProperty('--note-color',item.color);items.push(item);sizeBoard();scatter(item,items.filter(other=>other!==item));position(item);el.style.setProperty('--rot',item.rotation+'deg');if(!reduced.matches)inner.animate([{opacity:0},{opacity:1}],{duration:450,easing:'ease-out'});
       count.onclick=()=>open(item);el.ondblclick=()=>open(item);el.onkeydown=e=>{if(e.target===el&&(e.key==='Enter'||e.key===' ')){e.preventDefault();e.stopPropagation();open(item)}};
       el.onpointerleave=()=>item.readUntil=0;
       el.onpointerdown=e=>{if(e.button!==0||e.target.closest('button'))return;e.stopPropagation();item.drag={id:e.pointerId,x:e.clientX,y:e.clientY,ox:item.x,oy:item.y,tx:item.x,ty:item.y,moved:false};item.vx=0;item.vy=0;el.setPointerCapture(e.pointerId)};
       el.onpointermove=e=>{const d=item.drag;if(!d){if(e.pointerType==='mouse'&&performance.now()>(item.releaseUntil||0))item.readUntil=performance.now()+1200;return}e.stopPropagation();const dx=e.clientX-d.x,dy=e.clientY-d.y;if(Math.hypot(dx,dy)>5)d.moved=true;if(d.moved){el.classList.add('is-dragging');d.tx=clamp(d.ox+dx,2,board.clientWidth-el.offsetWidth-2);d.ty=clamp(d.oy+dy,2,board.clientHeight-el.offsetHeight-2);if(reduced.matches){item.x=d.tx;item.y=d.ty;position(item)}}};
       const release=e=>{if(!item.drag)return;e.stopPropagation();const moved=item.drag.moved;item.drag=null;item.readUntil=0;item.releaseUntil=performance.now()+1400;el.classList.remove('is-dragging');if(el.hasPointerCapture(e.pointerId))el.releasePointerCapture(e.pointerId);if(moved)el.blur()};el.onpointerup=release;el.onpointercancel=release;el.onlostpointercapture=()=>{item.drag=null;item.readUntil=0;el.classList.remove('is-dragging')};
     }
+    function sizeBoard(){
+      const area=items.reduce((sum,item)=>sum+(item.el.offsetWidth+24)*(item.el.offsetHeight+24),0);
+      board.style.minHeight=Math.max(480,Math.ceil(area/Math.max(1,board.clientWidth)/.55))+'px';
+    }
+    function scatter(item,others){
+      const width=item.el.offsetWidth,height=item.el.offsetHeight;
+      const maxX=Math.max(2,board.clientWidth-width-2),maxY=Math.max(2,board.clientHeight-height-2);
+      let best=null;
+      for(let attempt=0;attempt<60;attempt++){
+        const x=2+Math.random()*(maxX-2),y=2+Math.random()*(maxY-2);
+        const overlap=others.reduce((sum,other)=>sum+Math.max(0,Math.min(x+width+12,other.x+other.el.offsetWidth+12)-Math.max(x,other.x))*Math.max(0,Math.min(y+height+12,other.y+other.el.offsetHeight+12)-Math.max(y,other.y)),0);
+        if(!best||overlap<best.overlap)best={x,y,overlap};
+        if(overlap===0)break;
+      }
+      item.x=best.x;item.y=best.y;
+    }
     function position(item){item.x=clamp(item.x,2,board.clientWidth-item.el.offsetWidth-2);item.y=clamp(item.y,2,board.clientHeight-item.el.offsetHeight-2);item.el.style.transform=`translate3d(${item.x}px,${item.y}px,0)`}
     let last=performance.now(),visible=true;
     new IntersectionObserver(entries=>visible=entries[0].isIntersecting).observe(board);
-    new ResizeObserver(()=>items.forEach(position)).observe(board);
+    new ResizeObserver(()=>{sizeBoard();items.forEach(position)}).observe(board);
+    reduced.addEventListener('change',()=>{pause.disabled=reduced.matches});
     function frame(now){
       const dt=Math.min((now-last)/1000,.032);last=now;
       if(visible&&!document.hidden&&!reduced.matches&&!dialog.open)items.forEach(item=>{
+        if((paused||item.el.contains(document.activeElement))&&!item.drag)return;
         if(item.drag){
           if(!item.drag.moved)return;
           // A damped spring follows the pointer instead of snapping to it.
@@ -68,8 +91,26 @@
         else if(item.x>maxX){item.x=maxX;item.vx=-Math.abs(item.vx)*.72}
         if(item.y<2){item.y=2;item.vy=Math.abs(item.vy)*.72}
         else if(item.y>maxY){item.y=maxY;item.vy=-Math.abs(item.vy)*.72}
+        item.rotation+=(Math.max(-12,Math.min(12,item.vx*.025)) + Math.sin(now*.0015+item.phase)*3-item.rotation)*.08;
+        item.el.style.setProperty('--rot',item.rotation+'deg');
         position(item);
       });
+      // Resolve overlapping rectangles once per frame, without pushing a held card.
+      if(visible&&!document.hidden&&!reduced.matches&&!dialog.open&&!paused){
+        for(let i=0;i<items.length;i++)for(let j=i+1;j<items.length;j++){
+          const a=items[i],b=items[j];
+          if((!a.drag&&a.el.contains(document.activeElement))||(!b.drag&&b.el.contains(document.activeElement)))continue;
+          const aw=a.el.offsetWidth,ah=a.el.offsetHeight,bw=b.el.offsetWidth,bh=b.el.offsetHeight;
+          const dx=b.x+bw/2-a.x-aw/2,dy=b.y+bh/2-a.y-ah/2,ox=(aw+bw)/2+8-Math.abs(dx),oy=(ah+bh)/2+8-Math.abs(dy);
+          if(ox<=0||oy<=0)continue;
+          const horizontal=ox<oy,dir=(horizontal?dx:dy)>=0?1:-1,overlap=Math.min(horizontal?ox:oy,16),axis=horizontal?'x':'y',velocity=horizontal?'vx':'vy';
+          if(!a.drag)a[axis]-=dir*overlap*(b.drag?1:.5);
+          if(!b.drag)b[axis]+=dir*overlap*(a.drag?1:.5);
+          const closing=(b[velocity]-a[velocity])*dir;
+          if(closing<0){const impulse=-closing*.65;if(!a.drag)a[velocity]-=dir*impulse;if(!b.drag)b[velocity]+=dir*impulse}
+          position(a);position(b);
+        }
+      }
       requestAnimationFrame(frame);
     }requestAnimationFrame(frame);
     const normalized=seeds.map(s=>({id:seedId(s.text),content:s.text,displayDate:s.ts,mine:s.mine,color:s.color,replies:[]}));
@@ -77,6 +118,8 @@
     try{data=await api();if(!Array.isArray(data))throw new Error();remote=true;}catch{data=local;status.textContent='本地预览：留言与回复仅保存在当前浏览器';}
     board.replaceChildren();normalized.forEach(seed=>{const stored=data.find(n=>n.seedKey===seed.id);if(stored)seed.replies=stored.replies||[];add(seed)});data.filter(n=>!n.seedKey&&typeof n.content==='string').forEach(add);
     if(!remote){const old=read('lx:notes:messages',[]);old.forEach((n,i)=>{const id='legacy-'+i;if(!local.some(x=>x.id===id)){const migrated={id,content:n.text,displayDate:n.ts,replies:[]};local.push(migrated);add(migrated)}});save(KEY,local)}
+    sizeBoard();items.forEach((item,i)=>{scatter(item,items.slice(0,i));position(item)});
+    if(notice)notice.textContent=remote?'公开留言会保存到服务器；匿名，请友善。':'本地预览：留言与回复仅保存在当前浏览器。';
     async function post(){const content=input.value.trim();if(!content||posting)return;posting=true;send.disabled=true;try{let note={id:Date.now(),content,color:newColor,ts:Date.now(),replies:[]};if(remote)note=await api(note);else{local.push(note);save(KEY,local)}add(note);input.value='';status.textContent=remote?'留言已发布':'已保存在当前浏览器';}catch{status.textContent='发布失败，请重试，输入内容已保留';}finally{posting=false;send.disabled=false}}
     send.addEventListener('click',post);input.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.isComposing){e.preventDefault();e.stopPropagation();post()}});
     dialog.querySelector('form').onsubmit=async e=>{e.preventDefault();const item=active,textarea=dialog.querySelector('textarea'),content=textarea.value.trim(),button=dialog.querySelector('.note-submit'),message=dialog.querySelector('.note-dialog-status');if(!content||button.disabled)return;button.disabled=true;try{if(remote){const result=await api({content,parentId:item.note.id,parentContent:item.note.content});item.note.replies=result.replies||[];}else{const seed=String(item.note.id).startsWith('seed-');let stored=local.find(n=>seed?n.seedKey===item.note.id:n.id===item.note.id);if(!stored){stored={id:Date.now(),seedKey:item.note.id,content:item.note.content,replies:[]};local.push(stored)}stored.replies=stored.replies||[];stored.replies.push({id:Date.now(),content,ts:Date.now(),name:'匿名'});item.note.replies=stored.replies;save(KEY,local)}item.count.textContent='回复 '+item.note.replies.length;if(active===item){paintReplies();textarea.value='';message.textContent=remote?'回复已发布':'回复已保存在当前浏览器'}}catch{message.textContent='回复失败，请重试，内容已保留'}finally{button.disabled=false}};

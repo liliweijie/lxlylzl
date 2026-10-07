@@ -180,3 +180,27 @@ html{overflow-y:auto}body{overflow-x:hidden;overflow-y:auto}
   .embedded .long-card{height:45vh}
   .embedded .reader-meta strong{font-size:16px}
 }
+
+/* Embedded first-screen archive: one heading in the parent, generous live artwork. */
+.embedded .archive-intro,.embedded .deck-hint{display:none}
+.embedded .deck{top:4vh;height:78vh;left:2%;right:2%}
+.embedded .long-card{height:72vh!important;width:max(22vh,11vw)!important}
+.embedded .deck-zone{clip-path:inset(0 0 12vh 0)}
+.embedded .deck-index{bottom:10px;left:6%;right:6%;justify-content:space-between;gap:4px}
+.embedded .deck-index button{min-width:32px;min-height:36px;font-size:11px}
+.embedded .deck-index button.is-active{color:#ef4935;border-bottom:1px solid #ef4935}
+@media(max-width:720px){.embedded .deck{top:2vh;height:76vh}.embedded .long-card{height:64vh!important;width:19vh!important}.embedded .deck-index{justify-content:flex-start}}
+
+/* V3: kinetic archive, designed for touch as well as a pointer. */
+.embedded .deck-zone{inset:0 0 40px;clip-path:none;pointer-events:auto;perspective:1200px;perspective-origin:50% 45%}
+.embedded .deck{inset:0;top:0;height:100%;perspective:none;align-items:center;touch-action:pan-y}
+.embedded .long-card,.embedded .long-card:is(:hover,.is-focused,.is-selected){top:50%;bottom:auto;left:50%;height:min(76vh,530px)!important;width:min(33vh,230px)!important;transform-origin:50% 50%;box-shadow:0 28px 55px #0009;transition:border-color .3s;will-change:transform;filter:none}
+.embedded .long-card:after{background:linear-gradient(180deg,transparent 75%,#0005)}
+.embedded .long-card.is-hovered{border-color:#ef4935;box-shadow:0 0 0 1px #ef4935,0 28px 55px #0009}
+.embedded .perspective-grid{opacity:.3;transform:rotateX(72deg) translateY(42%);transition:opacity .7s}
+.embedded .archive.is-spread .perspective-grid{opacity:0}
+.embedded .deck-index{bottom:0;left:20px;right:20px;justify-content:space-between}
+.embedded .reader{left:0;background:#0d0d0df2;backdrop-filter:blur(22px);grid-template-columns:minmax(120px,180px) minmax(0,1fr);max-width:100%;padding-left:8vw;padding-right:8vw;transition:transform .8s cubic-bezier(.16,1,.3,1),opacity .5s,visibility 0s .8s}
+.embedded .reader .phone-shell{width:min(calc((100svh - 112px)*.6),380px)}
+.embedded .reader-close{width:44px;height:44px}
+@media(max-width:720px){.embedded .reader{grid-template-columns:minmax(0,1fr);padding:58px 14px 44px}.embedded .reader-meta{position:absolute;top:16px;left:16px}.embedded .long-card{height:72vh!important;width:31vh!important}.embedded .deck-index button{min-width:24px;font-size:10px}.embedded .deck-index{overflow-x:auto;justify-content:flex-start}}

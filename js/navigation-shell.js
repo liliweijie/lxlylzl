@@ -29,7 +29,7 @@
     if(phoneLayout.matches){logo.setAttribute('role','button');logo.setAttribute('aria-controls',links.id);logo.setAttribute('aria-label','展开或收起导航');logo.setAttribute('aria-expanded','false')}
     else{logo.removeAttribute('role');logo.removeAttribute('aria-controls');logo.removeAttribute('aria-expanded');logo.setAttribute('aria-label','返回首页')}
     var instruction=rail&&rail.querySelector('.rail-instruction');
-    if(instruction)instruction.textContent=phoneLayout.matches?'向上拉动 ↑ 切换下页':'往左拖动 切换下页';
+    if(instruction)instruction.textContent=phoneLayout.matches?'轻点 / 上拉 ↑':'点击 / 左拖';
   }
   logo.addEventListener('click',function(e){
     if(!phoneLayout.matches||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;

@@ -7,9 +7,14 @@
   var railWash=document.querySelector('.peek-rail__wash span');if(railWash)railWash.textContent=frames[next].join(' ');
   var railNo=document.querySelector('.peek-rail__no');if(railNo)railNo.textContent=String(next+1).padStart(2,'0')+'/05';
   var loop=document.querySelector('.rewind__loop');if(loop)loop.textContent='01 首页 · 02 作品 · 03 关于 · 04 碎碎念 · 05 联系';
-  var gate=document.createElement('script');gate.src='js/rail-gate.js?v=nav-wipe-1';document.body.appendChild(gate);
+  var gate=document.createElement('script');gate.src='js/rail-gate.js?v=4';document.body.appendChild(gate);
   if(!document.querySelector('link[href="css/navigation-shell.css"]')){var shellStyle=document.createElement('link');shellStyle.rel='stylesheet';shellStyle.href='css/navigation-shell.css';document.head.appendChild(shellStyle);}
-  var shellScript=document.createElement('script');shellScript.src='js/navigation-shell.js';document.body.appendChild(shellScript);
+  var shellScript=document.createElement('script');shellScript.src='js/navigation-shell.js?v=4';document.body.appendChild(shellScript);
+  if(!document.querySelector('link[href="css/site-motion.css"]')){var motionStyle=document.createElement('link');motionStyle.rel='stylesheet';motionStyle.href='css/site-motion.css?v=5';document.head.appendChild(motionStyle);}
+  var motionFiles=['assets/vendor/gsap.min.js','assets/vendor/ScrollTrigger.min.js','js/site-motion.js?v=5'];
+  function loadMotion(index){if(index>=motionFiles.length){window.dispatchEvent(new Event("motion-libraries-ready"));return;}var script=document.createElement('script');script.src=motionFiles[index];script.onload=function(){loadMotion(index+1)};script.onerror=function(){if(index<2)loadMotion(2)};document.body.appendChild(script)}
+  loadMotion(0);
+  var playScript=document.createElement('script');playScript.src='js/play-world.js?v=5';document.body.appendChild(playScript);
   if(!document.getElementById('stage')||document.querySelector('.ring-home'))return;
   var wireScript=document.createElement('script');wireScript.src='js/wireframe-type.js';document.body.appendChild(wireScript);
 })();

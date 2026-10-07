@@ -11,6 +11,9 @@
   var target = routes[targetIndex];
   var pressed = null;
   var committing = false;
+  var spring=null,pullState={size:0};
+  var reduced=matchMedia("(prefers-reduced-motion: reduce)");
+  var preview=document.createElement("div");preview.className="rail-pull-preview";preview.setAttribute("aria-hidden","true");preview.innerHTML='<small>CONTINUE TO</small><h2></h2><p class="pull-action">继续拉动</p><div class="pull-track"><i></i></div>';rail.append(preview);
   var phoneLayout = matchMedia('(max-width:700px), (max-height:500px) and (pointer:coarse)');
   var progress = rail.querySelector('.peek-rail__pct');
   var wash = rail.querySelector('.peek-rail__wash');
@@ -31,6 +34,7 @@
     targetIndex = index;
     target = href || routes[index];
     var label = labels[index];
+    preview.querySelector('h2').textContent=label[1];
     if (railName) railName.textContent = label[0] + ' · ' + label[1];
     if (washLabel) washLabel.textContent = label[0] + ' ' + label[1];
     if (railNo) railNo.textContent = String(index + 1).padStart(2, '0') + '/05';
@@ -39,19 +43,29 @@
   }
 
   function reset() {
+    if(spring){spring.kill();spring=null;}
     if (committing) return;
     pressed = null;
     rail.classList.remove('rail-dragging', 'rail-expanded');
     rail.style.removeProperty('--drag-width');
     rail.style.removeProperty('--drag-height');
+    rail.classList.remove('is-pull-ready');preview.querySelector('.pull-track i').style.transform='scaleX(0)';
     if (progress) progress.textContent = '0%';
     if (wash) wash.style.opacity = 0;
   }
 
+  function springBack(vertical,from) {
+    if(!window.gsap||reduced.matches){reset();return;}
+    pressed=null;rail.classList.remove('is-pull-ready');preview.querySelector('.pull-action').textContent='松开，回到这里';
+    pullState.size=from;
+    spring=gsap.to(pullState,{size:vertical?52:56,duration:.8,ease:'elastic.out(1,.5)',onUpdate:function(){rail.style.setProperty(vertical?'--drag-height':'--drag-width',Math.max(vertical?52:56,pullState.size)+'px')},onComplete:reset});
+  }
   function commit(href, index) {
     if (committing) return;
     if (typeof index === 'number') selectTarget(index, href);
     else if (href) target = href;
+    if(spring){spring.kill();spring=null;}
+    preview.querySelector('.pull-action').textContent='走，继续逛';
     committing = true;
     pressed = null;
     rail.classList.remove('rail-dragging', 'rail-expanded');
@@ -88,8 +102,9 @@
   });
   rail.addEventListener('pointerdown', function (event) {
     if (committing || event.button !== 0 || event.isPrimary === false) return;
+    if(spring){spring.kill();spring=null;}
     if (event.pointerType === 'touch') rail.classList.add('rail-expanded');
-    pressed = { id: event.pointerId, x: event.clientX, y: event.clientY, dx: 0, dy: 0, vertical:phoneLayout.matches, height:rail.getBoundingClientRect().height, width: rail.getBoundingClientRect().width, threshold: event.pointerType === 'touch' ? 40 : 24 };
+    pressed = { id: event.pointerId, x: event.clientX, y: event.clientY, dx: 0, dy: 0, vertical:phoneLayout.matches, height:rail.getBoundingClientRect().height, width: rail.getBoundingClientRect().width, threshold:Math.min(180,Math.max(100,(phoneLayout.matches?innerHeight:innerWidth)*.16)) };
     rail.setPointerCapture(event.pointerId);
   });
   rail.addEventListener('pointermove', function (event) {
@@ -98,14 +113,11 @@
     pressed.dy = Math.abs(pressed.vertical ? event.clientX-pressed.x : event.clientY-pressed.y);
     if (pressed.dy > 24 && pressed.dy > pressed.dx) { reset(); return; }
     if (pressed.dx < 5) return;
-    if (pressed.dx >= pressed.threshold && pressed.dx > pressed.dy * 1.5) {
-      var id = pressed.id;
-      commit();
-      if (rail.hasPointerCapture(id)) rail.releasePointerCapture(id);
-      return;
-    }
     rail.classList.add('rail-dragging');
-    var amount = Math.min(.95, pressed.dx / pressed.threshold * .85);
+    var amount = Math.min(1,pressed.dx/pressed.threshold);
+    rail.classList.toggle('is-pull-ready',amount>=1);
+    preview.querySelector('.pull-action').textContent=amount>=1?'松手进入 '+labels[targetIndex][0]:'再拉一点 · '+Math.round(amount*100)+'%';
+    preview.querySelector('.pull-track i').style.transform='scaleX('+amount+')';
     rail.style.setProperty('--drag-width', Math.min(innerWidth, pressed.width + pressed.dx) + 'px');
     if(pressed.vertical)rail.style.setProperty('--drag-height', Math.max(64,pressed.height + pressed.dx) + 'px');
     if (progress) progress.textContent = Math.round(amount * 100) + '%';
@@ -113,16 +125,12 @@
   });
   rail.addEventListener('pointerup', function (event) {
     if (!pressed || event.pointerId !== pressed.id) return;
+    var pressedDistance=pressed.dx,crossDistance=pressed.dy;
     var go = pressed.dx >= pressed.threshold && pressed.dx > pressed.dy * 1.5;
     pressed = null;
     if (rail.hasPointerCapture(event.pointerId)) rail.releasePointerCapture(event.pointerId);
-    if (go) commit();
-    else if (event.pointerType === 'touch' && matchMedia('(max-width:700px), (max-height:500px) and (pointer:coarse)').matches) {
-      rail.classList.remove('rail-dragging');
-      rail.style.removeProperty('--drag-width');
-      rail.style.removeProperty('--drag-height');
-      rail.classList.add('rail-expanded');
-    } else reset();
+    if (go || (pressedDistance < 5 && crossDistance < 12)) commit();
+    else springBack(phoneLayout.matches,phoneLayout.matches?rail.getBoundingClientRect().height:rail.getBoundingClientRect().width);
   });
   document.addEventListener('pointerdown', function (event) {
     if (!committing && !rail.contains(event.target)) reset();
