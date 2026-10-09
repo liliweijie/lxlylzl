@@ -87,7 +87,11 @@ export function makeShirt(item,index){
   const m=new THREE.Mesh(geometry,mat);m.castShadow=true;m.receiveShadow=true;m.userData.index=index;cloth.add(m);
  }
  const bounds=new THREE.Box3().setFromObject(cloth);root.userData.garmentWidth=bounds.max.x-bounds.min.x;root.userData.minY=bounds.min.y;root.userData.garmentTop=bounds.max.y;
- const hanger=makeHanger(width,item.model||'tee');root.add(hanger);root.userData.hook=hanger.userData.hook;return root;
+ root.userData.halfWidth=Math.max(Math.abs(bounds.min.x),Math.abs(bounds.max.x));root.userData.halfDepth=Math.max(Math.abs(bounds.min.z),Math.abs(bounds.max.z));
+ let collarY=-Infinity;
+ cloth.children.forEach(mesh=>{const p=mesh.geometry.attributes.position;for(let i=0;i<p.count;i++)if(Math.abs(p.getX(i))<width*.30)collarY=Math.max(collarY,p.getY(i));});
+ root.userData.collarY=Number.isFinite(collarY)?collarY:bounds.max.y;
+ const hanger=makeHanger(width,item.model||'tee');root.add(hanger);root.userData.hanger=hanger;root.userData.hook=hanger.userData.hook;return root;
 }
 export function addStudioReflections(renderer,scene){
  const studio=new THREE.Scene();studio.background=new THREE.Color('#9da2a0');
