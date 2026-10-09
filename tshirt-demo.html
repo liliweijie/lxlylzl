@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>lXlYlZl · T 恤衣架实验</title>
+  <link rel="icon" href="assets/space-mark-small.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/tshirt-demo.css">
+  <link rel="stylesheet" href="css/tshirt-dark.css">
+</head>
+<body>
+  <main id="experiment">
+    <header><a href="index.html" class="brand"><img src="assets/space-mark.svg" alt="">lXlYlZl</a><span>衣架实验</span><button id="close" hidden>收回衣架 <span aria-hidden="true">×</span></button><a href="index.html" id="home">返回首页</a></header>
+    <h1 class="sr-only">可交互的 T 恤衣架</h1>
+    <div id="scene" tabindex="0" aria-label="三维衣架：经过衣服展开，点击查看单件，拖动单件转动角度；方向键选择，回车打开"></div>
+    <p id="loading" role="status">正在挂好衣服…</p>
+    <div class="detail-nav" hidden><button id="prev" aria-label="上一件 T 恤"><svg viewBox="0 0 24 24"><path d="m14 6-6 6 6 6"/></svg></button><button id="next" aria-label="下一件 T 恤"><svg viewBox="0 0 24 24"><path d="m10 6 6 6-6 6"/></svg></button></div>
+    <div class="caption sr-only" aria-live="polite"><span id="counter"></span><h2 id="title">挑一件，看看。</h2><p id="instruction">鼠标经过展开 · 点击单件查看</p></div>
+    <nav id="items" aria-label="选择 T 恤" hidden></nav>
+    <footer><span>INTERACTION STUDY / 01</span><a class="model-credits" href="assets/tshirt/ATTRIBUTION.md" target="_blank" rel="noopener">模型署名 · CC BY 4.0 ↗</a><button id="reset">重新挂好</button></footer>
+  </main>
+  <script type="importmap">{"imports":{"three":"./assets/vendor/three.module.js"}}</script>
+  <script type="module" src="js/tshirt-demo.js"></script>
+</body>
+</html>
