@@ -2,6 +2,8 @@ import * as THREE from '../assets/vendor/three.module.js';
 import {makeShirt,loadTshirt,makeWoodMaterial,metalMaterial,addStudioReflections} from './tshirt-model.js';
 
 const $=s=>document.querySelector(s),mount=$('#scene');
+const embedded=document.documentElement.classList.contains('tshirt-embedded');
+let frameVisible=true;
 const items=[
  {name:'黑色 T 恤',model:'tee',color:'#252628',ink:'#e9e7df'},
  {name:'白色 T 恤',model:'tee',color:'#eeeef0',ink:'#34383e'},
@@ -81,10 +83,19 @@ mount.addEventListener('pointerleave',()=>{if(!drag&&selected<0){setHover(-1);mo
 mount.addEventListener('pointerdown',e=>{if(e.button!==0)return;drag={x:e.clientX,y:e.clientY,rotation:rotationTarget,scroll:scrollTarget,index:hit(e),moved:false};mount.setPointerCapture(e.pointerId);mount.classList.add('is-dragging');wake();});
 mount.addEventListener('pointerup',e=>{const d=drag;drag=null;mount.classList.remove('is-dragging');if(!d)return;if(!d.moved&&selected>=0&&d.index<0){close();return;}if(!d.moved&&selected<0&&d.index>=0){if(e.pointerType==='touch'&&hover!==d.index)setHover(d.index);else open(d.index);}rotationTarget=0;wake();});
 mount.addEventListener('pointercancel',()=>{drag=null;rotationTarget=0;mount.classList.remove('is-dragging');wake()});
-mount.addEventListener('wheel',e=>{if(selected>=0||maxScroll()===0)return;const amount=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;if(!amount)return;e.preventDefault();scrollTarget=THREE.MathUtils.clamp(scrollTarget-amount*.008,-maxScroll(),maxScroll());wake();},{passive:false});
+mount.addEventListener('wheel',e=>{
+ if(e.ctrlKey)return;
+ if(embedded&&!e.shiftKey&&Math.abs(e.deltaY)>=Math.abs(e.deltaX)){
+  e.preventDefault();const unit=e.deltaMode===1?16:e.deltaMode===2?mount.clientHeight:1;
+  window.parent.postMessage({type:'tshirt-page-scroll',delta:e.deltaY*unit},location.origin);return;
+ }
+ if(selected>=0||maxScroll()===0)return;
+ const amount=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;if(!amount)return;
+ e.preventDefault();scrollTarget=THREE.MathUtils.clamp(scrollTarget-amount*.008,-maxScroll(),maxScroll());wake();
+},{passive:false});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')close();if(e.key==='ArrowLeft'||e.key==='ArrowRight'){if(selected>=0){e.preventDefault();open(selected+(e.key==='ArrowLeft'?-1:1));}else if(e.target===mount){e.preventDefault();setHover(((hover<0?4:hover)+(e.key==='ArrowLeft'?-1:1)+items.length)%items.length);}}if(e.key==='Enter'&&e.target===mount&&hover>=0)open(hover);});
 document.addEventListener('click',e=>{if(selected>=0&&!e.target.closest('button,a,#scene'))close();});
-function wake(){if(!raf&&!document.hidden)raf=requestAnimationFrame(render);}
+function wake(){if(!raf&&!document.hidden&&frameVisible)raf=requestAnimationFrame(render);}
 function render(time){raf=0;const dt=Math.min(.04,(time-(last||time-16))/1000);last=time;const ease=reduced?1:1-Math.exp(-dt*8.5);detailMix+=(targetMix-detailMix)*ease;scroll+=(scrollTarget-scroll)*ease;rotation+=(rotationTarget-rotation)*ease;
  const active=selected>=0?selected:hover;let moving=Math.abs(detailMix-targetMix)+Math.abs(scrollTarget-scroll)+Math.abs(rotationTarget-rotation)>.0005;
  $('#experiment').dataset.model=active<0?'none':items[active].model;$('#experiment').dataset.garments=String(items.length);
@@ -114,8 +125,14 @@ function render(time){raf=0;const dt=Math.min(.04,(time-(last||time-16))/1000);l
  beam.position.set(lampX,.57,-.52);beamMaterial.uniforms.strength.value=Math.min(1,lampPower/42)*.13;
  glow.position.set(lampX,-1.94,selected>=0?5.02:3.62);glow.quaternion.copy(camera.quaternion);glowMaterial.uniforms.strength.value=Math.min(1,lampPower/42)*.28;
  $('#experiment').dataset.light=active>=0?'focused':'dim';moving||=Math.abs(lightingX-lampX)+Math.abs(power-lampPower)>.01;
- renderer.render(scene,camera);$('#experiment').dataset.motion=moving?'moving':'settled';if(!ready){ready=true;$('#loading').hidden=true;$('#experiment').dataset.ready='true';}
+ renderer.render(scene,camera);$('#experiment').dataset.motion=moving?'moving':'settled';if(!ready){ready=true;$('#loading').hidden=true;$('#experiment').dataset.ready='true';if(embedded)window.parent.postMessage({type:'tshirt-ready'},location.origin);}
  if(moving||drag)wake();
 }
-addEventListener('resize',resize);document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelAnimationFrame(raf);raf=0}else{last=0;wake()}});renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();$('#loading').hidden=false;$('#loading').textContent='三维画面暂时中断，请刷新恢复。'});
+if(embedded)window.addEventListener('message',event=>{
+ if(event.origin!==location.origin||event.source!==window.parent||event.data?.type!=='tshirt-visibility')return;
+ frameVisible=event.data.visible===true;$('#experiment').dataset.paused=String(!frameVisible);
+ if(!frameVisible){cancelAnimationFrame(raf);raf=0;drag=null;rotationTarget=0;mount.classList.remove('is-dragging');if(selected<0)setHover(-1);}
+ else{last=0;wake();}
+});
+addEventListener('resize',resize);new ResizeObserver(resize).observe(mount);document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelAnimationFrame(raf);raf=0}else{last=0;wake()}});renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();$('#loading').hidden=false;$('#loading').textContent='三维画面暂时中断，请刷新恢复。'});
 resize();caption(-1);$('#instruction').textContent=innerWidth<700?'轻点展开 · 再点查看 · 左右滑动衣架':'鼠标经过展开 · 点击单件查看';

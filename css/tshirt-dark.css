@@ -12,3 +12,8 @@ footer>span{display:none}
 .model-credits{margin-right:auto;font-size:9px;letter-spacing:.03em}
 footer button{min-height:44px}
 #scene:focus-visible{outline:1px solid #f24c3055;outline-offset:-6px}
+.tshirt-embedded,.tshirt-embedded body{height:100%;overflow:hidden}
+.tshirt-embedded #experiment{height:100%;min-height:0}
+.tshirt-embedded header{display:none}
+.tshirt-embedded footer{padding:10px 28px}
+@media(max-width:700px){.tshirt-embedded footer{padding:8px 20px}}
