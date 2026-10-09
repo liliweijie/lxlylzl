@@ -1,0 +1,13 @@
+.has-logo-end{padding-bottom:0!important}
+.logo-end{position:relative;height:100svh;background:#0d0d0d;color:#fdfdfd;display:grid;place-items:center;padding:80px calc(56px + 4vw) 80px 4vw;border-top:1px solid #ffffff18;isolation:isolate;scroll-margin-top:0}
+.logo-end-art{width:min(100%,1440px);display:grid;place-items:center;min-width:0}
+.logo-end-art>svg{display:block;width:100%;height:auto;max-height:calc(100svh - 160px);overflow:visible}
+.logo-end-art>img{width:clamp(80px,24vw,260px);height:auto;display:block}
+.logo-end-sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.logo-end-tools{position:absolute;bottom:24px;right:calc(56px + 4vw);display:flex;align-items:center;gap:24px;font:11px/1.5 Arial,'PingFang SC',sans-serif;color:#b6b4ae}
+.logo-end-tools button,.logo-end-tools a{display:inline-flex;align-items:center;min-height:44px;padding:8px 0;background:none;border:0;color:inherit;font:inherit;text-decoration:none;cursor:pointer}
+.logo-end-tools button:disabled{opacity:.5;cursor:wait}
+.logo-end-tools button:hover,.logo-end-tools a:hover{color:#fdfdfd}
+.logo-end-tools button:focus-visible,.logo-end-tools a:focus-visible{outline:2px solid #f24c30;outline-offset:4px}
+.logo-end[data-error="true"] .logo-end-status{position:absolute!important;width:auto;height:auto;padding:0;margin:0;clip-path:none;white-space:normal;bottom:88px;left:24px;right:24px;text-align:center;color:#b6b4ae;font:12px/1.7 Arial,sans-serif}
+@media(max-width:700px),(max-height:500px) and (pointer:coarse){.logo-end{padding:64px 20px max(88px,calc(64px + env(safe-area-inset-bottom)))}.logo-end-art>svg{max-height:calc(100svh - 152px)}.logo-end-tools{right:20px;bottom:max(64px,calc(52px + env(safe-area-inset-bottom)));gap:20px}}

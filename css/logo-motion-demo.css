@@ -1,0 +1,31 @@
+:root{--bg:#0d0d0d;--fg:#fdfdfd;--muted:#aaa8a1;--line:#494844;--focus:#f24c30}
+*{box-sizing:border-box}
+body{margin:0;min-height:100svh;background:var(--bg);color:var(--fg);font-family:Arial,"PingFang SC","Microsoft YaHei",sans-serif;display:flex;flex-direction:column}
+body[data-theme="light"]{--bg:#fff;--fg:#161615;--muted:#625f59;--line:#918b7e}
+body[data-theme="orange"]{--bg:#f24c30;--fg:#141413;--muted:#382015;--line:#6e2419;--focus:#fdfdfd}
+a{color:inherit;text-decoration:none}
+header,footer{display:flex;justify-content:space-between;align-items:center;gap:24px;padding:24px 32px}
+header{border-bottom:1px solid var(--line);font-size:13px}
+header a{font-size:18px;font-weight:700;letter-spacing:-.08em}
+header span,footer span{color:var(--muted)}
+main{width:100%;max-width:1200px;margin:auto;padding:40px 24px 32px;text-align:center}
+h1{font-size:clamp(24px,3vw,40px);font-weight:500;letter-spacing:-.05em;margin:0 0 12px}
+.intro,.note{color:var(--muted);font-size:13px;line-height:1.6;margin:0}
+.canvas{min-height:280px;height:clamp(280px,43vh,440px);display:grid;place-items:center;position:relative}
+#logo-replay{border:0;background:none;color:var(--fg);width:min(1100px,100%);height:auto;padding:0;cursor:pointer}
+#logo-host{display:block;width:100%;aspect-ratio:1508/500}
+#logo-host svg{display:block;width:100%;height:auto;color:inherit!important}
+#load-state{position:absolute;color:var(--muted);font-size:13px}
+#load-state[hidden]{display:none}
+.controls{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:8px;margin:12px 0 16px}
+.controls button,.controls select{min-height:44px;border:1px solid var(--line);border-radius:4px;padding:0 18px;background:transparent;color:var(--fg);font:inherit;font-size:13px;cursor:pointer}
+.controls select option{background:var(--bg);color:var(--fg)}
+.controls label{font-size:13px;color:var(--muted);margin-left:16px}
+.frame-controls{display:flex;justify-content:center;align-items:center;gap:16px;margin-bottom:12px;font-size:12px;color:var(--muted)}
+.frame-controls input{width:min(220px,60vw);min-height:44px;accent-color:var(--fg);cursor:pointer}
+.controls button:hover,footer a:hover{color:var(--focus)}
+button:disabled{cursor:wait;opacity:.5}
+:focus-visible{outline:2px solid var(--focus);outline-offset:6px}
+footer{border-top:1px solid var(--line);font-size:12px;line-height:1.6}
+footer a{min-height:44px;display:inline-flex;align-items:center;border-bottom:1px solid var(--line)}
+@media(max-width:600px){header,footer{padding:16px 20px}header{gap:12px}header span{font-size:12px}main{padding:32px 16px}.canvas{height:340px}footer{align-items:flex-start;gap:12px;flex-direction:column}.controls label{margin-left:8px}}
