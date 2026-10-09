@@ -20,7 +20,7 @@ const items=[
  {name:'黑色 T 恤',model:'tee',color:'#252628',ink:'#e9e7df'}
 ];
 items.forEach(item=>{item.sizeW=.88+Math.random()*.17;item.sizeH=item.model==='tee'?.88+Math.random()*.20:.94+Math.random()*.08;});
-const rackStep=.72;
+let rackStep=.72,visibleCount=0;
 let renderer;
 try{renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,powerPreference:'high-performance'});}catch(e){$('#loading').textContent='当前浏览器无法打开三维画面。请开启硬件加速后重试。';throw e;}
 renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));renderer.setClearColor('#080808');renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.25;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;mount.append(renderer.domElement);
@@ -71,12 +71,28 @@ let hover=-1,selected=-1,detailMix=0,targetMix=0,scroll=0,scrollTarget=0,drag=nu
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches,ray=new THREE.Raycaster(),pointer=new THREE.Vector2();
 const buttons=items.map((item,i)=>{const b=document.createElement('button');b.textContent=String(i+1).padStart(2,'0');b.setAttribute('aria-label',`查看 ${item.name}`);b.onclick=()=>open(i);b.onfocus=()=>{if(selected<0)setHover(i)};$('#items').append(b);return b;});
 function caption(i){$('#counter').textContent=i<0?'':`${String(i+1).padStart(2,'0')} / ${items.length}`;$('#title').textContent=i<0?'挑一件，看看。':items[i].name;buttons.forEach((b,n)=>b.setAttribute('aria-current',String(n===i)));}
-function setHover(i){if(i===hover)return;hover=i;caption(i);$('#experiment').dataset.focus=String(i);wake();}
+function setHover(i){if(i===hover)return;hover=i;caption(i);$('#experiment').dataset.focus=String(i);
+ if(visibleCount&&i>=0&&Math.abs(i-windowCenter())>Math.floor(visibleCount/2)){
+  const half=Math.floor(visibleCount/2),center=THREE.MathUtils.clamp(i,half,items.length-1-half);
+  scrollTarget=((items.length-1)/2-center)*rackStep;
+ }
+ wake();}
 function open(i){selected=(i+items.length)%items.length;targetMix=1;hover=selected;rotationTarget=0;$('#close').hidden=true;$('#home').hidden=true;$('.detail-nav').hidden=false;$('#instruction').textContent='按住拖动转动 · 左右切换 · 点击空白或按 Esc 收回';mount.style.touchAction='none';caption(selected);$('#experiment').dataset.view='detail';wake();}
 function close(){selected=-1;targetMix=0;hover=-1;rotationTarget=0;$('#close').hidden=true;$('#home').hidden=false;$('.detail-nav').hidden=true;$('#instruction').textContent=innerWidth<700?'轻点展开 · 再点查看 · 左右滑动衣架':'鼠标经过展开 · 点击单件查看';mount.style.touchAction='pan-y';$('#experiment').dataset.view='rack';mount.focus({preventScroll:true});caption(-1);wake();}
 $('#close').onclick=close;$('#prev').onclick=()=>open(selected-1);$('#next').onclick=()=>open(selected+1);$('#reset').onclick=()=>{close();scrollTarget=0;wake()};
-function resize(){const w=mount.clientWidth,h=mount.clientHeight,aspect=w/h;const worldH=aspect<1?6.7:Math.max(6.6,12.4/aspect);camera.left=-worldH*aspect/2;camera.right=worldH*aspect/2;camera.top=worldH/2;camera.bottom=-worldH/2;camera.updateProjectionMatrix();renderer.setSize(w,h);scrollTarget=Math.max(-maxScroll(),Math.min(maxScroll(),scrollTarget));wake();}
-function maxScroll(){return Math.max(0,5.15-(camera.right-camera.left)/2+.55);}
+function resize(){const w=mount.clientWidth,h=mount.clientHeight,aspect=w/h;if(!w||!h)return;
+ const previousStep=rackStep;
+ const coarse=matchMedia('(pointer:coarse)').matches;
+ visibleCount=w<=700||(coarse&&innerHeight<=500)?5:w<=1100||(coarse&&w<=1366)?7:0;
+ const worldH=aspect<1?6.7:Math.max(6.6,12.4/aspect);camera.left=-worldH*aspect/2;camera.right=worldH*aspect/2;camera.top=worldH/2;camera.bottom=-worldH/2;camera.updateProjectionMatrix();renderer.setSize(w,h);
+ rackStep=visibleCount?(camera.right-camera.left)/(visibleCount+2):.72;
+ scroll*=rackStep/previousStep;scrollTarget*=rackStep/previousStep;
+ scrollTarget=THREE.MathUtils.clamp(scrollTarget,-maxScroll(),maxScroll());scroll=THREE.MathUtils.clamp(scroll,-maxScroll(),maxScroll());
+ $('#experiment').dataset.layout=visibleCount===5?'phone':visibleCount===7?'tablet':'desktop';
+ $('#experiment').dataset.maxVisible=String(visibleCount||items.length);wake();
+}
+function maxScroll(){return visibleCount?(items.length-visibleCount)/2*rackStep:Math.max(0,5.15-(camera.right-camera.left)/2+.55);}
+function windowCenter(){const half=Math.floor(visibleCount/2);return visibleCount?THREE.MathUtils.clamp(Math.round((items.length-1)/2-scroll/rackStep),half,items.length-1-half):(items.length-1)/2;}
 function hit(e){const rect=mount.getBoundingClientRect();pointer.set((e.clientX-rect.left)/rect.width*2-1,-(e.clientY-rect.top)/rect.height*2+1);ray.setFromCamera(pointer,camera);const hits=ray.intersectObjects(shirts.filter(s=>s.visible&&(selected<0||s.userData.index===selected)),true);for(const h of hits){let o=h.object;while(o&&!Number.isInteger(o.userData.index))o=o.parent;if(o)return o.userData.index;}return -1;}
 mount.addEventListener('pointermove',e=>{mouseX=(e.clientX/mount.clientWidth-.5)*2;if(drag){const dx=e.clientX-drag.x,dy=e.clientY-drag.y;drag.moved=Math.hypot(dx,dy)>6;if(selected>=0)rotationTarget=THREE.MathUtils.clamp(drag.rotation+dx/mount.clientWidth*5,-2.7,2.7);else if(drag.moved){scrollTarget=THREE.MathUtils.clamp(drag.scroll+dx/mount.clientWidth*(camera.right-camera.left),-maxScroll(),maxScroll());hover=-1;}wake();return;}if(e.pointerType!=='touch'&&selected<0){const i=hit(e);setHover(i);mount.style.cursor=i<0?'grab':'pointer';wake();}});
 mount.addEventListener('pointerleave',()=>{if(!drag&&selected<0){setHover(-1);mount.style.cursor=''}});
@@ -97,26 +113,28 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')close();if(e.key==='
 document.addEventListener('click',e=>{if(selected>=0&&!e.target.closest('button,a,#scene'))close();});
 function wake(){if(!raf&&!document.hidden&&frameVisible)raf=requestAnimationFrame(render);}
 function render(time){raf=0;const dt=Math.min(.04,(time-(last||time-16))/1000);last=time;const ease=reduced?1:1-Math.exp(-dt*8.5);detailMix+=(targetMix-detailMix)*ease;scroll+=(scrollTarget-scroll)*ease;rotation+=(rotationTarget-rotation)*ease;
- const active=selected>=0?selected:hover;let moving=Math.abs(detailMix-targetMix)+Math.abs(scrollTarget-scroll)+Math.abs(rotationTarget-rotation)>.0005;
+ const active=selected>=0?selected:hover,center=windowCenter();let moving=Math.abs(detailMix-targetMix)+Math.abs(scrollTarget-scroll)+Math.abs(rotationTarget-rotation)>.0005;
  $('#experiment').dataset.model=active<0?'none':items[active].model;$('#experiment').dataset.garments=String(items.length);
  shirts.forEach((shirt,i)=>{
-  const state=states[i],distance=active<0?0:i-active;const gap=active<0?0:Math.sign(distance)*(active>=0?Math.max(.60,shirts[active].userData.garmentWidth*.27):.60);const baseX=(i-(items.length-1)/2)*rackStep+gap+scroll;
+  const state=states[i],distance=active<0?0:i-active;const gap=active<0?0:Math.sign(distance)*Math.max(visibleCount?.24:.60,shirts[active].userData.garmentWidth*(visibleCount?.16:.27));const baseX=(i-(items.length-1)/2)*rackStep+gap+scroll;
   const focused=i===active;const detail=selected===i;const mix=detailMix;
   const tx=THREE.MathUtils.lerp(baseX,detail?0:baseX*1.3+Math.sign(distance)*1.8,mix),ty=THREE.MathUtils.lerp(0,detail?.25:0,mix),tz=THREE.MathUtils.lerp(0,detail?2.2:-1,mix);
   const angle=detail?rotation:focused?mouseX*.055:(1.24+Math.sin(i*1.9)*.065);
   const detailScale=Math.min(mount.clientWidth<700?Math.max(.70,Math.min(1.28,(camera.right-camera.left)*.78/shirt.userData.garmentWidth)):1.38,2.10/Math.abs(shirt.userData.minY));
-  const scale=THREE.MathUtils.lerp(1,detail?detailScale:.85,mix);
+  const scale=THREE.MathUtils.lerp(visibleCount?.88:1,detail?detailScale:.85,mix);
   const change=angle-state.angle;state.velocity+=(change*48-state.velocity*11)*dt;state.angle+=state.velocity*dt;if(reduced){state.angle=angle;state.velocity=0;}
   const pull=THREE.MathUtils.clamp((tx-state.x)*.14+state.velocity*.023,-.19,.19);
   state.clothVelocity+=((pull-state.sway)*44-state.clothVelocity*6.8)*dt;state.sway=THREE.MathUtils.clamp(state.sway+state.clothVelocity*dt,-.18,.18);
   state.x+=(tx-state.x)*ease;state.y+=(ty-state.y)*ease;state.z+=(tz-state.z)*ease;state.scale+=(scale-state.scale)*ease;
   if(reduced){state.sway=0;state.clothVelocity=0;}
-  shirt.position.set(state.x,state.y,state.z);shirt.rotation.set(0,state.angle,0);shirt.scale.setScalar(state.scale);shirt.userData.hook.rotation.y=-state.angle-.65;shirt.userData.uniforms.sway.value=state.sway;shirt.userData.uniforms.twist.value=state.velocity;shirt.userData.uniforms.time.value=time*.001;shirt.visible=!(!detail&&mix>.999);
+  const inWindow=!visibleCount||Math.abs(i-center)<=Math.floor(visibleCount/2);
+  shirt.position.set(state.x,state.y,state.z);shirt.rotation.set(0,state.angle,0);shirt.scale.setScalar(state.scale);shirt.userData.hook.rotation.y=-state.angle-.65;shirt.userData.hook.visible=!visibleCount;shirt.userData.uniforms.sway.value=state.sway;shirt.userData.uniforms.twist.value=state.velocity;shirt.userData.uniforms.time.value=time*.001;shirt.visible=(detail||inWindow)&&!(!detail&&mix>.999);
   shirt.traverse(o=>{if(o.isMesh){o.material.transparent=mix>.01&&!detail;o.material.opacity=detail?1:1-mix*.93;}});
   shirt.userData.cloth.children.forEach(m=>m.material.envMapIntensity+=( (focused?.28:.065)-m.material.envMapIntensity )*ease);
   moving||=Math.abs(tx-state.x)+Math.abs(change)+Math.abs(state.velocity)+Math.abs(scale-state.scale)+Math.abs(state.sway)+Math.abs(state.clothVelocity)>.001;
  });
- rod.material.transparent=true;rod.material.opacity=1-detailMix;mounts.forEach(m=>{m.visible=detailMix<.999;m.material.transparent=true;m.material.opacity=1-detailMix});rod.visible=detailMix<.999;
+ $('#experiment').dataset.visibleGarments=shirts.filter(s=>s.visible).map(s=>String(s.userData.index+1)).join(',');
+ rod.material.transparent=true;rod.material.opacity=1-detailMix;mounts.forEach(m=>{m.visible=!visibleCount&&detailMix<.999;m.material.transparent=true;m.material.opacity=1-detailMix});rod.visible=!visibleCount&&detailMix<.999;
  const lightingX=active>=0?states[active].x:mouseX*(camera.right-camera.left)/2;
  const power=active>=0?(selected>=0?26:42):1;
  lampX+=(lightingX-lampX)*ease;lampPower+=(power-lampPower)*ease;
