@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "cases": [
+    {"request":"只看看哪些相关","evidence":["同一仓库链接","内容目标相同"],"expected":{"mode":"recommend","move":false}},
+    {"request":"整理到已有游戏项目","evidence":["basketball 别名已核实","角色与玩法开发内容一致","目标项目已存在"],"expected":{"mode":"organize","move":true,"preserve_pins":true}},
+    {"request":"整理最近对话","evidence":["标题都包含设计","未读正文"],"expected":{"move":false,"reason":"generic_words_only"}},
+    {"request":"找回篮球项目","evidence":["篮球比赛记录","basketball 游戏角色开发"],"expected":{"merge":false,"reason":"same_name_different_goals"}},
+    {"request":"归纳分支关系","evidence":["标题为分支 · basketball","没有父对话元数据"],"expected":{"claim_parent":false}},
+    {"request":"新建 ChatGPT 项目并归类","evidence":["没有创建项目工具","只有自定义侧栏分组工具"],"expected":{"claim_project_created":false,"explain_distinction":true}},
+    {"request":"安装归线","evidence":[],"expected":{"create_automation":false,"claim_live_popup":false}},
+    {"request":"整理到已有项目","evidence":["移动工具返回权限错误"],"expected":{"claim_moved":false,"bypass_permissions":false}}
+  ]
+}
