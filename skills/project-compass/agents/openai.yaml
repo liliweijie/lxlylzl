@@ -1,4 +1,0 @@
-interface:
-  display_name: "归线 · 项目统筹"
-  short_description: "核验真实对话线索，整理项目与支线，找回跨设备工作，并提供继续入口"
-  default_prompt: "使用 $project-compass 整理最近的对话，核验项目关联，归入明确匹配的已有项目，并说明各条支线与继续入口。"
