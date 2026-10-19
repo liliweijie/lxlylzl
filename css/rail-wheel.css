@@ -1,0 +1,7 @@
+/* Reuse the pull preview, but let wheel progress own the edge until it completes. */
+.peek-rail.rail-wheel .rail-pull-preview{background:#f24c30}
+.peek-rail.rail-wheel:not(.rail-cover){will-change:width}
+.peek-rail.rail-wheel.rail-cover .rail-pull-preview{background:#f24c30}
+@media(max-width:700px),(max-height:500px) and (pointer:coarse){
+  .peek-rail.rail-wheel:not(.rail-cover){will-change:height}
+}

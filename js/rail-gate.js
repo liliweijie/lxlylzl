@@ -12,6 +12,7 @@
   var pressed = null;
   var committing = false;
   var spring=null,pullState={size:0};
+  var wheelTarget = 0, wheelAmount = 0, wheelFrame = 0, wheelArmedAt = null;
   var reduced=matchMedia("(prefers-reduced-motion: reduce)");
   var preview=document.createElement("div");preview.className="rail-pull-preview";preview.setAttribute("aria-hidden","true");preview.innerHTML='<small>CONTINUE TO</small><h2></h2><p class="pull-action">继续拉动</p><div class="pull-track"><i></i></div>';rail.append(preview);
   var phoneLayout = matchMedia('(max-width:700px), (max-height:500px) and (pointer:coarse)');
@@ -38,21 +39,83 @@
     if (railName) railName.textContent = label[0] + ' · ' + label[1];
     if (washLabel) washLabel.textContent = label[0] + ' ' + label[1];
     if (railNo) railNo.textContent = String(index + 1).padStart(2, '0') + '/05';
-    rail.setAttribute('aria-label', '前往' + label[0] + ' · ' + label[1] + (phoneLayout.matches ? '。在底栏内向上拉动，或按回车进入。' : '。在侧栏内按住向左拖动，或按回车进入。'));
+    rail.setAttribute('aria-label', '前往' + label[0] + ' · ' + label[1] + (phoneLayout.matches ? '。在底栏内向上拉动，或按回车进入。' : '。在侧栏内按住向左拖动，或在页面底部继续滚动，或按回车进入。'));
     tip.textContent = phoneLayout.matches ? '向上拉动，即刻切页 ↑' : '轻轻左拖，即刻切页 ←';
   }
 
   function reset() {
     if(spring){spring.kill();spring=null;}
     if (committing) return;
+    cancelAnimationFrame(wheelFrame);
+    wheelFrame = 0; wheelTarget = 0; wheelAmount = 0; wheelArmedAt = null;
     pressed = null;
-    rail.classList.remove('rail-dragging', 'rail-expanded');
+    rail.classList.remove('rail-dragging', 'rail-expanded', 'rail-wheel');
+    delete rail.dataset.wheelProgress;
     rail.style.removeProperty('--drag-width');
     rail.style.removeProperty('--drag-height');
     rail.classList.remove('is-pull-ready');preview.querySelector('.pull-track i').style.transform='scaleX(0)';
     if (progress) progress.textContent = '0%';
     if (wash) wash.style.opacity = 0;
   }
+
+  // The rail owns both manual pulls and bottom-of-document wheel navigation.
+  // Wheel events already consumed by a carousel/editor must never change pages.
+  function atBottom() {
+    var doc = document.scrollingElement || document.documentElement;
+    return Math.max(0, doc.scrollHeight - doc.clientHeight - doc.scrollTop) <= 6;
+  }
+
+  function wheelBlocked(event) {
+    if (event.defaultPrevented || event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return true;
+    if (document.querySelector('dialog[open],.work-overlay.is-open,.rewind-overlay.is-open,.space-header.is-menu-open')) return true;
+    if (getComputedStyle(document.body).overflowY === 'hidden' || getComputedStyle(document.documentElement).overflowY === 'hidden') return true;
+    var node = event.target instanceof Element ? event.target : null;
+    if (node && node.closest('input,textarea,select,[contenteditable]:not([contenteditable="false"]),.space-header,[data-wheel-navigation="off"]')) return true;
+    for (; node && node !== document.body && node !== document.documentElement; node = node.parentElement) {
+      var style = getComputedStyle(node);
+      if (/(auto|scroll|overlay)/.test(style.overflowY) && node.scrollHeight > node.clientHeight + 2) return true;
+      if (/(auto|scroll|overlay)/.test(style.overflowX) && node.scrollWidth > node.clientWidth + 2) return true;
+    }
+    return false;
+  }
+
+  function renderWheel() {
+    wheelFrame = 0;
+    if (committing) return;
+    if (!atBottom()) { reset(); return; }
+    wheelAmount = reduced.matches ? wheelTarget : wheelAmount + (wheelTarget - wheelAmount) * .2;
+    if (Math.abs(wheelTarget - wheelAmount) < .001) wheelAmount = wheelTarget;
+    if (wheelTarget === 0 && wheelAmount === 0) { reset(); return; }
+    var vertical = phoneLayout.matches, extent = vertical ? innerHeight : innerWidth;
+    rail.classList.add('rail-dragging', 'rail-wheel');
+    rail.classList.remove('rail-expanded', 'is-pull-ready');
+    rail.style.setProperty(vertical ? '--drag-height' : '--drag-width', (10 + (extent - 10) * wheelAmount) + 'px');
+    rail.dataset.wheelProgress = String(Math.round(wheelAmount * 100));
+    preview.querySelector('.pull-action').textContent = '继续滚动，进入' + labels[targetIndex][0] + ' · ' + Math.round(wheelAmount * 100) + '%';
+    preview.querySelector('.pull-track i').style.transform = 'scaleX(' + wheelAmount + ')';
+    if (progress) progress.textContent = Math.round(wheelAmount * 100) + '%';
+    if (wheelAmount === 1) { commit(); return; }
+    if (wheelAmount !== wheelTarget) wheelFrame = requestAnimationFrame(renderWheel);
+  }
+
+  window.addEventListener('wheel', function (event) {
+    if (committing || pressed || wheelBlocked(event) || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
+    if (!atBottom()) { if (wheelArmedAt !== null || wheelAmount) reset(); return; }
+    var delta = event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? innerHeight : 1);
+    if (!Number.isFinite(delta) || Math.abs(delta) < .5) return;
+    if (!wheelTarget && !wheelAmount && delta < 0) { wheelArmedAt = null; return; }
+    // Let the last page-scroll gesture settle. One large wheel event cannot skip a page.
+    if (wheelArmedAt === null) { wheelArmedAt = performance.now(); return; }
+    if (performance.now() - wheelArmedAt < 180) return;
+    event.preventDefault();
+    if (spring) { spring.kill(); spring = null; }
+    var distance = Math.max(1000, Math.min(1600, innerWidth * .95));
+    wheelTarget = Math.max(0, Math.min(1, wheelTarget + Math.max(-120, Math.min(120, delta)) / distance));
+    if (!wheelFrame) wheelFrame = requestAnimationFrame(renderWheel);
+  }, { passive: false });
+  window.addEventListener('scroll', function () {
+    if (!committing && !atBottom() && (wheelArmedAt !== null || wheelAmount)) reset();
+  }, { passive: true });
 
   function springBack(vertical,from) {
     if(!window.gsap||reduced.matches){reset();return;}
@@ -65,6 +128,7 @@
     if (typeof index === 'number') selectTarget(index, href);
     else if (href) target = href;
     if(spring){spring.kill();spring=null;}
+    cancelAnimationFrame(wheelFrame); wheelFrame = 0;
     preview.querySelector('.pull-action').textContent='走，继续逛';
     committing = true;
     pressed = null;
@@ -102,6 +166,7 @@
   });
   rail.addEventListener('pointerdown', function (event) {
     if (committing || event.button !== 0 || event.isPrimary === false) return;
+    if (wheelArmedAt !== null || wheelAmount) reset();
     if(spring){spring.kill();spring=null;}
     if (event.pointerType === 'touch') rail.classList.add('rail-expanded');
     pressed = { id: event.pointerId, x: event.clientX, y: event.clientY, dx: 0, dy: 0, vertical:phoneLayout.matches, height:rail.getBoundingClientRect().height, width: rail.getBoundingClientRect().width, threshold:Math.min(180,Math.max(100,(phoneLayout.matches?innerHeight:innerWidth)*.16)) };
@@ -153,6 +218,9 @@
   rail.addEventListener('keydown', function (event) {
     if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); commit(); }
     else if (event.key === 'Escape') reset();
+  });
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape' && !committing && (wheelArmedAt !== null || wheelAmount)) reset();
   });
 
   selectTarget(targetIndex);

@@ -7,7 +7,8 @@
   var railWash=document.querySelector('.peek-rail__wash span');if(railWash)railWash.textContent=frames[next].join(' ');
   var railNo=document.querySelector('.peek-rail__no');if(railNo)railNo.textContent=String(next+1).padStart(2,'0')+'/05';
   var loop=document.querySelector('.rewind__loop');if(loop)loop.textContent='01 首页 · 02 作品 · 03 关于 · 04 碎碎念 · 05 联系';
-  var gate=document.createElement('script');gate.src='js/rail-gate.js?v=4';document.body.appendChild(gate);
+  var gate=document.createElement('script');gate.src='js/rail-gate.js?v=5';document.body.appendChild(gate);
+  var wheelStyle=document.createElement('link');wheelStyle.rel='stylesheet';wheelStyle.href='css/rail-wheel.css?v=1';document.head.appendChild(wheelStyle);
   if(!document.querySelector('link[href="css/navigation-shell.css"]')){var shellStyle=document.createElement('link');shellStyle.rel='stylesheet';shellStyle.href='css/navigation-shell.css';document.head.appendChild(shellStyle);}
   var shellScript=document.createElement('script');shellScript.src='js/navigation-shell.js?v=4';document.body.appendChild(shellScript);
   if(!document.querySelector('link[href="css/site-motion.css"]')){var motionStyle=document.createElement('link');motionStyle.rel='stylesheet';motionStyle.href='css/site-motion.css?v=5';document.head.appendChild(motionStyle);}
