@@ -6,7 +6,7 @@
   <meta name="color-scheme" content="dark">
   <title>脑内漫游 · NOTES · lXlYlZl</title>
   <link rel="icon" href="assets/space-mark-small.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="css/notes-brain-demo.css?v=4">
+  <link rel="stylesheet" href="css/notes-brain-demo.css?v=10">
   <link rel="stylesheet" href="css/space-system.css">
   <link rel="stylesheet" href="css/spatial-type.css">
   <link rel="stylesheet" href="css/rail-gate.css">
@@ -23,7 +23,7 @@
       <p class="brain-loading" id="brain-loading" role="status">正在连接想法…</p>
       <div class="brain-nodes" id="thought-list" role="group" aria-label="沿途可书写的神经元" tabindex="-1"></div>
       <div class="brain-controls">
-        <label class="brain-depth-control"><span>DEPTH</span><input id="brain-depth" type="number" inputmode="decimal" min="0" max="1000000000" step="any" value="0.0" aria-label="探索深度，输入数字后按回车直达"></label>
+        <p id="brain-depth-marker" class="brain-depth-marker" role="status"></p>
         <button id="brain-reset" class="brain-home" type="button" aria-label="回到脑部入口" title="回到入口"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 7c-2-4-8-3-9 1-4 0-6 5-4 8-3 4 0 9 4 9 1 5 7 5 9 1 2 4 8 4 9-1 4 0 7-5 4-9 2-3 0-8-4-8-1-4-7-5-9-1Z"/><path d="M16 7v19M8 8c0 3 1 4 3 4M4 16c3-2 6-1 7 2M7 25c-1-3 1-5 4-5M24 8c0 3-1 4-3 4M28 16c-3-2-6-1-7 2M25 25c1-3-1-5-4-5"/></svg></button>
       </div>
     </div>
@@ -38,7 +38,7 @@
       <p class="thought-privacy">仅保存在当前浏览器，不会公开发布。<br>更换设备或清除浏览器数据后，不会保留。</p>
     </form>
   </dialog>
-  <script type="module" src="js/notes-brain-depth-demo.js?v=4"></script>
+  <script type="module" src="js/notes-brain-depth-demo.js?v=16"></script>
   <script src="js/editorial-navigation.js?v=6" defer></script>
 </body>
 </html>

@@ -39,8 +39,8 @@
     if (railName) railName.textContent = label[0] + ' · ' + label[1];
     if (washLabel) washLabel.textContent = label[0] + ' ' + label[1];
     if (railNo) railNo.textContent = String(index + 1).padStart(2, '0') + '/05';
-    rail.setAttribute('aria-label', '前往' + label[0] + ' · ' + label[1] + (phoneLayout.matches ? '。在底栏内向上拉动，或按回车进入。' : '。在侧栏内按住向左拖动，或在页面底部继续滚动，或按回车进入。'));
-    tip.textContent = phoneLayout.matches ? '向上拉动，即刻切页 ↑' : '轻轻左拖，即刻切页 ←';
+    rail.setAttribute('aria-label', '前往' + label[0] + ' · ' + label[1] + (phoneLayout.matches ? '。轻点底栏，自动向上切换，或按回车进入。' : '。在侧栏内按住向左拖动，或在页面底部继续滚动，或按回车进入。'));
+    tip.textContent = phoneLayout.matches ? '' : '轻轻左拖，即刻切页 ←';
   }
 
   function reset() {
@@ -174,6 +174,7 @@
   });
   rail.addEventListener('pointermove', function (event) {
     if (!pressed || event.pointerId !== pressed.id) return;
+    if(pressed.vertical)return; // Phone uses a tap-triggered wipe, never a pull preview.
     pressed.dx = Math.max(0, pressed.vertical ? pressed.y-event.clientY : pressed.x-event.clientX);
     pressed.dy = Math.abs(pressed.vertical ? event.clientX-pressed.x : event.clientY-pressed.y);
     if (pressed.dy > 24 && pressed.dy > pressed.dx) { reset(); return; }
@@ -190,6 +191,13 @@
   });
   rail.addEventListener('pointerup', function (event) {
     if (!pressed || event.pointerId !== pressed.id) return;
+    if(pressed.vertical){
+      var tapDistance=Math.hypot(event.clientX-pressed.x,event.clientY-pressed.y);
+      pressed=null;
+      if(rail.hasPointerCapture(event.pointerId))rail.releasePointerCapture(event.pointerId);
+      if(tapDistance<=14)commit();else reset();
+      return;
+    }
     var pressedDistance=pressed.dx,crossDistance=pressed.dy;
     var go = pressed.dx >= pressed.threshold && pressed.dx > pressed.dy * 1.5;
     pressed = null;

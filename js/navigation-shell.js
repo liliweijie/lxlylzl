@@ -29,7 +29,10 @@
     if(phoneLayout.matches){logo.setAttribute('role','button');logo.setAttribute('aria-controls',links.id);logo.setAttribute('aria-label','展开或收起导航');logo.setAttribute('aria-expanded','false')}
     else{logo.removeAttribute('role');logo.removeAttribute('aria-controls');logo.removeAttribute('aria-expanded');logo.setAttribute('aria-label','返回首页')}
     var instruction=rail&&rail.querySelector('.rail-instruction');
-    if(instruction)instruction.textContent=phoneLayout.matches?'轻点 / 上拉 ↑':'点击 / 左拖';
+    if(instruction){
+      if(phoneLayout.matches){instruction.innerHTML='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:middle;margin-right:8px"><path d="M9 12V5a2 2 0 0 1 4 0v6l1-1a2 2 0 0 1 3 1l1-1a2 2 0 0 1 3 2v5c0 3-2 5-5 5h-3c-2 0-3-1-4-3l-4-5a2 2 0 0 1 3-2l1 1Z"/><path d="M4 5 2 4M5 2V1M2 8H1"/></svg><span aria-hidden="true" style="font-size:19px;vertical-align:middle">↑</span>';instruction.setAttribute('aria-label','轻点自动向上切换下一页');}
+      else{instruction.textContent='点击 / 左拖';instruction.removeAttribute('aria-label');}
+    }
   }
   logo.addEventListener('click',function(e){
     if(!phoneLayout.matches||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;
