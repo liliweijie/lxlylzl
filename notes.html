@@ -1,118 +1,44 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>碎碎念 NOTES · liweijie — 一些随手写下的碎片</title>
-<meta name="description" content="liweijie 碎碎念:一些随手写下的碎片。公开留言,匿名,请友善。">
-<link rel="canonical" href="https://lxlylzl.xyz/notes.html">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="liweijie">
-<meta property="og:title" content="碎碎念 NOTES · liweijie">
-<meta property="og:description" content="一些随手写下的碎片，在这里随心漂浮 ✳">
-<meta property="og:url" content="https://lxlylzl.xyz/notes.html">
-<meta property="og:image" content="https://lxlylzl.xyz/assets/work-lens.webp">
-<meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="assets/space-mark-small.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Cormorant+Garamond:ital,wght@1,500&amp;family=JetBrains+Mono:wght@400;500&amp;family=Noto+Sans+SC:wght@400;500;700;900&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/site.css">
-<link rel="stylesheet" href="css/editorial-pages.css">
-<script>
-(function(){try{
-
-var n=JSON.parse(sessionStorage.getItem('lx:nav')||'null');
-if(n&&(Date.now()-n.ts)<8000)document.documentElement.setAttribute('data-nav-dir',String(n.dir));
-}catch(e){}})();
-</script>
-<link rel="stylesheet" href="css/space-system.css">
-<link rel="stylesheet" href="css/emblem-system.css">
-<link rel="stylesheet" href="css/responsive-system.css">
-<link rel="stylesheet" href="css/spatial-type.css">
-<link rel="stylesheet" href="css/wireframe-system.css">
-<link rel="stylesheet" href="css/rail-gate.css">
-<link rel="stylesheet" href="css/navigation-shell.css">
-<link rel="stylesheet" href="css/notes-board.css">
-<link rel="stylesheet" href="css/site-motion.css?v=notes-float-1">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>脑内漫游 · NOTES · lXlYlZl</title>
+  <link rel="icon" href="assets/space-mark-small.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/notes-brain-demo.css?v=4">
+  <link rel="stylesheet" href="css/space-system.css">
+  <link rel="stylesheet" href="css/spatial-type.css">
+  <link rel="stylesheet" href="css/rail-gate.css">
+  <link rel="stylesheet" href="css/navigation-shell.css">
+  <link rel="canonical" href="https://lxlylzl.xyz/notes.html">
+  <meta name="description" content="进入脑内褶皱，探索想法与神经元。李威杰的个人创作空间。">
 </head>
-<body data-page="3">
-<a class="skip-link" href="#main">跳到内容</a>
-
-<header class="space-header"><a class="space-logo" href="index.html" aria-label="lxlylzl 首页"><img src="assets/space-mark.svg" alt=""><span><b>lXlYlZl</b><small>SPACE FOR IDEAS</small></span></a><nav class="space-links" aria-label="主要导航"><a href="index.html">HOME</a><a href="works.html">WORK</a><a href="about.html">ABOUT</a><a href="notes.html" aria-current="page">NOTES</a><a href="contact.html">CONTACT</a></nav><div class="space-meta"><span>04 / 05</span></div></header>
-
-<div class="peek-rail" aria-hidden="true">
-  <div class="peek-rail__wash"><span>联系 CONTACT</span></div>
-  <div class="peek-rail__ticket">
-    <span class="peek-rail__no">01/05</span>
-    <span class="peek-rail__name">联系 · CONTACT</span>
-    <span class="peek-rail__barcode" data-barcode="13,18,16"></span>
-    <span class="peek-rail__pct">20%</span>
-  </div>
-</div>
-
-<div class="pull-indicator" aria-hidden="true">
-  <svg width="26" height="26" viewBox="0 0 26 26">
-    <circle class="pull-indicator__track" cx="13" cy="13" r="11"></circle>
-    <circle class="pull-indicator__ring" cx="13" cy="13" r="11" stroke-dasharray="69.115" stroke-dashoffset="69.115"></circle>
-  </svg>
-  <span class="pull-indicator__label">在侧栏内向左拖动 · 进入联系 →</span>
-  <span class="pull-indicator__pct">0%</span>
-</div>
-
-<div class="pull-peek" aria-hidden="true">
-  <span class="pull-peek__name">关于 · ABOUT</span>
-  <span class="pull-peek__pct">0%</span>
-</div>
-
-<div class="scanline" aria-hidden="true"></div>
-
-<main id="main">
-  <!-- ============ header ============ -->
-  <section class="container notes-head">
-    <p class="kicker">NOTES / 04</p>
-    <h1>LOOSE<br><i>thoughts.</i></h1>
-    <p class="sub">一些随手写下的碎片。</p>
-    <p class="anon" data-notes-motion-copy>便签随心漂浮，想聊就点开 <span class="red">✳</span></p>
-  </section>
-
-  <!-- ============ floating fragments board (JS renders seeds + localStorage) ============ -->
-  <section class="container">
-    <div class="frag-board" aria-live="polite"></div>
-  </section>
-
-  <!-- ============ anonymous input ============ -->
-  <section class="notes-input">
-    <div class="notes-input__box">
-      <input type="text" maxlength="80" placeholder="Message... 写点什么碎片" aria-label="写一条匿名碎片留言">
-      <button class="notes-input__send" type="button" aria-label="发布碎片">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 19V5m-7 7 7-7 7 7"/></svg>
-      </button>
+<body class="brain-depth-demo" data-page="3">
+  <a class="brain-skip" href="#thought-list">跳到想法节点</a>
+  <header class="space-header"><a class="space-logo" href="index.html" aria-label="lxlylzl 首页"><img src="assets/space-mark.svg" alt=""><span><b>lXlYlZl</b><small>SPACE FOR IDEAS</small></span></a><nav class="space-links" aria-label="主要导航"><a href="index.html">HOME</a><a href="works.html">WORK</a><a href="about.html">ABOUT</a><a href="notes.html" aria-current="page">NOTES</a><a href="contact.html">CONTACT</a></nav><div class="space-meta"><span>04 / 05</span></div></header>
+  <main id="brain-journey" aria-label="滚动进入无限脑部褶皱空间，点选神经元书写想法">
+    <div class="brain-stage" id="brain-stage" tabindex="0">
+      <div class="brain-canvas" id="brain-canvas" aria-hidden="true"></div>
+      <p class="brain-loading" id="brain-loading" role="status">正在连接想法…</p>
+      <div class="brain-nodes" id="thought-list" role="group" aria-label="沿途可书写的神经元" tabindex="-1"></div>
+      <div class="brain-controls">
+        <label class="brain-depth-control"><span>DEPTH</span><input id="brain-depth" type="number" inputmode="decimal" min="0" max="1000000000" step="any" value="0.0" aria-label="探索深度，输入数字后按回车直达"></label>
+        <button id="brain-reset" class="brain-home" type="button" aria-label="回到脑部入口" title="回到入口"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 7c-2-4-8-3-9 1-4 0-6 5-4 8-3 4 0 9 4 9 1 5 7 5 9 1 2 4 8 4 9-1 4 0 7-5 4-9 2-3 0-8-4-8-1-4-7-5-9-1Z"/><path d="M16 7v19M8 8c0 3 1 4 3 4M4 16c3-2 6-1 7 2M7 25c-1-3 1-5 4-5M24 8c0 3-1 4-3 4M28 16c-3-2-6-1-7 2M25 25c1-3-1-5-4-5"/></svg></button>
+      </div>
     </div>
-    <p class="notes-input__notice" data-notes-motion-copy>公开留言 · 匿名 · 请友善。</p>
-  </section>
-
-  <!-- ============ REWIND ============ -->
-  <section class="rewind">
-    <button class="rewind__btn" type="button" aria-label="倒带回首页 REWIND TO 01">
-      <span class="rewind__ring" aria-hidden="true"></span>
-      <span class="rewind__glyph" aria-hidden="true">↺</span>
-    </button>
-    <p class="rewind__title">倒带回首页 <span class="en">REWIND TO 01</span></p>
-    <p class="rewind__loop">01 首页 · 02 作品 · 03 关于 · 04 碎碎念 —— 一条胶片,循环播放</p>
-  </section>
-
-  <p class="footer-copy">©2026 liweijie · MADE IN FUTIAN SZ</p>
-</main>
-
-<div class="rewind-overlay" data-no-dolly aria-hidden="true">
-  <div class="rewind-overlay__stripes"></div>
-  <div class="rewind-overlay__counter">04</div>
-  <p class="rewind-overlay__label">◂◂ REWIND TO 01</p>
-</div>
-
-<script src="js/notes-board.js?v=notes-float-1" defer></script>
-<script src="js/site.js?v=notes-float-1" defer></script>
-<script src="js/editorial-navigation.js?v=6" defer></script>
+  </main>
+  <dialog class="thought-dialog" id="thought-dialog" aria-labelledby="thought-heading">
+    <form id="thought-form">
+      <div class="thought-top"><p id="thought-number">01 / 灵感</p><button id="thought-close" class="thought-close" type="button" aria-label="关闭想法">×</button></div>
+      <h2 id="thought-heading">让这个想法留下来。</h2>
+      <label for="thought-title">主题</label><input id="thought-title" type="text" maxlength="80" autocomplete="off" placeholder="给这个想法起个名字">
+      <label for="thought-content">此刻在想什么</label><textarea id="thought-content" rows="7" maxlength="4000" placeholder="一个念头、一点灵感，或者还没想明白的事。"></textarea>
+      <div class="thought-bottom"><p id="thought-status" role="status">演示内容，尚未保存</p><button class="thought-save" type="submit">保存想法 <span aria-hidden="true">↗</span></button></div>
+      <p class="thought-privacy">仅保存在当前浏览器，不会公开发布。<br>更换设备或清除浏览器数据后，不会保留。</p>
+    </form>
+  </dialog>
+  <script type="module" src="js/notes-brain-depth-demo.js?v=4"></script>
+  <script src="js/editorial-navigation.js?v=6" defer></script>
 </body>
 </html>

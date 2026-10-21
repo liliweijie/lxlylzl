@@ -1,0 +1,59 @@
+import * as THREE from '../assets/vendor/three.module.js';
+import {FoldPool,passage,SEED,CHUNK} from './brain-depth-world.mjs';
+const clamp=THREE.MathUtils.clamp,lerp=THREE.MathUtils.lerp;
+const smooth=(a,b,x)=>{const t=clamp((x-a)/(b-a),0,1);return t*t*(3-2*t);};
+function brainPoint(u,v,side,lift=1){const t=u*Math.PI,p=v*Math.PI,s=Math.sin(p),c=Math.cos(p),r=1+.035*Math.sin(t*13+Math.sin(p*7)*1.5)*Math.sin(p*11+Math.cos(t*6))+.035*Math.sin(p*12+.8*Math.sin(t*5));return new THREE.Vector3(side*(.055+1.23*s*Math.sin(t)*r*lift)*(1+.09*c),1.22*c*(.96+.04*Math.sin(t))+.055*Math.sin(t*3)*s*s,.9*s*Math.cos(t)*r*lift+.11*c);}
+function field(u,v){const x=u*Math.PI,y=v*Math.PI;return Math.sin(x*7+1.2*Math.sin(y*4)+.35*Math.cos(y*13))+Math.cos(y*7+.95*Math.sin(x*5))+.28*Math.sin(x*17-y*11);}
+function makeBrain(compact){const group=new THREE.Group(),materials=[];
+  for(const side of [-1,1]){const pos=[],colors=[],n=compact?76:100,m=compact?76:100,grid=Array.from({length:n+1},(_,i)=>Array.from({length:m+1},(_,j)=>field(i/n,j/m)));
+    for(let level=-1.8;level<=1.81;level+=compact?.3:.22)for(let i=0;i<n;i++)for(let j=1;j<m-1;j++){
+      const cells=[[i/n,j/m,grid[i][j]],[(i+1)/n,j/m,grid[i+1][j]],[(i+1)/n,(j+1)/m,grid[i+1][j+1]],[i/n,(j+1)/m,grid[i][j+1]]];
+      for(const tri of [[0,1,2],[0,2,3]]){const cuts=[];for(let k=0;k<3;k++){const a=cells[tri[k]],b=cells[tri[(k+1)%3]];if((a[2]<level)!==(b[2]<level)){const t=(level-a[2])/(b[2]-a[2]);cuts.push([lerp(a[0],b[0],t),lerp(a[1],b[1],t)]);}}if(cuts.length===2)for(const uv of cuts){const p=brainPoint(...uv,side,1.006);pos.push(p.x,p.y,p.z);const c=.43+.38*(p.z+.92)/1.95;colors.push(c,c,c);}}
+    }
+    const shellPos=[],indices=[],resolution=88;for(let i=0;i<=resolution;i++)for(let j=0;j<=resolution;j++){const p=brainPoint(i/resolution,j/resolution,side);shellPos.push(p.x,p.y,p.z);if(i<resolution&&j<resolution){const k=i*(resolution+1)+j;indices.push(k,k+1,k+resolution+1,k+1,k+resolution+2,k+resolution+1);}}const shell=new THREE.BufferGeometry();shell.setAttribute('position',new THREE.Float32BufferAttribute(shellPos,3));shell.setIndex(indices);group.add(new THREE.Mesh(shell,new THREE.MeshBasicMaterial({color:0x0d0d0d,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:1,polygonOffsetUnits:1})));
+    const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));const mat=new THREE.LineBasicMaterial({vertexColors:true,transparent:true,opacity:.65,depthWrite:false});materials.push(mat);group.add(new THREE.LineSegments(g,mat));
+  }return {group,materials};
+}
+function foldPoint(u,v){const t=u*Math.PI*2,p=v*Math.PI,s=Math.sin(p),r=1+.12*Math.sin(t*5+Math.sin(p*3))*s*s+.07*Math.cos(p*9+t*2);return new THREE.Vector3(r*s*Math.cos(t),r*Math.cos(p)*.82,r*s*Math.sin(t)*.85);}
+function foldGeometry(compact){const vertices=[],steps=compact?44:68;
+  function line(points){for(let i=1;i<points.length;i++)vertices.push(...points[i-1].toArray(),...points[i].toArray());}
+  for(let band=1;band<12;band++){const points=[];for(let j=0;j<=steps;j++){const u=j/steps,v=band/12+.026*Math.sin(u*Math.PI*10+band*.7);points.push(foldPoint(u,v).multiplyScalar(1.035));}line(points);}
+  for(let band=0;band<5;band++){const points=[];for(let j=1;j<steps;j++){const v=j/steps,u=band/5+.035*Math.sin(v*16+band);points.push(foldPoint(u,v).multiplyScalar(1.035));}line(points);}
+  const lineGeometry=new THREE.InstancedBufferGeometry();lineGeometry.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));
+  const mesh=new THREE.SphereGeometry(1,compact?24:32,compact?18:24),p=mesh.attributes.position;
+  for(let i=0;i<p.count;i++){const a=new THREE.Vector3(p.getX(i),p.getY(i),p.getZ(i)).normalize(),v=Math.acos(clamp(a.y,-1,1))/Math.PI,u=(Math.atan2(a.z,a.x)+Math.PI*2)%(Math.PI*2)/(Math.PI*2),q=foldPoint(u,v);p.setXYZ(i,q.x,q.y,q.z);}mesh.computeBoundingSphere();
+  return {lineGeometry,mesh};
+}
+export class BrainDepthScene{
+  constructor(mount,compact){
+    this.mount=mount;this.compact=compact;this.scene=new THREE.Scene();this.camera=new THREE.PerspectiveCamera(38,1,.07,75);this.renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'low-power'});this.renderer.setPixelRatio(Math.min(devicePixelRatio,compact?1.35:1.6));this.renderer.setClearColor(0x0d0d0d);this.renderer.outputColorSpace=THREE.SRGBColorSpace;mount.append(this.renderer.domElement);
+    this.intro=makeBrain(compact);this.scene.add(this.intro.group);this.root=new THREE.Group();this.scene.add(this.root);this.pool=new FoldPool();this.origin=0;this.depth=0;this.notes=[];this.nodeViews=new Map();this.maxInstances=1800;
+    const {lineGeometry,mesh}=foldGeometry(compact);this.attributes={center:new Float32Array(this.maxInstances*3),scale:new Float32Array(this.maxInstances),turn:new Float32Array(this.maxInstances*2)};
+    lineGeometry.setAttribute('aCenter',new THREE.InstancedBufferAttribute(this.attributes.center,3));lineGeometry.setAttribute('aScale',new THREE.InstancedBufferAttribute(this.attributes.scale,1));lineGeometry.setAttribute('aTurn',new THREE.InstancedBufferAttribute(this.attributes.turn,2));
+    this.material=new THREE.ShaderMaterial({transparent:true,depthWrite:false,uniforms:{uOpacity:{value:0}},vertexShader:`attribute vec3 aCenter;attribute float aScale;attribute vec2 aTurn;varying float vDepth;varying float vTone;void main(){vec3 p=position*aScale;float c=cos(aTurn.y),s=sin(aTurn.y);p.xy=mat2(c,s,-s,c)*p.xy;c=cos(aTurn.x);s=sin(aTurn.x);p.xz=mat2(c,-s,s,c)*p.xz;p+=aCenter;vec4 mv=modelViewMatrix*vec4(p,1.);vDepth=-mv.z;vTone=.75+.25*position.y;gl_Position=projectionMatrix*mv;}`,fragmentShader:`uniform float uOpacity;varying float vDepth;varying float vTone;void main(){float fade=1.-smoothstep(9.,38.,vDepth);float nearFade=smoothstep(.12,.6,vDepth);gl_FragColor=vec4(vec3(.80,.80,.78)*vTone,uOpacity*fade*nearFade);}`});
+    this.lines=new THREE.LineSegments(lineGeometry,this.material);this.lines.frustumCulled=false;this.lines.renderOrder=1;this.root.add(this.lines);
+    this.occluders=new THREE.InstancedMesh(mesh,new THREE.MeshBasicMaterial({color:0x0d0d0d}),this.maxInstances);this.occluders.frustumCulled=false;this.root.add(this.occluders);this.dummy=new THREE.Object3D();
+    const c=document.createElement('canvas');c.width=c.height=128;const ctx=c.getContext('2d'),g=ctx.createRadialGradient(64,64,0,64,64,64);g.addColorStop(0,'#fff0df');g.addColorStop(.07,'#ffe0b9');g.addColorStop(.18,'rgba(242,105,50,.6)');g.addColorStop(.5,'rgba(242,76,48,.12)');g.addColorStop(1,'rgba(242,76,48,0)');ctx.fillStyle=g;ctx.fillRect(0,0,128,128);this.texture=new THREE.CanvasTexture(c);this.texture.colorSpace=THREE.SRGBColorSpace;this.projected=new THREE.Vector3();this.look=new THREE.Vector3();this.resize();this.sync(0);
+  }
+  resize(){const w=this.mount.clientWidth,h=this.mount.clientHeight;this.camera.aspect=w/h;this.camera.updateProjectionMatrix();this.renderer.setSize(w,h);}
+  sync(depth){
+    const changed=this.pool.update(Math.max(0,depth));if(!changed)return false;this.origin=Math.floor(depth/CHUNK)*CHUNK;let count=0;
+    for(const o of this.pool.items){const z=-o.d+this.origin;this.attributes.center.set([o.x,o.y,z],count*3);this.attributes.scale[count]=o.r;this.attributes.turn.set([o.ry,o.rz],count*2);this.dummy.position.set(o.x,o.y,z);this.dummy.rotation.set(0,o.ry,o.rz);this.dummy.scale.setScalar(o.r);this.dummy.updateMatrix();this.occluders.setMatrixAt(count,this.dummy.matrix);count++;}
+    if(count>this.maxInstances)throw new Error('Fold instance capacity exceeded');this.lines.geometry.instanceCount=count;this.occluders.count=count;this.occluders.instanceMatrix.needsUpdate=true;for(const key of ['aCenter','aScale','aTurn'])this.lines.geometry.attributes[key].needsUpdate=true;
+    this.notes=this.pool.notes;const ids=new Set(this.notes.map(n=>n.id));for(const [id,view]of this.nodeViews)if(!ids.has(id)){this.root.remove(view);view.material.dispose();this.nodeViews.delete(id);}
+    for(const n of this.notes){let view=this.nodeViews.get(n.id);if(!view){view=new THREE.Sprite(new THREE.SpriteMaterial({map:this.texture,transparent:true,depthTest:true,depthWrite:false,blending:THREE.AdditiveBlending}));view.renderOrder=2;this.root.add(view);this.nodeViews.set(n.id,view);}view.position.set(n.x,n.y,-n.d+this.origin);view.scale.setScalar(.40);}
+    return true;
+  }
+  update(depth,time,mouse,selected){
+    this.depth=depth;const changed=this.sync(depth),entrance=smooth(.3,4.7,depth),inside=smooth(2.5,5,depth);
+    const aspect=this.camera.aspect,start=this.compact?1.4/(Math.tan(19*Math.PI/180)*aspect*.87):5.7,path=passage(SEED,Math.max(0,depth-3.5)),look=passage(SEED,Math.max(0,depth+4.5));
+    this.camera.position.set(path.x*inside+mouse.x*.17*inside,path.y*inside+mouse.y*.10*inside,lerp(start,3.5,entrance));this.look.set(look.x*inside,look.y*inside,lerp(0,-9,inside));this.camera.lookAt(this.look);this.camera.fov=lerp(38,this.compact?75:65,entrance);this.camera.updateProjectionMatrix();this.camera.updateMatrixWorld();
+    this.intro.group.position.z=depth;this.intro.group.scale.z=lerp(.045,1,smooth(0,2,depth));this.intro.group.visible=depth<5.1;for(const m of this.intro.materials)m.opacity=.68*(1-smooth(2.1,5.1,depth));
+    this.root.position.z=depth-this.origin;this.root.visible=depth>2.0;this.material.uniforms.uOpacity.value=.53*inside;
+    const projected=[];this.root.updateMatrixWorld(true);
+    for(const n of this.notes){const view=this.nodeViews.get(n.id);view.material.opacity=inside*(.85+.12*Math.sin(time*1.3+Number(n.id)));view.scale.setScalar(selected===n.id?.60:.38);const p=this.projected.copy(view.position);this.root.localToWorld(p);p.project(this.camera);const x=(p.x*.5+.5)*this.mount.clientWidth,y=(-p.y*.5+.5)*this.mount.clientHeight,dist=n.d-depth+this.camera.position.z;projected.push({...n,x,y,visible:inside>.9&&dist>1.3&&dist<14&&p.z<1&&x>28&&x<this.mount.clientWidth-115&&y>105&&y<this.mount.clientHeight-170});}
+    const placed=[];projected.sort((a,b)=>a.d-b.d);for(const n of projected)if(n.visible){if(placed.some(p=>Math.abs(p.x-n.x)<130&&Math.abs(p.y-n.y)<45))n.visible=false;else placed.push(n);}
+    this.renderer.render(this.scene,this.camera);return {changed,notes:projected};
+  }
+  snapshot(){return{depth:this.depth,chunks:[...this.pool.chunks.keys()],chunkCount:this.pool.chunks.size,instanceCount:this.occluders.count,nodeCount:this.nodeViews.size,drawCalls:this.renderer.info.render.calls};}
+}
