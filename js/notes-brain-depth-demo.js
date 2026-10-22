@@ -1,4 +1,4 @@
-import {BrainDepthScene} from './brain-depth-scene.js?v=16';
+import {BrainDepthScene} from './brain-depth-scene.js?v=19';
 const stage=document.querySelector('#brain-stage'),mount=document.querySelector('#brain-canvas'),loading=document.querySelector('#brain-loading'),dialog=document.querySelector('#thought-dialog');
 const small=matchMedia('(max-width:700px)'),reduced=matchMedia('(prefers-reduced-motion:reduce)'),list=document.querySelector('#thought-list'),status=document.querySelector('#thought-status');
 const storageKey='lx:brain-depth-demo:v2',records=new Map(),views=new Map();
