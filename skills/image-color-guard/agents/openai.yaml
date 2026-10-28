@@ -1,0 +1,6 @@
+interface:
+  display_name: "图片原色守护"
+  short_description: "每次改图固定对照原图，检查并纠正逐轮变灰、变暗与色彩漂移"
+  default_prompt: "使用 $image-color-guard 修改这张图片，固定原图色彩与明暗，并检查本轮输出。"
+policy:
+  allow_implicit_invocation: true

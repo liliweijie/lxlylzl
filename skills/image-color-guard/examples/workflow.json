@@ -1,0 +1,10 @@
+{
+  "scenario": "three-view-model-edit",
+  "anchor": {"source": "/data/model/original.png", "manifest": "/data/model/color-anchor.json"},
+  "rounds": [
+    {"image": "/data/model/edit-01.png", "out_dir": "/data/model/round-01", "mode": "preserve"},
+    {"image": "/data/model/edit-02.png", "out_dir": "/data/model/round-02", "mode": "preserve"}
+  ],
+  "review": ["delta_L_median", "chroma_ratio", "contrast_ratio", "deltaE00_mean", "identity", "intended_new_colors"],
+  "never_promote_latest_candidate_automatically": true
+}

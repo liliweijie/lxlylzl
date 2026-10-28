@@ -1,0 +1,6 @@
+Color-matching implementation in scripts/vendor/color_match.py and scripts/vendor/common.py
+is vendored unchanged from the locally installed repair-ai-image-quality skill,
+Copyright (c) 2026 饿霸猪, MIT license. See scripts/vendor/LICENSE.
+The guard adds a fixed-anchor manifest, sRGB normalization, foreground tone auditing,
+non-destructive outputs and before/after review. Vendor benchmark claims are not
+claims of validation for every image or provider. No model weights or private images included.
