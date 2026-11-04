@@ -1,0 +1,18 @@
+Workflow synthesis prepared for the user's vivo campaign on 2026-11-04.
+Concepts were distilled from locally installed ai-character-designer,
+character-anchor, imagegen, image-color-guard and repair-ai-image-quality,
+and from user-approved workflow requirements. Source skill manuals and
+private campaign assets are not redistributed here.
+
+scripts/guard.py and scripts/test_guard.py are bundled unchanged from the
+user's image-color-guard skill. Their vendor implementation below is MIT.
+scripts/vendor/common.py, color_match.py and gpt_demaze.py originate from
+repair-ai-image-quality, Copyright (c) 2026 饿霸猪.
+The MIT license is preserved in scripts/vendor/LICENSE.
+Snapshot checksums are recorded in examples/bundled-sources.json.
+
+No neural model weights, provider SDK runners, API credentials or private
+images are included. The maze processor therefore uses its spectral fallback.
+The new quality.py wrapper constrains its output to an explicit allowed mask
+and provides an exact decoded RGBA scope audit. These checks do not certify
+identity, packaging accuracy, visual quality or ownership.

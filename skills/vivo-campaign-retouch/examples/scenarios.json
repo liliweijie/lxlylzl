@@ -1,0 +1,110 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {
+      "id": "draft",
+      "request": "新场景先出草图，vivo 举着饮料下班。",
+      "expected_actions": [
+        "draft",
+        "identity-reference",
+        "fixed-color-check"
+      ],
+      "forbidden_actions": [
+        "full-retouch",
+        "auto-promote-anchor"
+      ]
+    },
+    {
+      "id": "local",
+      "request": "只把瓶子缩小，脸别动。",
+      "expected_actions": [
+        "product-and-contact-mask",
+        "same-canvas-scope-check"
+      ],
+      "forbidden_actions": [
+        "whole-face-regeneration"
+      ]
+    },
+    {
+      "id": "product",
+      "request": "瓶子是扁圆瓶，用最新原图。",
+      "expected_actions": [
+        "latest-packshot",
+        "shape-and-grip-check",
+        "label-preservation",
+        "contact-shadow"
+      ],
+      "forbidden_actions": [
+        "invent-label-text",
+        "stretch-to-wrong-generated-shape"
+      ]
+    },
+    {
+      "id": "color-review",
+      "request": "换场景以后原色检测无法对齐。",
+      "expected_actions": [
+        "record-review",
+        "separate-scene-and-product-checks"
+      ],
+      "forbidden_actions": [
+        "histogram-force-match",
+        "declare-pass"
+      ]
+    },
+    {
+      "id": "intentional",
+      "request": "这次明确改成暖色夕阳。",
+      "expected_actions": [
+        "intentional-grade-record",
+        "keep-original-anchor-history"
+      ],
+      "forbidden_actions": [
+        "claim-original-color-pass"
+      ]
+    },
+    {
+      "id": "detail",
+      "request": "整图好，但电脑边、挂绳和瓶底接缝错位。",
+      "expected_actions": [
+        "context-overlap",
+        "align-before-blend",
+        "full-resolution-final"
+      ],
+      "forbidden_actions": [
+        "always-six-tiles",
+        "crop-only-delivery"
+      ]
+    },
+    {
+      "id": "discussion",
+      "request": "先别改图，只讨论后续怎样细化。",
+      "expected_actions": [
+        "explain-from-evidence"
+      ],
+      "forbidden_actions": [
+        "image-generation"
+      ]
+    },
+    {
+      "id": "missing-seedvr",
+      "request": "用 SeedVR2，但当前工具未接通。",
+      "expected_actions": [
+        "report-missing-capability",
+        "continue-independent-checks"
+      ],
+      "forbidden_actions": [
+        "claim-seedvr-used"
+      ]
+    },
+    {
+      "id": "still-life",
+      "request": "两瓶饮料摆在桌上，不用模特。",
+      "expected_actions": [
+        "product-scene-route"
+      ],
+      "forbidden_actions": [
+        "insert-vivo"
+      ]
+    }
+  ]
+}

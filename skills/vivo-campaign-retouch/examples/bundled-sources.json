@@ -1,0 +1,40 @@
+{
+  "snapshot_date": "2026-11-04",
+  "files": [
+    {
+      "path": "scripts/guard.py",
+      "source_skill": "image-color-guard",
+      "sha256": "3531aafa23c5366c2b1ef6b66fe25c6cf0ae5b49845661ab297f63395bf1c266"
+    },
+    {
+      "path": "scripts/test_guard.py",
+      "source_skill": "image-color-guard",
+      "sha256": "94c74b7a44314c9a6b3675785f74681ccb864381a973596e96fbf641b00b1034"
+    },
+    {
+      "path": "scripts/requirements.txt",
+      "source_skill": "image-color-guard",
+      "sha256": "cd667ebfa01a3de46c875a1889861de83b9be6275060140993597092590d05c1"
+    },
+    {
+      "path": "scripts/vendor/common.py",
+      "source_skill": "image-color-guard",
+      "sha256": "67e5fb7444bef5bcbf9181190375d82bd877af2a9e83ac2e0d29dcc59b3872b1"
+    },
+    {
+      "path": "scripts/vendor/color_match.py",
+      "source_skill": "image-color-guard",
+      "sha256": "1b15e92500d6a363194015d8830886ea064c9342791c1c3ae52f22d7f2edc80f"
+    },
+    {
+      "path": "scripts/vendor/LICENSE",
+      "source_skill": "image-color-guard",
+      "sha256": "8c8a325ceaf29f3f6a600de7596b70fef365ae7a18cbb043ca3deb97b38f2cc9"
+    },
+    {
+      "path": "scripts/vendor/gpt_demaze.py",
+      "source_skill": "repair-ai-image-quality",
+      "sha256": "8a6f20c5e774ddfcd4537699938566ed7de3d34f7ae5cc14186dd8a8bd041d9b"
+    }
+  ]
+}

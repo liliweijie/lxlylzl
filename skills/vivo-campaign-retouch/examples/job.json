@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "example_only": true,
+  "stage": "selected-refine",
+  "selection_evidence": "用户已选定当前构图图，精修衣料和人像",
+  "references": {
+    "identity": {
+      "path": null,
+      "sha256": null,
+      "status": "user-approved-original"
+    },
+    "color_anchor_manifest": null,
+    "clean_scene": {
+      "path": null,
+      "sha256": null
+    },
+    "products": [
+      {
+        "sku": "鲜奶千抹",
+        "path": null,
+        "sha256": null,
+        "shape": "flattened-oval",
+        "status": "latest-user-supplied"
+      }
+    ]
+  },
+  "scope": {
+    "requested": [
+      "衣料迷宫纹",
+      "肤质和毛发协调细节"
+    ],
+    "allow_mask": null,
+    "protect_mask": null
+  },
+  "canvas": {
+    "native_generation_px": null,
+    "final_px": null,
+    "resampled": false,
+    "external_upscaler_used": null
+  },
+  "prompts": {
+    "raw": null,
+    "compiled": null
+  },
+  "steps": [],
+  "checks": {
+    "identity": {
+      "status": "not-run",
+      "report": null
+    },
+    "structure": {
+      "status": "not-run",
+      "report": null
+    },
+    "product": {
+      "status": "not-run",
+      "report": null
+    },
+    "fusion": {
+      "status": "not-run",
+      "report": null
+    },
+    "color_anchor": {
+      "status": "not-run",
+      "report": null
+    },
+    "texture": {
+      "status": "not-run",
+      "report": null
+    },
+    "scope": {
+      "status": "not-run",
+      "report": null
+    }
+  },
+  "outputs": [],
+  "approval": "candidate",
+  "notes": [
+    "运行时替换空值为实际证据，不把此示例当已完成记录。"
+  ]
+}
