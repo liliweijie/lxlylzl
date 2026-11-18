@@ -18,8 +18,11 @@
     .space-meta a{color:#f0ede5;text-decoration:none;font:12px Arial,sans-serif}
     .space-meta a:hover{text-decoration:underline}
     .glass-toggle{display:none}
-    .shirt-stage{height:calc(100dvh - var(--nav-height))}
+    .shirt-stage{position:relative;height:calc(100dvh - var(--nav-height,80px))}
     .shirt-stage iframe{display:block;width:100%;height:100%;border:0;color-scheme:normal}
+    .shirt-stage[aria-busy=true] iframe{visibility:hidden}
+    .shirt-loading{display:none}
+    .shirt-stage[aria-busy=true] .shirt-loading{position:absolute;inset:0;display:grid;place-items:center;margin:0;color:#f0ede5;font:13px system-ui,sans-serif;pointer-events:none}
     @media(max-width:700px),(max-height:500px) and (pointer:coarse){
       .space-links{left:0}
       .space-links a{display:flex}
@@ -40,8 +43,9 @@
     </nav>
     <div class="space-meta"><a href="/shirt-studio/credits.html">模型署名</a></div>
   </header>
-  <main class="shirt-stage" aria-label="文化衫定制">
-    <iframe src="/shirt-studio/index.html" title="文化衫 3D 定制工作室" allow="fullscreen" allowfullscreen></iframe>
+  <main class="shirt-stage" aria-label="文化衫定制" aria-busy="true">
+    <iframe src="/shirt-studio/index.html" title="文化衫 3D 定制工作室" allow="fullscreen" allowfullscreen onload="this.parentElement.removeAttribute('aria-busy')"></iframe>
+    <p class="shirt-loading" role="status">正在加载 3D 试衣…</p>
   </main>
 </body>
 </html>
