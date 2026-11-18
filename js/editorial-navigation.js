@@ -12,7 +12,7 @@
   if(!document.querySelector('link[href="css/navigation-shell.css"]')){var shellStyle=document.createElement('link');shellStyle.rel='stylesheet';shellStyle.href='css/navigation-shell.css';document.head.appendChild(shellStyle);}
   var shellScript=document.createElement('script');shellScript.src='js/navigation-shell.js?v=5';document.body.appendChild(shellScript);
   if(!document.querySelector('link[href="css/site-motion.css"]')){var motionStyle=document.createElement('link');motionStyle.rel='stylesheet';motionStyle.href='css/site-motion.css?v=5';document.head.appendChild(motionStyle);}
-  var motionFiles=['assets/vendor/gsap.min.js','assets/vendor/ScrollTrigger.min.js','js/site-motion.js?v=5'];
+  var motionFiles=['assets/vendor/gsap.min.js','assets/vendor/ScrollTrigger.min.js','js/site-motion.js?v=6'];
   function loadMotion(index){if(index>=motionFiles.length){window.dispatchEvent(new Event("motion-libraries-ready"));return;}var script=document.createElement('script');script.src=motionFiles[index];script.onload=function(){loadMotion(index+1)};script.onerror=function(){if(index<2)loadMotion(2)};document.body.appendChild(script)}
   loadMotion(0);
   var playScript=document.createElement('script');playScript.src='js/play-world.js?v=5';document.body.appendChild(playScript);
