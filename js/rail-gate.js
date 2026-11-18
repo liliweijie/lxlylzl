@@ -2,13 +2,13 @@
   'use strict';
 
   var rail = document.querySelector('.peek-rail');
-  if (!rail) return;
+  if (!rail || !window.lxNavigation) return;
 
-  var routes = ['index.html', 'works.html', 'about.html', 'notes.html', 'contact.html'];
-  var labels = [['首页', 'HOME'], ['作品', 'WORK'], ['关于', 'ABOUT'], ['碎碎念', 'NOTES'], ['联系', 'CONTACT']];
-  var page = Number(document.body.dataset.page || 0);
-  var targetIndex = (page + 1) % routes.length;
-  var target = routes[targetIndex];
+  var nav = window.lxNavigation;
+  var pages = nav.pages;
+  var page = nav.current;
+  var targetIndex = (page + 1) % pages.length;
+  var target = pages[targetIndex].path;
   var pressed = null;
   var committing = false;
   var spring=null,pullState={size:0};
@@ -33,13 +33,13 @@
 
   function selectTarget(index, href) {
     targetIndex = index;
-    target = href || routes[index];
-    var label = labels[index];
-    preview.querySelector('h2').textContent=label[1];
-    if (railName) railName.textContent = label[0] + ' · ' + label[1];
-    if (washLabel) washLabel.textContent = label[0] + ' ' + label[1];
-    if (railNo) railNo.textContent = String(index + 1).padStart(2, '0') + '/05';
-    rail.setAttribute('aria-label', '前往' + label[0] + ' · ' + label[1] + (phoneLayout.matches ? '。轻点底栏，自动向上切换，或按回车进入。' : '。在侧栏内按住向左拖动，或在页面底部继续滚动，或按回车进入。'));
+    var item = pages[index];
+    target = href || item.path;
+    preview.querySelector('h2').textContent=item.en;
+    if (railName) railName.textContent = item.cn + ' · ' + item.en;
+    if (washLabel) washLabel.textContent = item.cn + ' ' + item.en;
+    if (railNo) railNo.textContent = String(index + 1).padStart(2, '0') + '/' + String(pages.length).padStart(2, '0');
+    rail.setAttribute('aria-label', '前往' + item.cn + ' · ' + item.en + (phoneLayout.matches ? '。轻点底栏，自动向上切换，或按回车进入。' : '。在侧栏内按住向左拖动，或在页面底部继续滚动，或按回车进入。'));
     tip.textContent = phoneLayout.matches ? '' : '轻轻左拖，即刻切页 ←';
   }
 
@@ -91,7 +91,7 @@
     rail.classList.remove('rail-expanded', 'is-pull-ready');
     rail.style.setProperty(vertical ? '--drag-height' : '--drag-width', (10 + (extent - 10) * wheelAmount) + 'px');
     rail.dataset.wheelProgress = String(Math.round(wheelAmount * 100));
-    preview.querySelector('.pull-action').textContent = '继续滚动，进入' + labels[targetIndex][0] + ' · ' + Math.round(wheelAmount * 100) + '%';
+    preview.querySelector('.pull-action').textContent = '继续滚动，进入' + pages[targetIndex].cn + ' · ' + Math.round(wheelAmount * 100) + '%';
     preview.querySelector('.pull-track i').style.transform = 'scaleX(' + wheelAmount + ')';
     if (progress) progress.textContent = Math.round(wheelAmount * 100) + '%';
     if (wheelAmount === 1) { commit(); return; }
@@ -134,8 +134,8 @@
     pressed = null;
     rail.classList.remove('rail-dragging', 'rail-expanded');
     rail.classList.add('rail-cover');
-    document.querySelectorAll('.space-links a').forEach(function(link){
-      if(new URL(link.href,location.href).pathname.split('/').pop()===routes[targetIndex])link.setAttribute('aria-current','page');
+    nav.links.forEach(function(link,index){
+      if(index===targetIndex)link.setAttribute('aria-current','page');
       else link.removeAttribute('aria-current');
     });
     if (progress) progress.textContent = '100%';
@@ -150,8 +150,8 @@
       if (link.target === '_blank' || link.hasAttribute('download')) return;
       var url = new URL(link.href, location.href);
       if (url.origin !== location.origin) return;
-      var filename = url.pathname.split('/').pop() || 'index.html';
-      var index = routes.indexOf(filename);
+      var index = nav.links.indexOf(link);
+      if (link.matches('.space-logo')) index = 0;
       if (index < 0 || index === page) return;
       event.preventDefault();
       commit(url.href, index);
@@ -182,7 +182,7 @@
     rail.classList.add('rail-dragging');
     var amount = Math.min(1,pressed.dx/pressed.threshold);
     rail.classList.toggle('is-pull-ready',amount>=1);
-    preview.querySelector('.pull-action').textContent=amount>=1?'松手进入 '+labels[targetIndex][0]:'再拉一点 · '+Math.round(amount*100)+'%';
+    preview.querySelector('.pull-action').textContent=amount>=1?'松手进入 '+pages[targetIndex].cn:'再拉一点 · '+Math.round(amount*100)+'%';
     preview.querySelector('.pull-track i').style.transform='scaleX('+amount+')';
     rail.style.setProperty('--drag-width', Math.min(innerWidth, pressed.width + pressed.dx) + 'px');
     if(pressed.vertical)rail.style.setProperty('--drag-height', Math.max(64,pressed.height + pressed.dx) + 'px');
@@ -215,10 +215,10 @@
   window.addEventListener('pageshow', function () {
     committing = false;
     rail.classList.remove('rail-cover');
-    selectTarget((page + 1) % routes.length);
+    selectTarget((page + 1) % pages.length);
     reset();
-    document.querySelectorAll('.space-links a').forEach(function(link){
-      if(new URL(link.href,location.href).pathname.split('/').pop()===routes[page])link.setAttribute('aria-current','page');
+    nav.links.forEach(function(link,index){
+      if(index===page)link.setAttribute('aria-current','page');
       else link.removeAttribute('aria-current');
     });
   });

@@ -46,8 +46,8 @@
   links.addEventListener('click',function(e){var link=e.target.closest('a');if(link&&(new URL(link.href,location.href).pathname.split('/').pop()||'index.html')===(location.pathname.split('/').pop()||'index.html')){e.preventDefault();menu(false)}});
   phoneLayout.addEventListener('change',syncPhoneLayout);
   window.addEventListener('pageshow',function(){menu(false)});
-  if(rail){var names=['HOME','WORK','ABOUT','NOTES','CONTACT'],page=Number(document.body.dataset.page||0),ticket=rail.querySelector('.peek-rail__ticket');
-    [['rail-from',names[page]],['rail-join','TO'],['rail-to',names[(page+1)%5]],['rail-signature','MADE BY LIWEIJIE'],['rail-instruction','往左拖动 切换下页']].forEach(function(pair){var el=document.createElement('span');el.className=pair[0];el.textContent=pair[1];ticket.appendChild(el)});
+  if(rail&&window.lxNavigation){var nav=window.lxNavigation,ticket=rail.querySelector('.peek-rail__ticket');
+    [['rail-from',nav.pages[nav.current].en],['rail-join','TO'],['rail-to',nav.pages[(nav.current+1)%nav.pages.length].en],['rail-signature','MADE BY LIWEIJIE'],['rail-instruction','往左拖动 切换下页']].forEach(function(pair){var el=document.createElement('span');el.className=pair[0];el.textContent=pair[1];ticket.appendChild(el)});
     var signature=rail.querySelector('.rail-signature');signature.textContent='';var signatureArt=document.createElement('img');signatureArt.src='assets/rail-signature.svg';signatureArt.alt='MADE BY LIWEIJIE';signature.appendChild(signatureArt);
     var loading=document.createElement('span');loading.className='rail-loading';var loadingArt=document.createElement('img');loadingArt.src='assets/rail-loading.svg';loadingArt.alt='载入像素中…';loading.appendChild(loadingArt);ticket.appendChild(loading);
     var name=rail.querySelector('.peek-rail__name');new MutationObserver(function(){var text=name.textContent;rail.querySelector('.rail-to').textContent=text.split('·').pop().trim()}).observe(name,{childList:true,subtree:true,characterData:true});

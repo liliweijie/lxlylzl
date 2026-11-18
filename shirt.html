@@ -7,28 +7,34 @@
   <title>SHIRT · LXLYLZL</title>
   <link rel="canonical" href="https://lxlylzl.xyz/shirt">
   <link rel="icon" href="/assets/space-mark-small.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/site.css">
   <link rel="stylesheet" href="/css/space-system.css">
+  <link rel="stylesheet" href="/css/rail-gate.css">
   <link rel="stylesheet" href="/css/navigation-shell.css">
+  <link rel="stylesheet" href="/css/site-motion.css?v=5">
   <style>
+    :root{--shirt-nav-height:80px;--font-noto:system-ui,sans-serif;--font-anton:Arial,sans-serif}
     *{box-sizing:border-box}
-    body{margin:0;overflow:hidden}
-    .space-header{position:relative;padding:0 4.1vw!important}
+    body{margin:0;padding:0;overflow:hidden}
+    .space-header{position:relative;height:var(--shirt-nav-height)!important;padding:0 4.1vw!important}
     .space-links{left:50%;gap:clamp(6px,1.6vw,24px)!important}
     .space-links a[href="about.html"]{display:flex}
     .space-meta a{color:#f0ede5;text-decoration:none;font:12px Arial,sans-serif}
     .space-meta a:hover{text-decoration:underline}
     .glass-toggle{display:none}
-    .shirt-stage{position:relative;height:calc(100dvh - var(--nav-height,80px))}
+    .shirt-stage{position:relative;margin-right:56px;height:calc(100dvh - var(--shirt-nav-height))}
     .shirt-stage iframe{display:block;width:100%;height:100%;border:0;color-scheme:normal}
     .shirt-stage[aria-busy=true] iframe{visibility:hidden}
     .shirt-loading{display:none}
     .shirt-stage[aria-busy=true] .shirt-loading{position:absolute;inset:0;display:grid;place-items:center;margin:0;color:#f0ede5;font:13px system-ui,sans-serif;pointer-events:none}
     @media(max-width:700px),(max-height:500px) and (pointer:coarse){
+      :root{--shirt-nav-height:64px}
       .space-links{left:0}
       .space-links a{display:flex}
+      .shirt-stage{margin-right:0;height:calc(100dvh - var(--shirt-nav-height) - 52px - env(safe-area-inset-bottom))}
     }
   </style>
-  <script src="/js/navigation-shell.js?v=5" defer></script>
+  <script src="js/editorial-navigation.js?v=8" defer></script>
 </head>
 <body>
   <header class="space-header">
@@ -44,7 +50,7 @@
     <div class="space-meta"><a href="/shirt-studio/credits.html">模型署名</a></div>
   </header>
   <main class="shirt-stage" aria-label="文化衫定制" aria-busy="true">
-    <iframe src="/shirt-studio/index.html" title="文化衫 3D 定制工作室" allow="fullscreen" allowfullscreen onload="this.parentElement.removeAttribute('aria-busy')"></iframe>
+    <iframe src="/shirt-studio/index.html?v=2" title="文化衫 3D 定制工作室" allow="fullscreen" allowfullscreen onload="this.parentElement.removeAttribute('aria-busy')"></iframe>
     <p class="shirt-loading" role="status">正在加载 3D 试衣…</p>
   </main>
 </body>
