@@ -16,6 +16,8 @@
   var reduced=matchMedia("(prefers-reduced-motion: reduce)");
   var preview=document.createElement("div");preview.className="rail-pull-preview";preview.setAttribute("aria-hidden","true");preview.innerHTML='<small>CONTINUE TO</small><h2></h2><p class="pull-action">继续拉动</p><div class="pull-track"><i></i></div>';rail.append(preview);
   var phoneLayout = matchMedia('(max-width:700px), (max-height:500px) and (pointer:coarse)');
+  var logo = document.querySelector('.space-logo');
+  var logoDragged = false;
   var progress = rail.querySelector('.peek-rail__pct');
   var wash = rail.querySelector('.peek-rail__wash');
   var washLabel = wash && wash.querySelector('span');
@@ -39,7 +41,7 @@
     if (railName) railName.textContent = item.cn + ' · ' + item.en;
     if (washLabel) washLabel.textContent = item.cn + ' ' + item.en;
     if (railNo) railNo.textContent = String(index + 1).padStart(2, '0') + '/' + String(pages.length).padStart(2, '0');
-    rail.setAttribute('aria-label', '前往' + item.cn + ' · ' + item.en + (phoneLayout.matches ? '。轻点底栏，自动向上切换，或按回车进入。' : '。在侧栏内按住向左拖动，或在页面底部继续滚动，或按回车进入。'));
+    rail.setAttribute('aria-label', '前往' + item.cn + ' · ' + item.en + (phoneLayout.matches ? '。向下拖动 Logo 进入。' : '。在侧栏内按住向左拖动，或在页面底部继续滚动，或按回车进入。'));
     tip.textContent = phoneLayout.matches ? '' : '轻轻左拖，即刻切页 ←';
   }
 
@@ -48,7 +50,9 @@
     if (committing) return;
     cancelAnimationFrame(wheelFrame);
     wheelFrame = 0; wheelTarget = 0; wheelAmount = 0; wheelArmedAt = null;
+    var previous = pressed;
     pressed = null;
+    if (previous && previous.surface.hasPointerCapture(previous.id)) previous.surface.releasePointerCapture(previous.id);
     rail.classList.remove('rail-dragging', 'rail-expanded', 'rail-wheel');
     delete rail.dataset.wheelProgress;
     rail.style.removeProperty('--drag-width');
@@ -67,7 +71,7 @@
 
   function wheelBlocked(event) {
     if (event.defaultPrevented || event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return true;
-    if (document.querySelector('dialog[open],.work-overlay.is-open,.rewind-overlay.is-open,.space-header.is-menu-open')) return true;
+    if (document.querySelector('dialog[open],.work-overlay.is-open,.rewind-overlay.is-open')) return true;
     if (getComputedStyle(document.body).overflowY === 'hidden' || getComputedStyle(document.documentElement).overflowY === 'hidden') return true;
     var node = event.target instanceof Element ? event.target : null;
     if (node && node.closest('input,textarea,select,[contenteditable]:not([contenteditable="false"]),.space-header,[data-wheel-navigation="off"]')) return true;
@@ -86,10 +90,10 @@
     wheelAmount = reduced.matches ? wheelTarget : wheelAmount + (wheelTarget - wheelAmount) * .2;
     if (Math.abs(wheelTarget - wheelAmount) < .001) wheelAmount = wheelTarget;
     if (wheelTarget === 0 && wheelAmount === 0) { reset(); return; }
-    var vertical = phoneLayout.matches, extent = vertical ? innerHeight : innerWidth;
+    var extent = innerWidth;
     rail.classList.add('rail-dragging', 'rail-wheel');
     rail.classList.remove('rail-expanded', 'is-pull-ready');
-    rail.style.setProperty(vertical ? '--drag-height' : '--drag-width', (10 + (extent - 10) * wheelAmount) + 'px');
+    rail.style.setProperty('--drag-width', (10 + (extent - 10) * wheelAmount) + 'px');
     rail.dataset.wheelProgress = String(Math.round(wheelAmount * 100));
     preview.querySelector('.pull-action').textContent = '继续滚动，进入' + pages[targetIndex].cn + ' · ' + Math.round(wheelAmount * 100) + '%';
     preview.querySelector('.pull-track i').style.transform = 'scaleX(' + wheelAmount + ')';
@@ -99,7 +103,7 @@
   }
 
   window.addEventListener('wheel', function (event) {
-    if (committing || pressed || wheelBlocked(event) || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
+    if (phoneLayout.matches || committing || pressed || wheelBlocked(event) || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
     if (!atBottom()) { if (wheelArmedAt !== null || wheelAmount) reset(); return; }
     var delta = event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? innerHeight : 1);
     if (!Number.isFinite(delta) || Math.abs(delta) < .5) return;
@@ -117,11 +121,11 @@
     if (!committing && !atBottom() && (wheelArmedAt !== null || wheelAmount)) reset();
   }, { passive: true });
 
-  function springBack(vertical,from) {
+  function springBack(vertical,from,idle) {
     if(!window.gsap||reduced.matches){reset();return;}
     pressed=null;rail.classList.remove('is-pull-ready');preview.querySelector('.pull-action').textContent='松开，回到这里';
     pullState.size=from;
-    spring=gsap.to(pullState,{size:vertical?52:56,duration:.8,ease:'elastic.out(1,.5)',onUpdate:function(){rail.style.setProperty(vertical?'--drag-height':'--drag-width',Math.max(vertical?52:56,pullState.size)+'px')},onComplete:reset});
+    spring=gsap.to(pullState,{size:idle,duration:.8,ease:'elastic.out(1,.5)',onUpdate:function(){rail.style.setProperty(vertical?'--drag-height':'--drag-width',Math.max(idle,pullState.size)+'px')},onComplete:reset});
   }
   function commit(href, index) {
     if (committing) return;
@@ -151,7 +155,10 @@
       var url = new URL(link.href, location.href);
       if (url.origin !== location.origin) return;
       var index = nav.links.indexOf(link);
-      if (link.matches('.space-logo')) index = 0;
+      if (link === logo) {
+        if (phoneLayout.matches) return;
+        index = 0;
+      }
       if (index < 0 || index === page) return;
       event.preventDefault();
       commit(url.href, index);
@@ -164,55 +171,69 @@
   rail.addEventListener('pointerleave', function () {
     if (!pressed && !committing) rail.classList.remove('rail-expanded');
   });
-  rail.addEventListener('pointerdown', function (event) {
+  function beginPull(event, surface, vertical) {
     if (committing || event.button !== 0 || event.isPrimary === false) return;
-    if (wheelArmedAt !== null || wheelAmount) reset();
-    if(spring){spring.kill();spring=null;}
-    if (event.pointerType === 'touch') rail.classList.add('rail-expanded');
-    pressed = { id: event.pointerId, x: event.clientX, y: event.clientY, dx: 0, dy: 0, vertical:phoneLayout.matches, height:rail.getBoundingClientRect().height, width: rail.getBoundingClientRect().width, threshold:Math.min(180,Math.max(100,(phoneLayout.matches?innerHeight:innerWidth)*.16)) };
-    rail.setPointerCapture(event.pointerId);
-  });
-  rail.addEventListener('pointermove', function (event) {
+    if (wheelArmedAt !== null || wheelAmount || spring) reset();
+    if (vertical) logoDragged = false;
+    var size = vertical ? surface.closest('.space-header').getBoundingClientRect().height : rail.getBoundingClientRect().width;
+    var threshold = vertical ? Math.min(132,Math.max(76,innerHeight*.13)) : Math.min(180,Math.max(100,innerWidth*.16));
+    pressed = {id:event.pointerId,surface:surface,vertical:vertical,x:event.clientX,y:event.clientY,along:0,across:0,size:size,threshold:threshold};
+    surface.setPointerCapture(event.pointerId);
+  }
+  function movePull(event) {
     if (!pressed || event.pointerId !== pressed.id) return;
-    if(pressed.vertical)return; // Phone uses a tap-triggered wipe, never a pull preview.
-    pressed.dx = Math.max(0, pressed.vertical ? pressed.y-event.clientY : pressed.x-event.clientX);
-    pressed.dy = Math.abs(pressed.vertical ? event.clientX-pressed.x : event.clientY-pressed.y);
-    if (pressed.dy > 24 && pressed.dy > pressed.dx) { reset(); return; }
-    if (pressed.dx < 5) return;
+    var x=event.clientX-pressed.x,y=event.clientY-pressed.y;
+    pressed.along=Math.max(0,pressed.vertical?y:-x);
+    pressed.across=Math.abs(pressed.vertical?x:y);
+    if(pressed.vertical&&Math.hypot(x,y)>8)logoDragged=true;
+    if(!pressed.vertical&&pressed.across>24&&pressed.across>pressed.along){reset();return;}
+    if(!rail.classList.contains('rail-dragging')&&(pressed.along<8||pressed.along<pressed.across))return;
     rail.classList.add('rail-dragging');
-    var amount = Math.min(1,pressed.dx/pressed.threshold);
-    rail.classList.toggle('is-pull-ready',amount>=1);
-    preview.querySelector('.pull-action').textContent=amount>=1?'松手进入 '+pages[targetIndex].cn:'再拉一点 · '+Math.round(amount*100)+'%';
+    var amount = Math.min(1,pressed.along/pressed.threshold);
+    var ready=amount>=1&&pressed.along>pressed.across*1.5;
+    rail.classList.toggle('is-pull-ready',ready);
+    preview.querySelector('.pull-action').textContent=ready?'松手进入 '+pages[targetIndex].cn:'再拉一点 · '+Math.round(amount*100)+'%';
     preview.querySelector('.pull-track i').style.transform='scaleX('+amount+')';
-    rail.style.setProperty('--drag-width', Math.min(innerWidth, pressed.width + pressed.dx) + 'px');
-    if(pressed.vertical)rail.style.setProperty('--drag-height', Math.max(64,pressed.height + pressed.dx) + 'px');
+    var extent=pressed.vertical?innerHeight:innerWidth;
+    rail.style.setProperty(pressed.vertical?'--drag-height':'--drag-width',Math.min(extent,pressed.size+pressed.along)+'px');
     if (progress) progress.textContent = Math.round(amount * 100) + '%';
     if (wash) wash.style.opacity = amount;
-  });
-  rail.addEventListener('pointerup', function (event) {
+  }
+  function finishPull(event) {
     if (!pressed || event.pointerId !== pressed.id) return;
-    if(pressed.vertical){
-      var tapDistance=Math.hypot(event.clientX-pressed.x,event.clientY-pressed.y);
-      pressed=null;
-      if(rail.hasPointerCapture(event.pointerId))rail.releasePointerCapture(event.pointerId);
-      if(tapDistance<=14)commit();else reset();
-      return;
-    }
-    var pressedDistance=pressed.dx,crossDistance=pressed.dy;
-    var go = pressed.dx >= pressed.threshold && pressed.dx > pressed.dy * 1.5;
+    var pull=pressed;
+    var go = pull.along >= pull.threshold && pull.along > pull.across * 1.5;
     pressed = null;
-    if (rail.hasPointerCapture(event.pointerId)) rail.releasePointerCapture(event.pointerId);
-    if (go || (pressedDistance < 5 && crossDistance < 12)) commit();
-    else springBack(phoneLayout.matches,phoneLayout.matches?rail.getBoundingClientRect().height:rail.getBoundingClientRect().width);
-  });
+    if (pull.surface.hasPointerCapture(event.pointerId)) pull.surface.releasePointerCapture(event.pointerId);
+    if (go || (!pull.vertical&&pull.along<5&&pull.across<12)) commit();
+    else if (rail.classList.contains('rail-dragging')) {
+      var bounds=rail.getBoundingClientRect();
+      springBack(pull.vertical,pull.vertical?bounds.height:bounds.width,pull.vertical?pull.size:56);
+    } else reset();
+  }
+  for(const surface of [rail,logo]){
+    if(!surface)continue;
+    surface.addEventListener('pointerdown',event=>{
+      const vertical=surface===logo;
+      if(vertical===phoneLayout.matches)beginPull(event,surface,vertical);
+    });
+    surface.addEventListener('pointermove',movePull);
+    surface.addEventListener('pointerup',finishPull);
+    surface.addEventListener('pointercancel',reset);
+    surface.addEventListener('lostpointercapture',()=>{if(pressed&&!committing)reset()});
+  }
+  logo?.addEventListener('click',event=>{
+    if(!phoneLayout.matches||event.detail===0||(!logoDragged&&!committing))return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+  },true);
   document.addEventListener('pointerdown', function (event) {
-    if (!committing && !rail.contains(event.target)) reset();
+    if (!committing && !rail.contains(event.target) && !(phoneLayout.matches&&logo?.contains(event.target))) reset();
   });
-  rail.addEventListener('pointercancel', reset);
-  rail.addEventListener('lostpointercapture', function () { if (pressed && !committing) reset(); });
   window.addEventListener('blur', function () { if (!committing) reset(); });
   window.addEventListener('resize', function () { if (!committing) reset(); });
-  window.addEventListener('pageshow', function () {
+  window.addEventListener('pageshow', function (event) {
+    if (!event.persisted) return;
     committing = false;
     rail.classList.remove('rail-cover');
     selectTarget((page + 1) % pages.length);

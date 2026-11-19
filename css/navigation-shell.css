@@ -59,7 +59,7 @@ html[data-surface=glass] .space-links a,html[data-surface=glass] .glass-toggle{c
 .space-header{z-index:6000!important}
 .space-logo{z-index:3}
 .space-links{z-index:2}
-/* Phone layout: centered logo, collapsible menu and an upward next-page rail. */
+/* On phones the logo opens the directory and owns the pull gesture. */
 @media(max-width:700px),(max-height:500px) and (pointer:coarse){
   :root{--nav-height:64px}
   .space-header{align-items:center!important;justify-content:center;padding:0!important;isolation:isolate;transition:none}
@@ -67,31 +67,9 @@ html[data-surface=glass] .space-links a,html[data-surface=glass] .glass-toggle{c
   .space-logo img{width:32px!important;height:32px!important}
   .space-logo b,.space-logo small{display:none!important}
   .space-meta{display:none!important}
-  .space-links,.space-header.is-compact:not(:hover):not(:focus-within) .space-links{
-    position:absolute;top:100%;left:0;right:0;transform:translateY(-8px);margin:0;width:100%;gap:8px!important;
-    flex-direction:column;align-items:stretch;justify-content:flex-start;padding:12px 16px 20px;background:#0f0f0f;border-bottom:1px solid #ffffff80;
-    max-height:calc(100svh - 80px);overflow-y:auto;overscroll-behavior:contain;
-    opacity:0;visibility:hidden;pointer-events:none;transition:opacity .2s,transform .25s,visibility .2s;
-  }
-  .space-header.is-menu-open .space-links,.space-header.is-menu-open.is-compact .space-links{
-    opacity:1;visibility:visible;pointer-events:auto;transform:none;top:100%;
-  }
-  .space-links a{width:100%;font-size:18px;min-height:58px!important;flex-shrink:0;justify-content:center;padding:12px!important;border-radius:16px;border:1px solid #ffffff70;background:#0f0f0f;color:#fff}
-  .space-links a[aria-current=page]{background:#fbfbf9;color:#0d0d0d;border-color:#fbfbf9}
+  .space-links{display:none!important}
+  .space-logo{touch-action:none;user-select:none;-webkit-touch-callout:none}
+  .space-logo img{-webkit-user-drag:none;pointer-events:none}
   .space-logo:focus-visible{outline:2px solid #f24c30;outline-offset:-6px}
-  .peek-rail{touch-action:pan-x!important}
-  .peek-rail:not(.rail-cover){top:auto!important;bottom:0!important;left:0!important;right:0!important;width:100%!important;height:10px;transition:height .28s ease;background:#f24c30!important;border-color:#f24c30!important}
-  .peek-rail:not(.rail-cover):is(:hover,:focus-visible,.rail-expanded,.rail-dragging){height:64px;background:#0f0f0f!important}
-  .peek-rail:not(.rail-cover):not(.rail-dragging):is(:hover,:focus-visible,.rail-expanded),.peek-rail.rail-dragging:not(.rail-cover){width:100%!important}
-  .peek-rail:not(:hover):not(:focus-visible):not(.rail-expanded):not(.rail-dragging):not(.rail-cover){width:100%!important}
-  .peek-rail .peek-rail__ticket{width:100%!important;height:64px}
-  .peek-rail.rail-dragging:not(.rail-cover){height:var(--drag-height,64px);transition:none}
-  .peek-rail.rail-cover{height:100svh!important;width:100vw!important;top:auto!important;bottom:0!important;transition:height .4s cubic-bezier(.2,.8,.2,1)}
-  .rail-from,.rail-join,.rail-to{writing-mode:horizontal-tb;transform:none;top:12px;font-size:11px}
-  .rail-from{left:16px}.rail-join{left:76px}.rail-to{left:104px}
-  .rail-instruction{writing-mode:horizontal-tb;transform:none;top:auto;bottom:12px;left:16px;width:auto;font-size:12px;white-space:nowrap}
-  .rail-signature{top:50%;left:auto;right:62px;width:16px;height:110px;transform:translateY(-50%) rotate(-90deg)}
-  .rail-loading,.peek-rail__pct{display:none!important}
-  body{padding-bottom:max(10px,env(safe-area-inset-bottom))}
   .container{padding-right:var(--gutter)}
 }

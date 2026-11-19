@@ -33,21 +33,6 @@
     if (!trail.hidden) trail.style.transform = `translate(${e.clientX + 16}px,${e.clientY + 16}px)`;
   });
   document.addEventListener('pointerleave', () => trail.hidden = true);
-  // Touch-first directory. The existing rail still handles page transitions.
-  const rail=document.querySelector('.peek-rail'),header=document.querySelector('.space-header');
-  if(rail&&header&&window.lxNavigation){
-    const toggle=document.createElement('button');toggle.type='button';toggle.className='motion-menu-toggle';toggle.innerHTML='<span class="menu-lines" aria-hidden="true"><i></i><i></i></span><span>目录</span>';toggle.setAttribute('aria-expanded','false');toggle.setAttribute('aria-controls','motion-directory');
-    const drawer=document.createElement('dialog');drawer.id='motion-directory';drawer.className='motion-directory';drawer.setAttribute('aria-label','网站目录');
-    drawer.innerHTML='<header><span>lXlYlZl / DIRECTORY</span><button type="button" class="directory-close" aria-label="关闭目录">关闭 ×</button></header><nav aria-label="页面目录"></nav><p>选一页，继续逛。</p>';
-    const nav=window.lxNavigation;
-    nav.pages.forEach(({path,en,cn},i)=>{const a=document.createElement('a');a.href=path;a.innerHTML='<small>'+String(i+1).padStart(2,'0')+'</small><strong>'+en+'</strong><span>'+cn+'</span>';if(i===nav.current)a.setAttribute('aria-current','page');drawer.querySelector('nav').append(a);a.onclick=e=>{if(e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();closeMenu();if(i!==nav.current)nav.links[i].click()}});
-    document.body.append(toggle,drawer);
-    function closeMenu(){if(!drawer.open)return;toggle.setAttribute('aria-expanded','false');drawer.close();toggle.focus({preventScroll:true})}
-    toggle.onclick=()=>{drawer.showModal();toggle.setAttribute('aria-expanded','true');if(window.gsap&&!reduced.matches){gsap.fromTo(drawer,{x:'100%'},{x:0,duration:.65,ease:'power4.out'});gsap.fromTo(drawer.querySelectorAll('nav a'),{y:45,opacity:0,rotate:-3},{y:0,opacity:1,rotate:0,duration:.7,stagger:.07,delay:.12,ease:'power3.out'})}};
-    drawer.querySelector('.directory-close').onclick=closeMenu;
-    drawer.addEventListener('click',e=>{if(e.target===drawer){const r=drawer.getBoundingClientRect();if(e.clientX<r.left||e.clientY<r.top||e.clientX>r.right||e.clientY>r.bottom)closeMenu()}});
-    drawer.addEventListener('close',()=>{toggle.setAttribute('aria-expanded','false');toggle.focus({preventScroll:true})});
-  }
   if (!window.gsap || !window.ScrollTrigger) return;
   gsap.registerPlugin(ScrollTrigger);
   gsap.matchMedia().add('(prefers-reduced-motion: no-preference)', () => {
