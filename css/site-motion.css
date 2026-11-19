@@ -121,6 +121,7 @@ body .peek-rail.rail-dragging:not(.rail-cover) .peek-rail__ticket,body .peek-rai
 body:has(.rail-dragging) .motion-menu-toggle{visibility:hidden}
 @media(max-width:700px),(max-height:500px) and (pointer:coarse){
  body .peek-rail:not(.rail-cover):not(.rail-dragging){display:none}
+ .peek-rail:not(.rail-cover)::before,.peek-rail:not(.rail-cover)::after{display:none}
  body .peek-rail.rail-dragging:not(.rail-cover),body .peek-rail.rail-cover{
    top:0!important;right:0!important;bottom:auto!important;left:0;width:100%!important;
    pointer-events:none!important;
