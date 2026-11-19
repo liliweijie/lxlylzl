@@ -128,7 +128,7 @@ body:has(.rail-dragging) .motion-menu-toggle{visibility:hidden}
  }
  body .peek-rail.rail-dragging:not(.rail-cover){height:var(--drag-height)!important;border:0}
  body .peek-rail.rail-cover{height:100dvh;z-index:6100!important;transition:height .4s cubic-bezier(.2,.8,.2,1)}
- .peek-rail.rail-dragging .rail-pull-preview{padding-top:calc(var(--nav-height) + 8px);justify-content:flex-start;gap:5px}
+ .peek-rail.rail-dragging .rail-pull-preview{padding-top:calc(var(--nav-height) + 18px);justify-content:flex-start;gap:5px;background:#f3efe6}
  .peek-rail.rail-dragging .rail-pull-preview h2{font-size:clamp(22px,7vw,36px)}
  .peek-rail.rail-dragging .rail-pull-preview small{display:none}
 }
