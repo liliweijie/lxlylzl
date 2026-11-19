@@ -231,7 +231,25 @@ textarea{width:100%;display:block;resize:vertical;min-height:48px;background:var
 }
 @media(max-width:365px){#export span{display:none}.stage-top{gap:6px}}
 </style>
-</head>
+<link rel="modulepreload" href="assets/studio-b509cf856f00.js"><script>
+(()=>{
+  const route=new URLSearchParams(location.search);
+  if(route.has('design'))return;
+  let fit='male';
+  try{if(localStorage.getItem('print-lab-fit')==='female')fit='female'}catch{}
+  const manifest={"parts":{"tee":"./outfit-tee-98ad16781ae6.json","raglan":"./outfit-raglan-fcda95b85a53.json","zip":"./outfit-zip-f46d5ba17b93.json","hoodie":"./outfit-hoodie-3089abcedfd0.json","crew":"./outfit-crew-db36efc461f9.json"},"bodies":{"male":"./rig-male-d3569229ec2d.json","female":"./rig-female-ee5df4fc1760.json"},"fits":{"male":{"tee":"./fit-male-tee-4dd59101588e.json","raglan":"./fit-male-raglan-a98670db7941.json","zip":"./fit-male-zip-821808f585d6.json","hoodie":"./fit-male-hoodie-390e3e636150.json","crew":"./fit-male-crew-61843239c607.json"},"female":{"tee":"./fit-female-tee-4709f0211d75.json","raglan":"./fit-female-raglan-dbd4e99cce5a.json","zip":"./fit-female-zip-fcc8be7351ee.json","hoodie":"./fit-female-hoodie-8617ec534690.json","crew":"./fit-female-crew-a39ad0fca36c.json"}}};
+  const selected=route.get('garment');
+  const style=["tee","crew","zip","hoodie"].includes(selected)?selected:'tee';
+  for(const file of [manifest.bodies[fit],manifest.parts[style],manifest.fits[fit][style]]){
+    const link=document.createElement('link');
+    link.rel='preload';
+    link.as='fetch';
+    link.crossOrigin='anonymous';
+    link.href='assets/'+file.slice(2);
+    document.head.append(link);
+  }
+})()
+</script></head>
 <body>
 <main>
   <section class="studio" aria-label="3D 定制工作区">
@@ -313,6 +331,6 @@ textarea{width:100%;display:block;resize:vertical;min-height:48px;background:var
     <div id="notice" role="status" class="notice"></div>
   </section>
 </main>
-<script type="module" src="assets/studio-53c98114e374.js"></script>
+<script type="module" src="assets/studio-b509cf856f00.js"></script>
 </body>
 </html>
