@@ -87,7 +87,7 @@ button,select{background:transparent}
 button:hover:not(:disabled){border-color:var(--accent)}
 svg{width:18px;height:18px;display:block;flex:none}
 i[data-icon]{display:inline-flex;font-style:normal}
-.stage-top button,.edit-trigger,.drag-tip,.quiet,.accent{display:flex;align-items:center;gap:8px}
+.quiet,.accent{display:flex;align-items:center;gap:8px}
 body{overflow:hidden}
 .studio{--editor-width:405px;--editor-gap:12px;--view-right:0px;--view-bottom:0px;--slide:460ms cubic-bezier(.22,1,.36,1);position:relative;width:100%;height:100dvh;overflow:hidden;background:var(--paper)}
 .stage{position:absolute;inset:0;overflow:hidden}
@@ -97,19 +97,12 @@ body{overflow:hidden}
 #viewport.print-hover{cursor:move}
 #viewport.print-dragging{cursor:grabbing}
 #viewport canvas{display:block;width:100%;height:100%}
-.stage-top,.stage-bottom{position:absolute;left:20px;right:20px;display:flex;align-items:center;justify-content:space-between;pointer-events:none}
-.stage-top{top:18px}
-.stage-bottom{bottom:18px;right:calc(20px + var(--view-right));transition:right var(--slide)}
-.stage-top button,.stage-bottom button{pointer-events:auto}
-.drag-tip,.quiet{font-size:12px}
-.drag-tip{color:var(--muted)}
+.stage-hint{position:absolute;bottom:max(12px,env(safe-area-inset-bottom));left:16px;margin:0;color:var(--muted);font-size:12px;pointer-events:none}
+.editor-active .stage-hint{display:none}
+.quiet{font-size:12px}
 .quiet,.icon-button{border:1px solid var(--line);border-radius:5px;padding:8px 11px}
 .quiet{background:var(--panel)}
-.views{display:flex;position:absolute;left:50%;transform:translateX(-50%);background:var(--paper);border:1px solid var(--line);overflow:hidden;border-radius:6px}
-.views button{min-width:51px;padding:7px 11px;border:0;border-right:1px solid var(--line);font-size:13px}
-.views button:last-child{border-right:0}
-.views button[aria-pressed=true],.zones button[aria-pressed=true],.accent{background:var(--accent);color:var(--accent-text);border-color:var(--accent)}
-.edit-trigger{padding:8px 11px;background:var(--panel);border:1px solid var(--line);border-radius:5px;font-size:12px}
+.zones button[aria-pressed=true],.accent{background:var(--accent);color:var(--accent-text);border-color:var(--accent)}
 .editor{--panel-inset:19px;background:color-mix(in srgb,var(--panel) 80%,transparent);backdrop-filter:blur(18px);color:var(--ink);width:var(--editor-width);max-width:none;max-height:calc(100% - 2 * var(--editor-gap));margin:0;inset:var(--editor-gap) var(--editor-gap) auto auto;border:1px solid var(--line);border-radius:9px;padding:0;box-shadow:0 16px 50px #01010129;overflow:hidden;transform:translateX(calc(100% + 2 * var(--editor-gap)));transition:transform var(--slide);pointer-events:none;z-index:3}
 .editor[open]{display:flex;flex-direction:column}
 .editor.is-visible{transform:none;pointer-events:auto}
@@ -184,43 +177,14 @@ textarea{width:100%;display:block;resize:vertical;min-height:48px;background:var
 .fit-row h3{margin-right:4px}
 .fit-row button{min-height:32px;padding:5px 13px;border:1px solid var(--line);border-radius:4px}
 .fit-row button[aria-pressed=true]{border-color:var(--accent);background:var(--hover)}
-.edit-trigger{background:var(--ink);color:var(--paper);border-color:var(--ink);font-weight:600}
-
 #viewport{z-index:0}
-.stage-top,.stage-bottom,.scene-error{z-index:1}
-.stage-top .theme-toggle{display:grid}
-
-.stage-top,.stage-bottom{justify-content:flex-start;gap:10px}
-.stage-actions{margin-left:auto;display:flex;gap:8px}
-#browse-garments{pointer-events:auto;text-decoration:none;white-space:nowrap;color:inherit}
-#browse-garments:hover{border-color:var(--accent)}
-#browse-garments:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
-#fullscreen{justify-content:center;width:37px}
-.stage-actions{margin-right:var(--view-right);transition:margin-right var(--slide)}
-.touch-tip{display:none}
-@media(pointer:coarse){
-  .drag-tip{display:none}
-  .touch-tip{display:block;font-size:11px;color:var(--muted);position:absolute;bottom:41px;left:0}
-}
+.stage-hint,.scene-error{z-index:1}
 @media(max-width:930px){
   .studio{--editor-width:345px}
-  .studio:has(.editor.is-visible) .drag-tip{display:none}
 }
 @media(max-width:680px){
-  .stage-top,.stage-bottom{left:10px;right:10px}
-  .stage-top{top:max(11px,env(safe-area-inset-top))}
-  .stage-bottom{bottom:max(12px,env(safe-area-inset-bottom))}
-  .quiet{padding:6px 7px}
-  #export span,#reset span,#frame-figure span{display:none}
-  .stage-top{gap:5px}
-  .stage .theme-toggle{min-width:32px;min-height:32px}
   .stage:has(+ .editor.is-visible){background-position:0;background-size:100% 100%}
-  .stage-actions{gap:5px}
-  #fullscreen{width:33px}
-  .stage-bottom .views{position:static;transform:none;margin-left:auto}
-  .views button{min-width:33px;padding:7px}
   .editor-active{--view-right:0px;--view-bottom:var(--editor-height,0px)}
-  .studio:has(.editor.is-visible) .stage-bottom{display:none}
   .editor{--panel-inset:15px;inset:auto 0 0;width:100%;height:min(55dvh,390px);transform:translateY(101%);border-radius:12px 12px 0 0}
   .editor-head{padding-block:7px}
   .editor-head h2{font-size:17px}
@@ -229,9 +193,8 @@ textarea{width:100%;display:block;resize:vertical;min-height:48px;background:var
   .editor-foot{padding-top:8px;padding-bottom:max(8px,env(safe-area-inset-bottom))}
   .garments button{padding-block:7px}
 }
-@media(max-width:365px){#export span{display:none}.stage-top{gap:6px}}
 </style>
-<link rel="modulepreload" href="assets/studio-b509cf856f00.js"><script>
+<link rel="modulepreload" href="assets/studio-36f4466e9349.js"><script>
 (()=>{
   const route=new URLSearchParams(location.search);
   if(route.has('design'))return;
@@ -255,23 +218,7 @@ textarea{width:100%;display:block;resize:vertical;min-height:48px;background:var
   <section class="studio" aria-label="3D 定制工作区">
     <div class="stage" id="stage">
       <div id="viewport" tabindex="0" aria-controls="editor" aria-label="服装预览。方向键环绕，加号和减号缩放，回车打开定制窗。"></div>
-      <div class="stage-top">
-        <button type="button" class="quiet" id="reset" aria-label="重置视角" title="重置视角"><i data-icon="rotate"></i><span>重置视角</span></button>
-        <button type="button" class="quiet" id="frame-figure" aria-label="全身" title="全身"><i data-icon="frame"></i><span>全身</span></button>
-        <div class="stage-actions">
-          <button type="button" class="theme-toggle" data-theme-toggle aria-label="切换明暗模式" title="切换明暗模式"><svg class="theme-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.7 15A8.9 8.9 0 0 1 9 3.3 9 9 0 1 0 20.7 15Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg></button>
-          <a class="quiet" id="browse-garments" href="./garments.html">款式一览 <span aria-hidden="true">↗</span></a>
-          <button type="button" class="quiet" id="export" aria-label="保存预览" title="保存预览"><i data-icon="download"></i><span>保存预览</span></button>
-          <button type="button" class="quiet" id="fullscreen" aria-label="进入全屏" title="进入全屏"><i data-icon="frame"></i></button>
-        </div>
-      </div>
-      <div class="stage-bottom">
-        <span class="edit-trigger"><i data-icon="edit"></i>点击衣服开始定制</span>
-        <div class="views" aria-label="预览方向">
-          <button type="button" data-angle="0" aria-pressed="true">前</button><button type="button" data-angle="3.14159265359" aria-pressed="false">后</button><button type="button" data-angle="1.57079632679" aria-pressed="false">侧</button>
-        </div>
-        <span class="drag-tip"><i data-icon="move"></i>左键环绕 · 右键平移 · 滚轮缩放</span><span class="touch-tip">单指环绕 · 双指缩放或平移</span>
-      </div>
+      <p class="stage-hint" aria-hidden="true">点击衣服或模特开始定制</p>
       <p class="scene-error" id="scene-error" hidden>3D 预览需要支持 WebGL 的浏览器。打开硬件加速后可重试。</p>
       <p class="scene-loading" id="scene-loading" role="status">正在加载服装模型…</p>
       <div class="scene-error" id="scene-retry" hidden><button class="quiet" type="button">重新加载 3D 模型</button></div>
@@ -331,6 +278,6 @@ textarea{width:100%;display:block;resize:vertical;min-height:48px;background:var
     <div id="notice" role="status" class="notice"></div>
   </section>
 </main>
-<script type="module" src="assets/studio-b509cf856f00.js"></script>
+<script type="module" src="assets/studio-36f4466e9349.js"></script>
 </body>
 </html>
