@@ -99,11 +99,16 @@ body{overflow:hidden}
 #viewport canvas{display:block;width:100%;height:100%}
 .stage-hint{position:absolute;bottom:max(12px,env(safe-area-inset-bottom));left:16px;margin:0;color:var(--muted);font-size:12px;pointer-events:none}
 .editor-active .stage-hint{display:none}
+.stage-actions{position:absolute;top:max(14px,env(safe-area-inset-top));right:calc(14px + var(--view-right));display:flex;gap:7px;z-index:1;transition:right var(--slide)}
 .quiet{font-size:12px}
 .quiet,.icon-button{border:1px solid var(--line);border-radius:5px;padding:8px 11px}
 .quiet{background:var(--panel)}
+.customizations-link{color:var(--ink);text-decoration:none;gap:5px}
+.customizations-link svg{width:14px;height:14px}
+.customizations-link:hover{border-color:var(--accent)}
+.customizations-link:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .zones button[aria-pressed=true],.accent{background:var(--accent);color:var(--accent-text);border-color:var(--accent)}
-.editor{--panel-inset:19px;background:color-mix(in srgb,var(--panel) 80%,transparent);backdrop-filter:blur(18px);color:var(--ink);width:var(--editor-width);max-width:none;max-height:calc(100% - 2 * var(--editor-gap));margin:0;inset:var(--editor-gap) var(--editor-gap) auto auto;border:1px solid var(--line);border-radius:9px;padding:0;box-shadow:0 16px 50px #01010129;overflow:hidden;transform:translateX(calc(100% + 2 * var(--editor-gap)));transition:transform var(--slide);pointer-events:none;z-index:3}
+.editor{--panel-inset:19px;background:color-mix(in srgb,var(--panel) 70%,transparent);backdrop-filter:blur(18px);color:var(--ink);width:var(--editor-width);max-width:none;max-height:calc(100% - 2 * var(--editor-gap));margin:0;inset:var(--editor-gap) var(--editor-gap) auto auto;border:1px solid var(--line);border-radius:9px;padding:0;box-shadow:0 16px 50px #01010129;overflow:hidden;transform:translateX(calc(100% + 2 * var(--editor-gap)));transition:transform var(--slide);pointer-events:none;z-index:3}
 .editor[open]{display:flex;flex-direction:column}
 .editor.is-visible{transform:none;pointer-events:auto}
 .editor-head{display:flex;flex:none;align-items:center;justify-content:space-between;padding:12px var(--panel-inset)}
@@ -130,6 +135,18 @@ body{overflow:hidden}
 .colors{gap:10px}
 .colors button{width:22px;height:22px;border-radius:50%;border:1px solid var(--line);background:var(--swatch)}
 .colors button[aria-pressed=true]{outline:1px solid var(--accent);outline-offset:3px}
+.size-heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px}
+.size-heading h3{margin:0}
+.size-heading output{color:var(--muted);font-size:12px}
+.size-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px 10px}
+.size-option{display:flex;align-items:center;justify-content:space-between;gap:4px;min-width:0;padding:3px 4px 3px 8px;border:1px solid var(--line);border-radius:5px}
+.size-option>span{font-size:12px;font-weight:650}
+.quantity-stepper{display:grid;grid-template-columns:24px minmax(0,38px) 24px;align-items:center;width:86px;min-width:0}
+.quantity-stepper button,.quantity-stepper input{height:28px;min-width:0;border:none;border-radius:3px;text-align:center}
+.quantity-stepper button{padding:0;font-size:15px}
+.quantity-stepper button:hover:not(:disabled){background:var(--hover)}
+.quantity-stepper input{width:100%;padding:0;background:transparent;color:inherit;font-size:12px;font-variant-numeric:tabular-nums;appearance:textfield}
+.quantity-stepper input::-webkit-inner-spin-button,.quantity-stepper input::-webkit-outer-spin-button{appearance:none;margin:0}
 .tabs{display:flex;border:1px solid var(--line);border-radius:5px;overflow:hidden}
 .tabs button{position:relative;flex:1;min-height:34px;border:0;border-right:1px solid var(--line);font-size:12px}
 .tabs button:last-child{border:0}
@@ -160,9 +177,9 @@ textarea{width:100%;display:block;resize:vertical;min-height:48px;background:var
 .print-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:25px;margin-bottom:5px}
 .print-heading h3{margin:0}
 .change-art{min-height:27px;padding:3px 9px;border:1px solid var(--line);border-radius:5px;font-size:12px}
-.editor-foot{display:flex;flex:none;align-items:center;justify-content:space-between;gap:10px;padding:11px var(--panel-inset);border-top:1px solid var(--line)}
-.editor-foot a{font-size:12px;color:var(--ink);text-underline-offset:3px}
-.editor-foot button{min-height:38px;justify-content:center;padding:7px 16px;border-color:var(--accent);background:var(--accent);color:var(--accent-text);font-weight:650}
+.editor-foot{display:flex;flex:none;align-items:center;justify-content:flex-end;gap:10px;padding:11px var(--panel-inset);border-top:1px solid var(--line)}
+.editor-foot button{min-height:38px;justify-content:center;padding:7px 16px;font-weight:650}
+.editor-foot .accent{border-color:var(--accent);color:var(--accent-text)}
 .editor-foot button:disabled{opacity:.6;cursor:default}
 .notice{position:absolute;bottom:calc(20px + var(--view-bottom));left:calc((100% - var(--view-right))/2);transform:translateX(-50%);background:var(--gray);color:var(--white);padding:9px 15px;border-radius:5px;font-size:13px;z-index:5;width:max-content;max-width:min(90vw,420px);pointer-events:none;transition:bottom var(--slide),left var(--slide)}
 .notice:empty{display:none}
@@ -185,6 +202,7 @@ textarea{width:100%;display:block;resize:vertical;min-height:48px;background:var
   .studio{--editor-width:345px}
 }
 @media(max-width:680px){
+  .stage-actions{top:max(10px,env(safe-area-inset-top));right:10px}
   .stage:has(+ .editor.is-visible){background-position:0;background-size:100% 100%}
   .editor-active{--view-right:0px;--view-bottom:var(--editor-height,0px)}
   .editor{--panel-inset:15px;inset:auto 0 0;width:100%;height:min(55dvh,390px);transform:translateY(101%);border-radius:12px 12px 0 0}
@@ -194,9 +212,10 @@ textarea{width:100%;display:block;resize:vertical;min-height:48px;background:var
   .editor-panel{gap:12px;padding-block:12px}
   .editor-foot{padding-top:8px;padding-bottom:max(8px,env(safe-area-inset-bottom))}
   .garments button{padding-block:7px}
+  .quantity-stepper input{font-size:16px}
 }
 </style>
-<link rel="modulepreload" href="assets/studio-186ccb08ab97.js"><script>
+<link rel="modulepreload" href="assets/studio-b82e95ba3528.js"><script>
 (()=>{
   const route=new URLSearchParams(location.search);
   if(route.has('design'))return;
@@ -220,7 +239,11 @@ textarea{width:100%;display:block;resize:vertical;min-height:48px;background:var
   <section class="studio" aria-label="3D 定制工作区">
     <div class="stage" id="stage">
       <div id="viewport" tabindex="0" aria-controls="editor" aria-label="服装预览。方向键环绕，加号和减号缩放，回车打开定制窗。"></div>
-      <p class="stage-hint" aria-hidden="true">点击衣服或模特开始定制</p>
+      <div class="stage-actions">
+        <button type="button" class="theme-toggle" data-theme-toggle aria-label="切换明暗模式" title="切换明暗模式"><svg class="theme-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.7 15A8.9 8.9 0 0 1 9 3.3 9 3.3 0 0 0 20.7 15Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg></button>
+        <a class="quiet customizations-link" id="my-customizations" href="./garments.html?view=saved#saved">我的定制 <i data-icon="arrow"></i></a>
+      </div>
+      <p class="stage-hint" aria-hidden="true">点击T恤定制</p>
       <p class="scene-error" id="scene-error" hidden>3D 预览需要支持 WebGL 的浏览器。打开硬件加速后可重试。</p>
       <p class="scene-loading" id="scene-loading" role="status">正在加载服装模型…</p>
       <div class="scene-error" id="scene-retry" hidden><button class="quiet" type="button">重新加载 3D 模型</button></div>
@@ -239,6 +262,10 @@ textarea{width:100%;display:block;resize:vertical;min-height:48px;background:var
           </div>
           <div class="fit-row" id="fit-options" role="group" aria-labelledby="fit-label"><h3 id="fit-label">模特</h3><button type="button" data-fit="male" aria-pressed="true">男款</button><button type="button" data-fit="female" aria-pressed="false">女款</button></div>
           <div class="color-row" role="group" aria-labelledby="color-label"><h3 id="color-label">颜色</h3><div class="colors" id="colors"></div></div>
+          <div>
+            <div class="size-heading"><h3 id="size-label">尺码与数量</h3><output id="quantity-total"></output></div>
+            <div class="size-options" id="size-options" role="group" aria-labelledby="size-label"></div>
+          </div>
         </section>
         <section id="print-panel" class="editor-panel" role="tabpanel" aria-labelledby="print-tab" hidden>
           <div>
@@ -277,13 +304,13 @@ textarea{width:100%;display:block;resize:vertical;min-height:48px;background:var
         </section>
       </div>
       <footer class="editor-foot">
-        <a href="./garments.html#saved">查看已保存设计</a>
-        <button type="button" class="accent" id="save-design" disabled>保存设计</button>
+        <button type="button" class="quiet" id="save-design" disabled>保存设计</button>
+        <button type="button" class="accent" id="start-customization" disabled>发起定制</button>
       </footer>
     </dialog>
     <div id="notice" role="status" class="notice"></div>
   </section>
 </main>
-<script type="module" src="assets/studio-186ccb08ab97.js"></script>
+<script type="module" src="assets/studio-b82e95ba3528.js"></script>
 </body>
 </html>
