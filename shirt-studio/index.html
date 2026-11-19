@@ -118,7 +118,7 @@ body{overflow:hidden}
 .editor h3{margin:0 0 8px;font-size:13px;font-weight:650;line-height:1.25}
 .garments,.zones{display:grid;gap:7px}
 .garments{grid-template-columns:repeat(4,minmax(0,1fr))}
-.garments button,.zones button,.samples button{border:1px solid var(--line);border-radius:5px;padding:6px;font-size:12px}
+.garments button,.zones button{border:1px solid var(--line);border-radius:5px;padding:6px;font-size:12px}
 .garments button{position:relative;display:grid;place-items:center;gap:5px;padding:9px 2px}
 .garments button[aria-pressed=true]{border-color:var(--accent);color:var(--ink);background:var(--hover)}
 .garments button[aria-pressed=true]::after{content:"";position:absolute;right:6px;top:6px;width:6px;height:6px;border-radius:50%;background:var(--accent)}
@@ -135,15 +135,17 @@ body{overflow:hidden}
 .tabs button:last-child{border:0}
 .tabs button[aria-pressed=true]{color:var(--accent-ink);box-shadow:inset 0 -2px var(--accent);font-weight:700}
 .source{margin-top:9px}
-.samples{display:flex;gap:6px}
-.samples button{flex:1;min-width:0;min-height:34px;padding:5px 4px}
+.image-library{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.image-library button{display:block;height:clamp(72px,20vw,114px);min-width:0;padding:5px;border:1px solid var(--line);border-radius:5px;background:#eee7db}
+.image-library canvas{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none}
 .upload{position:relative;display:flex;align-items:center;justify-content:center;gap:9px;min-height:57px;border:1px dashed #a29583;border-radius:5px;font-size:13px;cursor:pointer}
 .upload small,.layer small{display:block;color:var(--muted);font-size:11px;margin-top:3px}
 .upload input{position:absolute;inset:0;opacity:0;width:100%;cursor:pointer}
 .upload.active{background:var(--hover);border-color:var(--accent)}
 .help{margin:6px 0;font-size:12px;line-height:1.45;color:var(--muted)}
 textarea{width:100%;display:block;resize:vertical;min-height:48px;background:var(--paper);border:1px solid var(--line);border-radius:5px;padding:7px 8px;font-size:13px;color:var(--ink)}
-.generate-actions{display:flex;justify-content:flex-end;margin-top:6px}
+.generate-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:6px}
+#ai-status:empty{display:none}
 .accent{border:1px solid var(--line);border-radius:5px;padding:5px 7px;font-size:12px;color:inherit}
 .generate-actions .accent{color:var(--accent-text);border-color:var(--accent);font-weight:600}
 .layer{display:flex;align-items:center;gap:9px;border:1px solid var(--line);border-radius:6px;padding:6px}
@@ -194,7 +196,7 @@ textarea{width:100%;display:block;resize:vertical;min-height:48px;background:var
   .garments button{padding-block:7px}
 }
 </style>
-<link rel="modulepreload" href="assets/studio-36f4466e9349.js"><script>
+<link rel="modulepreload" href="assets/studio-186ccb08ab97.js"><script>
 (()=>{
   const route=new URLSearchParams(location.search);
   if(route.has('design'))return;
@@ -257,16 +259,20 @@ textarea{width:100%;display:block;resize:vertical;min-height:48px;background:var
           <div id="art-sources" class="art-sources">
             <h3 id="add-art-title">添加图案</h3>
             <div class="tabs" role="group" aria-label="图案来源">
-              <button type="button" data-source="samples" aria-pressed="true">示例图案</button><button type="button" data-source="upload" aria-pressed="false">上传图片</button><button type="button" data-source="generate" aria-pressed="false">艺术字</button>
+              <button type="button" data-source="upload" aria-pressed="true" aria-controls="upload">上传图片</button><button type="button" data-source="generate" aria-pressed="false" aria-controls="generate">AI 矢量</button><button type="button" data-source="samples" aria-pressed="false" aria-controls="samples">图片库</button>
             </div>
-            <div class="source" id="samples"><div class="samples" id="sample-list"></div></div>
-            <div class="source" id="upload" hidden><label class="upload"><i data-icon="upload"></i><span>选择或拖入图片<small>PNG、JPG、WEBP · 最大 15 MB</small></span><input id="file" type="file" accept="image/png,image/jpeg,image/webp"></label></div>
+            <div class="source" id="upload"><label class="upload"><i data-icon="upload"></i><span>选择或拖入图片<small>PNG、JPG、WEBP · 最大 15 MB</small></span><input id="file" type="file" accept="image/png,image/jpeg,image/webp"></label></div>
             <form class="source" id="generate" hidden>
-              <p class="help" id="lettering-hint">本地模拟生成透明底艺术字，支持文字或一句话描述。</p>
-              <label for="prompt" class="sr-only">输入艺术字文字或描述</label>
-              <textarea id="prompt" aria-describedby="lettering-hint" placeholder="例如：lwj 三个字母拼成艺术字" maxlength="120" rows="2" required></textarea>
-              <div class="generate-actions"><button class="accent" type="submit"><i data-icon="spark"></i>生成并印上衣服</button></div>
+              <p class="help" id="vector-hint">用 DeepSeek 生成透明底矢量印花，适合徽章、Logo 和几何图案。</p>
+              <label for="prompt" class="sr-only">描述想印在衣服上的图案</label>
+              <textarea id="prompt" aria-describedby="vector-hint" placeholder="例如：红黑双色的闪电猫徽章，圆形构图" maxlength="600" rows="2" required></textarea>
+              <p class="help" id="ai-status" role="status" aria-live="polite"></p>
+              <div class="generate-actions">
+                <button class="accent" id="generate-submit" type="submit" disabled><i data-icon="spark"></i><span>生成并印上衣服</span></button>
+                <button class="change-art" id="lettering-demo" type="button" hidden>试用本地艺术字</button>
+              </div>
             </form>
+            <div class="source" id="samples" hidden><div class="image-library" id="sample-list" role="group" aria-label="选择图库图案"></div></div>
           </div>
         </section>
       </div>
@@ -278,6 +284,6 @@ textarea{width:100%;display:block;resize:vertical;min-height:48px;background:var
     <div id="notice" role="status" class="notice"></div>
   </section>
 </main>
-<script type="module" src="assets/studio-36f4466e9349.js"></script>
+<script type="module" src="assets/studio-186ccb08ab97.js"></script>
 </body>
 </html>
