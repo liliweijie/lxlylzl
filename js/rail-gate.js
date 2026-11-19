@@ -58,8 +58,9 @@
     delete rail.dataset.wheelProgress;
     rail.style.removeProperty('--drag-width');
     rail.style.removeProperty('--drag-height');
-    header?.classList.remove('is-logo-pulling');
+    header?.classList.remove('is-logo-pulling', 'is-logo-releasing');
     header?.style.removeProperty('--logo-pull');
+    header?.style.removeProperty('--logo-stretch');
     rail.classList.remove('is-pull-ready');preview.querySelector('.pull-track i').style.transform='scaleX(0)';
     if (progress) progress.textContent = '0%';
     if (wash) wash.style.opacity = 0;
@@ -126,16 +127,27 @@
 
   function updateLogoPull(amount) {
     if(!header)return;
+    var color=Math.max(0,Math.min(1,amount));
+    var stretch=Math.pow(color,1.25)+.2*Math.min(1,Math.max(0,amount-1));
     header.classList.add('is-logo-pulling');
-    header.style.setProperty('--logo-pull',Math.max(0,Math.min(1,amount)));
+    header.style.setProperty('--logo-pull',color);
+    header.style.setProperty('--logo-stretch',stretch);
   }
 
   function springBack(vertical,from,idle,threshold) {
     if(!window.gsap||reduced.matches){reset();return;}
     pressed=null;rail.classList.remove('is-pull-ready');preview.querySelector('.pull-action').textContent='松开，回到这里';
     pullState.size=from;
+    var distance=Math.max(0,from-idle);
+    var motion=vertical?{
+      keyframes:[
+        {size:idle+distance*.12,duration:.16,ease:'power3.out'},
+        {size:idle+distance*.25,duration:.1,ease:'power1.inOut'},
+        {size:idle,duration:.16,ease:'power2.out'}
+      ]
+    }:{size:idle,duration:.8,ease:'elastic.out(1,.5)'};
     spring=gsap.to(pullState,{
-      size:idle,duration:.8,ease:'elastic.out(1,.5)',
+      ...motion,
       onUpdate:function(){
         rail.style.setProperty(vertical?'--drag-height':'--drag-width',Math.max(idle,pullState.size)+'px');
         if(vertical)updateLogoPull((pullState.size-idle)/threshold);
@@ -143,24 +155,30 @@
       onComplete:reset
     });
   }
-  function commit(href, index) {
+  function commit(href, index, rebound) {
     if (committing) return;
     if (typeof index === 'number') selectTarget(index, href);
     else if (href) target = href;
     if(spring){spring.kill();spring=null;}
     cancelAnimationFrame(wheelFrame); wheelFrame = 0;
-    preview.querySelector('.pull-action').textContent='走，继续逛';
     committing = true;
     pressed = null;
-    rail.classList.remove('rail-dragging', 'rail-expanded');
-    rail.classList.add('rail-cover');
     nav.links.forEach(function(link,index){
       if(index===targetIndex)link.setAttribute('aria-current','page');
       else link.removeAttribute('aria-current');
     });
     if (progress) progress.textContent = '100%';
     try { sessionStorage.setItem('lx:nav', JSON.stringify({ dir: 1, rail: true, ts: Date.now() })); } catch (e) {}
-    window.setTimeout(function () { location.assign(target); }, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 430);
+    function cover() {
+      preview.querySelector('.pull-action').textContent='走，继续逛';
+      rail.classList.remove('rail-dragging', 'rail-expanded');
+      rail.classList.add('rail-cover');
+      window.setTimeout(function () { location.assign(target); }, reduced.matches ? 0 : 430);
+    }
+    if(rebound&&header&&!reduced.matches){
+      header.classList.add('is-logo-releasing');
+      window.setTimeout(cover,180);
+    }else cover();
   }
 
   /* Top navigation uses the same right-rail wipe as the manual next-page gesture. */
@@ -205,8 +223,9 @@
     if(!pressed.vertical&&pressed.across>24&&pressed.across>pressed.along){reset();return;}
     if(!rail.classList.contains('rail-dragging')&&(pressed.along<8||pressed.along<pressed.across))return;
     rail.classList.add('rail-dragging');
-    var amount = Math.min(1,pressed.along/pressed.threshold);
-    if(pressed.vertical)updateLogoPull(amount);
+    var distance = pressed.along/pressed.threshold;
+    var amount = Math.min(1,distance);
+    if(pressed.vertical)updateLogoPull(distance);
     var ready=amount>=1&&pressed.along>pressed.across*1.5;
     rail.classList.toggle('is-pull-ready',ready);
     preview.querySelector('.pull-action').textContent=ready?'松手进入 '+pages[targetIndex].cn:'再拉一点 · '+Math.round(amount*100)+'%';
@@ -222,7 +241,7 @@
     var go = pull.along >= pull.threshold && pull.along > pull.across * 1.5;
     pressed = null;
     if (pull.surface.hasPointerCapture(event.pointerId)) pull.surface.releasePointerCapture(event.pointerId);
-    if (go || (!pull.vertical&&pull.along<5&&pull.across<12)) commit();
+    if (go || (!pull.vertical&&pull.along<5&&pull.across<12)) commit(undefined,undefined,pull.vertical);
     else if (rail.classList.contains('rail-dragging')) {
       var bounds=rail.getBoundingClientRect();
       springBack(pull.vertical,pull.vertical?bounds.height:bounds.width,pull.vertical?pull.size:56,pull.threshold);
