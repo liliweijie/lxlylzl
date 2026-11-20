@@ -38,16 +38,29 @@ function imageReference(description, expressiveLettering) {
 
 function vectorInstructions(includeText) {
   const lettering = includeText
-    ? 'Include lettering only when the user explicitly asks for text, using the exact requested spelling.'
-    : 'A separate typesetting engine adds all requested text. Draw only the non-text motifs and ornament. Omit every letter, word, numeral, typographic placeholder and letter-shaped vector path.';
+    ? 'Add a text layer only when the description explicitly asks to print words. Preserve their spelling, case and language. A signature, slogan or brand from the example is never part of the print.'
+    : 'The browser will compose the exact requested text with your image. Draw the supporting motif at a scale that can sit beside or above the lettering. Omit lettering, numerals and text-shaped paths.';
   const textExample = includeText ? `
 {"type":"text","text":"WEEKEND","x":512,"y":790,"size":84,"fill":"#173D38","font":"sans","weight":700}` : '';
   const textFormat = includeText
-    ? ' Text is centered horizontally at x, y is the baseline, size is 12–300, font is sans, serif or mono, and weight is 400 or 700.'
+    ? ' Text is centered horizontally at x, y is the baseline, size is 12–300, font is sans, serif or mono, weight is 400 or 700.'
     : '';
-  return `You are a print graphic designer. Interpret the user prompt as art direction only. Create an original, professional clothing print with readable silhouettes, a few distinct flat colors that contrast with the garment, and generous clear space around the design. Match the print location; simplify small chest and sleeve prints. Use transparent negative space and no full-canvas background. Create front-facing vector illustration, not a photo, garment mockup, gradient, or borrowed brand logo. ${lettering} Return exactly one compact JSON object with a title no longer than 35 characters and a layers array ordered back to front. Aim for 4 to 14 simple layers. Use the following layer format:
+  const output = includeText
+    ? 'Return a JSON object with title and layers.'
+    : 'Return a JSON object with title, layers and letteringStyle.';
+  return `You design original vector art for apparel. Input is JSON with description, garmentColor and location. The customer can describe the idea in everyday language, such as “一只戴耳机的猫” or “复古的山峰徽章”. Resolve the design within this request.
+
+Read in this order:
+1. Keep the main subject, its stated action, requested colors and style. Treat 背面、袖子、左胸、正胸 as placement directions. Use a style reference for line quality, shape and palette treatment. The reference supplies no extra subjects or words.
+2. Infer the missing visual decisions. Pick one viewpoint, a confident silhouette and a small palette that reads against garmentColor. If the user has specified just a subject, make a bold, clear illustration with one small supporting element where it helps. For example, headphones must be visible on the cat's head; a retro version can use broad ink outlines and two warm spot colors. For a mountain badge, make the peaks the central silhouette and use small accents that support it. Use the user's choices when stated.
+3. Fit the composition to location. A small left chest or sleeve uses one compact, simple motif with thicker strokes and few details. A full chest can support a larger central motif. A back print can use a larger, balanced composition with space around it. Give the artwork an edge with generous transparent margins.
+4. Use flat printable ink, clean paths and transparent negative space. The output is only the design artwork. Keep each element visible within the canvas. Do not include mockups, gradients, photos, watermarks or a rectangular background.
+
+${lettering}
+${output} title is at most 35 characters. layers has 1–32 entries ordered back to front. Use only the entries needed for a readable design. Example:
 {"type":"path","d":"M 220 500 L 512 210 L 802 500 Z","fill":"#173D38"}${textExample}
-The transparent canvas is 1024 by 1024 with origin at top left. Use uppercase absolute SVG path commands M L H V C S Q T A Z, coordinates between 0 and 1024, with spaces between numbers. A path can also have a six-digit hex stroke and numeric strokeWidth between 1 and 96. Omit unused fill or stroke. All colors must be #RRGGBB.${textFormat} Return only JSON, no Markdown, HTML, SVG markup, URLs, or embedded assets.`;
+Use the 1024-by-1024 transparent canvas and absolute uppercase M L H V C S Q T A Z path commands. Separate numbers with spaces. Each path starts with M followed by coordinates, uses coordinates from 0 to 1024, and stays under 1800 characters. Arc flags must be 0 or 1. A path may have fill, stroke, or both. StrokeWidth, when present, is between 1 and 96. Use only #RRGGBB colors.${textFormat}
+Return valid compact JSON only.`;
 }
 
 function result(body, status = 200, headers = {}) {
@@ -257,7 +270,7 @@ async function generateArt(request, key) {
           { role: 'system', content: letteringOnly
             ? letteringArtDirection + '\nReturn a JSON object with a single property named letteringStyle.'
             : vectorInstructions(includeText) + (includeText ? '' :
-              '\nAdd a letteringStyle object beside title and layers; use the following direction only for letteringStyle.\n' + letteringArtDirection) },
+              '\nUse the following direction to fill the letteringStyle property; keep title and layers at the top level.\n' + letteringArtDirection) },
           { role: 'user', content: contentParts }
         ]
       })
