@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="并排查看此浏览器保存的定制服装。">
+<meta name="description" content="旋转查看已保存的定制服装并进入结算。">
 <title>我的定制 · 3D 试衣</title>
 <script>const themeStorageKey='print-lab-theme';
 const systemTheme=matchMedia('(prefers-color-scheme: dark)');
@@ -29,6 +29,12 @@ document.addEventListener('click',event=>{
   savedTheme=document.documentElement.dataset.theme==='dark'?'light':'dark';
   applyTheme(savedTheme);
   try { localStorage.setItem(themeStorageKey,savedTheme); } catch {}
+});
+
+window.addEventListener('storage',event=>{
+  if(event.key!==themeStorageKey) return;
+  savedTheme=event.newValue==='light'||event.newValue==='dark'?event.newValue:undefined;
+  applyTheme(savedTheme??(systemTheme.matches?'dark':'light'));
 });
 </script>
 <style>:root{
@@ -69,35 +75,76 @@ document.addEventListener('click',event=>{
 .theme-toggle svg{width:17px;height:17px;display:block;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round}
 .theme-toggle:hover{background:var(--hover)}
 :root[data-theme=dark] .theme-moon,:root:not([data-theme=dark]) .theme-sun{display:none}
-:root{font-family:Inter,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;color:var(--ink);background:var(--panel);--line:#dad9d6}
+:root{font-family:Inter,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;color:var(--ink);background:var(--panel)}
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 body{margin:0}
 button,a{-webkit-tap-highlight-color:transparent}
 a{color:inherit;text-decoration:none}
 button{font:inherit;color:inherit;cursor:pointer}
-button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
-.site-nav{height:70px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,3.6vw,56px);font-size:13px}
+button:disabled{opacity:.32;cursor:default}
+button:focus-visible,a:focus-visible,iframe:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.site-nav{height:64px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 clamp(16px,3.6vw,56px);font-size:13px}
 .back{display:inline-flex;align-items:center;gap:10px;padding:10px 0}
-.back:hover{text-decoration:underline;text-underline-offset:5px}
+.back:hover,.secondary:hover{text-decoration:underline;text-underline-offset:4px}
 .back span{font-size:19px}
-.saved{padding:clamp(25px,5vw,55px) 0}
-.saved h1,.saved-status{margin-inline:clamp(18px,3.6vw,56px)}
-.saved h1{font-size:clamp(30px,3.6vw,52px);font-weight:530;letter-spacing:-.04em;margin-block:0}
-.saved-status{font-size:12px;color:var(--muted);margin-block:9px 21px}
-.saved-grid{display:grid;grid-auto-flow:column;grid-auto-columns:clamp(225px,21vw,316px);gap:clamp(12px,1.7vw,24px);padding:4px clamp(18px,3.6vw,56px) 18px;overflow-x:auto;scroll-snap-type:x proximity;scroll-padding-inline:clamp(18px,3.6vw,56px);scrollbar-width:thin}
+.saved,.checkout{padding:clamp(22px,3.5vw,47px) clamp(16px,3.6vw,56px)}
+.saved h1,.checkout h1{font-size:clamp(28px,3.35vw,48px);font-weight:570;letter-spacing:-.045em;margin:0}
+.saved-status,.checkout-status{font-size:13px;color:var(--muted);margin:7px 0 18px}
+.showcase,.checkout-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(240px,29%);border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.model-stage{position:relative;height:clamp(330px,48svh,530px);background:radial-gradient(var(--stage-focus),var(--paper))}
+.model-stage iframe{display:block;width:100%;height:100%;border:0}
+.model-stage p{position:absolute;bottom:12px;left:12px;padding:6px 8px;margin:0;background:color-mix(in srgb,var(--panel) 80%,transparent);border-radius:4px;font-size:11px;color:var(--muted);pointer-events:none}
+.selection,.order-details{padding:clamp(18px,2.4vw,32px);border-left:1px solid var(--line)}
+.selection{display:flex;flex-direction:column;justify-content:center}
+.selection h2,.order-details h2{font-size:clamp(18px,1.9vw,27px);font-weight:620;letter-spacing:-.02em;margin:0}
+.selection p{font-size:13px;color:var(--muted);margin:10px 0 19px;line-height:1.5}
+.selection-actions{display:grid;gap:9px}
+.primary{min-height:42px;padding:8px 13px;border-radius:5px;display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--accent);color:var(--accent-text);font-size:14px;font-weight:680;white-space:nowrap}
+.primary:hover{box-shadow:inset 0 0 0 2px var(--ink)}
+.secondary{display:inline-flex;align-items:center;min-height:29px;font-size:12px;color:var(--muted);width:max-content}
+.rail{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:8px;margin-top:12px}
+.rail-step{border:1px solid var(--line);border-radius:50%;background:var(--paper);width:32px;height:32px;padding:0}
+.rail-step:hover:not(:disabled){border-color:var(--accent)}
+.saved-grid{display:grid;grid-auto-flow:column;grid-auto-columns:clamp(100px,13vw,168px);gap:10px;padding:3px 3px 10px;overflow-x:auto;scroll-snap-type:x proximity;scrollbar-width:thin}
 .saved-grid>[role=listitem]{min-width:0;scroll-snap-align:start}
-.design-card{display:flex;flex-direction:column;height:100%;border:1px solid var(--line);border-radius:7px;overflow:hidden}
-.design-card:hover{border-color:var(--accent)}
-.design-card img{display:block;width:100%;height:auto;aspect-ratio:1;object-fit:contain;background:radial-gradient(var(--stage-focus),var(--paper))}
-.design-card div{display:grid;gap:5px;padding:12px 13px;border-top:1px solid var(--line)}
-.design-card strong{font-size:14px}
-.design-card time{font-size:11px;color:var(--muted)}
-.design-quantities{margin:0;color:var(--ink);font-size:12px;line-height:1.5;font-variant-numeric:tabular-nums}
-.design-quantities span{white-space:nowrap}
+.design-card{width:100%;height:100%;display:flex;flex-direction:column;padding:0;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--paper);text-align:left}
+.design-card:hover,.design-card[aria-pressed=true]{border-color:var(--accent)}
+.design-card[aria-pressed=true] .card-name{color:var(--accent-ink)}
+.design-card img{display:block;width:100%;height:auto;aspect-ratio:1.35;object-fit:contain;background:radial-gradient(var(--stage-focus),var(--paper))}
+.card-name{padding:7px 7px 8px;font-size:11px;font-weight:630;overflow-wrap:anywhere}
+.checkout-layout{grid-template-columns:minmax(0,1fr) minmax(280px,42%);margin-top:20px;max-width:1080px}
+.checkout-photo{display:grid;place-items:center;min-height:290px;background:radial-gradient(var(--stage-focus),var(--paper))}
+.checkout-photo img{display:block;width:min(100%,490px);height:auto;object-fit:contain}
+.order-specs,.order-total{display:grid;gap:10px;margin:15px 0;padding:15px 0;border-top:1px solid var(--line);font-size:13px}
+.order-specs div,.order-total div{display:flex;justify-content:space-between;align-items:center;gap:15px}
+.order-specs dt,.order-total dt,.order-sizes p{color:var(--muted)}
+.order-specs dd,.order-total dd{margin:0;text-align:right}
+.order-swatch{display:inline-block;width:13px;height:13px;border:1px solid var(--line);border-radius:50%;margin-right:7px;vertical-align:-2px}
+.order-sizes{border-top:1px solid var(--line);padding-top:15px}
+.order-sizes h3{font-size:13px;font-weight:640;margin:0}
+.order-sizes ul{display:flex;flex-wrap:wrap;gap:7px;list-style:none;margin:10px 0;padding:0}
+.order-sizes li{border:1px solid var(--line);border-radius:5px;padding:5px 8px;font-size:13px}
+.order-sizes p{font-size:12px;margin:7px 0}
+.order-total{margin:12px 0 0;padding-bottom:0}
+.order-total dd{font-weight:650}
 @media(max-width:740px){
- .site-nav{height:54px}
- .saved-grid{grid-auto-columns:clamp(148px,43vw,238px)}
- .design-card div{padding:9px 10px}
+ .site-nav{height:49px}
+ .saved,.checkout{padding-block:18px}
+ .saved-status{margin-bottom:13px}
+ .showcase,.checkout-layout{grid-template-columns:minmax(0,1fr)}
+ .model-stage{height:clamp(226px,36svh,340px)}
+ .selection,.order-details{padding:13px;border-left:0;border-top:1px solid var(--line)}
+ .selection{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:10px;align-items:center}
+ .selection p{margin:3px 0 0;font-size:12px}
+ .selection-actions{grid-column:2;grid-row:1/3;justify-items:end;gap:1px}
+ .selection-actions .primary{min-height:37px}
+ .selection-actions .secondary{min-height:24px}
+ .rail{margin-top:8px;gap:4px}
+ .rail-step{width:28px;height:28px}
+ .saved-grid{grid-auto-columns:clamp(83px,27vw,137px);gap:7px}
+ .checkout-photo{min-height:0}
+ .checkout-photo img{width:min(100%,310px)}
 }
 </style>
 </head>
@@ -110,10 +157,30 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-off
 <section class="saved" id="saved" aria-labelledby="saved-title">
   <h1 id="saved-title">我的定制</h1>
   <p id="saved-status" class="saved-status" role="status">正在读取定制…</p>
-  <div class="saved-grid" id="saved-grid" role="list" aria-label="已保存的定制服装"></div>
+  <div id="design-showcase" hidden>
+    <div class="showcase">
+      <div class="model-stage">
+        <iframe id="design-viewer" title="定制服装 3D 预览"></iframe>
+        <p>拖动旋转 · 滚动或双指缩放</p>
+      </div>
+      <aside class="selection" aria-labelledby="selected-name">
+        <h2 id="selected-name"></h2>
+        <p id="selected-quantities"></p>
+        <div class="selection-actions">
+          <a class="primary" id="checkout">我要定制 <span aria-hidden="true">↗</span></a>
+          <a class="secondary" id="edit-design">编辑设计</a>
+        </div>
+      </aside>
+    </div>
+    <div class="rail">
+      <button type="button" class="rail-step" id="previous-design" aria-label="上一件定制">←</button>
+      <div class="saved-grid" id="saved-grid" role="list" aria-label="已保存的定制服装"></div>
+      <button type="button" class="rail-step" id="next-design" aria-label="下一件定制">→</button>
+    </div>
+  </div>
 </section>
 </main>
-<script>(()=>{var x=(r,n,t)=>()=>{if(t)throw t[0];try{return r&&(n=r(r=0)),n}catch(e){throw t=[e],e}};var k=(r,n)=>()=>{try{return n||r((n={exports:{}}).exports,n),n.exports}catch(t){throw n=0,t}};function I(){return b??=new Promise((r,n)=>{let t=indexedDB.open("print-lab-designs",1);t.onupgradeneeded=()=>{t.result.createObjectStore("designs",{keyPath:"id",autoIncrement:!0}),t.result.createObjectStore("cards",{keyPath:"id"})},t.onerror=()=>n(t.error),t.onsuccess=()=>{let e=t.result;e.onversionchange=()=>{e.close(),b=void 0},r(e)}}).catch(r=>{throw b=void 0,r})}async function y(r,n,t){let e=await I();return new Promise((a,s)=>{let o=e.transaction(r,n),d=t(o);o.oncomplete=()=>a(d?.result),o.onabort=()=>s(o.error??new Error("Design storage was aborted."))})}function P(r){return Object.entries(r.patterns??{}).sort(([n],[t])=>n.localeCompare(t))}async function M(r){if(globalThis.crypto?.subtle){let n=await crypto.subtle.digest("SHA-256",await r.arrayBuffer());return Array.from(new Uint8Array(n),t=>t.toString(16).padStart(2,"0")).join("")}return new Promise((n,t)=>{let e=new FileReader;e.onload=()=>n(e.result),e.onerror=()=>t(e.error),e.readAsDataURL(r)})}function z(r){return h.map(n=>{let t=r.quantities?.[n];return Number.isSafeInteger(t)&&t>0?t:0})}async function B(r,n){let t=new Map(n.map(s=>[s.id,s])),e=new Map;for(let s of r){if(s.updatedAt!==void 0)continue;let o=t.get(s.id);if(!o)continue;let d=P(o);if(d.some(([,l])=>!(l?.pixels instanceof Blob)))continue;let i=JSON.stringify([o.garment,o.color?.toLowerCase(),o.fit??"male",d.map(([l,{pixels:p,scale:u,x:m,y:f}])=>[l,u??1,m??0,f??0,p.size])]),c=e.get(i)??[];c.push({card:s,parts:d,quantities:z(s)}),e.set(i,c)}let a=new Map;for(let s of e.values()){if(s.length<2)continue;s.sort((i,c)=>Number(c.quantities.some(Boolean))-Number(i.quantities.some(Boolean))||+(c.card.submitted===!0)-+(i.card.submitted===!0)||c.card.id-i.card.id);let o=new Map,d=new Map;for(let{card:i,parts:c,quantities:l}of s){let p=JSON.stringify(await Promise.all(c.map(([,w])=>M(w.pixels)))),u=JSON.stringify([p,l]),m=o.get(p)??[],f=l.some(Boolean)?void 0:m.reduce((w,v)=>w===void 0||Math.abs(v-i.id)<Math.abs(w-i.id)?v:w,void 0),g=d.get(u)??f;g?a.set(i.id,g):(d.set(u,i.id),m.push(i.id),o.set(p,m))}}return a}async function O(){let n=(await y(["cards"],"readonly",a=>a.objectStore("cards").getAll())).filter(a=>!a.duplicateOf);if(n.filter(a=>a.updatedAt===void 0).length<2)return n;let t=await y(["designs"],"readonly",a=>a.objectStore("designs").getAll()),e=await B(n,t);return e.size&&await y(["cards"],"readwrite",a=>{let s=a.objectStore("cards");for(let[o,d]of e){let i=s.get(o);i.onsuccess=()=>{let c=i.result;c&&c.updatedAt===void 0&&!c.duplicateOf&&s.put({...c,duplicateOf:d})}}}),n.filter(a=>!e.has(a.id))}var b,h,q=x(()=>{h=["XS","S","M","L","XL","2XL","3XL"]});var U,j,N=x(()=>{U=[{id:"tee",name:"\u77ED\u8896",category:"\u77ED\u8896\u7CFB\u5217",description:"\u7ECF\u5178\u5706\u9886\u77ED\u8896\uFF0C\u9002\u5408\u5927\u9762\u79EF\u6B63\u80F8\u5370\u82B1\u3002"},{id:"crew",name:"\u536B\u8863",category:"\u536B\u8863\u7CFB\u5217",description:"\u5706\u9886\u957F\u8896\u6B3E\uFF0C\u524D\u540E\u8863\u9762\u5747\u53EF\u5B9A\u5236\u3002"},{id:"zip",name:"\u62C9\u94FE\u536B\u8863",category:"\u536B\u8863\u7CFB\u5217",description:"\u524D\u895F\u5E26\u62C9\u94FE\uFF0C\u6B63\u80F8\u5370\u82B1\u4F1A\u4E3A\u62C9\u94FE\u7559\u7A7A\u3002"},{id:"hoodie",name:"\u6234\u5E3D\u536B\u8863",category:"\u536B\u8863\u7CFB\u5217",description:"\u8FDE\u5E3D\u5957\u5934\u6B3E\uFF0C\u524D\u4FA7\u4FDD\u7559\u888B\u9F20\u53E3\u888B\u3002"}],j={...Object.fromEntries(U.map(({id:r,name:n})=>[r,n])),raglan:"\u63D2\u80A9\u77ED\u8896"}});var F=k(()=>{q();N();var L=r=>document.getElementById(r),C=location.protocol==="file:"?"./Print-Lab.html":"./index.html";document.querySelector(".back").href=C;var R=L("saved-grid"),E=L("saved-status"),X=new Intl.DateTimeFormat("zh-CN",{dateStyle:"medium",timeStyle:"short"}),S=[],A=0;async function D(){let r=++A;try{let n=await O();if(r!==A)return;S.forEach(e=>URL.revokeObjectURL(e)),S=[];let t=n.sort((e,a)=>(a.updatedAt??a.createdAt)-(e.updatedAt??e.createdAt)||a.id-e.id).map(e=>{let a=document.createElement("a");a.className="design-card",a.href=C+"?design="+e.id;let s=new Image(384,384);s.src=URL.createObjectURL(e.preview),s.alt="",s.loading="lazy",s.decoding="async",S.push(s.src);let o=document.createElement("div"),d=document.createElement("strong");d.textContent=(j[e.garment]??"\u8BBE\u8BA1")+" \xB7 "+(e.fit==="female"?"\u5973\u6B3E":"\u7537\u6B3E");let i=document.createElement("time"),c=e.updatedAt??e.createdAt;i.dateTime=new Date(c).toISOString(),i.textContent=X.format(c),o.append(d);let l=h.filter(u=>Number.isInteger(e.quantities?.[u])&&e.quantities[u]>0);if(l.length){let u=document.createElement("p");u.className="design-quantities",l.forEach((m,f)=>{let g=document.createElement("span");g.textContent=m+" \xD7 "+e.quantities[m],f&&u.append(" \xB7 "),u.append(g)}),o.append(u)}o.append(i),a.append(s,o);let p=document.createElement("div");return p.setAttribute("role","listitem"),p.append(a),p});R.replaceChildren(...t),E.textContent=t.length?t.length+" \u6B3E\u5B9A\u5236":"\u5728\u8BD5\u8863\u9875\u4FDD\u5B58\u5B9A\u5236\u540E\uFF0C\u8863\u670D\u4F1A\u663E\u793A\u5728\u8FD9\u91CC\u3002"}catch{r===A&&(E.textContent="\u65E0\u6CD5\u8BFB\u53D6\u8BBE\u8BA1\uFF0C\u8BF7\u68C0\u67E5\u6D4F\u89C8\u5668\u5B58\u50A8\u8BBE\u7F6E\u3002")}}window.addEventListener("pageshow",D);document.addEventListener("visibilitychange",()=>{document.hidden||D()})});F();})();
+<script>(()=>{var N=(n,t,e)=>()=>{if(e)throw e[0];try{return n&&(t=n(n=0)),t}catch(r){throw e=[r],r}};var J=(n,t)=>()=>{try{return t||n((t={exports:{}}).exports,t),t.exports}catch(e){throw t=0,e}};function F(){return y??=new Promise((n,t)=>{let e=indexedDB.open("print-lab-designs",1);e.onupgradeneeded=()=>{e.result.createObjectStore("designs",{keyPath:"id",autoIncrement:!0}),e.result.createObjectStore("cards",{keyPath:"id"})},e.onerror=()=>t(e.error),e.onsuccess=()=>{let r=e.result;r.onversionchange=()=>{r.close(),y=void 0},n(r)}}).catch(n=>{throw y=void 0,n})}async function v(n,t,e){let r=await F();return new Promise((s,o)=>{let a=r.transaction(n,t),d=e(a);a.oncomplete=()=>s(d?.result),a.onabort=()=>o(a.error??new Error("Design storage was aborted."))})}function G(n){return Object.entries(n.patterns??{}).sort(([t],[e])=>t.localeCompare(e))}async function Q(n){if(globalThis.crypto?.subtle){let t=await crypto.subtle.digest("SHA-256",await n.arrayBuffer());return Array.from(new Uint8Array(t),e=>e.toString(16).padStart(2,"0")).join("")}return new Promise((t,e)=>{let r=new FileReader;r.onload=()=>t(r.result),r.onerror=()=>e(r.error),r.readAsDataURL(n)})}function T(n){return S.map(t=>{let e=n.quantities?.[t];return Number.isSafeInteger(e)&&e>0?e:0})}async function H(n,t){let e=new Map(t.map(o=>[o.id,o])),r=new Map;for(let o of n){if(o.updatedAt!==void 0)continue;let a=e.get(o.id);if(!a)continue;let d=G(a);if(d.some(([,f])=>!(f?.pixels instanceof Blob)))continue;let i=JSON.stringify([a.garment,a.color?.toLowerCase(),a.fit??"male",d.map(([f,{pixels:p,scale:b,x:g,y:h}])=>[f,b??1,g??0,h??0,p.size])]),c=r.get(i)??[];c.push({card:o,parts:d,quantities:T(o)}),r.set(i,c)}let s=new Map;for(let o of r.values()){if(o.length<2)continue;o.sort((i,c)=>Number(c.quantities.some(Boolean))-Number(i.quantities.some(Boolean))||+(c.card.submitted===!0)-+(i.card.submitted===!0)||c.card.id-i.card.id);let a=new Map,d=new Map;for(let{card:i,parts:c,quantities:f}of o){let p=JSON.stringify(await Promise.all(c.map(([,m])=>Q(m.pixels)))),b=JSON.stringify([p,f]),g=a.get(p)??[],h=f.some(Boolean)?void 0:g.reduce((m,k)=>m===void 0||Math.abs(k-i.id)<Math.abs(m-i.id)?k:m,void 0),j=d.get(b)??h;j?s.set(i.id,j):(d.set(b,i.id),g.push(i.id),a.set(p,g))}}return s}async function q(){let t=(await v(["cards"],"readonly",s=>s.objectStore("cards").getAll())).filter(s=>!s.duplicateOf);if(t.filter(s=>s.updatedAt===void 0).length<2)return t;let e=await v(["designs"],"readonly",s=>s.objectStore("designs").getAll()),r=await H(t,e);return r.size&&await v(["cards"],"readwrite",s=>{let o=s.objectStore("cards");for(let[a,d]of r){let i=o.get(a);i.onsuccess=()=>{let c=i.result;c&&c.updatedAt===void 0&&!c.duplicateOf&&o.put({...c,duplicateOf:d})}}}),t.filter(s=>!r.has(s.id))}var y,S,C=N(()=>{S=["XS","S","M","L","XL","2XL","3XL"]});var $,E,D=N(()=>{$=[{id:"tee",name:"\u77ED\u8896",category:"\u77ED\u8896\u7CFB\u5217",description:"\u7ECF\u5178\u5706\u9886\u77ED\u8896\uFF0C\u9002\u5408\u5927\u9762\u79EF\u6B63\u80F8\u5370\u82B1\u3002"},{id:"crew",name:"\u536B\u8863",category:"\u536B\u8863\u7CFB\u5217",description:"\u5706\u9886\u957F\u8896\u6B3E\uFF0C\u524D\u540E\u8863\u9762\u5747\u53EF\u5B9A\u5236\u3002"},{id:"zip",name:"\u62C9\u94FE\u536B\u8863",category:"\u536B\u8863\u7CFB\u5217",description:"\u524D\u895F\u5E26\u62C9\u94FE\uFF0C\u6B63\u80F8\u5370\u82B1\u4F1A\u4E3A\u62C9\u94FE\u7559\u7A7A\u3002"},{id:"hoodie",name:"\u6234\u5E3D\u536B\u8863",category:"\u536B\u8863\u7CFB\u5217",description:"\u8FDE\u5E3D\u5957\u5934\u6B3E\uFF0C\u524D\u4FA7\u4FDD\u7559\u888B\u9F20\u53E3\u888B\u3002"}],E={...Object.fromEntries($.map(({id:n,name:t})=>[n,t])),raglan:"\u63D2\u80A9\u77ED\u8896"}});var Y=J(()=>{C();D();var l=n=>document.getElementById(n),P=location.protocol==="file:"?"./Print-Lab.html":"./index.html";document.querySelector(".back").href=P;var K=l("design-showcase"),B=l("design-viewer"),x=l("saved-grid"),I=l("saved-status"),M=l("previous-design"),R=l("next-design"),L=[],u=[],A=0,w=Number(new URLSearchParams(location.search).get("design"));function z(n){return(E[n.garment]??"\u8BBE\u8BA1")+" \xB7 "+(n.fit==="female"?"\u5973\u6B3E":"\u7537\u6B3E")}function V(n){return S.filter(t=>Number.isSafeInteger(n.quantities?.[t])&&n.quantities[t]>0).map(t=>t+" \xD7 "+n.quantities[t]).join(" \xB7 ")}function O(n,t){let e=u.findIndex(({card:i})=>i.id===n),r=u[e];if(!r)return;let{card:s,button:o}=r;w=n;let a=P+"?design="+n,d=a+"&view=preview&revision="+(s.updatedAt??s.createdAt);B.getAttribute("src")!==d&&B.setAttribute("src",d),l("selected-name").textContent=z(s),l("selected-quantities").textContent=V(s)||"\u5F85\u9009\u62E9\u5C3A\u7801\u4E0E\u6570\u91CF",l("checkout").href="./checkout.html?design="+n,l("edit-design").href=a;for(let i of u)i.button.setAttribute("aria-pressed",String(i===r));if(M.disabled=e===0,R.disabled=e===u.length-1,t){let i=x.getBoundingClientRect(),c=o.getBoundingClientRect();if(c.left<i.left||c.right>i.right){let f=matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth";x.scrollBy({left:c.left-i.left,behavior:f})}}}function U(n){let t=u.findIndex(({card:r})=>r.id===w),e=u[t+n];e&&O(e.card.id,!0)}M.addEventListener("click",()=>U(-1));R.addEventListener("click",()=>U(1));function W(n){let t=document.createElement("button");t.type="button",t.className="design-card",t.dataset.design=n.id,t.addEventListener("click",()=>O(n.id,!0));let e=new Image(384,384),r=URL.createObjectURL(n.preview);e.src=r,e.alt="",e.loading="lazy",e.decoding="async",L.push(r);let s=document.createElement("span");s.className="card-name",s.textContent=z(n),t.append(e,s);let o=document.createElement("div");return o.setAttribute("role","listitem"),o.append(t),{card:n,button:t,element:o}}async function X(){let n=++A;try{let t=await q();if(n!==A)return;L.forEach(e=>URL.revokeObjectURL(e)),L=[],u=t.sort((e,r)=>(r.updatedAt??r.createdAt)-(e.updatedAt??e.createdAt)||r.id-e.id).map(W),x.replaceChildren(...u.map(({element:e})=>e)),K.hidden=u.length===0,I.textContent=u.length?u.length+" \u6B3E\u5B9A\u5236":"\u5728\u8BD5\u8863\u9875\u4FDD\u5B58\u5B9A\u5236\u540E\uFF0C\u8863\u670D\u4F1A\u663E\u793A\u5728\u8FD9\u91CC\u3002",O(u.some(({card:e})=>e.id===w)?w:u[0]?.card.id,!1)}catch{n===A&&(I.textContent="\u65E0\u6CD5\u8BFB\u53D6\u8BBE\u8BA1\uFF0C\u8BF7\u68C0\u67E5\u6D4F\u89C8\u5668\u5B58\u50A8\u8BBE\u7F6E\u3002")}}window.addEventListener("pageshow",X);document.addEventListener("visibilitychange",()=>{document.hidden||X()})});Y();})();
 </script>
 </body>
 </html>

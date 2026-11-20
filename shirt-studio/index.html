@@ -11,6 +11,7 @@
 <meta name="crew-attribution" content="Long Sleeve T- Shirt by chokybali (https://sketchfab.com/3d-models/long-sleeve-t-shirt-ef22cf345c174b569fdfa6a653a6bf6f), CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/), adapted mesh, material, and fit.">
 <meta name="female-fit-attribution" content="Free Female Mannequin Base Mesh by Devlane (https://sketchfab.com/3d-models/free-female-mannequin-base-mesh-187300a221c04178b96b84bf9cab97e0), Sketchfab Standard, adapted pose.">
 <title>3D 试衣</title>
+<script>if(new URLSearchParams(location.search).get('view')==='preview')document.documentElement.dataset.studioPreview='';</script>
 <script>const themeStorageKey='print-lab-theme';
 const systemTheme=matchMedia('(prefers-color-scheme: dark)');
 let savedTheme;
@@ -35,6 +36,12 @@ document.addEventListener('click',event=>{
   savedTheme=document.documentElement.dataset.theme==='dark'?'light':'dark';
   applyTheme(savedTheme);
   try { localStorage.setItem(themeStorageKey,savedTheme); } catch {}
+});
+
+window.addEventListener('storage',event=>{
+  if(event.key!==themeStorageKey) return;
+  savedTheme=event.newValue==='light'||event.newValue==='dark'?event.newValue:undefined;
+  applyTheme(savedTheme??(systemTheme.matches?'dark':'light'));
 });
 </script>
 <style>:root{
@@ -98,7 +105,7 @@ body{overflow:hidden}
 #viewport.print-dragging{cursor:grabbing}
 #viewport canvas{display:block;width:100%;height:100%}
 .stage-hint{position:absolute;bottom:max(12px,env(safe-area-inset-bottom));left:16px;margin:0;color:var(--muted);font-size:12px;pointer-events:none}
-.editor-active .stage-hint{display:none}
+.editor-active .stage-hint,[data-studio-preview] .stage-hint,[data-studio-preview] .stage-actions{display:none}
 .stage-actions{position:absolute;top:max(14px,env(safe-area-inset-top));right:calc(14px + var(--view-right));display:flex;gap:7px;z-index:1;transition:right var(--slide)}
 .quiet{font-size:12px}
 .quiet,.icon-button{border:1px solid var(--line);border-radius:5px;padding:8px 11px}
@@ -435,7 +442,7 @@ Training
 Blog
 About
 */@font-face{font-family:"DynaPuff";src:url("assets/dynapuff-c3752fc6dd8a.ttf") format("truetype");font-style:normal;font-weight:400 700;font-display:swap}</style>
-<link rel="modulepreload" href="assets/studio-17e096406d75.js"><script>
+<link rel="modulepreload" href="assets/studio-353d1ac8af0b.js"><script>
 (()=>{
   const route=new URLSearchParams(location.search);
   if(route.has('design'))return;
@@ -551,6 +558,6 @@ About
     <div id="notice" role="status" class="notice"></div>
   </section>
 </main>
-<script type="module" src="assets/studio-17e096406d75.js"></script>
+<script type="module" src="assets/studio-353d1ac8af0b.js"></script>
 </body>
 </html>
