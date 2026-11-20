@@ -220,6 +220,18 @@ function retryAfter(request) {
   return 0;
 }
 
+function parseArtworkObject(content) {
+  if (typeof content !== 'string' || !content.trim()) return null;
+  const trimmed = content.trim();
+  const fenced = trimmed.match(/^```(?:json)?\s*([\s\S]+?)\s*```$/i);
+  try {
+    const value = JSON.parse(fenced?.[1] ?? trimmed);
+    return value && typeof value === 'object' && !Array.isArray(value) ? value : null;
+  } catch {
+    return null;
+  }
+}
+
 async function generateArt(request, key) {
   if (!/^application\/json(?:\s*;|$)/i.test(request.headers.get('content-type') ?? '')) {
     return fail(415, '请使用 JSON 提交印花描述。');
@@ -256,51 +268,56 @@ async function generateArt(request, key) {
     { type: 'image_url', image_url: { url: reference, detail: 'low' } }
   ] : userDirection;
   const deadline = AbortSignal.timeout(waitMs);
+  const instructions = letteringOnly
+    ? letteringArtDirection + '\nReturn a JSON object with a single property named letteringStyle.'
+    : vectorInstructions(includeText) + (includeText ? '' :
+      '\nUse the following direction to fill the letteringStyle property; keep title and layers at the top level.\n' + letteringArtDirection);
+  const attempts = letteringOnly ? 1 : 2;
   try {
-    const upstream = await fetch('https://api.deepseek.com/chat/completions', {
-      method: 'POST',
-      headers: { Authorization: 'Bearer ' + key, 'Content-Type': 'application/json' },
-      signal: deadline,
-      body: JSON.stringify({
-        model: 'deepseek-flash',
-        thinking: { type: 'disabled' },
-        response_format: { type: 'json_object' },
-        max_tokens: letteringOnly ? 360 : includeText ? 2200 : 2550,
-        messages: [
-          { role: 'system', content: letteringOnly
-            ? letteringArtDirection + '\nReturn a JSON object with a single property named letteringStyle.'
-            : vectorInstructions(includeText) + (includeText ? '' :
-              '\nUse the following direction to fill the letteringStyle property; keep title and layers at the top level.\n' + letteringArtDirection) },
-          { role: 'user', content: contentParts }
-        ]
-      })
-    });
-    if (!upstream.ok) {
-      void upstream.body?.cancel().catch(() => {});
-      console.warn('Shirt print provider HTTP status', upstream.status);
-      return upstream.status === 429 ? fail(429, '图案生成服务正忙，请稍后再试。') : fail(503, '图案生成服务暂不可用，请稍后再试。');
+    for (let attempt = 0; attempt < attempts; attempt++) {
+      const correction = attempt
+        ? '\nFor this attempt use 3–7 simple path layers. Close all quotes and brackets. Return one JSON object in a single line.'
+        : '';
+      const upstream = await fetch('https://api.deepseek.com/chat/completions', {
+        method: 'POST',
+        headers: { Authorization: 'Bearer ' + key, 'Content-Type': 'application/json' },
+        signal: deadline,
+        body: JSON.stringify({
+          model: 'deepseek-flash',
+          thinking: { type: 'disabled' },
+          response_format: { type: 'json_object' },
+          max_tokens: letteringOnly ? 360 : includeText ? 2200 : 2550,
+          messages: [
+            { role: 'system', content: instructions + correction },
+            { role: 'user', content: contentParts }
+          ]
+        })
+      });
+      if (!upstream.ok) {
+        void upstream.body?.cancel().catch(() => {});
+        console.warn('Shirt print provider HTTP status', upstream.status);
+        return upstream.status === 429 ? fail(429, '图案生成服务正忙，请稍后再试。') : fail(503, '图案生成服务暂不可用，请稍后再试。');
+      }
+      const completion = await readJson(upstream, responseLimit).catch(error => {
+        if (error instanceof SyntaxError || error instanceof RangeError) return null;
+        throw error;
+      });
+      const choice = completion?.choices?.[0];
+      if (choice?.finish_reason === 'content_filter') return fail(422, '这段描述无法生成图案，请换一种描述。');
+      const content = choice?.message?.content;
+      const generated = choice?.finish_reason === 'length' ? null : parseArtworkObject(content);
+      if (letteringOnly) {
+        const letteringStyle = safeLetteringStyle(generated?.letteringStyle ?? generated);
+        return letteringStyle ? result({ letteringStyle }) : fail(502, '无法读取字体建议，可使用自动排版。');
+      }
+      const art = safeArt(generated, includeText);
+      if (!art) continue;
+      const letteringStyle = includeText ? null : safeLetteringStyle(generated?.letteringStyle);
+      return result(letteringStyle ? { art, letteringStyle } : { art });
     }
-
-    const completion = await readJson(upstream, responseLimit);
-    const choice = completion?.choices?.[0];
-    const content = choice?.message?.content;
-    if (choice?.finish_reason === 'content_filter') return fail(422, '这段描述无法生成图案，请换一种描述。');
-    if (choice?.finish_reason === 'length') return fail(422, '图案细节太多，请简化描述再试。');
-    if (typeof content !== 'string' || !content.trim()) return fail(502, '没有生成图案，请换一种描述再试。');
-    const generated = JSON.parse(content);
-    if (letteringOnly) {
-      const letteringStyle = safeLetteringStyle(generated?.letteringStyle ?? generated);
-      return letteringStyle ? result({ letteringStyle }) : fail(502, '无法读取字体建议，可使用自动排版。');
-    }
-    const art = safeArt(generated, includeText);
-    if (!art) return fail(502, '生成的图案无法印到衣服上，请调整描述再试。');
-    const letteringStyle = includeText ? null : safeLetteringStyle(generated.letteringStyle);
-    return result(letteringStyle ? { art, letteringStyle } : { art });
-  } catch (error) {
+    return fail(502, '暂时无法绘制这个图案。可以先保留一个主体，再加一项风格或颜色。');
+  } catch {
     if (deadline.aborted) return fail(504, '图案生成超时，请稍后再试。');
-    if (error instanceof SyntaxError || error instanceof RangeError) {
-      return fail(502, '生成的图案格式有误，请调整描述再试。');
-    }
     console.warn('Shirt print provider connection failed');
     return fail(503, '图案生成服务暂不可用，请稍后再试。');
   }
