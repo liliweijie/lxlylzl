@@ -168,7 +168,7 @@ textarea{width:100%;display:block;resize:vertical;min-height:48px;background:var
 .lettering-options[open]{padding-bottom:8px}
 .lettering-options label{display:grid;gap:4px}
 .lettering-options>label{margin-bottom:4px}
-.lettering-selects{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:7px}
+.lettering-selects{margin-top:7px}
 .lettering-selects select{width:100%;min-height:31px;border:1px solid var(--line);border-radius:5px;color:var(--ink);background:var(--panel);padding:3px 5px}
 #lettering-preview{color:var(--ink);overflow-wrap:anywhere}
 .accent{border:1px solid var(--line);border-radius:5px;padding:5px 7px;font-size:12px;color:inherit}
@@ -224,7 +224,103 @@ textarea{width:100%;display:block;resize:vertical;min-height:48px;background:var
   #generate textarea{font-size:16px}
 }
 </style>
-<link rel="modulepreload" href="assets/studio-8510c4148106.js"><script>
+<style>/*
+Copyright 2017 The Sedgwick Ave Project Authors (https://github.com/googlefonts/sedgwickave)
+
+This Font Software is licensed under the SIL Open Font License, Version 1.1.
+This license is copied below, and is also available with a FAQ at:
+http://scripts.sil.org/OFL
+
+
+-----------------------------------------------------------
+SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007
+-----------------------------------------------------------
+
+PREAMBLE
+The goals of the Open Font License (OFL) are to stimulate worldwide
+development of collaborative font projects, to support the font creation
+efforts of academic and linguistic communities, and to provide a free and
+open framework in which fonts may be shared and improved in partnership
+with others.
+
+The OFL allows the licensed fonts to be used, studied, modified and
+redistributed freely as long as they are not sold by themselves. The
+fonts, including any derivative works, can be bundled, embedded, 
+redistributed and/or sold with any software provided that any reserved
+names are not used by derivative works. The fonts and derivatives,
+however, cannot be released under any other type of license. The
+requirement for fonts to remain under this license does not apply
+to any document created using the fonts or their derivatives.
+
+DEFINITIONS
+"Font Software" refers to the set of files released by the Copyright
+Holder(s) under this license and clearly marked as such. This may
+include source files, build scripts and documentation.
+
+"Reserved Font Name" refers to any names specified as such after the
+copyright statement(s).
+
+"Original Version" refers to the collection of Font Software components as
+distributed by the Copyright Holder(s).
+
+"Modified Version" refers to any derivative made by adding to, deleting,
+or substituting -- in part or in whole -- any of the components of the
+Original Version, by changing formats or by porting the Font Software to a
+new environment.
+
+"Author" refers to any designer, engineer, programmer, technical
+writer or other person who contributed to the Font Software.
+
+PERMISSION & CONDITIONS
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of the Font Software, to use, study, copy, merge, embed, modify,
+redistribute, and sell modified and unmodified copies of the Font
+Software, subject to the following conditions:
+
+1) Neither the Font Software nor any of its individual components,
+in Original or Modified Versions, may be sold by itself.
+
+2) Original or Modified Versions of the Font Software may be bundled,
+redistributed and/or sold with any software, provided that each copy
+contains the above copyright notice and this license. These can be
+included either as stand-alone text files, human-readable headers or
+in the appropriate machine-readable metadata fields within text or
+binary files as long as those fields can be easily viewed by the user.
+
+3) No Modified Version of the Font Software may use the Reserved Font
+Name(s) unless explicit written permission is granted by the corresponding
+Copyright Holder. This restriction only applies to the primary font name as
+presented to the users.
+
+4) The name(s) of the Copyright Holder(s) or the Author(s) of the Font
+Software shall not be used to promote, endorse or advertise any
+Modified Version, except to acknowledge the contribution(s) of the
+Copyright Holder(s) and the Author(s) or with their explicit written
+permission.
+
+5) The Font Software, modified or unmodified, in part or in whole,
+must be distributed entirely under this license, and must not be
+distributed under any other license. The requirement for fonts to
+remain under this license does not apply to any document created
+using the Font Software.
+
+TERMINATION
+This license becomes null and void if any of the above conditions are
+not met.
+
+DISCLAIMER
+THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT
+OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL THE
+COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL
+DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
+OTHER DEALINGS IN THE FONT SOFTWARE.
+
+*/@font-face{font-family:"Sedgwick Ave";src:url("assets/sedgwick-ave-9c3633e56a8a.ttf") format("truetype");font-style:normal;font-weight:400;font-display:swap}</style>
+<link rel="modulepreload" href="assets/studio-e68df8c95035.js"><script>
 (()=>{
   const route=new URLSearchParams(location.search);
   if(route.has('design'))return;
@@ -299,19 +395,14 @@ textarea{width:100%;display:block;resize:vertical;min-height:48px;background:var
             </div>
             <div class="source" id="upload"><label class="upload"><i data-icon="upload"></i><span>选择或拖入图片<small>PNG、JPG、WEBP · 最大 15 MB</small></span><input id="file" type="file" accept="image/png,image/jpeg,image/webp"></label></div>
             <form class="source" id="generate" hidden>
-              <p class="help" id="vector-hint">生成透明底图案，指定的文字可按原文排版。</p>
+              <p class="help" id="vector-hint">用描述指定印花风格和配色，文字按原文排版。</p>
               <label for="prompt" class="sr-only">描述想印在衣服上的图案</label>
-              <textarea id="prompt" aria-describedby="vector-hint" placeholder="例如：生成 lwj 三个字母，复古蓝色" maxlength="600" rows="2"></textarea>
+              <textarea id="prompt" aria-describedby="vector-hint" placeholder="例如：用珊瑚红泡泡涂鸦写出 lwj，深蓝描边" maxlength="600" rows="2"></textarea>
               <details id="lettering-options" class="lettering-options">
                 <summary>文字与排版</summary>
                 <label for="locked-text">印花文字</label>
                 <textarea id="locked-text" aria-describedby="lettering-preview" placeholder="例如 lwj。多个名字可按行或用逗号分隔。" maxlength="1600" rows="2"></textarea>
                 <div class="lettering-selects">
-                  <label>字体
-                    <select id="lettering-font">
-                      <option value="auto">自动</option><option value="sans">现代无衬线</option><option value="serif">复古衬线</option><option value="mono">清晰等宽</option>
-                    </select>
-                  </label>
                   <label>排版
                     <select id="lettering-layout">
                       <option value="auto">自动</option><option value="stack">居中单列</option><option value="two">双列</option><option value="three">三列</option>
@@ -337,6 +428,6 @@ textarea{width:100%;display:block;resize:vertical;min-height:48px;background:var
     <div id="notice" role="status" class="notice"></div>
   </section>
 </main>
-<script type="module" src="assets/studio-8510c4148106.js"></script>
+<script type="module" src="assets/studio-e68df8c95035.js"></script>
 </body>
 </html>

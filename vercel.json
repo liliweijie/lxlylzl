@@ -1,4 +1,7 @@
 {
+  "functions": {
+    "api/shirt-print.mjs": { "includeFiles": "shirt-studio/references/graffiti-styleboard.png" }
+  },
   "headers": [
     {"source": "/shirt-studio/assets/:file*", "headers": [{"key": "Cache-Control", "value": "public, max-age=31536000, immutable"}]}
   ],

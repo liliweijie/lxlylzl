@@ -1,3 +1,5 @@
+import {readFileSync} from 'node:fs';
+
 const promptLimit = 600;
 const requestLimit = 4096;
 const responseLimit = 65536;
@@ -12,8 +14,25 @@ const pathCharacters = /^[MLHVCSQTAZ0-9.,\s-]+$/;
 const pathTokens = /[MLHVCSQTAZ]|-?(?:\d+(?:\.\d*)?|\.\d+)/g;
 const colorPattern = /^#[\da-f]{6}$/i;
 const fonts = new Set(['sans', 'serif', 'mono']);
+const treatments = new Set(['bubble', 'marker', 'spray', 'sticker', 'drip']);
+const graffitiCue = /涂鸦|街头|泡泡字|气泡字|喷漆|喷罐|喷绘|喷溅|马克笔|贴纸|滴漆|滴墨|graffiti|sticker|bubble|spray|marker|y2k/i;
+const styleNotes = 'The style board is reference only. Use the closest visual approach: rounded coral bubble outlines, cobalt hand-marker swashes, acid-green spray stencil, mint and lilac die-cut stickers, creamy ink drips, or purple/orange sprayed mascot shapes. Keep the user subject and requested colors. Never copy the samples or their words.';
+let graffitiBoard;
 
-const letteringInstructions = `Recommend a readable typography style for a garment print. Use the user's art direction, garment color and print location to select high-contrast colors. The exact words, font placement and line layout are handled by a separate typesetting engine. Return only a compact JSON object with font ("sans", "serif" or "mono"), color (six-digit #RRGGBB for the lettering), optional accent (six-digit #RRGGBB for decoration), and weight (400 or 700). Example: {"font":"serif","color":"#173D38","accent":"#D96634","weight":700}. Do not suggest any wording, draw letters, or return shapes, positions or markup.`;
+function imageReference(description) {
+  if (!graffitiCue.test(description)) return null;
+  if (graffitiBoard === undefined) {
+    try {
+      const bytes = readFileSync(new URL('../shirt-studio/references/graffiti-styleboard.png', import.meta.url));
+      graffitiBoard = 'data:image/png;base64,' + bytes.toString('base64');
+    } catch {
+      graffitiBoard = null;
+    }
+  }
+  return graffitiBoard;
+}
+
+const letteringInstructions = `Recommend a readable garment lettering treatment from the user's art direction, clothing color and print location. A separate engine preserves the exact text. Return only JSON with font ("sans", "serif", or "mono"), an optional treatment ("bubble", "marker", "spray", "sticker", or "drip"), color (#RRGGBB), optional accent (#RRGGBB), and weight (400 or 700). For example, {"font":"sans","treatment":"bubble","color":"#FB7452","accent":"#172650","weight":700}. Select contrasting but expressive colors. Never suggest wording or output shapes, positions or markup.`;
 
 function vectorInstructions(includeText) {
   const lettering = includeText
@@ -145,11 +164,11 @@ function safeArt(value, includeText) {
 }
 
 function safeLetteringStyle(value) {
-  const { font, weight } = value ?? {};
+  const { font, weight, treatment } = value ?? {};
   const ink = color(value?.color);
   if (!fonts.has(font) || !ink || (weight !== 400 && weight !== 700)) return null;
   const accent = color(value?.accent);
-  return accent ? { font, color: ink, accent, weight } : { font, color: ink, weight };
+  return { font, color: ink, weight, ...(accent ? { accent } : {}), ...(treatments.has(treatment) ? { treatment } : {}) };
 }
 
 function allowOrigin(request) {
@@ -206,6 +225,12 @@ async function generateArt(request, key) {
 
   const letteringOnly = mode === 'lettering';
   const includeText = mode !== 'graphic-with-lettering';
+  const reference = imageReference(description);
+  const userDirection = JSON.stringify({ description, garmentColor, location: zones[zone] });
+  const contentParts = reference ? [
+    { type: 'text', text: userDirection + '\n' + styleNotes },
+    { type: 'image_url', image_url: { url: reference, detail: 'low' } }
+  ] : userDirection;
   const deadline = AbortSignal.timeout(waitMs);
   try {
     const upstream = await fetch('https://api.deepseek.com/chat/completions', {
@@ -219,7 +244,7 @@ async function generateArt(request, key) {
         max_tokens: letteringOnly ? 160 : 2200,
         messages: [
           { role: 'system', content: letteringOnly ? letteringInstructions : vectorInstructions(includeText) },
-          { role: 'user', content: JSON.stringify({ description, garmentColor, location: zones[zone] }) }
+          { role: 'user', content: contentParts }
         ]
       })
     });
@@ -263,3 +288,4 @@ export default {
     return request.method === 'GET' ? result({ available: Boolean(key) }) : generateArt(request, key);
   }
 };
+
