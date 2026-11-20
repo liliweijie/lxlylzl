@@ -132,7 +132,7 @@ body{overflow:hidden}
 .zones button{min-height:35px}
 .color-row,.colors{display:flex;align-items:center;gap:11px}
 .color-row h3,.fit-row h3{margin:0;flex:none}
-.colors{gap:10px}
+.colors{flex-wrap:wrap;gap:10px}
 .colors button{width:22px;height:22px;border-radius:50%;border:1px solid var(--line);background:var(--swatch)}
 .colors button[aria-pressed=true]{outline:1px solid var(--accent);outline-offset:3px}
 .size-heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px}
@@ -435,7 +435,7 @@ Training
 Blog
 About
 */@font-face{font-family:"DynaPuff";src:url("assets/dynapuff-c3752fc6dd8a.ttf") format("truetype");font-style:normal;font-weight:400 700;font-display:swap}</style>
-<link rel="modulepreload" href="assets/studio-d24054940021.js"><script>
+<link rel="modulepreload" href="assets/studio-2d534110b3e4.js"><script>
 (()=>{
   const route=new URLSearchParams(location.search);
   if(route.has('design'))return;
@@ -482,6 +482,7 @@ About
           </div>
           <div class="fit-row" id="fit-options" role="group" aria-labelledby="fit-label"><h3 id="fit-label">模特</h3><button type="button" data-fit="male" aria-pressed="true">男款</button><button type="button" data-fit="female" aria-pressed="false">女款</button></div>
           <div class="color-row" role="group" aria-labelledby="color-label"><h3 id="color-label">颜色</h3><div class="colors" id="colors"></div></div>
+          <p class="help" id="saved-color-note" hidden>当前显示的是原设计色，可从上方选择新颜色。</p>
           <div>
             <div class="size-heading"><h3 id="size-label">尺码与数量</h3><output id="quantity-total"></output></div>
             <div class="size-options" id="size-options" role="group" aria-labelledby="size-label"></div>
@@ -551,6 +552,6 @@ About
     <div id="notice" role="status" class="notice"></div>
   </section>
 </main>
-<script type="module" src="assets/studio-d24054940021.js"></script>
+<script type="module" src="assets/studio-2d534110b3e4.js"></script>
 </body>
 </html>
