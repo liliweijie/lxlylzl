@@ -162,7 +162,15 @@ body{overflow:hidden}
 .help{margin:6px 0;font-size:12px;line-height:1.45;color:var(--muted)}
 textarea{width:100%;display:block;resize:vertical;min-height:48px;background:var(--paper);border:1px solid var(--line);border-radius:5px;padding:7px 8px;font-size:13px;color:var(--ink)}
 .generate-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:6px}
-#ai-status:empty{display:none}
+#ai-status:empty,#lettering-preview:empty{display:none}
+.lettering-options{margin-top:8px;border:1px solid var(--line);border-radius:5px;padding:0 8px;font-size:12px}
+.lettering-options summary{cursor:pointer;padding:7px 0}
+.lettering-options[open]{padding-bottom:8px}
+.lettering-options label{display:grid;gap:4px}
+.lettering-options>label{margin-bottom:4px}
+.lettering-selects{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:7px}
+.lettering-selects select{width:100%;min-height:31px;border:1px solid var(--line);border-radius:5px;color:var(--ink);background:var(--panel);padding:3px 5px}
+#lettering-preview{color:var(--ink);overflow-wrap:anywhere}
 .accent{border:1px solid var(--line);border-radius:5px;padding:5px 7px;font-size:12px;color:inherit}
 .generate-actions .accent{color:var(--accent-text);border-color:var(--accent);font-weight:600}
 .layer{display:flex;align-items:center;gap:9px;border:1px solid var(--line);border-radius:6px;padding:6px}
@@ -213,9 +221,10 @@ textarea{width:100%;display:block;resize:vertical;min-height:48px;background:var
   .editor-foot{padding-top:8px;padding-bottom:max(8px,env(safe-area-inset-bottom))}
   .garments button{padding-block:7px}
   .quantity-stepper input{font-size:16px}
+  #generate textarea{font-size:16px}
 }
 </style>
-<link rel="modulepreload" href="assets/studio-b82e95ba3528.js"><script>
+<link rel="modulepreload" href="assets/studio-8510c4148106.js"><script>
 (()=>{
   const route=new URLSearchParams(location.search);
   if(route.has('design'))return;
@@ -290,13 +299,30 @@ textarea{width:100%;display:block;resize:vertical;min-height:48px;background:var
             </div>
             <div class="source" id="upload"><label class="upload"><i data-icon="upload"></i><span>选择或拖入图片<small>PNG、JPG、WEBP · 最大 15 MB</small></span><input id="file" type="file" accept="image/png,image/jpeg,image/webp"></label></div>
             <form class="source" id="generate" hidden>
-              <p class="help" id="vector-hint">用 DeepSeek 生成透明底矢量印花，适合徽章、Logo 和几何图案。</p>
+              <p class="help" id="vector-hint">生成透明底图案，指定的文字可按原文排版。</p>
               <label for="prompt" class="sr-only">描述想印在衣服上的图案</label>
-              <textarea id="prompt" aria-describedby="vector-hint" placeholder="例如：红黑双色的闪电猫徽章，圆形构图" maxlength="600" rows="2" required></textarea>
+              <textarea id="prompt" aria-describedby="vector-hint" placeholder="例如：生成 lwj 三个字母，复古蓝色" maxlength="600" rows="2"></textarea>
+              <details id="lettering-options" class="lettering-options">
+                <summary>文字与排版</summary>
+                <label for="locked-text">印花文字</label>
+                <textarea id="locked-text" aria-describedby="lettering-preview" placeholder="例如 lwj。多个名字可按行或用逗号分隔。" maxlength="1600" rows="2"></textarea>
+                <div class="lettering-selects">
+                  <label>字体
+                    <select id="lettering-font">
+                      <option value="auto">自动</option><option value="sans">现代无衬线</option><option value="serif">复古衬线</option><option value="mono">清晰等宽</option>
+                    </select>
+                  </label>
+                  <label>排版
+                    <select id="lettering-layout">
+                      <option value="auto">自动</option><option value="stack">居中单列</option><option value="two">双列</option><option value="three">三列</option>
+                    </select>
+                  </label>
+                </div>
+              </details>
+              <p id="lettering-preview" class="help" role="status"></p>
               <p class="help" id="ai-status" role="status" aria-live="polite"></p>
               <div class="generate-actions">
                 <button class="accent" id="generate-submit" type="submit" disabled><i data-icon="spark"></i><span>生成并印上衣服</span></button>
-                <button class="change-art" id="lettering-demo" type="button" hidden>试用本地艺术字</button>
               </div>
             </form>
             <div class="source" id="samples" hidden><div class="image-library" id="sample-list" role="group" aria-label="选择图库图案"></div></div>
@@ -311,6 +337,6 @@ textarea{width:100%;display:block;resize:vertical;min-height:48px;background:var
     <div id="notice" role="status" class="notice"></div>
   </section>
 </main>
-<script type="module" src="assets/studio-b82e95ba3528.js"></script>
+<script type="module" src="assets/studio-8510c4148106.js"></script>
 </body>
 </html>

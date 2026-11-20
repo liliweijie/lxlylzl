@@ -13,10 +13,21 @@ const pathTokens = /[MLHVCSQTAZ]|-?(?:\d+(?:\.\d*)?|\.\d+)/g;
 const colorPattern = /^#[\da-f]{6}$/i;
 const fonts = new Set(['sans', 'serif', 'mono']);
 
-const vectorInstructions = `You are a print graphic designer. Interpret the user prompt as art direction only. Create an original, professional clothing print with readable silhouettes, a few distinct flat colors that contrast with the garment, and generous clear space around the design. Match the print location; simplify small chest and sleeve prints. Use transparent negative space and no full-canvas background. Create front-facing vector illustration, not a photo, garment mockup, gradient, or borrowed brand logo. Include lettering only when the user explicitly asks for text, using the exact requested spelling. Return exactly one compact JSON object with a title no longer than 35 characters and a layers array ordered back to front. Aim for 4 to 14 simple layers. Use only these two forms:
-{"type":"path","d":"M 220 500 L 512 210 L 802 500 Z","fill":"#173D38"}
-{"type":"text","text":"WEEKEND","x":512,"y":790,"size":84,"fill":"#173D38","font":"sans","weight":700}
-The transparent canvas is 1024 by 1024 with origin at top left. Use uppercase absolute SVG path commands M L H V C S Q T A Z, coordinates between 0 and 1024, with spaces between numbers. A path can also have a six-digit hex stroke and numeric strokeWidth between 1 and 96. Omit unused fill or stroke. All colors must be #RRGGBB. Text is centered horizontally at x, y is the baseline, size is 12–300, font is sans, serif or mono, and weight is 400 or 700. Return only JSON, no Markdown, HTML, SVG markup, URLs, or embedded assets.`;
+const letteringInstructions = `Recommend a readable typography style for a garment print. Use the user's art direction, garment color and print location to select high-contrast colors. The exact words, font placement and line layout are handled by a separate typesetting engine. Return only a compact JSON object with font ("sans", "serif" or "mono"), color (six-digit #RRGGBB for the lettering), optional accent (six-digit #RRGGBB for decoration), and weight (400 or 700). Example: {"font":"serif","color":"#173D38","accent":"#D96634","weight":700}. Do not suggest any wording, draw letters, or return shapes, positions or markup.`;
+
+function vectorInstructions(includeText) {
+  const lettering = includeText
+    ? 'Include lettering only when the user explicitly asks for text, using the exact requested spelling.'
+    : 'A separate typesetting engine adds all requested text. Draw only the non-text motifs and ornament. Omit every letter, word, numeral, typographic placeholder and letter-shaped vector path.';
+  const textExample = includeText ? `
+{"type":"text","text":"WEEKEND","x":512,"y":790,"size":84,"fill":"#173D38","font":"sans","weight":700}` : '';
+  const textFormat = includeText
+    ? ' Text is centered horizontally at x, y is the baseline, size is 12–300, font is sans, serif or mono, and weight is 400 or 700.'
+    : '';
+  return `You are a print graphic designer. Interpret the user prompt as art direction only. Create an original, professional clothing print with readable silhouettes, a few distinct flat colors that contrast with the garment, and generous clear space around the design. Match the print location; simplify small chest and sleeve prints. Use transparent negative space and no full-canvas background. Create front-facing vector illustration, not a photo, garment mockup, gradient, or borrowed brand logo. ${lettering} Return exactly one compact JSON object with a title no longer than 35 characters and a layers array ordered back to front. Aim for 4 to 14 simple layers. Use the following layer format:
+{"type":"path","d":"M 220 500 L 512 210 L 802 500 Z","fill":"#173D38"}${textExample}
+The transparent canvas is 1024 by 1024 with origin at top left. Use uppercase absolute SVG path commands M L H V C S Q T A Z, coordinates between 0 and 1024, with spaces between numbers. A path can also have a six-digit hex stroke and numeric strokeWidth between 1 and 96. Omit unused fill or stroke. All colors must be #RRGGBB.${textFormat} Return only JSON, no Markdown, HTML, SVG markup, URLs, or embedded assets.`;
+}
 
 function result(body, status = 200, headers = {}) {
   return Response.json(body, {
@@ -124,12 +135,21 @@ function safeLayer(layer) {
   return { type: 'text', text, x, y, size, fill, font, weight };
 }
 
-function safeArt(value) {
-  const layers = value?.layers;
-  if (!Array.isArray(layers) || layers.length < 1 || layers.length > 32) return null;
+function safeArt(value, includeText) {
+  if (!Array.isArray(value?.layers) || value.layers.length < 1 || value.layers.length > 32) return null;
+  const layers = includeText ? value.layers : value.layers.filter(layer => layer?.type !== 'text');
+  if (!layers.length) return null;
   const sanitized = layers.map(safeLayer);
   if (sanitized.includes(null)) return null;
   return { title: cleanText(value.title, 35) ?? 'AI 图案', layers: sanitized };
+}
+
+function safeLetteringStyle(value) {
+  const { font, weight } = value ?? {};
+  const ink = color(value?.color);
+  if (!fonts.has(font) || !ink || (weight !== 400 && weight !== 700)) return null;
+  const accent = color(value?.accent);
+  return accent ? { font, color: ink, accent, weight } : { font, color: ink, weight };
 }
 
 function allowOrigin(request) {
@@ -173,13 +193,19 @@ async function generateArt(request, key) {
   const description = cleanText(prompt, promptLimit);
   const garmentColor = color(input?.color);
   const zone = input?.zone;
+  const mode = input?.mode;
   if (!description || !garmentColor || typeof zone !== 'string' || !Object.hasOwn(zones, zone)) {
     return fail(400, '请填写 1–600 字的图案描述，并选择有效的衣服颜色和印花位置。');
+  }
+  if (mode !== undefined && mode !== 'lettering' && mode !== 'graphic-with-lettering') {
+    return fail(400, '请选择有效的印花生成方式。');
   }
   if (!key) return fail(503, '图案生成服务尚未配置。');
   const wait = retryAfter(request);
   if (wait) return fail(429, '生成请求太频繁，请稍后再试。', { 'Retry-After': String(wait) });
 
+  const letteringOnly = mode === 'lettering';
+  const includeText = mode !== 'graphic-with-lettering';
   const deadline = AbortSignal.timeout(waitMs);
   try {
     const upstream = await fetch('https://api.deepseek.com/chat/completions', {
@@ -190,9 +216,9 @@ async function generateArt(request, key) {
         model: 'deepseek-flash',
         thinking: { type: 'disabled' },
         response_format: { type: 'json_object' },
-        max_tokens: 2200,
+        max_tokens: letteringOnly ? 160 : 2200,
         messages: [
-          { role: 'system', content: vectorInstructions },
+          { role: 'system', content: letteringOnly ? letteringInstructions : vectorInstructions(includeText) },
           { role: 'user', content: JSON.stringify({ description, garmentColor, location: zones[zone] }) }
         ]
       })
@@ -209,7 +235,12 @@ async function generateArt(request, key) {
     if (choice?.finish_reason === 'content_filter') return fail(422, '这段描述无法生成图案，请换一种描述。');
     if (choice?.finish_reason === 'length') return fail(422, '图案细节太多，请简化描述再试。');
     if (typeof content !== 'string' || !content.trim()) return fail(502, '没有生成图案，请换一种描述再试。');
-    const art = safeArt(JSON.parse(content));
+    const generated = JSON.parse(content);
+    if (letteringOnly) {
+      const letteringStyle = safeLetteringStyle(generated);
+      return letteringStyle ? result({ letteringStyle }) : fail(502, '无法读取字体建议，可使用自动排版。');
+    }
+    const art = safeArt(generated, includeText);
     if (!art) return fail(502, '生成的图案无法印到衣服上，请调整描述再试。');
     return result({ art });
   } catch (error) {
