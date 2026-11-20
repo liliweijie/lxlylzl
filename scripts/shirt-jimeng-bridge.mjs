@@ -20,6 +20,9 @@ const stateDir=join(homedir(),'.local','state','shirt-jimeng');
 const reference=process.env.SHIRT_JIMENG_REFERENCE||decodeURIComponent(
   new URL('../shirt-studio/references/graffiti-styleboard.png',import.meta.url).pathname
 );
+const graphicReference=process.env.SHIRT_JIMENG_GRAPHIC_REFERENCE||decodeURIComponent(
+  new URL('../shirt-studio/references/graffiti-marks.png',import.meta.url).pathname
+);
 const key=randomBytes(32).toString('hex');
 const jobs=new Map();
 const exec=promisify(execFile);
@@ -54,10 +57,14 @@ async function openCanvas(){
     info={projectId:data.project.projectId,webUrl:data.project.webUrl};
     await saveState(info);
   }
-  if(!info.referenceId){
-    const data=await cli(['resource','upload','--project-id',info.projectId,'--file',reference,
-      '--resource-id',randomUUID(),'--type','image','--name','Shirt 原创涂鸦参考']);
-    info.referenceId=data.resourceId;
+  for(const [field,file,name] of [
+    ['referenceId',reference,'Shirt 原创涂鸦参考'],
+    ['graphicReferenceId',graphicReference,'Shirt 无文字涂鸦参考']
+  ]){
+    if(info[field]) continue;
+    const data=await cli(['resource','upload','--project-id',info.projectId,'--file',file,
+      '--resource-id',randomUUID(),'--type','image','--name',name]);
+    info[field]=data.resourceId;
     await saveState(info);
   }
   return info;
@@ -88,7 +95,8 @@ function send(res,status,body,contentType='application/json; charset=utf-8'){
 function draftPrompt({description,zone,lockedText,useReference,matte}){
   const safe=description.replaceAll('{{','\\{{');
   const parts=[
-    '为衣服'+zones[zone]+'设计单个印花，主体居中，四周有留白。'+safe,
+    lockedText?'画纯图形插画。画面中严禁任何文字、数字、签名或看起来像字母的形状。与字体有关的描述只作为笔触、线条和颜色的提示。':'',
+    '为衣服'+zones[zone]+'设计单个印花图形，主体居中，四周留白。'+safe,
     useReference?'仅借鉴参考图的涂鸦笔触、描边、喷漆颗粒或贴纸层次。只画用户描述的主体，不复刻参考图文字。':'',
     lockedText?'图形里不得出现任何字母、文字或数字，后续会独立排入准确文字。':'',
     '输出平面的独立印花插画，不画模特、衣服、墙面或样机。整张图背景用统一的纯色 '+matte+'，背景无纹理、渐变或阴影，主体避开这个底色。'
@@ -107,7 +115,7 @@ async function quote(data){
   const args=['node','create','image','--project-id',current.projectId,'--mode',useReference?'i2i':'t2i',
     '--model',model,'--resolution','2K','--ratio','1:1','--count','1','--title','Shirt 印花',
     '--prompt',draftPrompt({description,zone,lockedText:data.lockedText===true,useReference,matte})];
-  if(useReference) args.push('--ref','res:'+current.referenceId);
+  if(useReference) args.push('--ref','res:'+(data.lockedText===true?current.graphicReferenceId:current.referenceId));
   const {node}=await cli(args);
   const priced=await cli(['node','quote','--project-id',current.projectId,'--node-id',node.nodeId]);
   const credits=priced.totalMaxCredits;
