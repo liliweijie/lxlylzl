@@ -255,7 +255,7 @@ async function generateArt(request, key) {
         max_tokens: letteringOnly ? 360 : includeText ? 2200 : 2550,
         messages: [
           { role: 'system', content: letteringOnly
-            ? letteringArtDirection + '\nReturn JSON containing only the letteringStyle object.'
+            ? letteringArtDirection + '\nReturn a JSON object with a single property named letteringStyle.'
             : vectorInstructions(includeText) + (includeText ? '' :
               '\nAdd a letteringStyle object beside title and layers; use the following direction only for letteringStyle.\n' + letteringArtDirection) },
           { role: 'user', content: contentParts }

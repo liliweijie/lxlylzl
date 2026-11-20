@@ -20,5 +20,19 @@
     "zone": "back",
     "layout": "two",
     "letteringStyle": {"font":"sans","weight":700,"treatment":"spray","arrangement":"level","ornament":"speckle","color":"#B7ED34"}
+  },
+  {
+    "description": "50 人背印。深蓝随手写，字不那么工整，有一点钴蓝跳色和手绘笔迹",
+    "lineCount": 50,
+    "garmentColor": "#F1F1F1",
+    "zone": "back",
+    "letteringStyle": {"font":"sans","weight":400,"treatment":"marker","arrangement":"bouncy","ornament":"spark","color":"#142657","accent":"#245CF0"}
+  },
+  {
+    "description": "50 人背印。白色，统一列宽，纯文字",
+    "lineCount": 50,
+    "garmentColor": "#010101",
+    "zone": "back",
+    "letteringStyle": {"font":"sans","weight":700,"treatment":"plain","arrangement":"level","ornament":"none","color":"#FAFAFA"}
   }
 ]
