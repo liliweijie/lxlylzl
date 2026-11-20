@@ -162,6 +162,15 @@ body{overflow:hidden}
 .help{margin:6px 0;font-size:12px;line-height:1.45;color:var(--muted)}
 textarea{width:100%;display:block;resize:vertical;min-height:48px;background:var(--paper);border:1px solid var(--line);border-radius:5px;padding:7px 8px;font-size:13px;color:var(--ink)}
 .generate-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:6px}
+.ai-provider{display:grid;gap:5px;font-size:12px;margin-bottom:8px}
+.ai-provider select{width:100%;min-height:34px;border:1px solid var(--line);border-radius:5px;color:var(--ink);background:var(--panel);padding:3px 6px;font:inherit}
+.jimeng-tools{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;font-size:12px}
+.jimeng-tools label{display:flex;align-items:center;gap:4px}
+.jimeng-tools input{accent-color:var(--accent)}
+.jimeng-quote{display:grid;grid-template-columns:1fr auto;align-items:center;gap:8px;border:1px solid var(--line);border-radius:5px;padding:8px;margin-top:8px;font-size:12px}
+.jimeng-quote p{grid-column:1/-1;margin:0;font-weight:600}
+.jimeng-quote a{color:var(--ink);width:max-content}
+.jimeng-quote button{color:var(--accent-text);border-color:var(--accent);font-weight:600}
 #ai-status:empty,#lettering-preview:empty{display:none}
 .lettering-options{margin-top:8px;border:1px solid var(--line);border-radius:5px;padding:0 8px;font-size:12px}
 .lettering-options summary{cursor:pointer;padding:7px 0}
@@ -320,7 +329,7 @@ FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
 OTHER DEALINGS IN THE FONT SOFTWARE.
 
 */@font-face{font-family:"Sedgwick Ave";src:url("assets/sedgwick-ave-9c3633e56a8a.ttf") format("truetype");font-style:normal;font-weight:400;font-display:swap}</style>
-<link rel="modulepreload" href="assets/studio-e68df8c95035.js"><script>
+<link rel="modulepreload" href="assets/studio-c4821a2efebe.js"><script>
 (()=>{
   const route=new URLSearchParams(location.search);
   if(route.has('design'))return;
@@ -391,10 +400,18 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
           <div id="art-sources" class="art-sources">
             <h3 id="add-art-title">添加图案</h3>
             <div class="tabs" role="group" aria-label="图案来源">
-              <button type="button" data-source="upload" aria-pressed="true" aria-controls="upload">上传图片</button><button type="button" data-source="generate" aria-pressed="false" aria-controls="generate">AI 矢量</button><button type="button" data-source="samples" aria-pressed="false" aria-controls="samples">图片库</button>
+              <button type="button" data-source="upload" aria-pressed="true" aria-controls="upload">上传图片</button><button type="button" data-source="generate" aria-pressed="false" aria-controls="generate">AI 生图</button><button type="button" data-source="samples" aria-pressed="false" aria-controls="samples">图片库</button>
             </div>
             <div class="source" id="upload"><label class="upload"><i data-icon="upload"></i><span>选择或拖入图片<small>PNG、JPG、WEBP · 最大 15 MB</small></span><input id="file" type="file" accept="image/png,image/jpeg,image/webp"></label></div>
             <form class="source" id="generate" hidden>
+              <label class="ai-provider">生成工具
+                <select id="ai-provider"><option value="jimeng">即梦 · Seedream 5.0 Lite</option><option value="deepseek">DeepSeek 矢量</option></select>
+              </label>
+              <div class="jimeng-tools" id="jimeng-tools">
+                <button type="button" id="jimeng-connect">连接本机即梦</button>
+                <label><input type="checkbox" id="jimeng-reference" checked>使用涂鸦参考</label>
+              </div>
+              <p class="help" id="jimeng-help">通过本机已登录的即梦 CLI 生成，连接后请保留弹窗。</p>
               <p class="help" id="vector-hint">用描述指定印花风格和配色，文字按原文排版。</p>
               <label for="prompt" class="sr-only">描述想印在衣服上的图案</label>
               <textarea id="prompt" aria-describedby="vector-hint" placeholder="例如：用珊瑚红泡泡涂鸦写出 lwj，深蓝描边" maxlength="600" rows="2"></textarea>
@@ -415,6 +432,11 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
               <div class="generate-actions">
                 <button class="accent" id="generate-submit" type="submit" disabled><i data-icon="spark"></i><span>生成并印上衣服</span></button>
               </div>
+              <div class="jimeng-quote" id="jimeng-quote" hidden>
+                <p id="jimeng-price" role="status"></p>
+                <a id="jimeng-canvas" target="_blank" rel="noopener">打开即梦画布</a>
+                <button class="accent" id="jimeng-submit" type="button">确认生成</button>
+              </div>
             </form>
             <div class="source" id="samples" hidden><div class="image-library" id="sample-list" role="group" aria-label="选择图库图案"></div></div>
           </div>
@@ -428,6 +450,6 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
     <div id="notice" role="status" class="notice"></div>
   </section>
 </main>
-<script type="module" src="assets/studio-e68df8c95035.js"></script>
+<script type="module" src="assets/studio-c4821a2efebe.js"></script>
 </body>
 </html>
