@@ -1,0 +1,24 @@
+[
+  {
+    "description": "珊瑚红泡泡字，深蓝描边，整体向右上扬",
+    "text": ["lwj"],
+    "garmentColor": "#F1F1F1",
+    "zone": "front",
+    "letteringStyle": {"font":"sans","weight":700,"treatment":"bubble","arrangement":"rising","ornament":"spark","color":"#FA684D","accent":"#142657"}
+  },
+  {
+    "description": "钴蓝宽头马克笔，收笔带扫尾",
+    "text": ["lwj"],
+    "garmentColor": "#F1F1F1",
+    "zone": "chest",
+    "letteringStyle": {"font":"sans","weight":400,"treatment":"marker","arrangement":"rising","ornament":"swash","color":"#245CF0","accent":"#14235A"}
+  },
+  {
+    "description": "黑衣背面，荧光绿喷漆，两列",
+    "text": ["林书禾","周遥","顾南","陈一川","段云","苏晴","梁夏","陆时"],
+    "garmentColor": "#010101",
+    "zone": "back",
+    "layout": "two",
+    "letteringStyle": {"font":"sans","weight":700,"treatment":"spray","arrangement":"level","ornament":"speckle","color":"#B7ED34"}
+  }
+]

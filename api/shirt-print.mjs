@@ -1,4 +1,7 @@
 import {readFileSync} from 'node:fs';
+import {
+  letteringArrangements, letteringArtDirection, letteringOrnaments, letteringTreatments
+} from '../skills/shirt-lettering-art/references/direction.mjs';
 
 const promptLimit = 600;
 const requestLimit = 4096;
@@ -14,13 +17,12 @@ const pathCharacters = /^[MLHVCSQTAZ0-9.,\s-]+$/;
 const pathTokens = /[MLHVCSQTAZ]|-?(?:\d+(?:\.\d*)?|\.\d+)/g;
 const colorPattern = /^#[\da-f]{6}$/i;
 const fonts = new Set(['sans', 'serif', 'mono']);
-const treatments = new Set(['bubble', 'marker', 'spray', 'sticker', 'drip']);
 const graffitiCue = /涂鸦|街头|泡泡字|气泡字|喷漆|喷罐|喷绘|喷溅|马克笔|贴纸|滴漆|滴墨|graffiti|sticker|bubble|spray|marker|y2k/i;
 const styleNotes = 'The style board is reference only. Use the closest visual approach: rounded coral bubble outlines, cobalt hand-marker swashes, acid-green spray stencil, mint and lilac die-cut stickers, creamy ink drips, or purple/orange sprayed mascot shapes. Keep the user subject and requested colors. Never copy the samples or their words.';
 let graffitiBoard;
 
-function imageReference(description) {
-  if (!graffitiCue.test(description)) return null;
+function imageReference(description, expressiveLettering) {
+  if (!expressiveLettering && !graffitiCue.test(description)) return null;
   if (graffitiBoard === undefined) {
     try {
       const bytes = readFileSync(new URL('../shirt-studio/references/graffiti-styleboard.png', import.meta.url));
@@ -32,7 +34,6 @@ function imageReference(description) {
   return graffitiBoard;
 }
 
-const letteringInstructions = `Recommend a readable garment lettering treatment from the user's art direction, clothing color and print location. A separate engine preserves the exact text. Return only JSON with font ("sans", "serif", or "mono"), an optional treatment ("bubble", "marker", "spray", "sticker", or "drip"), color (#RRGGBB), optional accent (#RRGGBB), and weight (400 or 700). For example, {"font":"sans","treatment":"bubble","color":"#FB7452","accent":"#172650","weight":700}. Select contrasting but expressive colors. Never suggest wording or output shapes, positions or markup.`;
 
 function vectorInstructions(includeText) {
   const lettering = includeText
@@ -164,11 +165,18 @@ function safeArt(value, includeText) {
 }
 
 function safeLetteringStyle(value) {
-  const { font, weight, treatment } = value ?? {};
+  const { font, weight, treatment, arrangement, ornament, composition } = value ?? {};
   const ink = color(value?.color);
   if (!fonts.has(font) || !ink || (weight !== 400 && weight !== 700)) return null;
   const accent = color(value?.accent);
-  return { font, color: ink, weight, ...(accent ? { accent } : {}), ...(treatments.has(treatment) ? { treatment } : {}) };
+  return {
+    font, color: ink, weight,
+    ...(accent ? { accent } : {}),
+    ...(letteringTreatments.includes(treatment) ? { treatment } : {}),
+    ...(letteringArrangements.includes(arrangement) ? { arrangement } : {}),
+    ...(letteringOrnaments.includes(ornament) ? { ornament } : {}),
+    ...(['stack', 'side'].includes(composition) ? { composition } : {})
+  };
 }
 
 function allowOrigin(request) {
@@ -225,8 +233,10 @@ async function generateArt(request, key) {
 
   const letteringOnly = mode === 'lettering';
   const includeText = mode !== 'graphic-with-lettering';
-  const reference = imageReference(description);
-  const userDirection = JSON.stringify({ description, garmentColor, location: zones[zone] });
+  const lineCount = Number.isInteger(input.lineCount) && inRange(input.lineCount, 1, 48) ? input.lineCount : 1;
+  const expressiveLettering = mode && lineCount <= 4 && !/极简|朴素|正楷|minimal/i.test(description);
+  const reference = imageReference(description, expressiveLettering);
+  const userDirection = JSON.stringify({ description, garmentColor, location: zones[zone], ...(mode ? { lineCount } : {}) });
   const contentParts = reference ? [
     { type: 'text', text: userDirection + '\n' + styleNotes },
     { type: 'image_url', image_url: { url: reference, detail: 'low' } }
@@ -241,9 +251,12 @@ async function generateArt(request, key) {
         model: 'deepseek-flash',
         thinking: { type: 'disabled' },
         response_format: { type: 'json_object' },
-        max_tokens: letteringOnly ? 160 : 2200,
+        max_tokens: letteringOnly ? 360 : includeText ? 2200 : 2550,
         messages: [
-          { role: 'system', content: letteringOnly ? letteringInstructions : vectorInstructions(includeText) },
+          { role: 'system', content: letteringOnly
+            ? letteringArtDirection + '\nReturn JSON containing only the letteringStyle object.'
+            : vectorInstructions(includeText) + (includeText ? '' :
+              '\nAdd a letteringStyle object beside title and layers; use the following direction only for letteringStyle.\n' + letteringArtDirection) },
           { role: 'user', content: contentParts }
         ]
       })
@@ -262,12 +275,13 @@ async function generateArt(request, key) {
     if (typeof content !== 'string' || !content.trim()) return fail(502, '没有生成图案，请换一种描述再试。');
     const generated = JSON.parse(content);
     if (letteringOnly) {
-      const letteringStyle = safeLetteringStyle(generated);
+      const letteringStyle = safeLetteringStyle(generated?.letteringStyle ?? generated);
       return letteringStyle ? result({ letteringStyle }) : fail(502, '无法读取字体建议，可使用自动排版。');
     }
     const art = safeArt(generated, includeText);
     if (!art) return fail(502, '生成的图案无法印到衣服上，请调整描述再试。');
-    return result({ art });
+    const letteringStyle = includeText ? null : safeLetteringStyle(generated.letteringStyle);
+    return result(letteringStyle ? { art, letteringStyle } : { art });
   } catch (error) {
     if (deadline.aborted) return fail(504, '图案生成超时，请稍后再试。');
     if (error instanceof SyntaxError || error instanceof RangeError) {
