@@ -4,6 +4,7 @@ import {
 } from '../skills/shirt-lettering-art/references/direction.mjs';
 
 const promptLimit = 600;
+const maxLetteringLines = 50;
 const requestLimit = 4096;
 const responseLimit = 65536;
 const waitMs = 30000;
@@ -233,7 +234,7 @@ async function generateArt(request, key) {
 
   const letteringOnly = mode === 'lettering';
   const includeText = mode !== 'graphic-with-lettering';
-  const lineCount = Number.isInteger(input.lineCount) && inRange(input.lineCount, 1, 48) ? input.lineCount : 1;
+  const lineCount = Number.isInteger(input.lineCount) && inRange(input.lineCount, 1, maxLetteringLines) ? input.lineCount : 1;
   const expressiveLettering = mode && lineCount <= 4 && !/极简|朴素|正楷|minimal/i.test(description);
   const reference = imageReference(description, expressiveLettering);
   const userDirection = JSON.stringify({ description, garmentColor, location: zones[zone], ...(mode ? { lineCount } : {}) });
