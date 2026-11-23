@@ -12,7 +12,14 @@ const requestWindowMs = 60000;
 const maxRequests = 3;
 const maxRateBuckets = 512;
 const rateBuckets = new Map();
-const zones = { front: 'full front chest', chest: 'small left chest', back: 'back', sleeve: 'small sleeve' };
+const zones = {
+  front: 'large artwork across the front',
+  chest: 'small left-chest mark',
+  back: 'large artwork on the back',
+  backMark: 'small upper-back mark below the collar or hood',
+  sleeve: 'small outer-sleeve mark',
+  brim: 'small hood-brim mark on a shallow horizontal strip'
+};
 const pathArity = { M: 2, L: 2, H: 1, V: 1, C: 6, S: 4, Q: 4, T: 2, A: 7, Z: 0 };
 const pathCharacters = /^[MLHVCSQTAZ0-9.,\s-]+$/;
 const pathTokens = /[MLHVCSQTAZ]|-?(?:\d+(?:\.\d*)?|\.\d+)/g;
@@ -51,9 +58,9 @@ function vectorInstructions(includeText) {
   return `You design original vector art for apparel. Input is JSON with description, garmentColor and location. The customer can describe the idea in everyday language, such as “一只戴耳机的猫” or “复古的山峰徽章”. Resolve the design within this request.
 
 Read in this order:
-1. Keep the main subject, its stated action, requested colors and style. Treat 背面、袖子、左胸、正胸 as placement directions. Use a style reference for line quality, shape and palette treatment. The reference supplies no extra subjects or words.
+1. Keep the main subject, its stated action, requested colors and style. Treat 正面大图、左胸小标、背面大图、背面小标、袖侧小标、帽檐小标 as placement directions. Use a style reference for line quality, shape and palette treatment. The reference supplies no extra subjects or words.
 2. Infer the missing visual decisions. Pick one viewpoint, a confident silhouette and a small palette that reads against garmentColor. If the user has specified just a subject, make a bold, clear illustration with one small supporting element where it helps. For example, headphones must be visible on the cat's head; a retro version can use broad ink outlines and two warm spot colors. For a mountain badge, make the peaks the central silhouette and use small accents that support it. Use the user's choices when stated.
-3. Fit the composition to location. A small left chest or sleeve uses one compact, simple motif with thicker strokes and few details. A full chest can support a larger central motif. A back print can use a larger, balanced composition with space around it. Give the artwork an edge with generous transparent margins.
+3. Fit the composition to location. For a small mark, use one compact motif with bold strokes and few details. For the hood brim, keep the silhouette wide and shallow so that it reads along the edge. Large front or back art can use a larger, balanced composition. Leave generous transparent margins.
 4. Use flat printable ink, clean paths and transparent negative space. The output is only the design artwork. Keep each element visible within the canvas. Do not include mockups, gradients, photos, watermarks or a rectangular background.
 
 ${lettering}

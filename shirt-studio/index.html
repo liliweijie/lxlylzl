@@ -136,8 +136,9 @@ body{overflow:hidden}
 .garments button[aria-pressed=true]::after{content:"";position:absolute;right:6px;top:6px;width:6px;height:6px;border-radius:50%;background:var(--accent)}
 .garments svg{height:42px;width:38px}
 .garment-price{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
-.zones{grid-template-columns:repeat(4,minmax(0,1fr))}
+.zones{grid-template-columns:repeat(3,minmax(0,1fr))}
 .zones button{min-height:35px}
+.zone-restriction{margin:7px 0 0}
 .color-row,.colors{display:flex;align-items:center;gap:11px}
 .color-row h3,.fit-row h3{margin:0;flex:none}
 .colors{flex-wrap:wrap;gap:10px}
@@ -443,7 +444,7 @@ Training
 Blog
 About
 */@font-face{font-family:"DynaPuff";src:url("assets/dynapuff-c3752fc6dd8a.ttf") format("truetype");font-style:normal;font-weight:400 700;font-display:swap}</style>
-<link rel="modulepreload" href="assets/studio-586267b44929.js"><script>
+<link rel="modulepreload" href="assets/studio-4d767452868b.js"><script>
 (()=>{
   const route=new URLSearchParams(location.search);
   if(route.has('design'))return;
@@ -503,6 +504,7 @@ About
               <button type="button" id="change-art" class="change-art" aria-expanded="false" aria-controls="art-sources" hidden>更换图案</button>
             </div>
             <div class="zones" id="zones" role="group" aria-labelledby="zone-label"></div>
+            <p class="help zone-restriction" id="zone-restriction" hidden>前襟有拉链，正面仅支持左胸小标。</p>
           </div>
           <div id="art-details" hidden>
             <div id="layer" class="layer"><div class="art-thumb" id="art-thumb"></div><div class="layer-copy"><strong id="art-name"></strong><small id="art-meta"></small></div><button type="button" id="delete" class="icon-button" aria-label="移除当前区域图案"><i data-icon="trash"></i></button></div>
@@ -559,6 +561,6 @@ About
     <div id="notice" role="status" class="notice"></div>
   </section>
 </main>
-<script type="module" src="assets/studio-586267b44929.js"></script>
+<script type="module" src="assets/studio-4d767452868b.js"></script>
 </body>
 </html>
