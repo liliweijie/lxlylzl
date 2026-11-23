@@ -1,5 +1,5 @@
 import {readFileSync} from 'node:fs';
-import {findShirtSvg} from '../lib/shirt-svg-search.mjs';
+import {findShirtSvgs} from '../lib/shirt-svg-search.mjs';
 import {
   letteringArrangements, letteringArtDirection, letteringOrnaments, letteringTreatments
 } from '../skills/shirt-lettering-art/references/direction.mjs';
@@ -172,9 +172,11 @@ async function generateArt(request, key) {
   const deadline = AbortSignal.timeout(waitMs);
   try {
     if (mode !== 'lettering') {
-      const asset = await findShirtSvg({ key, description, garmentColor, location: zones[zone], signal: deadline });
+      const count = input.candidateCount === 4 ? 4 : 1;
+      const { assets, terms } = await findShirtSvgs({ key, description, garmentColor, location: zones[zone], signal: deadline, count });
+      if (assets.length) return count === 4 ? result({ assets, terms }) : result({ asset: { ...assets[0], terms } });
       if (deadline.aborted) return fail(504, '找图超时，请稍后再试。');
-      return asset ? result({ asset }) : fail(404, '没有找到贴合描述的可用 SVG。请试试更简短的主体或风格词。');
+      return fail(404, '没有找到贴合描述的可用 SVG。请试试更简短的主体或风格词。');
     }
 
     const lineCount = Number.isInteger(input.lineCount) && inRange(input.lineCount, 1, maxLetteringLines) ? input.lineCount : 1;
