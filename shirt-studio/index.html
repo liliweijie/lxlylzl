@@ -139,7 +139,7 @@ body{overflow:hidden}
 .zones button{min-height:35px}
 .zone-restriction{margin:7px 0 0}
 .color-row,.colors{display:flex;align-items:center;gap:11px}
-.color-row h3,.fit-row h3{margin:0;flex:none}
+.color-row h3{margin:0;flex:none}
 .colors{flex-wrap:wrap;gap:10px}
 .colors button{width:22px;height:22px;border-radius:50%;border:1px solid var(--line);background:var(--swatch)}
 .colors button[aria-pressed=true]{outline:1px solid var(--accent);outline-offset:3px}
@@ -181,7 +181,7 @@ textarea{width:100%;display:block;resize:vertical;min-height:48px;background:var
 .generate-actions button{min-height:32px;white-space:nowrap}
 #ai-status:empty,#lettering-preview:empty{display:none}
 .art-results{margin-top:12px}
-.art-results h4{margin:0 0 7px;font-size:12px}
+.art-results h4{margin:0;font-size:12px}
 .art-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
 .art-choices button{display:grid;min-width:0;gap:3px;padding:5px;border:1px solid var(--line);border-radius:5px;text-align:left;background:var(--panel)}
 .art-choices button[aria-pressed=true]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
@@ -224,10 +224,6 @@ textarea{width:100%;display:block;resize:vertical;min-height:48px;background:var
 .stage{background:radial-gradient(ellipse at 50% 38%,var(--stage-focus),var(--stage-top) 40%,var(--stage-edge) 100%);isolation:isolate}
 .stage::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 76%,var(--stage-floor),transparent 48%);filter:blur(32px);z-index:-1}
 .stage:has(+ .editor.is-visible){background-position:-7vw 0;background-size:114% 100%}
-.fit-row{display:flex;align-items:center;gap:7px;font-size:12px}
-.fit-row h3{margin-right:4px}
-.fit-row button{min-height:32px;padding:5px 13px;border:1px solid var(--line);border-radius:4px}
-.fit-row button[aria-pressed=true]{border-color:var(--accent);background:var(--hover)}
 #viewport{z-index:0}
 .stage-hint,.scene-error{z-index:1}
 @media(max-width:930px){
@@ -452,16 +448,14 @@ Training
 Blog
 About
 */@font-face{font-family:"DynaPuff";src:url("assets/dynapuff-c3752fc6dd8a.ttf") format("truetype");font-style:normal;font-weight:400 700;font-display:swap}</style>
-<link rel="modulepreload" href="assets/studio-67f29feba242.js"><script>
+<link rel="modulepreload" href="assets/studio-8eb6943d9b46.js"><script>
 (()=>{
   const route=new URLSearchParams(location.search);
   if(route.has('design'))return;
-  let fit='male';
-  try{if(localStorage.getItem('print-lab-fit')==='female')fit='female'}catch{}
-  const manifest={"parts":{"tee":"./outfit-tee-98ad16781ae6.json","raglan":"./outfit-raglan-fcda95b85a53.json","zip":"./outfit-zip-f46d5ba17b93.json","hoodie":"./outfit-hoodie-3089abcedfd0.json","crew":"./outfit-crew-db36efc461f9.json"},"bodies":{"male":"./rig-male-d3569229ec2d.json","female":"./rig-female-ee5df4fc1760.json"},"fits":{"male":{"tee":"./fit-male-tee-4dd59101588e.json","raglan":"./fit-male-raglan-a98670db7941.json","zip":"./fit-male-zip-821808f585d6.json","hoodie":"./fit-male-hoodie-390e3e636150.json","crew":"./fit-male-crew-61843239c607.json"},"female":{"tee":"./fit-female-tee-4709f0211d75.json","raglan":"./fit-female-raglan-dbd4e99cce5a.json","zip":"./fit-female-zip-6409c523cdcb.json","hoodie":"./fit-female-hoodie-8617ec534690.json","crew":"./fit-female-crew-a39ad0fca36c.json"}}};
+  const manifest={"parts":{"tee":"./outfit-tee-98ad16781ae6.json","raglan":"./outfit-raglan-fcda95b85a53.json","zip":"./outfit-zip-f46d5ba17b93.json","hoodie":"./outfit-hoodie-3089abcedfd0.json","crew":"./outfit-crew-db36efc461f9.json"},"bodies":{"male":"./rig-male-d3569229ec2d.json","female":"./rig-female-ee5df4fc1760.json"},"fits":{"male":{"tee":"./fit-male-tee-4dd59101588e.json","raglan":"./fit-male-raglan-a98670db7941.json","zip":"./fit-male-zip-a6bca84b930f.json","hoodie":"./fit-male-hoodie-390e3e636150.json","crew":"./fit-male-crew-61843239c607.json"},"female":{"tee":"./fit-female-tee-4709f0211d75.json","raglan":"./fit-female-raglan-dbd4e99cce5a.json","zip":"./fit-female-zip-6409c523cdcb.json","hoodie":"./fit-female-hoodie-8617ec534690.json","crew":"./fit-female-crew-a39ad0fca36c.json"}}};
   const selected=route.get('garment');
   const style=["tee","crew","zip","hoodie"].includes(selected)?selected:'tee';
-  for(const file of [manifest.bodies[fit],manifest.parts[style],manifest.fits[fit][style]]){
+  for(const file of [manifest.bodies.male,manifest.parts[style],manifest.fits.male[style]]){
     const link=document.createElement('link');
     link.rel='preload';
     link.as='fetch';
@@ -497,7 +491,6 @@ About
             <h3 id="garment-label">服装类别</h3>
             <div class="garments" id="garments" role="group" aria-labelledby="garment-label"></div>
           </div>
-          <div class="fit-row" id="fit-options" role="group" aria-labelledby="fit-label"><h3 id="fit-label">模特</h3><button type="button" data-fit="male" aria-pressed="true">男</button><button type="button" data-fit="female" aria-pressed="false">女</button></div>
           <div class="color-row" role="group" aria-labelledby="color-label"><h3 id="color-label">颜色</h3><div class="colors" id="colors"></div></div>
           <p class="help" id="saved-color-note" hidden>当前显示的是原设计色，可从上方选择新颜色。</p>
           <div class="size-section">
@@ -529,36 +522,41 @@ About
             </div>
             <div class="source" id="upload"><label class="upload"><i data-icon="upload"></i><span>选择或拖入图片<small>PNG、JPG、WEBP · 最大 15 MB</small></span><input id="file" type="file" accept="image/png,image/jpeg,image/webp"></label></div>
             <form class="source" id="generate" hidden>
-              <label class="prompt-label" for="prompt">想印什么？</label>
-              <p class="help" id="vector-hint">描述想印的主体和风格。要印的文字放进「」。</p>
-              <textarea id="prompt" aria-describedby="vector-hint" placeholder="一只猫，黑白剪影" maxlength="600" rows="2"></textarea>
-              <div class="prompt-examples" id="prompt-examples" role="group" aria-label="填入图案示例">
-                <span>试个例子</span>
-                <button type="button" data-prompt-example="一只猫，黑白剪影。">猫咪剪影</button>
-                <button type="button" data-prompt-example="把「好运常在」写成橘红色手写字，像随手签下来的。">手写字标</button>
-                <button type="button" data-prompt-example="一只踩滑板的小猫，配上「周末玩家」，深蓝和橙色，做成贴纸风。">图文贴纸</button>
-              </div>
-              <div class="prompt-actions">
-                <details id="lettering-options" class="lettering-options">
-                  <summary>文字与排版</summary>
-                  <label for="locked-text">印花文字</label>
-                  <textarea id="locked-text" aria-describedby="lettering-preview" placeholder="可粘贴要印的原文。多行文字用换行分隔。" maxlength="4900" rows="2"></textarea>
-                  <div class="lettering-selects">
-                    <label>排版
-                      <select id="lettering-layout">
-                        <option value="auto">自动</option><option value="stack">居中单列</option><option value="two">双列</option><option value="three">三列</option>
-                      </select>
-                    </label>
-                  </div>
-                </details>
-                <div class="generate-actions">
-                  <button class="accent" id="generate-submit" type="submit" disabled><i data-icon="spark"></i><span>立即定制</span></button>
+              <div id="art-query">
+                <label class="prompt-label" for="prompt">想印什么？</label>
+                <p class="help" id="vector-hint">描述想印的主体和风格。要印的文字放进「」。</p>
+                <textarea id="prompt" aria-describedby="vector-hint" placeholder="一只猫，黑白剪影" maxlength="600" rows="2"></textarea>
+                <div class="prompt-examples" id="prompt-examples" role="group" aria-label="填入图案示例">
+                  <span>试个例子</span>
+                  <button type="button" data-prompt-example="一只猫，黑白剪影。">猫咪剪影</button>
+                  <button type="button" data-prompt-example="把「好运常在」写成橘红色手写字，像随手签下来的。">手写字标</button>
+                  <button type="button" data-prompt-example="一只踩滑板的小猫，配上「周末玩家」，深蓝和橙色，做成贴纸风。">图文贴纸</button>
                 </div>
+                <div class="prompt-actions">
+                  <details id="lettering-options" class="lettering-options">
+                    <summary>文字与排版</summary>
+                    <label for="locked-text">印花文字</label>
+                    <textarea id="locked-text" aria-describedby="lettering-preview" placeholder="可粘贴要印的原文。多行文字用换行分隔。" maxlength="4900" rows="2"></textarea>
+                    <div class="lettering-selects">
+                      <label>排版
+                        <select id="lettering-layout">
+                          <option value="auto">自动</option><option value="stack">居中单列</option><option value="two">双列</option><option value="three">三列</option>
+                        </select>
+                      </label>
+                    </div>
+                  </details>
+                  <div class="generate-actions">
+                    <button class="accent" id="generate-submit" type="submit" disabled><i data-icon="spark"></i><span>立即定制</span></button>
+                  </div>
+                </div>
+                <p id="lettering-preview" class="help" role="status"></p>
+                <p class="help" id="ai-status" role="status" aria-live="polite"></p>
               </div>
-              <p id="lettering-preview" class="help" role="status"></p>
-              <p class="help" id="ai-status" role="status" aria-live="polite"></p>
               <div class="art-results" id="art-results" hidden>
-                <h4 id="art-results-label"></h4>
+                <div class="print-heading">
+                  <h4 id="art-results-label"></h4>
+                  <button type="button" class="change-art" id="edit-art-query">修改描述</button>
+                </div>
                 <div class="art-choices" id="art-choices" role="group" aria-labelledby="art-results-label"></div>
               </div>
             </form>
@@ -573,6 +571,6 @@ About
     <div id="notice" role="status" class="notice"></div>
   </section>
 </main>
-<script type="module" src="assets/studio-67f29feba242.js"></script>
+<script type="module" src="assets/studio-8eb6943d9b46.js"></script>
 </body>
 </html>
