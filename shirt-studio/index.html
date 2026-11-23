@@ -186,8 +186,7 @@ textarea{width:100%;display:block;resize:vertical;min-height:48px;background:var
 .art-choices button{display:grid;min-width:0;gap:3px;padding:5px;border:1px solid var(--line);border-radius:5px;text-align:left;background:var(--panel)}
 .art-choices button[aria-pressed=true]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
 .art-choices canvas{width:100%;height:clamp(62px,10vh,98px);object-fit:contain;border-radius:3px}
-.art-choices strong,.art-choices span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-inline:2px;font-size:11px}
-.art-choices span{color:var(--muted)}
+.art-choices strong{padding-inline:2px;font-size:11px}
 .lettering-options{margin-top:8px;border:1px solid var(--line);border-radius:5px;padding:0 8px;font-size:12px}
 .lettering-options summary{cursor:pointer;padding:7px 0}
 .lettering-options[open]{padding-bottom:8px}
@@ -202,7 +201,6 @@ textarea{width:100%;display:block;resize:vertical;min-height:48px;background:var
 .art-thumb{width:44px;height:44px;display:grid;grid-template: minmax(0,1fr) / minmax(0,1fr);place-items:center;background:var(--hover);border-radius:4px;flex:none;overflow:hidden}
 .art-thumb img,.art-thumb canvas{width:100%;height:100%;object-fit:contain;padding:3px}
 .layer-copy{flex:1;min-width:0}
-#art-credit a,#pixabay-reference{text-decoration:underline;text-underline-offset:2px}
 .layer strong{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px}
 .sliders{display:grid;gap:3px;padding-top:9px}
 .sliders label{display:grid;grid-template-columns:35px minmax(0,1fr) 48px;align-items:center;gap:9px;min-height:24px;font-size:12px}
@@ -454,7 +452,7 @@ Training
 Blog
 About
 */@font-face{font-family:"DynaPuff";src:url("assets/dynapuff-c3752fc6dd8a.ttf") format("truetype");font-style:normal;font-weight:400 700;font-display:swap}</style>
-<link rel="modulepreload" href="assets/studio-5d0db7810b0d.js"><script>
+<link rel="modulepreload" href="assets/studio-cedf848c5738.js"><script>
 (()=>{
   const route=new URLSearchParams(location.search);
   if(route.has('design'))return;
@@ -517,7 +515,7 @@ About
             <p class="help zone-restriction" id="zone-restriction" hidden>前襟有拉链，正面仅支持左胸小标。</p>
           </div>
           <div id="art-details" hidden>
-            <div id="layer" class="layer"><div class="art-thumb" id="art-thumb"></div><div class="layer-copy"><strong id="art-name"></strong><small id="art-meta"></small><small id="art-credit" hidden><a id="art-source-link" target="_blank" rel="noopener noreferrer"></a> · <a id="art-license-link" target="_blank" rel="noopener noreferrer"></a></small></div><button type="button" id="delete" class="icon-button" aria-label="移除当前区域图案"><i data-icon="trash"></i></button></div>
+            <div id="layer" class="layer"><div class="art-thumb" id="art-thumb"></div><div class="layer-copy"><strong id="art-name"></strong><small id="art-meta"></small></div><button type="button" id="delete" class="icon-button" aria-label="移除当前区域图案"><i data-icon="trash"></i></button></div>
             <div id="sliders" class="sliders">
               <label>缩放<input data-edit="scale" type="range" min="25" max="200" value="100"><output>100%</output></label>
               <label>横向<input data-edit="x" type="range" min="-50" max="50" value="0"><output>0%</output></label>
@@ -532,9 +530,9 @@ About
             <div class="source" id="upload"><label class="upload"><i data-icon="upload"></i><span>选择或拖入图片<small>PNG、JPG、WEBP · 最大 15 MB</small></span><input id="file" type="file" accept="image/png,image/jpeg,image/webp"></label></div>
             <form class="source" id="generate" hidden>
               <label class="prompt-label" for="prompt">想印什么？</label>
-              <p class="help" id="vector-hint">描述主体和风格，从匹配的开放授权图案里选一张试印。要印的文字放进「」。</p>
+              <p class="help" id="vector-hint">描述想印的主体和风格。要印的文字放进「」。</p>
               <textarea id="prompt" aria-describedby="vector-hint" placeholder="一只猫，黑白剪影" maxlength="600" rows="2"></textarea>
-              <div class="prompt-examples" id="prompt-examples" role="group" aria-label="填入找图示例">
+              <div class="prompt-examples" id="prompt-examples" role="group" aria-label="填入图案示例">
                 <span>试个例子</span>
                 <button type="button" data-prompt-example="一只猫，黑白剪影。">猫咪剪影</button>
                 <button type="button" data-prompt-example="把「好运常在」写成橘红色手写字，像随手签下来的。">手写字标</button>
@@ -563,7 +561,6 @@ About
                 <h4 id="art-results-label"></h4>
                 <div class="art-choices" id="art-choices" role="group" aria-labelledby="art-results-label"></div>
               </div>
-              <p class="help"><a id="pixabay-reference" href="https://pixabay.com/illustrations/" target="_blank" rel="noopener noreferrer">在 Pixabay 看插画参考 ↗</a></p>
             </form>
             <div class="source" id="samples" hidden><div class="image-library" id="sample-list" role="group" aria-label="选择图库图案"></div></div>
           </div>
@@ -576,6 +573,6 @@ About
     <div id="notice" role="status" class="notice"></div>
   </section>
 </main>
-<script type="module" src="assets/studio-5d0db7810b0d.js"></script>
+<script type="module" src="assets/studio-cedf848c5738.js"></script>
 </body>
 </html>

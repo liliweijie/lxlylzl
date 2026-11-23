@@ -175,8 +175,8 @@ async function generateArt(request, key) {
       const count = input.candidateCount === 4 ? 4 : 1;
       const { assets, terms } = await findShirtSvgs({ key, description, garmentColor, location: zones[zone], signal: deadline, count });
       if (assets.length) return count === 4 ? result({ assets, terms }) : result({ asset: { ...assets[0], terms } });
-      if (deadline.aborted) return fail(504, '找图超时，请稍后再试。');
-      return fail(404, '没有找到贴合描述的可用 SVG。请试试更简短的主体或风格词。');
+      if (deadline.aborted) return fail(504, 'AI 定制超时，请稍后再试。');
+      return fail(404, '没有匹配的图案，请试试更简短的主体或风格词。');
     }
 
     const lineCount = Number.isInteger(input.lineCount) && inRange(input.lineCount, 1, maxLetteringLines) ? input.lineCount : 1;
