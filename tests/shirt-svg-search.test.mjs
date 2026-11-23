@@ -25,9 +25,9 @@ test('ranks live connectors and bundled collections together and checks download
     const url = new URL(value);
     if (url.hostname === 'api.deepseek.com') {
       const body = JSON.parse(options.body);
-      if (body.tools) return completion({ terms: ['reading person', 'person'], pages: [] });
+      if (body.tools) return completion({ terms: ['sitting reading person', 'person'], pages: [] });
       listing = JSON.parse(body.messages[1].content).candidates;
-      const peep = listing.find(item => item.source === 'Open Peeps');
+      const peep = listing.find(item => item.source === 'Open Peeps' && item.tags.includes('sitting'));
       return completion({ ids: [
         'clipart-free:bad-license', 'freesvg:2', 'clipart-free:reader', 'freesvg:1', 'doodles:sitting-reading',
         'doodles:reading', peep?.id, 'invented'
