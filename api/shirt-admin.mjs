@@ -1,8 +1,9 @@
 import {randomUUID} from 'node:crypto';
-import {OrderError,displayId,failure,orderIdPattern,orderPrefix,orderStorage,readBody,response,safeEqual,sign,throttle,verify} from '../lib/shirt-orders.mjs';
+import {OrderError,displayId,failure,nativeClient,orderIdPattern,orderPrefix,orderStorage,readBody,response,safeEqual,sign,throttle,verify} from '../lib/shirt-orders.mjs';
 
 const cookieName='__Secure-shirt-admin';
 const maxAge=8*60*60;
+const nativeMaxAge=30*60;
 const cookie=(value,age)=>cookieName+'='+value+'; Path=/api/shirt-admin; HttpOnly; Secure; SameSite=Strict; Max-Age='+age;
 function session(request,secret){
   const value=request.headers.get('cookie')?.split(';').map(part=>part.trim()).find(part=>part.startsWith(cookieName+'='));
@@ -21,19 +22,27 @@ export function createAdminApi(storage=orderStorage){
       const pass=process.env.ADMIN_PASS;
       const secret=process.env.SHIRT_SIGNING_KEY;
       if(!user||!pass||!secret) throw new OrderError(503,'管理员登录尚未配置。');
+      const native=nativeClient(request);
       if(request.method==='POST'){
-        const body=await readBody(request);
-        if(body?.action==='logout') return response({authenticated:false},200,{'Set-Cookie':cookie('',0)});
+        const body=await readBody(request,{allowNative:true});
+        if(body?.action==='logout') return native?response({authenticated:false}):response({authenticated:false},200,{'Set-Cookie':cookie('',0)});
         if(body?.action!=='login') throw new OrderError(400,'登录请求无效。');
         throttle(request,'shirt-admin-login',10,15);
         const validUser=safeEqual(body.username,user);
         const validPassword=safeEqual(body.password,pass);
         if(!validUser||!validPassword) throw new OrderError(401,'账号或密码错误。');
+        if(native){
+          const token=sign(secret,'mini-admin',{scope:'shirt-orders',nonce:randomUUID(),expires:Date.now()+nativeMaxAge*1000});
+          return response({authenticated:true,token});
+        }
         const token=sign(secret,'admin',{scope:'shirt-orders',nonce:randomUUID(),expires:Date.now()+maxAge*1000});
         return response({authenticated:true},200,{'Set-Cookie':cookie(token,maxAge)});
       }
       if(request.method!=='GET') return response({error:'请求方式不支持。'},405,{Allow:'GET, POST'});
-      if(session(request,secret)?.scope!=='shirt-orders') throw new OrderError(401,'请先登录后台。');
+      const claims=native
+        ? verify(secret,'mini-admin',request.headers.get('authorization')?.match(/^Bearer (.+)$/)?.[1])
+        : session(request,secret);
+      if(claims?.scope!=='shirt-orders') throw new OrderError(401,'请先登录后台。');
       const query=new URL(request.url).searchParams;
       const files=storage();
       if(query.get('action')==='file'){

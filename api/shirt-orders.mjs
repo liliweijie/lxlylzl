@@ -13,7 +13,7 @@ export function createOrdersApi(storage=orderStorage){
     try{
       const secret=process.env.SHIRT_SIGNING_KEY;
       if(!secret) throw new OrderError(503,'订单服务尚未配置。');
-      const body=await readBody(request);
+      const body=await readBody(request,{allowNative:true});
       if(body?.action!=='prepare'&&body?.action!=='commit') throw new OrderError(400,'提交方式有误。');
       const order=readOrder(body.order);
       const hash=digest(order);
