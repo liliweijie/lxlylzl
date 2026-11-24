@@ -104,3 +104,23 @@ test('fills a short initial sleeve ranking from remaining same-subject candidate
   assert.equal(result.assets[0].source, 'Open Doodles');
   assert.ok(result.assets.slice(1).every(asset => asset.source === 'Open Peeps'));
 });
+
+test('uses curated subject tags when DeepSeek returns fewer than four choices', async t => {
+  let rankings = 0;
+  t.mock.method(globalThis, 'fetch', async (value, options) => {
+    const url = new URL(value);
+    if (url.hostname === 'openclipart.org') return new Response('');
+    if (url.hostname === 'api.deepseek.com') {
+      const body = JSON.parse(options.body);
+      if (body.tools) return completion({ subject: 'person', terms: ['sitting reading person', 'person'] });
+      rankings++;
+      return completion({ ids: rankings === 1 ? ['doodles:sitting-reading', 'doodles:reading-side', 'doodles:reading'] : [] });
+    }
+    return Response.json({ icons: [] });
+  });
+  const result = await findShirtSvgs({ ...query, location: 'back', count: 4, signal: AbortSignal.timeout(5_000) });
+  assert.equal(result.assets.length, 4);
+  assert.ok(result.assets.slice(0, 3).every(asset => asset.match === undefined));
+  assert.equal(result.assets[3].match, 'subject');
+  assert.match(result.assets[3].source, /^Open (Doodles|Peeps)$/);
+});
