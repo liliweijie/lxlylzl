@@ -1,10 +1,9 @@
 'use strict';
-const $=id=>document.getElementById(id);
+(function(){
 const endpoint='/api/shirt-admin';
 const garments={tee:'短袖',crew:'卫衣',zip:'拉链卫衣',hoodie:'戴帽卫衣',raglan:'插肩短袖'};
 const locations={front:'正面大图',chest:'左胸小标',back:'背面大图',backMark:'背面小标',sleeve:'袖侧小标',brim:'帽檐小标'};
 const dateFormat=new Intl.DateTimeFormat('zh-CN',{dateStyle:'medium',timeStyle:'short',timeZone:'Asia/Shanghai'});
-let cursors=[''],pageIndex=0,nextCursor=null,revision=0;
 function element(tag,content,className){
   const node=document.createElement(tag);
   if(content!==undefined) node.textContent=content;
@@ -13,19 +12,12 @@ function element(tag,content,className){
 }
 async function request(suffix='',payload){
   const result=await fetch(endpoint+suffix,payload?{
-    method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)
+    method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),
+    keepalive:payload.action==='logout'
   }:{cache:'no-store'});
-  const data=await result.json();
-  if(!result.ok){const error=new Error(data.error||'请求失败，请重试。');error.status=result.status;throw error;}
+  const data=await result.json().catch(()=>null);
+  if(!result.ok||!data){const error=new Error(data?.error||'请求失败，请重试。');error.status=result.status;throw error;}
   return data;
-}
-function showLogin(message=''){
-  revision++;
-  $('orders').replaceChildren();
-  $('workspace').hidden=true;
-  $('logout').hidden=true;
-  $('login').hidden=false;
-  $('login-status').textContent=message;
 }
 function fileUrl(order,slot){return endpoint+'?'+new URLSearchParams({action:'file',id:order.id,slot});}
 function artwork(order){
@@ -42,7 +34,7 @@ function artwork(order){
     }
     figure.append(element('figcaption',title));
     if(source){
-      const link=element('a','下载 · '+source.name,'file-link');
+      const link=element('a','下载 · '+source.name,'btn file-link');
       link.href=fileUrl(order,source.slot);
       link.download=source.name;
       figure.append(link);
@@ -87,46 +79,97 @@ function render(order){
   card.append(details);
   return card;
 }
-async function loadOrders(){
-  const current=++revision;
-  $('orders-status').textContent='正在读取订单…';
-  try{
-    const data=await request(cursors[pageIndex]?'?'+new URLSearchParams({cursor:cursors[pageIndex]}):'');
-    if(current!==revision) return;
-    $('login').hidden=true;
-    $('workspace').hidden=false;
-    $('logout').hidden=false;
-    $('orders').replaceChildren(...data.orders.map(render));
-    nextCursor=data.nextCursor;
-    $('pager').hidden=!nextCursor&&pageIndex===0;
-    $('previous').disabled=pageIndex===0;
-    $('next').disabled=!nextCursor;
-    $('orders-status').textContent=data.orders.length?'':'暂时还没有提交的定制订单。';
-  }catch(error){
-    if(current!==revision) return;
-    if(error.status===401){showLogin();return;}
-    if($('workspace').hidden) showLogin(error.message);
-    else $('orders-status').textContent=error.message;
+function createShirtOrdersPanel(panel,getCredentials,onAuthLost){
+  const list=panel.querySelector('#orders');
+  const status=panel.querySelector('#orders-status');
+  const pager=panel.querySelector('#pager');
+  const refresh=panel.querySelector('#refresh-orders');
+  const previous=panel.querySelector('#previous-order-page');
+  const next=panel.querySelector('#next-order-page');
+  let cursors=[''],pageIndex=0,revision=0;
+  let loaded=false,loading=false,sessionChange=Promise.resolve();
+
+  // A pending login must finish before logout can clear its cookie.
+  function changeSession(action){
+    const operation=sessionChange.then(action);
+    sessionChange=operation.catch(()=>{});
+    return operation;
   }
+
+  async function readOrders(suffix,current){
+    await sessionChange;
+    if(current!==revision) return;
+    try{
+      return await request(suffix);
+    }catch(error){
+      if(error.status!==401||current!==revision) throw error;
+      await changeSession(()=>{
+        const credentials=getCredentials();
+        if(current!==revision||!credentials) throw error;
+        return request('',{action:'login',username:credentials.u,password:credentials.p});
+      });
+      if(current!==revision) throw error;
+      return request(suffix);
+    }
+  }
+
+  function updateControls(){
+    refresh.disabled=loading;
+    previous.disabled=loading||pageIndex===0;
+    next.disabled=loading||!cursors[pageIndex+1];
+    pager.hidden=pageIndex===0&&!cursors[pageIndex+1];
+  }
+
+  async function loadOrders(index){
+    if(loading) return;
+    const current=++revision;
+    loading=true;
+    status.classList.remove('bad');
+    status.textContent='正在读取订单…';
+    updateControls();
+    const cursor=cursors[index];
+    try{
+      const data=await readOrders(cursor?'?'+new URLSearchParams({cursor}):'',current);
+      if(current!==revision) return;
+      const orders=data.orders.map(render);
+      list.replaceChildren(...orders);
+      pageIndex=index;
+      cursors.length=index+1;
+      if(data.nextCursor) cursors.push(data.nextCursor);
+      loaded=true;
+      status.textContent=orders.length?'':'暂时还没有提交的定制订单。';
+    }catch(error){
+      if(current!==revision) return;
+      if(error.status===401) onAuthLost();
+      else{
+        status.classList.add('bad');
+        status.textContent=error.message;
+      }
+    }finally{
+      if(current===revision){
+        loading=false;
+        updateControls();
+      }
+    }
+  }
+
+  refresh.addEventListener('click',()=>loadOrders(0));
+  previous.addEventListener('click',()=>loadOrders(pageIndex-1));
+  next.addEventListener('click',()=>loadOrders(pageIndex+1));
+  return {
+    activate(){if(!loaded) loadOrders(0);},
+    logout(){
+      revision++;
+      loaded=false;
+      loading=false;
+      cursors=[''];
+      pageIndex=0;
+      list.replaceChildren();
+      status.textContent='';
+      updateControls();
+      return changeSession(()=>request('',{action:'logout'}));
+    }
+  };
 }
-$('login-form').addEventListener('submit',async event=>{
-  event.preventDefault();
-  const form=event.currentTarget,button=form.querySelector('button');
-  button.disabled=true;
-  $('login-status').textContent='正在登录…';
-  try{
-    await request('',{action:'login',...Object.fromEntries(new FormData(form))});
-    form.reset();
-    cursors=[''];pageIndex=0;
-    await loadOrders();
-  }catch(error){$('login-status').textContent=error.message;}
-  finally{button.disabled=false;}
-});
-$('logout').addEventListener('click',async()=>{
-  try{await request('',{action:'logout'});showLogin();}
-  catch(error){$('orders-status').textContent=error.message;}
-});
-$('refresh-orders').addEventListener('click',()=>{cursors=[''];pageIndex=0;loadOrders();});
-$('previous').addEventListener('click',()=>{if(pageIndex){pageIndex--;loadOrders();}});
-$('next').addEventListener('click',()=>{if(nextCursor){cursors[++pageIndex]=nextCursor;loadOrders();}});
-loadOrders();
+window.createShirtOrdersPanel=createShirtOrdersPanel;
+})();

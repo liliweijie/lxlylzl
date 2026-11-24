@@ -206,6 +206,42 @@ input.fcolor{width:44px;height:32px;padding:2px;background:transparent;border:1p
 .nitem .row .btn{padding:6px 12px;font-size:12px;}
 .empty{color:var(--gray);font-size:13px;text-align:center;padding:28px 0;}
 .spacer{flex:1;}
+
+/* ---------- Shirt orders ---------- */
+.shirt-orders .ticket{padding:clamp(16px,4vw,26px);}
+.shirt-orders .panel__bar{justify-content:space-between;}
+.shirt-orders .panel__title{font-size:18px;}
+.shirt-orders .status:empty{display:none;}
+.shirt-orders .order-list{list-style:none;display:grid;gap:8px;}
+.shirt-orders .order{border:1px solid var(--line);background:var(--ink);}
+.shirt-orders summary{cursor:pointer;padding:12px 14px;}
+.shirt-orders .order-summary{
+  display:inline-grid;grid-template-columns:minmax(0,auto) minmax(0,1fr) auto;
+  align-items:center;gap:12px;width:calc(100% - 22px);vertical-align:middle;
+  font-size:14px;overflow-wrap:anywhere;
+}
+.shirt-orders .order-summary span,.shirt-orders .order-status{color:var(--gray);font-size:12px;}
+.shirt-orders .order-summary strong,.shirt-orders .order-summary b{font-variant-numeric:tabular-nums;}
+.shirt-orders .order-details{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;
+  padding:14px;border-top:1px solid var(--line);
+}
+.shirt-orders h3{font-size:14px;margin:0 0 7px;}
+.shirt-orders .order-details p{font-size:13px;margin:5px 0;overflow-wrap:anywhere;}
+.shirt-orders .order-assets{grid-column:1/-1;min-width:0;}
+.shirt-orders .assets{display:flex;flex-wrap:wrap;gap:14px;}
+.shirt-orders .asset{display:grid;justify-items:start;align-content:start;gap:6px;min-width:0;max-width:100%;}
+.shirt-orders .asset img{
+  width:140px;height:108px;object-fit:contain;background:#e7e7e7;border:1px solid var(--line);
+}
+.shirt-orders .asset figcaption{font-size:13px;}
+.shirt-orders .file-link{max-width:100%;overflow-wrap:anywhere;text-decoration:none;}
+.shirt-orders .pager:not([hidden]){display:flex;gap:8px;margin-top:12px;}
+@media(max-width:620px){
+  .shirt-orders .order-details{grid-template-columns:minmax(0,1fr);}
+  .shirt-orders .order-summary{grid-template-columns:minmax(0,1fr) auto;gap:3px 8px;}
+  .shirt-orders .order-summary span{grid-column:1/-1;grid-row:2;}
+}
 </style>
 </head>
 <body>
@@ -234,10 +270,26 @@ input.fcolor{width:44px;height:32px;padding:2px;background:transparent;border:1p
   <!-- ============ 后台 ============ -->
   <section id="adminView" hidden>
     <nav class="tabs" id="tabs" aria-label="内容页签"></nav>
-    <div id="panels"></div>
+    <div id="panels">
+      <section class="panel shirt-orders" data-panel="shirt" aria-labelledby="shirt-orders-title" hidden>
+        <div class="ticket">
+          <header class="panel__bar">
+            <h1 class="panel__title" id="shirt-orders-title">Shirt 定制订单</h1>
+            <button class="btn" id="refresh-orders" type="button">刷新订单</button>
+          </header>
+          <p class="status" id="orders-status" role="status">订单面板载入失败，请刷新页面。</p>
+          <ul class="order-list" id="orders"></ul>
+          <nav class="pager" id="pager" aria-label="订单分页" hidden>
+            <button class="btn" type="button" id="previous-order-page">上一页</button>
+            <button class="btn" type="button" id="next-order-page">下一页</button>
+          </nav>
+        </div>
+      </section>
+    </div>
   </section>
 </div>
 
+<script src="/js/shirt-admin.js?v=2"></script>
 <script>
 (function () {
   'use strict';
@@ -304,11 +356,17 @@ input.fcolor{width:44px;height:32px;padding:2px;background:transparent;border:1p
 
   function forceLogout(msg) {
     clearCreds();
+    document.getElementById('passInput').value = '';
     adminView.hidden = true;
     loginView.hidden = false;
     logoutBtn.hidden = true;
     loginErr.textContent = msg || '';
     setGlobal('');
+    if (shirtOrders) {
+      shirtOrders.logout().catch(function () {
+        if (!creds) loginErr.textContent = '本页已退出，订单会话未能关闭。请联网后重新登录并退出。';
+      });
+    }
   }
 
   function enterAdmin() {
@@ -362,18 +420,27 @@ input.fcolor{width:44px;height:32px;padding:2px;background:transparent;border:1p
      ===================================================================== */
   var tabsNav = document.getElementById('tabs');
   var panelsBox = document.getElementById('panels');
-  var currentTab = 'index';
+  var currentTab = new URLSearchParams(location.search).get('section') === 'shirt' ? 'shirt' : 'index';
   var loadedTabs = {};
   var panelRefs = {};
+  var shirtOrders = window.createShirtOrdersPanel && window.createShirtOrdersPanel(
+    panelsBox.querySelector('[data-panel="shirt"]'),
+    function () { return creds; },
+    function () { forceLogout('登录已失效，请重新登录'); }
+  );
 
-  PAGES.forEach(function (pg) {
+  function addTab(id, label) {
     var b = document.createElement('button');
     b.className = 'tab';
     b.type = 'button';
-    b.setAttribute('data-tab', pg.id);
-    b.textContent = pg.cn + ' ' + pg.en;
-    b.addEventListener('click', function () { switchTab(pg.id); });
+    b.setAttribute('data-tab', id);
+    b.textContent = label;
+    b.addEventListener('click', function () { switchTab(id); });
     tabsNav.appendChild(b);
+  }
+
+  PAGES.forEach(function (pg) {
+    addTab(pg.id, pg.cn + ' ' + pg.en);
 
     var panel = document.createElement('div');
     panel.className = 'panel';
@@ -534,6 +601,7 @@ input.fcolor{width:44px;height:32px;padding:2px;background:transparent;border:1p
     refreshPreviewBtn.addEventListener('click', function () { refreshPreview(pg.id, true); });
     ta.addEventListener('input', function () { ta.classList.remove('invalid'); });
   });
+  addTab('shirt', 'Shirt 定制订单');
 
   /* =====================================================================
      白话表单:表单 <-> JSON 双向同步(所有值只走 value/textContent/setAttribute)
@@ -1303,11 +1371,24 @@ input.fcolor{width:44px;height:32px;padding:2px;background:transparent;border:1p
     currentTab = id;
     var btns = tabsNav.querySelectorAll('.tab');
     for (var i = 0; i < btns.length; i++) {
-      btns[i].classList.toggle('is-active', btns[i].getAttribute('data-tab') === id);
+      var active = btns[i].getAttribute('data-tab') === id;
+      btns[i].classList.toggle('is-active', active);
+      btns[i].setAttribute('aria-pressed', String(active));
     }
     var panels = panelsBox.querySelectorAll('.panel');
     for (var j = 0; j < panels.length; j++) {
       panels[j].hidden = panels[j].getAttribute('data-panel') !== id;
+    }
+    var url = new URL(location.href);
+    if (id === 'shirt') {
+      url.searchParams.set('section', 'shirt');
+    } else if (url.searchParams.get('section') === 'shirt') {
+      url.searchParams.delete('section');
+    }
+    if (url.href !== location.href) history.replaceState(history.state, '', url);
+    if (id === 'shirt') {
+      if (shirtOrders) shirtOrders.activate();
+      return;
     }
     refreshPreview(id, false);
     if (!loadedTabs[id]) {
@@ -1563,9 +1644,7 @@ input.fcolor{width:44px;height:32px;padding:2px;background:transparent;border:1p
   /* ---------- 启动:已有会话凭据则先探测 ---------- */
   if (creds && creds.u && creds.p) {
     probe(creds.u, creds.p, enterAdmin, function () {
-      clearCreds();
-      loginView.hidden = false;
-      loginErr.textContent = '登录已失效,请重新登录';
+      forceLogout('登录已失效,请重新登录');
     });
   } else {
     loginView.hidden = false;
