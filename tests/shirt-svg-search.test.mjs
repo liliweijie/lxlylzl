@@ -78,3 +78,29 @@ test('ranks live connectors and bundled collections together and checks download
   assert.doesNotMatch(JSON.stringify(result), /test-clipart-key|test-freesvg-token/);
   assert.ok(!globalThis.fetch.mock.calls.some(call => new URL(call.arguments[0]).hostname === 'example.com'));
 });
+
+test('fills a short initial sleeve ranking from remaining same-subject candidates', async t => {
+  const rankings = [];
+  const terms = ['sitting reader', 'person', 'seated figure'];
+  t.mock.method(globalThis, 'fetch', async (value, options) => {
+    const url = new URL(value);
+    if (url.hostname === 'openclipart.org') return new Response('');
+    if (url.hostname === 'api.deepseek.com') {
+      const body = JSON.parse(options.body);
+      if (body.tools) return completion({ terms });
+      const listing = JSON.parse(body.messages[1].content).candidates;
+      rankings.push(listing);
+      if (rankings.length === 1) return completion({ ids: ['doodles:sitting-reading'] });
+      const seated = listing.filter(candidate => candidate.source === 'Open Peeps' && candidate.tags.includes('sitting'));
+      return completion({ ids: [...seated.slice(0, 6).map(candidate => candidate.id), 'invented'] });
+    }
+    return Response.json({ icons: [] });
+  });
+  const result = await findShirtSvgs({ ...query, location: 'outer sleeve', count: 8, signal: AbortSignal.timeout(5_000) });
+  assert.deepEqual(result.terms, terms);
+  assert.equal(rankings.length, 2);
+  assert.ok(!rankings[1].some(({ id }) => id === 'doodles:sitting-reading'));
+  assert.equal(result.assets.length, 7);
+  assert.equal(result.assets[0].source, 'Open Doodles');
+  assert.ok(result.assets.slice(1).every(asset => asset.source === 'Open Peeps'));
+});

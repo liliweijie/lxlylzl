@@ -115,7 +115,7 @@ body{overflow:hidden}
 .customizations-link:hover{border-color:var(--accent)}
 .customizations-link:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .zones button[aria-pressed=true],.accent{background:var(--accent);color:var(--accent-text);border-color:var(--accent)}
-.editor{--panel-inset:19px;background:color-mix(in srgb,var(--panel) 70%,transparent);backdrop-filter:blur(18px);color:var(--ink);width:var(--editor-width);max-width:none;max-height:calc(100% - 2 * var(--editor-gap));margin:0;inset:var(--editor-gap) var(--editor-gap) auto auto;border:1px solid var(--line);border-radius:9px;padding:0;box-shadow:0 16px 50px #01010129;overflow:hidden;transform:translateX(calc(100% + 2 * var(--editor-gap)));transition:transform var(--slide);pointer-events:none;z-index:3}
+.editor{--panel-inset:19px;background:color-mix(in srgb,var(--panel) 70%,transparent);backdrop-filter:blur(18px);color:var(--ink);width:var(--editor-width);max-width:none;max-height:calc(100% - 2 * var(--editor-gap));margin:0;inset:var(--editor-gap) var(--editor-gap) auto auto;border:1px solid var(--line);border-radius:9px;padding:0;box-shadow:0 16px 50px #01010129;overflow:clip;transform:translateX(calc(100% + 2 * var(--editor-gap)));transition:transform var(--slide);pointer-events:none;z-index:3}
 .editor[open]{display:flex;flex-direction:column}
 .editor.is-visible{transform:none;pointer-events:auto}
 .editor-head{display:flex;flex:none;align-items:center;justify-content:space-between;padding:12px var(--panel-inset)}
@@ -125,7 +125,7 @@ body{overflow:hidden}
 .editor-tabs button{flex:1;min-height:34px;border:1px solid transparent;border-radius:5px;font-size:13px;color:var(--muted)}
 .editor-tabs button[aria-selected=true]{background:var(--panel);border-color:var(--line);color:var(--ink);font-weight:650}
 .editor-tabs button:focus-visible{outline-offset:-2px}
-.editor-body{min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin}
+.editor-body{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior-y:contain;touch-action:pan-y;scrollbar-width:thin;scrollbar-gutter:stable}
 .editor-panel{display:grid;gap:16px;padding:16px var(--panel-inset)}
 .editor h3{margin:0 0 8px;font-size:13px;font-weight:650;line-height:1.25}
 .garments,.zones{display:grid;gap:7px}
@@ -179,7 +179,7 @@ textarea{width:100%;display:block;resize:vertical;min-height:48px;background:var
 .prompt-actions .lettering-options{margin-top:0}
 .generate-actions{display:flex;justify-content:flex-end}
 .generate-actions button{min-height:32px;white-space:nowrap}
-#ai-status:empty,#lettering-preview:empty{display:none}
+#ai-status:empty,#lettering-preview:empty,#art-result-count:empty{display:none}
 .art-results{margin-top:12px}
 .art-results h4{margin:0;font-size:12px}
 .art-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
@@ -236,7 +236,6 @@ textarea{width:100%;display:block;resize:vertical;min-height:48px;background:var
   .editor{--panel-inset:15px;inset:auto 0 0;width:100%;height:min(55dvh,390px);transform:translateY(101%);border-radius:12px 12px 0 0}
   .editor-head{padding-block:7px}
   .editor-head h2{font-size:17px}
-  .editor-body{flex:1}
   .editor-panel{gap:12px;padding-block:12px}
   .editor-foot{padding-top:8px;padding-bottom:max(8px,env(safe-area-inset-bottom))}
   .garments button{padding-block:7px}
@@ -448,7 +447,7 @@ Training
 Blog
 About
 */@font-face{font-family:"DynaPuff";src:url("assets/dynapuff-c3752fc6dd8a.ttf") format("truetype");font-style:normal;font-weight:400 700;font-display:swap}</style>
-<link rel="modulepreload" href="assets/studio-8eb6943d9b46.js"><script>
+<link rel="modulepreload" href="assets/studio-06c29b3a71b1.js"><script>
 (()=>{
   const route=new URLSearchParams(location.search);
   if(route.has('design'))return;
@@ -485,7 +484,7 @@ About
         <button type="button" id="clothes-tab" role="tab" aria-controls="clothes-panel" aria-selected="true">服装</button>
         <button type="button" id="print-tab" role="tab" aria-controls="print-panel" aria-selected="false" tabindex="-1">印花</button>
       </div>
-      <div id="editor-body" class="editor-body">
+      <div id="editor-body" class="editor-body" tabindex="0" role="region" aria-label="定制选项内容">
         <section id="clothes-panel" class="editor-panel" role="tabpanel" aria-labelledby="clothes-tab">
           <div>
             <h3 id="garment-label">服装类别</h3>
@@ -557,6 +556,7 @@ About
                   <h4 id="art-results-label"></h4>
                   <button type="button" class="change-art" id="edit-art-query">修改描述</button>
                 </div>
+                <p class="help" id="art-result-count" role="status"></p>
                 <div class="art-choices" id="art-choices" role="group" aria-labelledby="art-results-label"></div>
               </div>
             </form>
@@ -571,6 +571,6 @@ About
     <div id="notice" role="status" class="notice"></div>
   </section>
 </main>
-<script type="module" src="assets/studio-8eb6943d9b46.js"></script>
+<script type="module" src="assets/studio-06c29b3a71b1.js"></script>
 </body>
 </html>

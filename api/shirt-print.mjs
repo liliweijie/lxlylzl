@@ -173,8 +173,15 @@ async function generateArt(request, key) {
   try {
     if (mode !== 'lettering') {
       const count = input.candidateCount === 4 ? 4 : 1;
-      const { assets, terms } = await findShirtSvgs({ key, description, garmentColor, location: zones[zone], signal: deadline, count });
-      if (assets.length) return count === 4 ? result({ assets, terms }) : result({ asset: { ...assets[0], terms } });
+      const includeAlternates = count === 4 && input.includeAlternates === true;
+      const { assets, terms } = await findShirtSvgs({
+        key, description, garmentColor, location: zones[zone], signal: deadline, count: includeAlternates ? 8 : count
+      });
+      if (assets.length) {
+        if (count === 1) return result({ asset: { ...assets[0], terms } });
+        return result({ assets: assets.slice(0, count), terms,
+          ...(includeAlternates ? { alternates: assets.slice(count) } : {}) });
+      }
       if (deadline.aborted) return fail(504, 'AI 定制超时，请稍后再试。');
       return fail(404, '没有匹配的图案，请试试更简短的主体或风格词。');
     }
