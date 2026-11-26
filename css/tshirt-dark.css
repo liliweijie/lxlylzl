@@ -1,4 +1,4 @@
-:root{--paper:#080808;--ink:#f3f2ec;--muted:#969890;--accent:#f24c30;--line:#f3f2ec26}
+:root{--paper:var(--site-black);--ink:#f3f2ec;--muted:#969890;--accent:#f24c30;--line:#f3f2ec26}
 .brand img{filter:none}
 .detail-nav button{background:#11111170}
 .detail-nav button:hover{background:var(--ink);color:var(--paper)}

@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/css/palette.css">
   <title>lxlylzl</title>
   <meta name="description" content="李伟杰的个人创作空间。探索品牌视觉、影像、网页与交互设计。">
   <link rel="icon" href="assets/space-mark-small.svg" type="image/svg+xml">
@@ -11,11 +12,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=JetBrains+Mono:wght@400;500&amp;family=Noto+Sans+SC:wght@500;700;900&amp;display=swap" rel="stylesheet">
   <style>
     :root {
-      --ink: #0a0a0a;
-      --paper: #f3efe6;
+      --ink: var(--site-black);
+      --paper: var(--site-white);
       --red: #ef3d2f;
-      --muted: rgba(243, 239, 230, .48);
-      --line: rgba(243, 239, 230, .14);
+      --muted: color-mix(in srgb, var(--site-white) 48%, transparent);
+      --line: color-mix(in srgb, var(--site-white) 14%, transparent);
       --mono: "JetBrains Mono", monospace;
       --display: "Anton", "Arial Narrow", sans-serif;
       --cn: "Noto Sans SC", "PingFang SC", sans-serif;
@@ -32,10 +33,10 @@
     }
     body.signal {
       --ink: #d93429;
-      --paper: #f7f1e5;
+      --paper: var(--site-white);
       --red: #111;
-      --muted: rgba(247, 241, 229, .58);
-      --line: rgba(247, 241, 229, .22);
+      --muted: color-mix(in srgb, var(--site-white) 58%, transparent);
+      --line: color-mix(in srgb, var(--site-white) 22%, transparent);
     }
 
     button, a { color: inherit; font: inherit; }

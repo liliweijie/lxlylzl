@@ -39,8 +39,8 @@ window.addEventListener('storage',event=>{
 </script>
 <style>:root{
   color-scheme:light;
-  --white:#f1f1f1;
-  --black:#010101;
+  --white:#fdfdf5;
+  --black:#12110c;
   --red:#ff1111;
   --gray:#202020;
   --paper:var(--white);
@@ -52,9 +52,9 @@ window.addEventListener('storage',event=>{
   --line:color-mix(in srgb,var(--ink) 23%,var(--paper));
   --panel:var(--white);
   --hover:color-mix(in srgb,var(--paper) 94%,var(--ink));
-  --stage-focus:#f1f1f1;
-  --stage-edge:#c6c6c6;
-  --stage-top:#ebebeb;
+  --stage-focus:var(--white);
+  --stage-edge:color-mix(in srgb,var(--white) 81%,var(--black));
+  --stage-top:color-mix(in srgb,var(--white) 97%,var(--black));
   --stage-floor:#77777724;
 }
 :root[data-theme=dark]{
@@ -66,16 +66,16 @@ window.addEventListener('storage',event=>{
   --panel:var(--gray);
   --hover:color-mix(in srgb,var(--gray) 85%,var(--ink));
   --stage-focus:#333333;
-  --stage-edge:#010101;
+  --stage-edge:var(--black);
   --stage-top:#202020;
-  --stage-floor:#00000078;
+  --stage-floor:color-mix(in srgb,var(--black) 47%,transparent);
   --accent-ink:#ff6464;
 }
 .theme-toggle{display:grid;place-items:center;flex:none;min-width:36px;min-height:34px;padding:6px;background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:5px}
 .theme-toggle svg{width:17px;height:17px;display:block;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round}
 .theme-toggle:hover{background:var(--hover)}
 :root[data-theme=dark] .theme-moon,:root:not([data-theme=dark]) .theme-sun{display:none}
-:root{font-family:Inter,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;color:var(--ink);background:var(--panel)}
+:root{font-family:Inter,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;color:var(--ink);background:var(--paper)}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 body{margin:0}

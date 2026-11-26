@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/css/palette.css">
   <meta name="description" content="文化衫定制工作室。试穿 3D 服装、添加印花并保存自己的设计。">
   <title>SHIRT · LXLYLZL</title>
   <link rel="canonical" href="https://lxlylzl.xyz/shirt">
@@ -19,14 +20,14 @@
     .space-header{position:relative;height:var(--shirt-nav-height)!important;padding:0 4.1vw!important}
     .space-links{left:50%;gap:clamp(6px,1.6vw,24px)!important}
     .space-links a[href="about.html"]{display:flex}
-    .space-meta a{color:#f0ede5;text-decoration:none;font:12px Arial,sans-serif}
+    .space-meta a{color:var(--site-white);text-decoration:none;font:12px Arial,sans-serif}
     .space-meta a:hover{text-decoration:underline}
     .glass-toggle{display:none}
     .shirt-stage{position:relative;margin-right:56px;height:calc(100dvh - var(--shirt-nav-height))}
     .shirt-stage iframe{display:block;width:100%;height:100%;border:0;color-scheme:normal}
     .shirt-stage[aria-busy=true] iframe{visibility:hidden}
     .shirt-loading{display:none}
-    .shirt-stage[aria-busy=true] .shirt-loading{position:absolute;inset:0;display:grid;place-items:center;margin:0;color:#f0ede5;font:13px system-ui,sans-serif;pointer-events:none}
+    .shirt-stage[aria-busy=true] .shirt-loading{position:absolute;inset:0;display:grid;place-items:center;margin:0;color:var(--site-white);font:13px system-ui,sans-serif;pointer-events:none}
     @media(max-width:700px),(max-height:500px) and (pointer:coarse){
       :root{--shirt-nav-height:64px}
       .space-links{left:0}

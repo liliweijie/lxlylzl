@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/css/palette.css">
 <title>后台 ADMIN · liweijie</title>
 <meta name="robots" content="noindex,nofollow">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
@@ -11,9 +12,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=JetBrains+Mono:wght@400;500&amp;family=Noto+Sans+SC:wght@400;500;700;900&amp;display=swap" rel="stylesheet">
 <style>
 :root{
-  --ink:#0b0b0c; --ink-2:#151517; --paper:#f4f1ea;
+  --ink:var(--site-black); --ink-2:#151517; --paper:var(--site-white);
   --red:#e83a2e; --red-deep:#a91e14; --gray:#8b8b8e;
-  --line:rgba(244,241,234,.14); --line-strong:rgba(244,241,234,.32);
+  --line:color-mix(in srgb, var(--site-white) 14%, transparent); --line-strong:color-mix(in srgb, var(--site-white) 32%, transparent);
   --font-anton:'Anton','Arial Narrow',sans-serif;
   --font-noto:'Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;
   --font-mono:'JetBrains Mono','SFMono-Regular',Consolas,monospace;
@@ -22,7 +23,7 @@
 body{
   min-height:100vh; background:var(--ink); color:var(--paper);
   font-family:var(--font-noto); padding:clamp(16px,4vw,48px);
-  background-image:repeating-linear-gradient(0deg,transparent 0 3px,rgba(244,241,234,.012) 3px 4px);
+  background-image:repeating-linear-gradient(0deg,transparent 0 3px,color-mix(in srgb, var(--site-white) 1.2%, transparent) 3px 4px);
 }
 .wrap{max-width:1080px;margin:0 auto;}
 button{font-family:inherit;cursor:pointer;}
@@ -64,7 +65,7 @@ input,textarea{font-family:inherit;outline:none;}
 .login .muted{color:var(--gray);font-size:13px;line-height:1.7;margin-bottom:22px;}
 .login input{
   display:block;width:100%;padding:12px 14px;margin-bottom:12px;
-  background:rgba(244,241,234,.05);border:1px solid var(--line);color:var(--paper);
+  background:color-mix(in srgb, var(--site-white) 5%, transparent);border:1px solid var(--line);color:var(--paper);
   font-size:14px;font-family:var(--font-mono);
 }
 .login input:focus{border-color:var(--red);}
@@ -76,10 +77,10 @@ input,textarea{font-family:inherit;outline:none;}
   font-size:13px;padding:9px 16px;letter-spacing:.06em;transition:border-color .2s,color .2s,background .2s;
 }
 .btn:hover{border-color:var(--red);color:var(--red);}
-.btn--primary{background:var(--red);border-color:var(--red);color:#fff;font-weight:700;}
-.btn--primary:hover{background:var(--red-deep);border-color:var(--red-deep);color:#fff;}
+.btn--primary{background:var(--red);border-color:var(--red);color:var(--site-white);font-weight:700;}
+.btn--primary:hover{background:var(--red-deep);border-color:var(--red-deep);color:var(--site-white);}
 .btn--danger{border-color:var(--red);color:var(--red);}
-.btn--danger:hover{background:var(--red);color:#fff;}
+.btn--danger:hover{background:var(--red);color:var(--site-white);}
 .btn[disabled]{opacity:.5;cursor:not-allowed;}
 
 /* ---------- tabs ---------- */
@@ -90,7 +91,7 @@ input,textarea{font-family:inherit;outline:none;}
   padding:9px 18px;border-radius:100px;
 }
 .tab:hover{border-color:var(--red);color:var(--red);}
-.tab.is-active{background:var(--red);border-color:var(--red);color:#fff;}
+.tab.is-active{background:var(--red);border-color:var(--red);color:var(--site-white);}
 
 /* ---------- panels ---------- */
 .panel__bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px;}
@@ -134,13 +135,13 @@ textarea.json.invalid{border-color:var(--red);box-shadow:0 0 0 1px var(--red);}
 /* ---------- friendly form ---------- */
 .form__note{font-size:12px;color:var(--gray);line-height:1.7;margin-bottom:14px;}
 .form{display:flex;flex-direction:column;gap:16px;margin-bottom:16px;}
-.fgroup{border:1px solid var(--line);background:rgba(244,241,234,.02);padding:14px 14px 12px;}
+.fgroup{border:1px solid var(--line);background:color-mix(in srgb, var(--site-white) 2%, transparent);padding:14px 14px 12px;}
 .fgroup__title{font-weight:900;font-size:13px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px dashed var(--line);}
 .ffield{margin-bottom:10px;}
 .ffield:last-child{margin-bottom:0;}
 .flabel{display:block;font-size:12px;color:var(--gray);margin-bottom:4px;}
 .finput,.ftext,.fselect{
-  width:100%;padding:8px 10px;background:rgba(244,241,234,.05);
+  width:100%;padding:8px 10px;background:color-mix(in srgb, var(--site-white) 5%, transparent);
   border:1px solid var(--line);color:var(--paper);font-size:13px;
 }
 .finput:focus,.ftext:focus,.fselect:focus{border-color:var(--red);}
@@ -153,7 +154,7 @@ textarea.json.invalid{border-color:var(--red);box-shadow:0 0 0 1px var(--red);}
 .fgrid3{grid-template-columns:1fr 1fr 1fr;}
 @media(max-width:640px){.fgrid2,.fgrid3{grid-template-columns:1fr;}}
 .flist{display:flex;flex-direction:column;gap:10px;}
-.fitem{border:1px dashed var(--line-strong);padding:10px 12px;background:rgba(244,241,234,.02);}
+.fitem{border:1px dashed var(--line-strong);padding:10px 12px;background:color-mix(in srgb, var(--site-white) 2%, transparent);}
 .fitem__bar{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
 .fitem__no{font-family:var(--font-mono);font-size:11px;color:var(--red);letter-spacing:.12em;}
 .fitem__ctrl{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap;}
@@ -181,7 +182,7 @@ textarea.json.invalid{border-color:var(--red);box-shadow:0 0 0 1px var(--red);}
 input.fcolor{width:44px;height:32px;padding:2px;background:transparent;border:1px solid var(--line);cursor:pointer;}
 
 /* ---------- advanced JSON (collapsed) ---------- */
-.advjson{margin:0 0 14px;border:1px solid var(--line);padding:10px 12px;background:rgba(244,241,234,.02);}
+.advjson{margin:0 0 14px;border:1px solid var(--line);padding:10px 12px;background:color-mix(in srgb, var(--site-white) 2%, transparent);}
 .advjson>summary{cursor:pointer;font-size:13px;color:var(--gray);list-style-position:inside;}
 .advjson>summary:hover{color:var(--red);}
 .advjson textarea.json{margin-top:10px;min-height:260px;}
@@ -189,7 +190,7 @@ input.fcolor{width:44px;height:32px;padding:2px;background:transparent;border:1p
 
 /* ---------- notes admin ---------- */
 .nlist{display:flex;flex-direction:column;gap:10px;margin-top:6px;}
-.nitem{border:1px solid var(--line);padding:12px 14px;background:rgba(244,241,234,.03);}
+.nitem{border:1px solid var(--line);padding:12px 14px;background:color-mix(in srgb, var(--site-white) 3%, transparent);}
 .nitem .meta{
   display:flex;gap:10px;align-items:baseline;font-family:var(--font-mono);
   font-size:11px;color:var(--gray);margin-bottom:6px;flex-wrap:wrap;

@@ -1,26 +1,26 @@
 :root{--nav-collapse:0;--nav-height:calc(80px - 40px * var(--nav-collapse))}
 /* The rail owns page transitions; avoid a second cross-document slide. */
 @view-transition{navigation:none}
-.space-header{height:var(--nav-height)!important;display:flex!important;padding:0 4.1vw!important;gap:0!important;background:#0f0f0ff5;z-index:5000!important;border-bottom:1px solid #fdfdfd66;transition:height .38s ease}
+.space-header{height:var(--nav-height)!important;display:flex!important;padding:0 4.1vw!important;gap:0!important;background:color-mix(in srgb, var(--site-black) 96.078%, transparent);z-index:5000!important;border-bottom:1px solid color-mix(in srgb, var(--site-white) 40%, transparent);transition:height .38s ease}
 .space-logo{position:relative;z-index:1;gap:12px}.space-logo small{display:none!important}
 .space-logo img{width:calc(36px - 16px * var(--nav-collapse))!important;height:calc(36px - 16px * var(--nav-collapse))!important;transition:width .38s,height .38s}
 .space-logo b{font-family:Arial,sans-serif!important;font-size:calc(24px - 10px * var(--nav-collapse))!important;letter-spacing:-.055em;text-transform:none!important;transition:font-size .38s}
 .space-links{position:absolute;left:calc(50% + 28% * var(--nav-collapse));transform:translateX(-50%);display:flex!important;gap:calc(34px - 12px * var(--nav-collapse))!important;transition:left .5s cubic-bezier(.2,.8,.2,1),gap .4s}
-.space-links a{font-family:Arial,sans-serif!important;font-size:calc(20px - 8px * var(--nav-collapse));letter-spacing:-.025em;line-height:1;padding:8px 12px!important;min-height:0!important;border:1px solid transparent;border-radius:14px;color:#fdfdfd;transition:font-size .4s,padding .4s,border-color .2s}
-.space-links a:after{display:none!important}.space-links a:hover{border-color:#fdfdfd26}.space-links a[aria-current=page]{border-color:#fdfdfd}
+.space-links a{font-family:Arial,sans-serif!important;font-size:calc(20px - 8px * var(--nav-collapse));letter-spacing:-.025em;line-height:1;padding:8px 12px!important;min-height:0!important;border:1px solid transparent;border-radius:14px;color:var(--site-white);transition:font-size .4s,padding .4s,border-color .2s}
+.space-links a:after{display:none!important}.space-links a:hover{border-color:color-mix(in srgb, var(--site-white) 14.902%, transparent)}.space-links a[aria-current=page]{border-color:var(--site-white)}
 .space-links a[href="about.html"]{display:none}
 .space-meta{margin-left:auto;display:flex!important}.space-meta>span{display:none!important}
-.glass-toggle{font:calc(20px - 8px * var(--nav-collapse))/1 Arial,sans-serif;color:#ccc;background:none;border:1px solid #fdfdfd99;border-radius:14px;padding:8px 16px;cursor:pointer;transition:font-size .4s,padding .4s}
+.glass-toggle{font:calc(20px - 8px * var(--nav-collapse))/1 Arial,sans-serif;color:#ccc;background:none;border:1px solid color-mix(in srgb, var(--site-white) 60%, transparent);border-radius:14px;padding:8px 16px;cursor:pointer;transition:font-size .4s,padding .4s}
 .glass-toggle:focus-visible{outline:2px solid #fd7b03;outline-offset:4px}
-.peek-rail{top:calc(var(--nav-height) + 10px)!important;right:0!important;bottom:0!important;width:calc(40px - 20px * var(--nav-collapse))!important;background:#0f0f0f;border-color:#fd7b0380;z-index:5100!important}
+.peek-rail{top:calc(var(--nav-height) + 10px)!important;right:0!important;bottom:0!important;width:calc(40px - 20px * var(--nav-collapse))!important;background:var(--site-black);border-color:#fd7b0380;z-index:5100!important}
 .peek-rail:not(.rail-cover):not(.rail-dragging):is(:hover,.rail-expanded,:focus-visible){width:40px!important}
 .peek-rail.rail-dragging{width:var(--drag-width)!important}.peek-rail.rail-cover{width:100vw!important;top:0!important;z-index:5200!important}
 .peek-rail__ticket{width:40px!important;right:auto;left:0;padding:0;display:block}
 .peek-rail__no,.peek-rail__name,.peek-rail__barcode,.peek-rail__tip{display:none!important}
-.rail-from,.rail-to,.rail-join,.rail-signature,.rail-instruction,.peek-rail__pct{position:absolute;left:50%;transform:translateX(-50%);writing-mode:vertical-rl;white-space:nowrap;font:12px Arial,sans-serif;color:#fdfdfd}
+.rail-from,.rail-to,.rail-join,.rail-signature,.rail-instruction,.peek-rail__pct{position:absolute;left:50%;transform:translateX(-50%);writing-mode:vertical-rl;white-space:nowrap;font:12px Arial,sans-serif;color:var(--site-white)}
 .rail-from{top:32px}.rail-join{top:15%;font-size:11px;color:#ef4935}.rail-to{top:26%}
 .rail-signature{top:42%;font:26px monospace;letter-spacing:.07em;color:#f9f9f94d}
-.rail-instruction{top:75%;font-size:8px;color:#fdfdfd66}.peek-rail__pct{bottom:40px;top:auto;font-size:8px;color:#fdfdfd80}
+.rail-instruction{top:75%;font-size:8px;color:color-mix(in srgb, var(--site-white) 40%, transparent)}.peek-rail__pct{bottom:40px;top:auto;font-size:8px;color:color-mix(in srgb, var(--site-white) 50.196%, transparent)}
 .page-glass{position:fixed;inset:0;z-index:4500;pointer-events:none;opacity:0;background:#dce5ed12;backdrop-filter:blur(5px) saturate(.8);-webkit-backdrop-filter:blur(5px) saturate(.8);transition:opacity .45s;visibility:hidden}
 html[data-surface=glass] .page-glass{opacity:1;visibility:visible}
 html[data-surface=glass] .space-header,html[data-surface=glass] .peek-rail{background:#ffffff20;backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-color:#ffffff88;color:white}
@@ -34,14 +34,14 @@ html[data-surface=glass] .space-links a,html[data-surface=glass] .glass-toggle{c
 .peek-rail .peek-rail__ticket{width:40px!important;transition:opacity .18s ease}
 .peek-rail:is(:hover,:focus-visible,.rail-expanded,.rail-dragging):not(.rail-cover) .peek-rail__ticket{opacity:1;visibility:visible}
 /* A committed wipe must not be resized when it moves underneath the pointer. */
-.peek-rail.rail-cover{width:100vw!important;top:0!important;bottom:0!important;right:0!important;background:#0f0f0f!important}
-.glass-toggle.is-dark-button{background:#000;color:#fff;border-color:#ffffff99}
+.peek-rail.rail-cover{width:100vw!important;top:0!important;bottom:0!important;right:0!important;background:var(--site-black)!important}
+.glass-toggle.is-dark-button{background:var(--site-black);color:var(--site-white);border-color:#ffffff99}
 .rail-signature{top:39%;width:40px;height:clamp(145px,24vh,260px);writing-mode:horizontal-tb;display:block}
 .rail-signature img{width:100%;height:100%;object-fit:contain;display:block}
 .rail-loading{position:absolute;top:16%;left:50%;width:70px;height:14px;transform:translateX(-50%) rotate(90deg);transform-origin:center;pointer-events:none}
 .rail-loading img{display:block;width:100%;height:100%;object-fit:contain}
 .rail-join{top:24%}.rail-to{top:30%}
-.rail-instruction{font-size:12px;line-height:1.4;color:#fdfdfdcc;letter-spacing:.08em;top:auto;bottom:70px}
+.rail-instruction{font-size:12px;line-height:1.4;color:color-mix(in srgb, var(--site-white) 80%, transparent);letter-spacing:.08em;top:auto;bottom:70px}
 @media(prefers-reduced-motion:reduce){.space-header,.space-links,.space-logo *,.glass-toggle,.page-glass,.peek-rail__ticket{transition:none!important}}
 /* Keep the compact links clear of the theme control at intermediate widths. */
 @media(min-width:701px) and (max-width:1200px){
@@ -63,7 +63,7 @@ html[data-surface=glass] .space-links a,html[data-surface=glass] .glass-toggle{c
 @media(max-width:700px),(max-height:500px) and (pointer:coarse){
   :root{--nav-height:64px}
   .space-header{align-items:center!important;justify-content:center;padding:0!important;isolation:isolate;transition:none}
-  .space-logo{display:flex;justify-content:center;width:64px;height:64px;min-height:44px;flex-shrink:0;background:#0f0f0f}
+  .space-logo{display:flex;justify-content:center;width:64px;height:64px;min-height:44px;flex-shrink:0;background:var(--site-black)}
   .space-logo img{width:32px!important;height:32px!important}
   .space-logo b,.space-logo small{display:none!important}
   .space-meta{display:none!important}
@@ -71,7 +71,7 @@ html[data-surface=glass] .space-links a,html[data-surface=glass] .glass-toggle{c
   .space-logo{touch-action:none;user-select:none;-webkit-touch-callout:none}
   .space-logo img{-webkit-user-drag:none;pointer-events:none}
   .space-header.is-logo-pulling{
-    --logo-pull-fill:color-mix(in srgb,#101010,#f24c30 calc(var(--logo-pull) * 100%));
+    --logo-pull-fill:color-mix(in srgb,var(--site-black),#f24c30 calc(var(--logo-pull) * 100%));
     background:var(--logo-pull-fill)!important;
     border-bottom-color:transparent!important;
   }
