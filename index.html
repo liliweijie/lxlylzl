@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" class="rounded-preview">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,7 +14,7 @@
     :root {
       --ink: var(--site-black);
       --paper: var(--site-white);
-      --red: #ef3d2f;
+      --red: var(--site-orange);
       --muted: color-mix(in srgb, var(--site-white) 48%, transparent);
       --line: color-mix(in srgb, var(--site-white) 14%, transparent);
       --mono: "JetBrains Mono", monospace;
@@ -32,7 +32,7 @@
       transition: background-color .45s ease, color .45s ease;
     }
     body.signal {
-      --ink: #d93429;
+      --ink: var(--site-orange);
       --paper: var(--site-white);
       --red: #111;
       --muted: color-mix(in srgb, var(--site-white) 58%, transparent);
@@ -373,17 +373,20 @@
 <link rel="stylesheet" href="css/rail-gate.css">
 <link rel="stylesheet" href="css/navigation-shell.css?v=4">
 <link rel="stylesheet" href="css/ring-home.css">
+<link rel="stylesheet" href="/css/rounded-preview.css?v=2">
 </head>
 <body class="has-logo-end">
-<header class="space-header"><a class="space-logo" href="index.html" aria-label="lxlylzl 首页"><img src="assets/space-mark.svg" alt=""><span><b>lXlYlZl</b><small>SPACE FOR IDEAS</small></span></a><nav class="space-links" aria-label="主要导航"><a href="index.html" aria-current="page">HOME</a><a href="works.html">WORK</a><a href="/shirt">SHIRT</a><a href="about.html">ABOUT</a><a href="notes.html">NOTES</a><a href="contact.html">CONTACT</a></nav><div class="space-meta"><span>01 / 05</span></div></header>
+<nav hidden class="space-links" aria-label="主要导航"><a href="index.html" aria-current="page">HOME</a><a href="works.html">WORK</a><a href="/shirt">SHIRT</a><a href="about.html">ABOUT</a><a href="notes.html">NOTES</a><a href="contact.html">CONTACT</a></nav>
   <section class="ring-home" id="stage" aria-label="名字与作品的圆环">
+<div class="ring-frame" data-rounded-module>
 <div class="viewport"></div><div class="loading" role="status">正在载入作品…</div>
 <div class="scroll-mark">拖动探索 · 向下滚动 ↓</div>
 <div class="caption" hidden><h1 id="heading"></h1><p id="hint"></p></div>
 <div class="controls"><label class="scrub">EXPLORE <input id="scrub" type="range" min="0" max="1000" value="0" aria-label="圆环展示进度"></label></div>
+</div>
 </section>
 <main class="play-world" id="main">
-<section class="toy-chapter" id="playground" aria-labelledby="toy-title">
+<section data-rounded-module class="toy-chapter" id="playground" aria-labelledby="toy-title">
  <div class="lab-meta"><span>01 / FORM IS A PLAYTHING</span><span>拖动 · 松手 · 看看会发生什么</span></div>
  <div class="lab-heading"><h2 id="toy-title">MAKE<br><em>some noise.</em></h2><p>设计不一定从答案开始。<br>也可以从一次碰撞开始。</p></div>
  <div class="toy-room" aria-label="图形实验场"><span class="room-watermark" aria-hidden="true">PLAY</span><div class="toy-floor" aria-hidden="true"></div>
@@ -396,7 +399,7 @@
  </div>
  <div class="lab-controls"><div role="group" aria-label="图形玩法"><button data-toy-action="kick">碰一下 ↗</button><button data-toy-action="gravity" aria-pressed="true">重力：开 ↓</button><button data-toy-action="arrange">排整齐 ≡</button></div><span id="toy-status" role="status">拿起任意图形，松手抛出去。</span></div>
 </section>
-<section class="film-chapter" aria-labelledby="film-title">
+<section data-rounded-module class="film-chapter" aria-labelledby="film-title">
  <div class="lab-meta"><span>02 / FROM PLAY TO PRACTICE</span><a href="works.html">完整作品档案 ↗</a></div>
  <div class="film-heading"><h2 id="film-title">SOME THINGS<br><em>became real.</em></h2><p>把实验带回真实项目。<br>往下滚，沿着画面走。</p></div>
  <div class="film-window"><div class="film-track">
@@ -406,9 +409,9 @@
  <a class="film-card" href="works.html"><img src="assets/work-zaza.webp" alt="ZAZA 项目" loading="lazy"><span><small>04 / OBJECTS</small> ZAZA ↗</span></a>
  </div></div><div class="film-progress" aria-hidden="true"><span></span></div>
 </section>
-<section class="human-chapter" aria-labelledby="human-title"><div class="lab-meta"><span>03 / STILL A WORK IN PROGRESS</span><span>LI WEIJIE · SHENZHEN</span></div><div class="human-end"><div><p>你好，我是李伟杰。</p><h2 id="human-title">ALWAYS<br><em>curious.</em></h2><p>从品牌视觉，到网页和交互。<br>喜欢把脑子里的东西，做成真的。</p><a href="about.html">认识一下 ↗</a></div><a class="note-door" href="notes.html"><span>一些还没变成作品的想法</span><strong>NOTES<br>↗</strong><small>打开我的便签墙</small></a></div></section>
-<footer class="play-footer"><a href="contact.html">下一件好玩的事，<br><em>一起做？ ↗</em></a><div><span>LXLYLZL © 2026 · KEEP EXPLORING</span><a href="#stage">回到圆环 ↑</a></div></footer>
-<section class="logo-end" id="logo-end" aria-labelledby="logo-end-title">
+<section data-rounded-module class="human-chapter" aria-labelledby="human-title"><div class="lab-meta"><span>03 / STILL A WORK IN PROGRESS</span><span>LI WEIJIE · SHENZHEN</span></div><div class="human-end"><div><p>你好，我是李伟杰。</p><h2 id="human-title">ALWAYS<br><em>curious.</em></h2><p>从品牌视觉，到网页和交互。<br>喜欢把脑子里的东西，做成真的。</p><a href="about.html">认识一下 ↗</a></div><a class="note-door" href="notes.html"><span>一些还没变成作品的想法</span><strong>NOTES<br>↗</strong><small>打开我的便签墙</small></a></div></section>
+<footer data-rounded-module class="play-footer"><a href="contact.html">下一件好玩的事，<br><em>一起做？ ↗</em></a><div><span>LXLYLZL © 2026 · KEEP EXPLORING</span><a href="#stage">回到圆环 ↑</a></div></footer>
+<section data-rounded-module class="logo-end" id="logo-end" aria-labelledby="logo-end-title">
  <h2 id="logo-end-title" class="logo-end-sr-only">lXlYlZl 动态标志</h2>
  <div class="logo-end-art" id="logoEndArt" aria-busy="true"><img src="assets/space-mark.svg" alt="lXlYlZl 标志"></div>
  <p class="logo-end-status logo-end-sr-only" id="logoEndStatus" role="status">正在载入动态标志…</p>
@@ -417,8 +420,8 @@
 </main>
 <link rel="stylesheet" href="css/play-world.css?v=5">
 <link rel="stylesheet" href="css/logo-home.css?v=2">
-<script src="js/editorial-navigation.js?v=11" defer></script>
+<script src="js/editorial-navigation.js?v=12" defer></script>
 <script src="js/logo-home.js?v=3" defer></script>
-<script type="module" src="js/ribbon-cinematic.js?v=5"></script>
+<script type="module" src="js/ribbon-cinematic.js?v=6"></script>
 </body>
 </html>

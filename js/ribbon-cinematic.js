@@ -4,7 +4,7 @@ const mount=document.querySelector('.viewport'),status=document.querySelector('.
 let renderer;
 try{renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,powerPreference:'high-performance'});}
 catch(error){status.classList.add('load-error');status.textContent='当前浏览器未能开启 3D 加速，请使用支持 WebGL 的浏览器打开此 Demo。';throw error;}
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setClearColor(0x080808);renderer.outputColorSpace=THREE.SRGBColorSpace;mount.append(renderer.domElement);
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setClearColor(getComputedStyle(document.documentElement).getPropertyValue('--site-black').trim()||'#12110c');renderer.outputColorSpace=THREE.SRGBColorSpace;mount.append(renderer.domElement);
 const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(48,1,.04,120),world=new THREE.Group(),ring=new THREE.Group();scene.add(world);world.add(ring);
 const slider=document.querySelector('#scrub'),heading=document.querySelector('#heading'),hint=document.querySelector('#hint'),caption=document.querySelector('.caption');
 const reduced=matchMedia('(prefers-reduced-motion:reduce)').matches;
@@ -28,7 +28,7 @@ Promise.all(paths.map((n,i)=>new Promise(resolve=>{const im=new Image();im.onloa
 const titles=['名字的背面，是作品。','一个名字，一个完整的世界。','绕过名字，看见作品。','走进作品里面。','回到名字，重新认识。'];
 const hints=['按住拖动，改变倾斜角度。向下滚动开始。','前景是 lXlYlZl，后景是你的作品。','第一圈：镜头推进，作品铺满上方。','第二圈：作品占满视野，保留曲面透视。','一轮回到起点，继续滚动进入下一屏。'];
 const smooth=t=>t*t*(3-2*t),mix=THREE.MathUtils.lerp;
-function sample(p){const at=Math.min(3,Math.floor(p*4)),u=smooth(p*4-at),aspect=innerWidth/innerHeight;
+function sample(p){const at=Math.min(3,Math.floor(p*4)),u=smooth(p*4-at),aspect=camera.aspect;
  const distance=Math.max(6.9,3.7/(Math.tan(24*Math.PI/180)*aspect));
  const poses=[
   {cam:[0,.05,distance],look:[0,0,0],rotation:0,fov:48},
@@ -38,11 +38,19 @@ function sample(p){const at=Math.min(3,Math.floor(p*4)),u=smooth(p*4-at),aspect=
   {cam:[0,.05,distance],look:[0,0,0],rotation:Math.PI*6,fov:48}
  ];const a=poses[at],b=poses[at+1];return {cam:a.cam.map((v,i)=>mix(v,b.cam[i],u)),look:a.look.map((v,i)=>mix(v,b.look[i],u)),rotation:mix(a.rotation,b.rotation,u),fov:mix(a.fov,b.fov,u)};
 }
-function resize(){renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();readScroll();}
+function resize(){
+  const {clientWidth:width,clientHeight:height}=mount;
+  if(!width||!height)return;
+  renderer.setSize(width,height,false);
+  camera.aspect=width/height;
+  camera.updateProjectionMatrix();
+  readScroll();
+  wakeHero();
+}
 function readScroll(){target=Math.max(0,Math.min(1,scrollY/(SCROLL_SCREENS*innerHeight)));}
 function go(p){scrollTo({top:p*SCROLL_SCREENS*innerHeight,behavior:'instant'});target=p;}
 document.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>go(Number(b.dataset.p)));slider.oninput=()=>go(Number(slider.value)/1000);
-addEventListener('scroll',readScroll,{passive:true});addEventListener('resize',resize);
+addEventListener('scroll',readScroll,{passive:true});addEventListener('resize',readScroll);
 addEventListener('pointermove',e=>{if(e.pointerType==='touch')return;mouse={x:(e.clientX/innerWidth-.5)*2,y:(e.clientY/innerHeight-.5)*2}});
 document.documentElement.addEventListener('pointerleave',()=>mouse={x:0,y:0});
 let drag=null,dragX=0,dragY=0,shift={x:0,y:0};
@@ -71,4 +79,5 @@ function render(time){raf=0;const dt=Math.min(50,time-(last||time-16));last=time
 }
 document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelAnimationFrame(raf);raf=0}else wakeHero()});
 renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();cancelAnimationFrame(raf);status.textContent='3D 画面暂时中断，请刷新页面恢复。'});
-resize();raf=requestAnimationFrame(render);
+new ResizeObserver(resize).observe(mount);
+resize();

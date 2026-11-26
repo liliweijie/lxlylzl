@@ -8,7 +8,7 @@
   --ink: var(--site-black);
   --ink-2: #151517;
   --paper: var(--site-white);
-  --red: #e83a2e;
+  --red: var(--site-orange);
   --red-deep: #a91e14;
   --gray: #8b8b8e;
   --fog: var(--gray);

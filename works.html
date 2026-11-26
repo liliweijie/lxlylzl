@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" class="rounded-preview">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -35,11 +35,12 @@ if(n&&(Date.now()-n.ts)<8000)document.documentElement.setAttribute('data-nav-dir
 <link rel="stylesheet" href="css/rail-gate.css">
 <link rel="stylesheet" href="css/navigation-shell.css?v=4">
 <link rel="stylesheet" href="css/site-motion.css?v=7">
+<link rel="stylesheet" href="/css/rounded-preview.css?v=2">
 </head>
 <body data-page="1">
 <a class="skip-link" href="#main">跳到内容</a>
 
-<header class="space-header"><a class="space-logo" href="index.html" aria-label="lxlylzl 首页"><img src="assets/space-mark.svg" alt=""><span><b>lXlYlZl</b><small>SPACE FOR IDEAS</small></span></a><nav class="space-links" aria-label="主要导航"><a href="index.html">HOME</a><a href="works.html" aria-current="page">WORK</a><a href="/shirt">SHIRT</a><a href="about.html">ABOUT</a><a href="notes.html">NOTES</a><a href="contact.html">CONTACT</a></nav><div class="space-meta"><span>02 / 05</span></div></header>
+<nav hidden class="space-links" aria-label="主要导航"><a href="index.html">HOME</a><a href="works.html" aria-current="page">WORK</a><a href="/shirt">SHIRT</a><a href="about.html">ABOUT</a><a href="notes.html">NOTES</a><a href="contact.html">CONTACT</a></nav>
 
 <div class="peek-rail" aria-hidden="true">
   <div class="peek-rail__wash"><span>关于 ABOUT</span></div>
@@ -68,7 +69,7 @@ if(n&&(Date.now()-n.ts)<8000)document.documentElement.setAttribute('data-nav-dir
 <div class="scanline" aria-hidden="true"></div>
 
 <main id="main">
-  <section class="works-stage" aria-labelledby="works-stage-title">
+  <section data-rounded-module class="works-stage" aria-labelledby="works-stage-title">
     <div class="works-stage__heading">
       <h1 id="works-stage-title"><span>SELECTED</span> <i>works.</i></h1>
       <p>滑动，让作品环绕你。<br>展开档案，点击走进长图。</p>
@@ -88,6 +89,7 @@ if(n&&(Date.now()-n.ts)<8000)document.documentElement.setAttribute('data-nav-dir
       <button class="archive-control" data-archive-action="read" type="button" disabled>打开阅读 ↗</button>
     </div>
   </section>
+  <div class="archive-module" data-rounded-module>
   <section class="container works-filter-section" aria-labelledby="all-work-title">
     <h2 id="all-work-title">项目档案</h2>
     <div class="filters" role="group" aria-label="作品筛选">
@@ -239,8 +241,10 @@ if(n&&(Date.now()-n.ts)<8000)document.documentElement.setAttribute('data-nav-dir
     </div>
   </section>
 
+  </div>
+
   <!-- ============ end ticket ============ -->
-  <section class="container" style="padding-bottom:32px">
+  <section data-rounded-module class="container" style="padding-bottom:32px">
     <footer class="ticket-footer" id="availability">
       <div class="rv" style="position:relative">
         <span class="tf-scan rv-line" aria-hidden="true"></span>
@@ -309,6 +313,6 @@ if(n&&(Date.now()-n.ts)<8000)document.documentElement.setAttribute('data-nav-dir
 </div>
 
 <script src="js/site.js" defer></script>
-<script src="js/editorial-navigation.js?v=11" defer></script>
+<script src="js/editorial-navigation.js?v=12" defer></script>
 </body>
 </html>

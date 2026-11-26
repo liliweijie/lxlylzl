@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" class="rounded-preview">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -35,11 +35,12 @@ if(n&&(Date.now()-n.ts)<8000)document.documentElement.setAttribute('data-nav-dir
 <link rel="stylesheet" href="css/rail-gate.css">
 <link rel="stylesheet" href="css/navigation-shell.css?v=4">
 <link rel="stylesheet" href="css/site-motion.css?v=7">
+<link rel="stylesheet" href="/css/rounded-preview.css?v=2">
 </head>
 <body data-page="2">
 <a class="skip-link" href="#main">跳到内容</a>
 
-<header class="space-header"><a class="space-logo" href="index.html" aria-label="lxlylzl 首页"><img src="assets/space-mark.svg" alt=""><span><b>lXlYlZl</b><small>SPACE FOR IDEAS</small></span></a><nav class="space-links" aria-label="主要导航"><a href="index.html">HOME</a><a href="works.html">WORK</a><a href="/shirt">SHIRT</a><a href="about.html" aria-current="page">ABOUT</a><a href="notes.html">NOTES</a><a href="contact.html">CONTACT</a></nav><div class="space-meta"><span>03 / 05</span></div></header>
+<nav hidden class="space-links" aria-label="主要导航"><a href="index.html">HOME</a><a href="works.html">WORK</a><a href="/shirt">SHIRT</a><a href="about.html" aria-current="page">ABOUT</a><a href="notes.html">NOTES</a><a href="contact.html">CONTACT</a></nav>
 
 <div class="peek-rail" aria-hidden="true">
   <div class="peek-rail__wash"><span>碎碎念 NOTES</span></div>
@@ -69,7 +70,7 @@ if(n&&(Date.now()-n.ts)<8000)document.documentElement.setAttribute('data-nav-dir
 
 <main id="main">
   <!-- ============ hero: portrait + bio ============ -->
-  <section class="container about-hero">
+  <section data-rounded-module class="container about-hero">
     <div class="about-hero__grid">
       <div>
         <div class="rv">
@@ -101,7 +102,7 @@ if(n&&(Date.now()-n.ts)<8000)document.documentElement.setAttribute('data-nav-dir
   </section>
 
   <!-- ============ capabilities ============ -->
-  <section class="container section">
+  <section data-rounded-module class="container section">
     <h2 class="h2 rv" style="margin-bottom:64px">能做什么</h2>
     <div class="caps-grid">
       <div class="cap">
@@ -148,7 +149,7 @@ if(n&&(Date.now()-n.ts)<8000)document.documentElement.setAttribute('data-nav-dir
   </section>
 
   <!-- ============ timeline ============ -->
-  <section class="container section timeline">
+  <section data-rounded-module class="container section timeline">
     <h2 class="h2 rv" style="margin-bottom:64px">这些年</h2>
 
     <div class="timeline__h">
@@ -171,7 +172,7 @@ if(n&&(Date.now()-n.ts)<8000)document.documentElement.setAttribute('data-nav-dir
   </section>
 
   <!-- ============ contact ============ -->
-  <section style="margin-top:32px">
+  <section data-rounded-module style="margin-top:32px">
     <div class="container">
       <div class="rv">
         <div class="ticket">
@@ -218,6 +219,6 @@ if(n&&(Date.now()-n.ts)<8000)document.documentElement.setAttribute('data-nav-dir
 <div class="toast" role="status">已复制 ✓</div>
 
 <script src="js/site.js" defer></script>
-<script src="js/editorial-navigation.js?v=11" defer></script>
+<script src="js/editorial-navigation.js?v=12" defer></script>
 </body>
 </html>

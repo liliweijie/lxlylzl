@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" class="rounded-preview">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -14,11 +14,12 @@
   <link rel="stylesheet" href="css/navigation-shell.css?v=4">
   <link rel="canonical" href="https://lxlylzl.xyz/notes.html">
   <meta name="description" content="进入脑内褶皱，探索想法与神经元。李威杰的个人创作空间。">
+<link rel="stylesheet" href="/css/rounded-preview.css?v=2">
 </head>
 <body class="brain-depth-demo" data-page="3">
   <a class="brain-skip" href="#thought-list">跳到想法节点</a>
-  <header class="space-header"><a class="space-logo" href="index.html" aria-label="lxlylzl 首页"><img src="assets/space-mark.svg" alt=""><span><b>lXlYlZl</b><small>SPACE FOR IDEAS</small></span></a><nav class="space-links" aria-label="主要导航"><a href="index.html">HOME</a><a href="works.html">WORK</a><a href="/shirt">SHIRT</a><a href="about.html">ABOUT</a><a href="notes.html" aria-current="page">NOTES</a><a href="contact.html">CONTACT</a></nav><div class="space-meta"><span>04 / 05</span></div></header>
-  <main id="brain-journey" aria-label="滚动进入无限脑部褶皱空间，点选神经元书写想法">
+  <nav hidden class="space-links" aria-label="主要导航"><a href="index.html">HOME</a><a href="works.html">WORK</a><a href="/shirt">SHIRT</a><a href="about.html">ABOUT</a><a href="notes.html" aria-current="page">NOTES</a><a href="contact.html">CONTACT</a></nav>
+  <main data-rounded-module id="brain-journey" aria-label="滚动进入无限脑部褶皱空间，点选神经元书写想法">
     <div class="brain-stage" id="brain-stage" tabindex="0">
       <div class="brain-canvas" id="brain-canvas" aria-hidden="true"></div>
       <p class="brain-loading" id="brain-loading" role="status">正在连接想法…</p>
@@ -40,6 +41,6 @@
     </form>
   </dialog>
   <script type="module" src="js/notes-brain-depth-demo.js?v=20"></script>
-  <script src="js/editorial-navigation.js?v=11" defer></script>
+  <script src="js/editorial-navigation.js?v=12" defer></script>
 </body>
 </html>

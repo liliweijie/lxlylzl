@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" class="rounded-preview">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -35,12 +35,11 @@
       .shirt-stage{margin-right:0;height:calc(100dvh - var(--shirt-nav-height) - env(safe-area-inset-bottom))}
     }
   </style>
-  <script src="js/editorial-navigation.js?v=11" defer></script>
+  <script src="js/editorial-navigation.js?v=12" defer></script>
+<link rel="stylesheet" href="/css/rounded-preview.css?v=2">
 </head>
 <body>
-  <header class="space-header">
-    <a class="space-logo" href="index.html" aria-label="lxlylzl 首页"><img src="/assets/space-mark.svg" alt=""><b>lXlYlZl</b></a>
-    <nav class="space-links" aria-label="主要导航">
+  <nav hidden class="space-links" aria-label="主要导航">
       <a href="index.html">HOME</a>
       <a href="works.html">WORK</a>
       <a href="/shirt" aria-current="page">SHIRT</a>
@@ -48,11 +47,10 @@
       <a href="notes.html">NOTES</a>
       <a href="contact.html">CONTACT</a>
     </nav>
-    <div class="space-meta"><a href="/shirt-studio/credits.html">模型署名</a></div>
-  </header>
-  <main class="shirt-stage" aria-label="文化衫定制" aria-busy="true">
+  <main data-rounded-module class="shirt-stage" aria-label="文化衫定制" aria-busy="true">
     <iframe src="/shirt-studio/index.html?v=37" title="文化衫 3D 定制工作室" onload="this.parentElement.removeAttribute('aria-busy')"></iframe>
     <p class="shirt-loading" role="status">正在加载 3D 试衣…</p>
   </main>
+<a class="model-credits" href="/shirt-studio/credits.html">模型署名</a>
 </body>
 </html>

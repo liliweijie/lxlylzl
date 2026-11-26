@@ -19,6 +19,7 @@
   var logo = document.querySelector('.space-logo');
   var header = logo?.closest('.space-header');
   var logoDragged = false;
+  var bottomTap = false;
   var progress = rail.querySelector('.peek-rail__pct');
   var wash = rail.querySelector('.peek-rail__wash');
   var washLabel = wash && wash.querySelector('span');
@@ -33,6 +34,13 @@
   tip.className = 'peek-rail__tip';
   tip.textContent = '轻轻左拖，即刻切页 ←';
   rail.appendChild(tip);
+  var mobileLabel = document.createElement('span');
+  mobileLabel.className = 'rail-mobile-label';
+  mobileLabel.setAttribute('aria-hidden', 'true');
+  rail.append(mobileLabel);
+
+  function usesBottomRail() { return phoneLayout.matches && !logo; }
+  function openBottomDirectory() { rail.dispatchEvent(new Event('open-directory')); }
 
   function selectTarget(index, href) {
     targetIndex = index;
@@ -42,19 +50,31 @@
     if (railName) railName.textContent = item.cn + ' · ' + item.en;
     if (washLabel) washLabel.textContent = item.cn + ' ' + item.en;
     if (railNo) railNo.textContent = String(index + 1).padStart(2, '0') + '/' + String(pages.length).padStart(2, '0');
-    rail.setAttribute('aria-label', '前往' + item.cn + ' · ' + item.en + (phoneLayout.matches ? '。向下拖动 Logo 进入。' : '。在侧栏内按住向左拖动，或在页面底部继续滚动，或按回车进入。'));
+    mobileLabel.textContent = '↑ 上拉切页 · ' + item.en;
+    if (usesBottomRail()) {
+      rail.setAttribute('role', 'button');
+      rail.setAttribute('aria-controls', 'motion-directory');
+      rail.setAttribute('aria-haspopup', 'dialog');
+      rail.setAttribute('aria-expanded', 'false');
+      rail.setAttribute('aria-label', '点按打开目录，或上拉前往' + item.cn);
+    } else {
+      rail.setAttribute('role', 'link');
+      for (const name of ['aria-controls','aria-haspopup','aria-expanded']) rail.removeAttribute(name);
+      rail.setAttribute('aria-label', '前往' + item.cn + ' · ' + item.en + (phoneLayout.matches ? '。向下拖动 Logo 进入。' : '。在侧栏内按住向左拖动，或在页面底部继续滚动，或按回车进入。'));
+    }
     tip.textContent = phoneLayout.matches ? '' : '轻轻左拖，即刻切页 ←';
   }
 
   function reset() {
     if(spring){spring.kill();spring=null;}
     if (committing) return;
+    bottomTap = false;
     cancelAnimationFrame(wheelFrame);
     wheelFrame = 0; wheelTarget = 0; wheelAmount = 0; wheelArmedAt = null;
     var previous = pressed;
     pressed = null;
     if (previous && previous.surface.hasPointerCapture(previous.id)) previous.surface.releasePointerCapture(previous.id);
-    rail.classList.remove('rail-dragging', 'rail-expanded', 'rail-wheel');
+    rail.classList.remove('rail-dragging', 'rail-expanded', 'rail-wheel', 'rail-releasing');
     delete rail.dataset.wheelProgress;
     rail.style.removeProperty('--drag-width');
     rail.style.removeProperty('--drag-height');
@@ -94,10 +114,10 @@
     wheelAmount = reduced.matches ? wheelTarget : wheelAmount + (wheelTarget - wheelAmount) * .2;
     if (Math.abs(wheelTarget - wheelAmount) < .001) wheelAmount = wheelTarget;
     if (wheelTarget === 0 && wheelAmount === 0) { reset(); return; }
-    var extent = innerWidth;
     rail.classList.add('rail-dragging', 'rail-wheel');
     rail.classList.remove('rail-expanded', 'is-pull-ready');
-    rail.style.setProperty('--drag-width', (10 + (extent - 10) * wheelAmount) + 'px');
+    const start = 'var(--desktop-rail-width, 10px)';
+    rail.style.setProperty('--drag-width', 'calc(' + start + ' + (100vw - ' + start + ') * ' + wheelAmount + ')');
     rail.dataset.wheelProgress = String(Math.round(wheelAmount * 100));
     preview.querySelector('.pull-action').textContent = '继续滚动，进入' + pages[targetIndex].cn + ' · ' + Math.round(wheelAmount * 100) + '%';
     preview.querySelector('.pull-track i').style.transform = 'scaleX(' + wheelAmount + ')';
@@ -171,12 +191,13 @@
     try { sessionStorage.setItem('lx:nav', JSON.stringify({ dir: 1, rail: true, ts: Date.now() })); } catch (e) {}
     function cover() {
       preview.querySelector('.pull-action').textContent='走，继续逛';
-      rail.classList.remove('rail-dragging', 'rail-expanded');
+      rail.classList.remove('rail-dragging', 'rail-expanded', 'rail-releasing');
       rail.classList.add('rail-cover');
       window.setTimeout(function () { location.assign(target); }, reduced.matches ? 0 : 430);
     }
-    if(rebound&&header&&!reduced.matches){
-      header.classList.add('is-logo-releasing');
+    if(rebound&&(header||usesBottomRail())&&!reduced.matches){
+      if(header) header.classList.add('is-logo-releasing');
+      else rail.classList.add('rail-releasing');
       window.setTimeout(cover,180);
     }else cover();
   }
@@ -200,27 +221,29 @@
   });
 
   rail.addEventListener('pointerenter', function (event) {
-    if (event.pointerType !== 'touch' && !committing) rail.classList.add('rail-expanded');
+    if (event.pointerType === 'mouse' && !phoneLayout.matches && !committing && !pressed && !spring) rail.classList.add('rail-expanded');
   });
   rail.addEventListener('pointerleave', function () {
     if (!pressed && !committing) rail.classList.remove('rail-expanded');
   });
   function beginPull(event, surface, vertical) {
-    if (committing || event.button !== 0 || event.isPrimary === false) return;
+    if (committing || pressed || event.button !== 0 || event.isPrimary === false) return;
     if (wheelArmedAt !== null || wheelAmount || spring) reset();
     if (vertical) logoDragged = false;
-    var size = vertical ? surface.closest('.space-header').getBoundingClientRect().height : rail.getBoundingClientRect().width;
+    var fromBottom = vertical && surface === rail;
+    bottomTap = false;
+    var size = vertical ? (fromBottom ? rail.offsetHeight : header.offsetHeight) : rail.offsetWidth;
     var threshold = vertical ? Math.min(132,Math.max(76,innerHeight*.13)) : Math.min(180,Math.max(100,innerWidth*.16));
-    pressed = {id:event.pointerId,surface:surface,vertical:vertical,x:event.clientX,y:event.clientY,along:0,across:0,size:size,threshold:threshold};
+    pressed = {id:event.pointerId,surface:surface,vertical:vertical,fromBottom:fromBottom,x:event.clientX,y:event.clientY,along:0,across:0,size:size,threshold:threshold};
     surface.setPointerCapture(event.pointerId);
   }
   function movePull(event) {
     if (!pressed || event.pointerId !== pressed.id) return;
     var x=event.clientX-pressed.x,y=event.clientY-pressed.y;
-    pressed.along=Math.max(0,pressed.vertical?y:-x);
+    pressed.along=Math.max(0,pressed.vertical?(pressed.fromBottom?-y:y):-x);
     pressed.across=Math.abs(pressed.vertical?x:y);
     if(pressed.vertical&&Math.hypot(x,y)>8)logoDragged=true;
-    if(!pressed.vertical&&pressed.across>24&&pressed.across>pressed.along){reset();return;}
+    if((!pressed.vertical||pressed.fromBottom)&&pressed.across>24&&pressed.across>pressed.along){reset();return;}
     if(!rail.classList.contains('rail-dragging')&&(pressed.along<8||pressed.along<pressed.across))return;
     rail.classList.add('rail-dragging');
     var distance = pressed.along/pressed.threshold;
@@ -241,16 +264,18 @@
     var go = pull.along >= pull.threshold && pull.along > pull.across * 1.5;
     pressed = null;
     if (pull.surface.hasPointerCapture(event.pointerId)) pull.surface.releasePointerCapture(event.pointerId);
-    if (go || (!pull.vertical&&pull.along<5&&pull.across<12)) commit(undefined,undefined,pull.vertical);
+    var tapped = Math.hypot(event.clientX-pull.x,event.clientY-pull.y)<7;
+    if (go || (!pull.vertical&&tapped)) commit(undefined,undefined,pull.vertical);
+    else if (pull.fromBottom&&tapped) bottomTap = true;
     else if (rail.classList.contains('rail-dragging')) {
       var bounds=rail.getBoundingClientRect();
-      springBack(pull.vertical,pull.vertical?bounds.height:bounds.width,pull.vertical?pull.size:56,pull.threshold);
+      springBack(pull.vertical,pull.vertical?bounds.height:bounds.width,pull.size,pull.threshold);
     } else reset();
   }
   for(const surface of [rail,logo]){
     if(!surface)continue;
     surface.addEventListener('pointerdown',event=>{
-      const vertical=surface===logo;
+      const vertical=surface===logo||usesBottomRail();
       if(vertical===phoneLayout.matches)beginPull(event,surface,vertical);
     });
     surface.addEventListener('pointermove',movePull);
@@ -280,8 +305,18 @@
     });
   });
   phoneLayout.addEventListener('change',function(){if(!committing){reset();selectTarget(targetIndex)}});
+  rail.addEventListener('click', function (event) {
+    if (!usesBottomRail() || !bottomTap) return;
+    bottomTap = false;
+    event.preventDefault();
+    openBottomDirectory();
+  });
   rail.addEventListener('keydown', function (event) {
-    if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); commit(); }
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      if (usesBottomRail()) openBottomDirectory();
+      else commit();
+    }
     else if (event.key === 'Escape') reset();
   });
   document.addEventListener('keydown', function (event) {
